@@ -22,6 +22,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public Modular25DInterface Hud { get; private set; }
         public SpriteRenderer BastionRenderer { get; private set; }
         public SpriteRenderer SawmillRenderer { get; private set; }
+        public int DisplayedBastionLevel { get; private set; } = 1;
+        public SpriteRenderer BarracksRenderer { get; private set; }
+        public SpriteRenderer GranaryRenderer { get; private set; }
+        public SpriteRenderer StoneworksRenderer { get; private set; }
         public int RecoveredPropsPlaced { get; private set; }
         public int WorkshopWorkersPlaced { get; private set; }
         public Modular25DWorkshopAction WorkshopAction { get; private set; }
@@ -70,6 +74,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // The finished illustrated sprite already contains ground contact.
             // Its broad baked exterior shadow is trimmed by Modular25DArt; do
             // not add another large dark ellipse over the sawdust footprint.
+
+            // Future completed architecture stays invisible until canonical level AND completion.
+            BarracksRenderer=AddExpansionBuilding(buildings,"barracks",new Vector2(-1.65f,-4.20f));
+            GranaryRenderer=AddExpansionBuilding(buildings,"granary",new Vector2(1.15f,-6.00f));
+            StoneworksRenderer=AddExpansionBuilding(buildings,"stoneworks",new Vector2(-1.65f,-7.65f));
 
             // BASTION I PRODUCTION COMPOSITION: a deliberate rebuilt hamlet,
             // not random RPG decorations on an empty lawn. Four readable zones
@@ -364,9 +373,38 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             WorkshopWorkersPlaced++;
         }
 
+        SpriteRenderer AddExpansionBuilding(Transform parent,string id,Vector2 foot)
+        {
+            var visual=AddSprite("Progression | "+id,null,foot,FootOrder(foot.y),parent);
+            visual.gameObject.AddComponent<Modular25DArchitecturalShadow>();
+            visual.gameObject.SetActive(false);
+            return visual;
+        }
+
+        static void SetCompletedBuilding(SpriteRenderer visual,bool visible)
+        {
+            if(visual==null)return;
+            if(visible && visual.sprite==null)
+                visual.sprite=Modular25DArt.ExpansionBuilding(visual.gameObject.name.Substring("Progression | ".Length));
+            visual.gameObject.SetActive(visible);
+            if(visible)visual.GetComponent<Modular25DArchitecturalShadow>()?.Refresh();
+        }
+
         public void Apply(PlayerState snapshot)
         {
             if(snapshot==null||SawmillRenderer==null)return;
+            DisplayedBastionLevel=Mathf.Clamp(snapshot.BastionLevel,1,5);
+            BastionRenderer.sprite=Modular25DArt.BastionForLevel(DisplayedBastionLevel);
+            BastionRenderer.GetComponent<Modular25DArchitecturalShadow>()?.Refresh();
+            SetCompletedBuilding(BarracksRenderer,snapshot.BastionLevel>=2 && snapshot.BarracksLevel>0);
+            SetCompletedBuilding(GranaryRenderer,snapshot.BastionLevel>=3 && (snapshot.ChapterThree?.GranaryLevel??0)>0);
+            SetCompletedBuilding(StoneworksRenderer,snapshot.BastionLevel>=5 && (snapshot.ChapterThree?.StoneworksLevel??0)>0);
+            GetComponentInChildren<Modular25DLandscape>()?.ApplyExpansionGround(
+                BarracksRenderer.gameObject.activeSelf,GranaryRenderer.gameObject.activeSelf,StoneworksRenderer.gameObject.activeSelf);
+            // The existing garden is displaced only when the real barracks occupies this envelope.
+            foreach(var visual in GetComponentsInChildren<SpriteRenderer>(true))
+                if(visual.gameObject.name=="Original Eldoria art | HuertosValoria")
+                    visual.gameObject.SetActive(!BarracksRenderer.gameObject.activeSelf);
             var stage=ParcelBuildingStates.For(snapshot,"sawmill");
             // Three independently authored visuals; only the canonical snapshot
             // chooses which one is visible. No tinted finished-building ghost.
@@ -392,4 +430,5 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+
 

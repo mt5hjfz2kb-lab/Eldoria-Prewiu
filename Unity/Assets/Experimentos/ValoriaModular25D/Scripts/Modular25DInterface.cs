@@ -18,7 +18,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     public sealed class Modular25DInterface : MonoBehaviour
     {
         public const string UiEdition = "Corona de la Brecha - Eldoria 2.5D";
-        public const int FutureNavigationSlots = 6;
+        public const int FutureNavigationSlots = 8;
         private static readonly Color32 Slate = new Color32(27, 20, 43, 242);
         private static readonly Color32 SlateLight = new Color32(55, 40, 72, 238);
         private static readonly Color32 Parchment = new Color32(33, 25, 48, 250);
@@ -673,22 +673,22 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             return bounds.Overlaps(Rect.MinMaxRect(min.x,min.y,max.x,max.y));
         }
 
-        // Six stable slots at the lower edge. Only slots 3, 4 and 5
-        // currently have real actions (Estado, Ciudad, Obras). Slots
-        // 0-2 are reserved positions, NOT fake or disabled buttons.
+        // Eight genuine future positions; absent systems never create buttons.
+        // Below 380 logical points use two rows rather than undersized touch targets.
         public static Rect NavigationCell(int index,float logicalWidth,
             float leftInset,float rightInset,float bottomInset,bool wide)
         {
             if(index<0 || index>=FutureNavigationSlots)
                 throw new ArgumentOutOfRangeException(nameof(index));
             float safeWidth=logicalWidth-leftInset-rightInset;
-            float step=Mathf.Min(wide?54f:60f,
-                Mathf.Max(49f,(safeWidth-12f)/FutureNavigationSlots));
-            float diameter=Mathf.Max(44f,step-5f);
-            float origin=logicalWidth-rightInset-8f-FutureNavigationSlots*step;
-            return new Rect(
-                origin+index*step+(step-diameter)*.5f,
-                bottomInset+(wide?12f:14f),diameter,diameter+12f);
+            int columns=safeWidth>=380f?8:4;
+            float step=Mathf.Min(48f,(safeWidth-12f)/columns);
+            float diameter=Mathf.Max(44f,step-3f);
+            float origin=logicalWidth-rightInset-6f-columns*step;
+            int column=index%columns;
+            int row=(FutureNavigationSlots-1-index)/columns;
+            return new Rect(origin+column*step+(step-diameter)*.5f,
+                bottomInset+12f+row*64f,diameter,diameter+12f);
         }
 
         private static void PlaceNavigation(RectTransform rect,Rect cell,bool wide)
@@ -700,7 +700,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var caption=rect.GetComponentInChildren<Text>(true);
             if(caption!=null)
             {
-                caption.fontSize=wide?11:12;
+                caption.fontSize=11;
                 caption.alignment=TextAnchor.MiddleCenter;
                 caption.rectTransform.anchoredPosition=
                     new Vector2(0f,-cell.width*.5f-9f);
@@ -781,14 +781,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 }
             }
 
-            // The original six-cell dock stays at the bottom. Only
-            // three actions are real; positions 0..2 remain future slots.
+            // Eight compact positions, only the last three have real actions.
             PlaceNavigation(statusDock,
-                NavigationCell(3,width,left,right,bottom,wide),wide);
-            PlaceNavigation(center,
-                NavigationCell(4,width,left,right,bottom,wide),wide);
-            PlaceNavigation(inspect,
                 NavigationCell(5,width,left,right,bottom,wide),wide);
+            PlaceNavigation(center,
+                NavigationCell(6,width,left,right,bottom,wide),wide);
+            PlaceNavigation(inspect,
+                NavigationCell(7,width,left,right,bottom,wide),wide);
 
             // The progress/quest card is tucked behind ONE tiny LEFT tab
             // by default. Opening it never changes the game state.
@@ -1077,5 +1076,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+
 
 

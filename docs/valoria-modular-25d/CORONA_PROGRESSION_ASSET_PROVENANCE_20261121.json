@@ -1,0 +1,106 @@
+{
+  "method": "Built-in image generation with approved original sprite references; only uniform resize and foot-anchor padding afterward",
+  "assets": [
+    {
+      "name": "bastion_2",
+      "source": "exec-05fcc7b2-5505-4b9a-a051-bd36b8d3fb57.png",
+      "source_sha256": "b366baebdfbbaf2de742640d5d3baf351ed7577b447805ee0625eadffb063f23",
+      "sha256": "68d1c4751fa6a7247599c90d58d8760f5bc44fecb908b0149775d53bbb35cfed",
+      "dimensions": [
+        1440,
+        992
+      ],
+      "pixels_per_unit": 288,
+      "pivot_y": 0.06955645161290322,
+      "brief": "Repair left guard hall, remove scaffolding, reinforce portcullis; preserve original towers, gate, warm limestone, slate and blue/gold tree banners."
+    },
+    {
+      "name": "bastion_3",
+      "source": "exec-e2acaa4b-6da5-4010-92ce-134029581ee9.png",
+      "source_sha256": "9114b362da2bad34e8433c24f7284caafe3550a12527da8ebf77c1fb4e244a6e",
+      "sha256": "1cfda971708cc8bf25a70be510bb82f52b6c13227dd5def6d914b9638bed9301",
+      "dimensions": [
+        1440,
+        987
+      ],
+      "pixels_per_unit": 288,
+      "pivot_y": 0.06990881458966565,
+      "brief": "Raise central hall one storey with buttresses; roof right round tower; preserve II lineage and footprint."
+    },
+    {
+      "name": "bastion_4",
+      "source": "exec-20db1ddd-7cf9-482b-9f5b-5a3888847004.png",
+      "source_sha256": "e8fad8d4242a05c82e10d4d766a8e2e510cb01c7f588bbf1f3174f210da4230e",
+      "sha256": "66142f23484584822851dd9d06cdf5e99008558c4c15d3683cfa65ce1cb9a114",
+      "dimensions": [
+        1440,
+        982
+      ],
+      "pixels_per_unit": 288,
+      "pivot_y": 0.07026476578411406,
+      "brief": "Fortified left gallery, small watch turret, dormered central roof with tree crest and restrained violet glass, roofed gatehouse."
+    },
+    {
+      "name": "bastion_5",
+      "source": "exec-61303a53-2818-4422-a00b-b904619062d3.png",
+      "source_sha256": "a8d93c95e5f10f29c3cea36a3080320d885d41c8e9ce6fb99e0f8721c1481515",
+      "sha256": "4bc6418cc67b25900b35b83a4fdd99b369ae39650c60bec4fed54f74de4f1691",
+      "dimensions": [
+        1440,
+        1083
+      ],
+      "pixels_per_unit": 288,
+      "pivot_y": 0.06371191135734072,
+      "brief": "Prestigious vertical central keep with two flanking roof turrets and small amethyst lantern, preserve established gate and towers; no ground platform."
+    },
+    {
+      "name": "barracks",
+      "source": "exec-e2decd60-15f8-422c-9932-af9532b821bb.png",
+      "source_sha256": "50457a9c2b641323da9c0a2c272f0001d68d7793bd05730e17430eb8d737859f",
+      "sha256": "c6dad4e075270fa748725b1f6e1bc45011c2c833e87b949df65c2b4e4c007666",
+      "dimensions": [
+        1024,
+        665
+      ],
+      "pixels_per_unit": 288,
+      "pivot_y": 0.1037593984962406,
+      "brief": "Compact fortified guard hall, slate roof, modest watch post, crossed swords and training equipment. Same camera and stone/timber language. Background extraction pass preserved architecture."
+    },
+    {
+      "name": "granary",
+      "source": "exec-91b42fba-164e-481c-bda1-676a448aee47.png",
+      "source_sha256": "57e10f03ab00d5b53742dea2eafc1f2ed3fa5f620e597885b42a1acc2cea620c",
+      "sha256": "2ec90b0bf8887de74f4d31b6353f80472a8be0192928a10098ef2ed5378dd72f",
+      "dimensions": [
+        1024,
+        737
+      ],
+      "pixels_per_unit": 288,
+      "pivot_y": 0.09362279511533243,
+      "brief": "Distinct timber grain barn, slate roof with ventilation cupola, wheat crest, grain sacks. Same warm light, scale and materials."
+    },
+    {
+      "name": "stoneworks",
+      "source": "exec-fcfe6601-8390-41f1-adc3-dce8bce08196.png",
+      "source_sha256": "d5859db8c5016ac76d88e5e1d6cf4b3e8992cf88f9623b6c502f30ef88886bb8",
+      "sha256": "048e0e676fcc9652a33dfc82eeb6bde7aee87f2e4082c5929d3b177df393d600",
+      "dimensions": [
+        1024,
+        703
+      ],
+      "pixels_per_unit": 288,
+      "pivot_y": 0.09815078236130868,
+      "brief": "Compact stonemason workshop, timber lifting derrick, rope stone block, cutting bench; no sawblade or logs; same city materials."
+    },
+    {
+      "name": "sawmill_available_hd",
+      "source": "exec-f055d9ea-8864-48e1-ba91-64663041789f.png",
+      "sha256": "01b8603aa7f1d7ba577b5d1fe87f4573aea9fa3ef90313177258a40cf9ce6a3d",
+      "dimensions": [
+        1050,
+        765
+      ],
+      "brief": "Faithful high-definition restoration of original site logs, foundation blocks and ropes; original image and world footprint preserved. Built-in image generation, uniform technical resize only."
+    }
+  ]
+}

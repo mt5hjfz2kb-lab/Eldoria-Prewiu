@@ -35,6 +35,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             public string mode, artApproved="NO", physicalIphone="NOT_TESTED";
             public bool nativeWorldRender, gatewayBuild, savedAndReloaded, noDoublePayment, didNotAlterBeta;
             public bool continuousTerrainPresent, paintedGroundSourceLoaded, roadAndFootprintKits, noLegacyHudInEditorPreview, movingCharactersAreUnityTransforms, workshopActorAnimated, composedSettlementZones;
+            public bool progressionVisualFixturesOnly=true;
+            public int progressionStagesCaptured;
             public int movementFrameRate=15, movementFrames=120;
             public float movementSimulationSeconds=8f;
             public int sourceFrames, originalArtResourcesLoaded, bastionLevel, initialWood, afterStartWood, afterCompletedWood, sawmillLevel, completionReceiptCount;
@@ -253,6 +255,35 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 report.workshopActorAnimated=workshop[0].WorkCycles>3f;
                 if(!report.workshopActorAnimated)
                     throw new Exception("No verifiable animated work cycle at sawmill log rack");
+                // Presentation fixtures, deliberately not an end-to-end campaign claim.
+                // No fixture is written into the gateway, beta, or any player save.
+                for(int level=1;level<=5;level++)
+                {
+                    var fixture=new PlayerState { BastionLevel=level, SawmillLevel=1,
+                        BarracksLevel=level>=2?1:0 };
+                    fixture.ChapterThree.GranaryLevel=level>=3?1:0;
+                    fixture.ChapterThree.StoneworksLevel=level>=5?1:0;
+                    world.Apply(fixture);
+                    if(world.BastionRenderer.sprite!=Modular25DArt.BastionForLevel(level))
+                        throw new Exception("Wrong stage artwork "+level);
+                    if(world.BarracksRenderer.gameObject.activeSelf!=(level>=2) ||
+                       world.GranaryRenderer.gameObject.activeSelf!=(level>=3) ||
+                       world.StoneworksRenderer.gameObject.activeSelf!=(level>=5))
+                        throw new Exception("Progression visual gate mismatch "+level);
+                    var framing=level==1?home:new Vector3(-.02f,-1.5f,-30f);
+                    float size=level==1?portrait:9.15f;
+                    Render(cam,output,report,"stage-"+level+"-fixture-390x844",390,844,framing,size);
+                    Render(cam,output,report,"stage-"+level+"-fixture-1170x2532",1170,2532,framing,size);
+                    Render(cam,output,report,"stage-"+level+"-keep-detail",1170,1170,new Vector3(-.4f,3.1f,-30f),3.3f);
+                    report.progressionStagesCaptured++;
+                    // Unlocking a tier alone must never conjure completed architecture.
+                    fixture.BarracksLevel=0;fixture.ChapterThree.GranaryLevel=0;fixture.ChapterThree.StoneworksLevel=0;
+                    world.Apply(fixture);
+                    if(world.BarracksRenderer.gameObject.activeSelf || world.GranaryRenderer.gameObject.activeSelf ||
+                       world.StoneworksRenderer.gameObject.activeSelf)
+                        throw new Exception("Unbuilt future architecture leaked "+level);
+                }
+                world.Apply(complete);
                 report.nativeWorldRender=report.frames.Count>=42;
                 report.sourceFrames=report.frames.Count;
                 if(!report.nativeWorldRender)throw new Exception("Fewer frames than expected");
@@ -357,3 +388,4 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
     }
 }
 #endif
+

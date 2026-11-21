@@ -159,8 +159,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public void Home()
         {
             if(camera==null)return;
-            camera.orthographicSize=homeSize;
-            camera.transform.position=HomePosition;
+            bool expanded=world!=null && world.DisplayedBastionLevel>=2;
+            camera.orthographicSize=expanded?Mathf.Max(homeSize,9.15f):homeSize;
+            camera.transform.position=expanded?new Vector3(-.02f,-1.5f,-30f):HomePosition;
         }
 
         void TrySelect(Vector2 screen)
@@ -171,3 +172,4 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+

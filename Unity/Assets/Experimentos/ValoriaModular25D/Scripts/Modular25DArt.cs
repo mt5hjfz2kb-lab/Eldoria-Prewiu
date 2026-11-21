@@ -117,6 +117,21 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             });
         }
 
+        public static Sprite BastionForLevel(int level)
+        {
+            if(level<=1)return Bastion();
+            var sprite=Resources.Load<Sprite>("ValoriaModular25D/Progression/bastion_"+Mathf.Clamp(level,2,5));
+            if(sprite==null)throw new InvalidOperationException("Missing authored Bastion stage "+level);
+            return sprite;
+        }
+
+        public static Sprite ExpansionBuilding(string id)
+        {
+            var sprite=Resources.Load<Sprite>("ValoriaModular25D/Progression/"+id);
+            if(sprite==null)throw new InvalidOperationException("Missing authored expansion building "+id);
+            return sprite;
+        }
+
         public static Sprite Bastion()
         {
             return Make("bastion_i",480,416,96f,P(.5f,.095f),a =>
@@ -648,4 +663,5 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+
 

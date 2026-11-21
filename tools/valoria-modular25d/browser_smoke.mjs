@@ -273,10 +273,10 @@ try {
       throw Error(width+'x'+height+': HUD top edge appears cropped: '+
         JSON.stringify(top));
     // Target the CENTER of the repositioned uGUI controls in 390x844 reference units,\n    // with bottom safe margin 36. These are still real Unity screen-space clicks.
-    // Six-slot HUD: OBRAS occupies the last stable cell (slot 5).
-    // Source UI NavigationCell(5,390,0,0,8,false) has x center ~352
+    // Eight-slot HUD: OBRAS occupies the last stable cell (slot 7).
+    // Source UI NavigationCell(7,390,0,0,8,false) has x center ~360
     // and y center ~56 from the bottom. Click its REAL Unity button.
-    await page.mouse.click(box.x + box.width * (352 / 390),
+    await page.mouse.click(box.x + box.width * (360 / 390),
                            box.y + box.height * (1 - 56 / 844));
     await page.waitForTimeout(650);
     const opened = await capture('real-sawmill-build-panel');
@@ -361,4 +361,5 @@ try {
   await new Promise(resolve => server.close(resolve));
   fs.writeFileSync(path.join(out, 'browser-evidence.json'), JSON.stringify(manifest, null, 2) + '\n');
 }
+
 

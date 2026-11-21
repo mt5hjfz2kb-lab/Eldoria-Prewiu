@@ -20,6 +20,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         readonly List<Texture2D> textures=new List<Texture2D>();
         readonly List<Material> materials=new List<Material>();
         bool built;
+        Material expansionRoadMaterial;
         public int RoadCount { get; private set; }
         public bool OriginalCobbleRoadLoaded { get; private set; }
         public int FootprintCount { get; private set; }
@@ -40,6 +41,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var earthMat=new Material(shader){name="Valoria haulers' earth road — original paint system"};
             earthMat.mainTexture=earth;
             materials.Add(earthMat);
+            expansionRoadMaterial=earthMat;
             // The larger Imperial Way gets a REAL illustrated paving material
             // sampled from the user-owned Eldoria terrain, cropped to path
             // pixels only, with soft edges. It remains mapped on the same
@@ -91,6 +93,32 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             PutCommons("Worked stone and soil | civic commons",yard,
                 new Vector2(-.38f,-1.40f),.78f);
             EdgeProps();
+        }
+
+        public void ApplyExpansionGround(bool barracks,bool granary,bool stoneworks)
+        {
+            ExpansionGround("barracks",barracks,new Vector2(-1.65f,-4.20f),
+                new[]{new Vector2(-3.88f,-3.76f),new Vector2(-2.8f,-4.50f),new Vector2(-1.65f,-4.40f)});
+            ExpansionGround("granary",granary,new Vector2(1.15f,-6.00f),
+                new[]{new Vector2(-2.8f,-4.50f),new Vector2(-1.6f,-5.45f),new Vector2(.1f,-6.45f),new Vector2(1.15f,-6.20f)});
+            ExpansionGround("stoneworks",stoneworks,new Vector2(-1.65f,-7.65f),
+                new[]{new Vector2(-4.85f,-5.3f),new Vector2(-3.60f,-6.5f),new Vector2(-2.75f,-7.6f),new Vector2(-1.65f,-7.85f)});
+        }
+
+        void ExpansionGround(string id,bool visible,Vector2 foot,Vector2[] path)
+        {
+            var root=transform.Find("Unlocked ground | "+id);
+            if(root==null && visible && expansionRoadMaterial!=null)
+            {
+                root=new GameObject("Unlocked ground | "+id).transform;
+                root.SetParent(transform,false);
+                int first=transform.childCount;
+                AddRoad("Access | "+id,path,.80f,expansionRoadMaterial,false);
+                PutFoot("Contact | "+id,MakeFootprint(id,new Color(.49f,.41f,.31f,1),
+                    new Color(.70f,.64f,.49f,1),false),foot+new Vector2(0,-.18f),.83f);
+                while(transform.childCount>first)transform.GetChild(first).SetParent(root,true);
+            }
+            if(root!=null)root.gameObject.SetActive(visible);
         }
 
         static Color32 Mix(Color a,Color b,float t)
@@ -432,3 +460,4 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+

@@ -355,12 +355,12 @@ namespace Eldoria.Modular25D.Tests
             Assert.That((string)nameMethod.Invoke(null,new object[]{" "}),
                 Is.EqualTo("VALORIA"));
             Assert.That((int)ui.GetType().GetField("FutureNavigationSlots").GetRawConstantValue(),
-                Is.EqualTo(6));
+                Is.EqualTo(8));
             var cellMethod=ui.GetType().GetMethod("NavigationCell",
                 BindingFlags.Public|BindingFlags.Static);
             Assert.NotNull(cellMethod);
-            var cells=new Rect[6];
-            for(int i=0;i<6;i++)
+            var cells=new Rect[8];
+            for(int i=0;i<8;i++)
             {
                 cells[i]=(Rect)cellMethod.Invoke(null,new object[]{
                     i,logicalWidth,insetLeft,insetRight,safeBottom,wide});
@@ -369,10 +369,23 @@ namespace Eldoria.Modular25D.Tests
                 Assert.LessOrEqual(cells[i].xMax,logicalWidth-insetRight-1f);
                 if(i>0)Assert.LessOrEqual(cells[i-1].xMax+2f,cells[i].xMin);
             }
+            foreach(float testWidth in new[]{320f,390f,430f,750f})
+            {
+                var reserved=new Rect[8];
+                for(int i=0;i<reserved.Length;i++)
+                {
+                    reserved[i]=(Rect)cellMethod.Invoke(null,new object[]{i,testWidth,0f,0f,8f,false});
+                    Assert.GreaterOrEqual(reserved[i].width,44f);
+                    Assert.GreaterOrEqual(reserved[i].xMin,1f);
+                    Assert.LessOrEqual(reserved[i].xMax,testWidth-1f);
+                    for(int j=0;j<i;j++)Assert.IsFalse(reserved[i].Overlaps(reserved[j]),
+                        "All eight future touch zones must fit without overlap");
+                }
+            }
             foreach(var item in new[]{
-                new {name="Inspect city status",slot=3},
-                new {name="Center camera",slot=4},
-                new {name="Inspect sawmill",slot=5}
+                new {name="Inspect city status",slot=5},
+                new {name="Center camera",slot=6},
+                new {name="Inspect sawmill",slot=7}
             })
             {
                 var btn=world.GetComponentsInChildren<RectTransform>(true)
@@ -410,6 +423,32 @@ namespace Eldoria.Modular25D.Tests
 
             Debug.Log("MOD25D_QA_STEP_2_WORLD_HUD_AND_ART");
             var first=Call(gameplay,"Snapshot");
+            // Isolated presentation fixtures; never save or execute them as campaign progress.
+            for(int tier=1;tier<=5;tier++)
+            {
+                var fixture=Activator.CreateInstance(first.GetType());
+                first.GetType().GetField("BastionLevel").SetValue(fixture,tier);
+                first.GetType().GetField("SawmillLevel").SetValue(fixture,1);
+                first.GetType().GetField("BarracksLevel").SetValue(fixture,tier>=2?1:0);
+                var chapter=Member(fixture,"ChapterThree");
+                chapter.GetType().GetField("GranaryLevel").SetValue(chapter,tier>=3?1:0);
+                chapter.GetType().GetField("StoneworksLevel").SetValue(chapter,tier>=5?1:0);
+                Call(world,"Apply",fixture);
+                Assert.AreSame(originalArtType.GetMethod("BastionForLevel").Invoke(null,new object[]{tier}),
+                    (Member(world,"BastionRenderer") as SpriteRenderer).sprite);
+                Assert.AreEqual(tier>=2,(Member(world,"BarracksRenderer") as SpriteRenderer).gameObject.activeSelf);
+                Assert.AreEqual(tier>=3,(Member(world,"GranaryRenderer") as SpriteRenderer).gameObject.activeSelf);
+                Assert.AreEqual(tier>=5,(Member(world,"StoneworksRenderer") as SpriteRenderer).gameObject.activeSelf);
+                first.GetType().GetField("BarracksLevel").SetValue(fixture,0);
+                chapter.GetType().GetField("GranaryLevel").SetValue(chapter,0);
+                chapter.GetType().GetField("StoneworksLevel").SetValue(chapter,0);
+                Call(world,"Apply",fixture);
+                foreach(var key in new[]{"BarracksRenderer","GranaryRenderer","StoneworksRenderer"})
+                    Assert.IsFalse((Member(world,key) as SpriteRenderer).gameObject.activeSelf,
+                        "Tier unlock alone must not create completed buildings");
+            }
+            Call(world,"Apply",first);
+
             Assert.NotNull(first);
             Assert.That((int)Member(first,"BastionLevel"),Is.EqualTo(1));
             Assert.That((int)Member(first,"SawmillLevel"),Is.EqualTo(0));
@@ -657,5 +696,6 @@ namespace Eldoria.Modular25D.Tests
     }
 }
 #endif
+
 
 

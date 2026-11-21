@@ -168,9 +168,9 @@ try{
     let home=null,h=null;
     if(height>width){
       // Touch the actual bottom-right uGUI CENTRAR button, not C# Home.
-      // In the six-slot bottom HUD, CIUDAD is permanently in slot 4.
-      // 390x844 reference center approximately x292, bottom 56px.
-      await page.touchscreen.tap(Math.round(width*.75),Math.round(height*.934));
+      // In the eight-slot bottom HUD, CIUDAD is permanently in slot 6.
+      // 390x844 reference center approximately x313, bottom 56px.
+      await page.touchscreen.tap(Math.round(width*(313/390)),Math.round(height*.934));
       await page.waitForTimeout(800);
       home=await capture(page,'camera-home-restored',width,height);
       h=imageDifference(before.bytes,home.bytes,roi);
@@ -191,3 +191,4 @@ try{
   await new Promise(resolve=>server.close(resolve));
   fs.writeFileSync(path.join(output,'camera-evidence.json'),JSON.stringify(manifest,null,2)+'\n');
 }
+
