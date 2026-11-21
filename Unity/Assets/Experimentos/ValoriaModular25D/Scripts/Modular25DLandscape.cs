@@ -23,7 +23,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         readonly List<Texture2D> textures=new List<Texture2D>();
         readonly List<Material> materials=new List<Material>();
         bool built;
-        Material expansionRoadMaterial, expansionPaving;
+        Material expansionRoadMaterial, expansionPaving, renderedCartLane;
         public int RoadCount { get; private set; }
         public bool OriginalCobbleRoadLoaded { get; private set; }
         public int FootprintCount { get; private set; }
@@ -118,8 +118,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 root.SetParent(transform,false);
                 int first=transform.childCount;
                 bool military=id=="barracks", stone=id=="stoneworks";
-                AddRoad("Access | "+id,path,military ? 1.12f : .91f,
-                    military ? expansionPaving : expansionRoadMaterial,military);
+                if(!military && renderedCartLane==null)
+                {
+                    var texture=Resources.Load<Texture2D>("ValoriaModular25D/Progression/DistrictCartLane");
+                    if(texture)
+                    {
+                        renderedCartLane=new Material(expansionRoadMaterial){mainTexture=texture};
+                        materials.Add(renderedCartLane);
+                    }
+                }
+                AddRoad("Access | "+id,path,military ? 1.12f : 1.13f,
+                    military ? expansionPaving : (renderedCartLane ? renderedCartLane : expansionRoadMaterial),military);
                 Color soil=stone ? new Color(.50f,.46f,.40f) : new Color(.45f,.34f,.22f);
                 Color worn=stone ? new Color(.77f,.73f,.62f) : new Color(.71f,.58f,.39f);
                 PutFoot("Contact | "+id,MakeFootprint(id,soil,worn,stone||military),

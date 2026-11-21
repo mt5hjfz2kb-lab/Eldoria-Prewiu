@@ -81,16 +81,16 @@
     },
     {
       "name": "stoneworks",
-      "source": "Valoria three-district production atlas, 2026-11-21",
-      "source_sha256": "aedaea4142dbd335b2a6544bd898f354b542d3dd2dc21ba697a49327bd06e5db",
-      "sha256": "f22bc290f5b933cb0583f3d87b410a33db25c6c644277b30ae2aecce63f5f27f",
+      "source": "exec-07dbca60-c4bf-4159-aabe-15240f0a6965.png",
+      "source_sha256": "372472df945c41e3f3cb9ac07355a525b46df201723b8ea0386050295a13a925",
+      "sha256": "aa93abb4a02d67a72a649515a65fe758b8fbedcc09f360484197024f67ceadc9",
       "dimensions": [
         1024,
-        849
+        668
       ],
       "pixels_per_unit": 288,
-      "pivot_y": 0.0812720848056537,
-      "brief": "Open stepped stone excavation and working treadwheel crane"
+      "pivot_y": 0.10329341317365269,
+      "brief": "Natural slate excavation, treadwheel hoist, split slabs on skids, tracks at entrance. Replaces pale block pile after actual camera review."
     },
     {
       "name": "sawmill_available_hd",
