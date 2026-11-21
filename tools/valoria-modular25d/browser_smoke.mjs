@@ -96,9 +96,21 @@ async function awaitUnfadedWorld(page,width,height,label) {
   for(let i=0;i<25;i++) {
     await page.waitForTimeout(750);
     const bytes=await page.screenshot({animations:'disabled',timeout:50_000});
-    const sample=topRowStats(bytes);
+    const image=PNG.sync.read(bytes);
+    let sum=0,squares=0,count=0;
+    for(let y=Math.floor(height*.28);y<height*.32;y+=3){
+      for(let x=Math.floor(width*.032);x<width*.968;x+=3){
+        if(x>width*.072 && x<width*.928)continue;
+        const i=(y*width+x)*4;
+        const l=.21*image.data[i]+.72*image.data[i+1]+.07*image.data[i+2];
+        sum+=l;squares+=l*l;count++;
+      }
+    }
+    const edgeLuma=sum/count;
+    const deviation=Math.sqrt(Math.max(0,squares/count-edgeLuma*edgeLuma));
+    const sample={edgeLuma,deviation};
     reads.push(+sample.edgeLuma.toFixed(1));
-    if(sample.edgeLuma>=78 && previous!==null && previous>=78 &&
+    if(deviation>3 && sample.edgeLuma>=78 && previous!==null && previous>=78 &&
        Math.abs(sample.edgeLuma-previous)<10) {
       console.log('WEBGL_REAL_RENDER_UNFADED',width,height,label,
         'samples='+reads.join(','));
