@@ -193,6 +193,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 () => GetComponent<Modular25DCameraInput>().Home());
             statusDock = DockButton("Inspect city status",rootTransform,"CONSEJO",taskIcon,
                 new Vector2(.5f,0f),new Vector2(.5f,0f),OpenStatus);
+            InitializeDistrictNavigation(rootTransform);
             objective=ButtonPlate("Current real construction objective",rootTransform,"",
                 null,new Vector2(1f,1f),new Vector2(1f,1f),
                 new Vector2(-12f,-122f),new Vector2(172f,50f),() => { if(cachedSawmillPhase==ParcelBuildingState.BUILT) OpenStatus(); else OpenSawmill(); })
@@ -324,8 +325,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             statusSheet=Plate("Valoria state parchment",rootTransform,activityPanelPlate,
                 new Vector2(.5f,0f),new Vector2(.5f,0f),
                 new Vector2(0f,112f),new Vector2(330f,170f));
-            Label("CONSEJO DE VALORIA",statusSheet,23,true,WarmWhite,TextAnchor.MiddleCenter,
-                new Vector2(0f,0f),new Vector2(248f,28f)).rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top,10f,28f);
+            councilTitle = Label("CONSEJO DE VALORIA",statusSheet,23,true,WarmWhite,TextAnchor.MiddleCenter,
+                new Vector2(0f,0f),new Vector2(248f,28f));
+            councilTitle.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top,10f,28f);
 
             stateSummary=Label("",statusSheet,14,false,WarmWhite,TextAnchor.MiddleLeft,
                 new Vector2(0f,-15f),new Vector2(278f,83f));
@@ -389,7 +391,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         public void OpenStatus()
         {
+            ShowCouncil(null);
+        }
+
+        private void ShowCouncil(string district)
+        {
             if(statusSheet==null)return;
+            selectedDistrict = district;
+            orderList.anchoredPosition = Vector2.zero;
+            orderList.GetComponentInParent<ScrollRect>().StopMovement();
             if(activityDrawer!=null)activityDrawer.gameObject.SetActive(false);
             activityExpanded=false;
             if(buildingSheet!=null)buildingSheet.SetActive(false);
@@ -414,6 +424,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             bool open=(buildingSheet!=null&&buildingSheet.activeSelf)||
                       (statusSheet!=null&&statusSheet.gameObject.activeSelf);
+            UpdateDistrictVisibility(open);
             if(inspect!=null)inspect.gameObject.SetActive(!open);
             if(center!=null)center.gameObject.SetActive(!open);
             if(statusDock!=null)statusDock.gameObject.SetActive(!open);
@@ -501,6 +512,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if (action != null) action.interactable = false;
                 return;
             }
+            RefreshDistrictNavigation(s);
             title.text=PlayerDisplayName(s.PlayerName);
             level.text = "Bastión " + s.BastionLevel;
             if(bastionTagText!=null)
@@ -666,7 +678,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 safe.Contains(bounds.min) && safe.Contains(bounds.max) &&
                 !OverlapsControl(bounds,topRibbon) && !OverlapsControl(bounds,activityHandle) &&
                 !OverlapsControl(bounds,statusDock) && !OverlapsControl(bounds,center) &&
-                !OverlapsControl(bounds,inspect) && !OverlapsControl(bounds,activityDrawer);
+                !OverlapsDistrictNavigation(bounds) && !OverlapsControl(bounds,inspect) && !OverlapsControl(bounds,activityDrawer);
             if(nameplate.gameObject.activeSelf!=visible)
                 nameplate.gameObject.SetActive(visible);
             if(visible && RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -795,6 +807,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
 
             // Eight compact positions, only the last three have real actions.
+            for (int i = 0; i < districtDocks.Length; i++)
+                PlaceNavigation(districtDocks[i], NavigationCell(4-i,width,left,right,bottom,wide),wide);
             PlaceNavigation(statusDock,
                 NavigationCell(5,width,left,right,bottom,wide),wide);
             PlaceNavigation(center,
@@ -1089,6 +1103,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+
 
 
 

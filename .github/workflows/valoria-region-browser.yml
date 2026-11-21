@@ -1,7 +1,7 @@
 name: Valoria regional WebGL player verification
 on:
   push:
-    branches: [experiment/corona-retina-building-pass-20261121]
+    branches: [experiment/valoria-continuidad-hud-region1-20261121]
     paths: [tools/valoria-modular25d/region-browser.json]
 permissions:
   actions: read
@@ -37,6 +37,8 @@ jobs:
           mkdir -p world-browser-evidence
           du -ah player | sort -hr | head -40 > world-browser-evidence/sizes.txt
           cat player/index.html > world-browser-evidence/template.html
+          sudo apt-get update -qq
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-eng
           python3 -m pip install --quiet playwright==1.56.0 UnityPy
           python3 tools/valoria-modular25d/region-payload-inventory.py
           python3 -m http.server 8824 --directory player &
@@ -46,3 +48,4 @@ jobs:
         with:
           name: regional-browser-result
           path: world-browser-evidence/
+

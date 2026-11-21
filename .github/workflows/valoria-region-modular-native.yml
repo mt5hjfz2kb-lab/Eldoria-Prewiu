@@ -1,7 +1,7 @@
 name: Valoria Region 1 modular art and navigation parity
 on:
   push:
-    branches: [experiment/corona-retina-building-pass-20261121]
+    branches: [experiment/valoria-continuidad-hud-region1-20261121]
     paths:
       - '.github/workflows/valoria-region-modular-native.yml'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs'
@@ -151,6 +151,10 @@ jobs:
           New-Item -ItemType Directory -Force $out|Out-Null
           $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
           if(!$blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          $python=@(Get-ChildItem (Split-Path $blender) -Filter python.exe -File -Recurse |
+            Where-Object {$_.FullName -match '[\\/]python[\\/]bin[\\/]python.exe$'})
+          if($python.Count -ne 1){throw 'Blender bundled Python executable unresolved'}
+          "MOD25D_PYTHON=$($python[0].FullName)" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
           & $blender --background --python-exit-code 1 --python (Join-Path $env:MOD25D_SOURCE 'tools/bastion-iii/author-frontier.py')
           if($LASTEXITCODE){throw 'Canonical private fissure authoring failed'}
           $bakeLog=Join-Path $out 'canonical-bake.log'
@@ -212,7 +216,7 @@ jobs:
           $staged=Join-Path $project 'Assets/ValoriaBuildInputs/CityExperiment'
           Move-Item $art $staged
           if(Test-Path ($art+'.meta')){Move-Item ($art+'.meta') ($staged+'.meta')}
-          python (Join-Path $env:MOD25D_SOURCE 'tools/valoria-modular25d/pack-hidden-geography.py') $project
+          & $env:MOD25D_PYTHON (Join-Path $env:MOD25D_SOURCE 'tools/valoria-modular25d/pack-hidden-geography.py') $project
           if($LASTEXITCODE){throw 'Hidden source geometry could not be verified'}
           Write-Host ("Historical model roots removed from automatic player inclusion: "+$files.Count)
       - name: Build actual integrated WebGL player
@@ -228,3 +232,4 @@ jobs:
         with:
           name: valoria-region1-webgl
           path: ${{env.MOD25D_SOURCE}}/Unity/Builds/RegionModular/
+

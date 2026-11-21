@@ -13,6 +13,57 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         readonly List<(string caption, string command, string target)> orders =
             new List<(string, string, string)>();
 
+        static readonly string[] DistrictIds = { "barracks", "granary", "stoneworks" };
+        static readonly string[] DistrictNames = { "Cuartel", "Granero", "Cantera" };
+        readonly RectTransform[] districtDocks = new RectTransform[DistrictIds.Length];
+        readonly Image[] districtArt = new Image[DistrictIds.Length];
+        readonly int[] districtLevels = new int[DistrictIds.Length];
+        Text councilTitle;
+        string selectedDistrict;
+
+        void InitializeDistrictNavigation(Transform parent)
+        {
+            for (int i = 0; i < DistrictIds.Length; i++)
+            {
+                string id = DistrictIds[i];
+                var dock = DockButton("Abrir " + DistrictNames[i], parent, DistrictNames[i].ToUpperInvariant(),
+                    navPlate, Vector2.zero, Vector2.zero, () => OpenDistrict(id));
+                districtDocks[i] = dock;
+                var icon = Plate("Edificio", dock, null, new Vector2(.5f,.5f), new Vector2(.5f,.5f),
+                    Vector2.zero, new Vector2(33f,33f)).GetComponent<Image>();
+                icon.color = Color.white;
+                icon.preserveAspect = true;
+                districtArt[i] = icon;
+                dock.gameObject.SetActive(false);
+            }
+        }
+
+        void RefreshDistrictNavigation(PlayerState state)
+        {
+            districtLevels[0] = state.BarracksLevel;
+            districtLevels[1] = state.ChapterThree.GranaryLevel;
+            districtLevels[2] = state.ChapterThree.StoneworksLevel;
+            UpdateDistrictVisibility(buildingSheet.activeSelf || statusSheet.gameObject.activeSelf);
+        }
+
+        void UpdateDistrictVisibility(bool modal)
+        {
+            for (int i = 0; i < districtDocks.Length; i++)
+            {
+                bool visible = districtLevels[i] > 0 && !modal;
+                if (visible && !districtArt[i].sprite)
+                    districtArt[i].sprite = Modular25DArt.ExpansionBuilding(DistrictIds[i]);
+                districtDocks[i].gameObject.SetActive(visible);
+            }
+        }
+
+        bool OverlapsDistrictNavigation(Rect bounds)
+        {
+            foreach (var dock in districtDocks)
+                if (OverlapsControl(bounds, dock)) return true;
+            return false;
+        }
+
         void InitializeCouncil()
         {
             var header = stateSummary.rectTransform;
@@ -87,6 +138,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
             long deadline = Math.Max(s.BuildingCompletesUtcTicks, s.BastionUpgradeCompletesUtcTicks);
             if (deadline > now) summary = "Obra en curso · " + TimeSpan.FromTicks(deadline - now).ToString(@"hh\:mm\:ss");
+            councilTitle.text = "CONSEJO DE VALORIA";
             stateSummary.text = summary;
             Building("aserradero", "sawmill", s.SawmillLevel, 1);
             Building("cuartel", "barracks", s.BarracksLevel, 2);
@@ -141,6 +193,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                         ResourceRewardCommands.UsePacket, p.ReceiptId);
                 }
             }
+            int selected = Array.IndexOf(DistrictIds, selectedDistrict);
+            if (selected >= 0)
+            {
+                councilTitle.text = DistrictNames[selected].ToUpperInvariant();
+                int built = districtLevels[selected];
+                orders.RemoveAll(order => order.target != selectedDistrict &&
+                    order.target != "upgrade-" + selectedDistrict &&
+                    !(selectedDistrict == "barracks" && (order.command == "Recruit" || order.command == "ConfigureMarch")));
+                stateSummary.text = (built > 0 ? "Nivel " + built : "Parcela disponible") +
+                    (orders.Count == 0 ? " · Sin órdenes disponibles" : "");
+            }
             orderList.sizeDelta = new Vector2(0f, orders.Count * 50f);
             for (int i = 0; i < orders.Count; i++)
             {
@@ -160,16 +223,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         public void OpenDistrict(string target)
         {
-            OpenStatus();
-            int row = orders.FindIndex(order => order.target == target);
-            if (row < 0 && target == "barracks")
-                row = orders.FindIndex(order => order.command == "Recruit");
-            if (row < 0) return;
-            var scroll = orderList.GetComponentInParent<ScrollRect>();
-            Canvas.ForceUpdateCanvases();
-            scroll.StopMovement();
-            orderList.anchoredPosition = new Vector2(0, Mathf.Clamp(row * 50f, 0,
-                Mathf.Max(0, orderList.rect.height - scroll.viewport.rect.height)));
+            if (Array.IndexOf(DistrictIds, target) < 0) { OpenStatus(); return; }
+            ShowCouncil(target);
         }
 
         void ExecuteOrder(int slot)
@@ -180,3 +235,4 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+
