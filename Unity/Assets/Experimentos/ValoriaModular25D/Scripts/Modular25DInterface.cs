@@ -569,8 +569,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
             if (regionDock)
             {
-                worldUnlocked = Eldoria.ReferenceClean.ValoriaIntegratedWorld.CanEnterWorld(s);
+                bool unlocked = Eldoria.ReferenceClean.ValoriaIntegratedWorld.CanEnterWorld(s);
+                bool navigationChanged = unlocked != worldUnlocked;
+                worldUnlocked = unlocked;
                 regionDock.gameObject.SetActive(worldUnlocked && !buildingSheet.activeSelf && !statusSheet.gameObject.activeSelf);
+                // The initial layout has one centred Mailbox cell. When the
+                // real unlock arrives, reflow immediately to main's two-cell
+                // World/Mailbox order instead of stacking both icons.
+                if(navigationChanged)Layout();
             }
             if(mailboxDock)mailboxDock.gameObject.SetActive(!buildingSheet.activeSelf&&!statusSheet.gameObject.activeSelf);
             title.text=PlayerDisplayName(s.PlayerName);
