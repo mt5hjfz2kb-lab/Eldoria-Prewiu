@@ -276,7 +276,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     float erosion=N(p.x*1.7f+u*4.3f,p.y*1.5f+u*6.1f,721);
                     float patches=N(p.x*4.1f,p.y*3.2f+u*5.1f,203);
                     float ink=(cobbled ? .71f : .57f)+.19f*erosion+.09f*patches;
-                    float alpha=Mathf.Clamp01(feather*ink);
+                    // Taper the outer road into meadow instead of ending in a square.
+                    float endFade=cobbled ? Mathf.SmoothStep(0f,1f,along/1.6f) : 1f;
+                    float alpha=Mathf.Clamp01(feather*ink*endFade);
                     edgeColor[index]=(Color32)new Color(1f,1f,1f,alpha);
                 }
             }

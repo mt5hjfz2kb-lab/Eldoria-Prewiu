@@ -77,7 +77,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 #else
                 save=new FileStateStore(SandboxSavePath);
 #endif
-                gateway=new LocalGateway(new SystemClock(),save);
+                var local=new LocalGateway(new SystemClock(),save);
+                local.ConfigureLocalResourceRespawn(new DistrictSupplies(), RenewablePopulationPolicy.Delay);
+                gateway=local;
                 lastSnapshot=gateway.Snapshot();
                 world.Apply(lastSnapshot);
                 SetMessage("Partida experimental aislada · mecánicas reales de Eldoria");
@@ -89,6 +91,27 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 gateway=null;
                 SetMessage("Guardado experimental inaccesible: "+error.Message);
                 Debug.LogError("[ValoriaModular25D] Save/gateway unavailable: "+error);
+            }
+        }
+
+        // Two gathering approaches per resource on the experimental map.
+        // Population, output and depletion deadlines belong to the existing gateway.
+        sealed class DistrictSupplies : IWorldResourcePlacement
+        {
+            public bool TryChoose(PlayerState state, string target, string previous, int generation,
+                out WorldResourceLocation site)
+            {
+                bool forest = target == "forest-valoria";
+                site = null;
+                if (!forest && target != "quarry-valoria") return false;
+                string first = target + "-west";
+                bool west = previous != first;
+                site = new WorldResourceLocation {
+                    TargetId = target, SiteId = west ? first : target + "-east",
+                    X = forest ? (west ? -3.2f : 2.4f) : (west ? -4.6f : -1.2f),
+                    Z = forest ? -2.7f : Modular25DLandscape.StoneworksFoot.y
+                };
+                return true;
             }
         }
 
@@ -123,7 +146,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
         }
 
-        public CommandResult BuildSawmill()
+        public CommandResult BuildSawmill() => Issue("Build", SawmillId);
+
+        public CommandResult Issue(string command, string target)
         {
             if(gateway==null)
             {
@@ -136,7 +161,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 // A fresh command ID is generated only by a physical user action,
                 // never on a timer or UI refresh; the gateway handles idempotence.
                 var action=new GameCommand(Guid.NewGuid().ToString("N"),before.PlayerId,
-                    "Build",SawmillId,before.Revision);
+                    command,target,before.Revision);
                 var result=gateway.Execute(action);
                 SetMessage(result.Message);
                 lastSnapshot=gateway.Snapshot();

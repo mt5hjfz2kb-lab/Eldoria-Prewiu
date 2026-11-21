@@ -31,6 +31,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public Modular25DWorkshopAction WorkshopAction { get; private set; }
         public int SettlementZonesPlaced { get; private set; }
 
+        Transform westernGrove, grainYard, quarryYard, kitchenGarden;
+
         const float GroundSpacingX = 1f;
         const float GroundSpacingY = .5f;
         public static int FootOrder(float y) { return Mathf.RoundToInt(1000f-y*100f); }
@@ -103,12 +105,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             AddOriginalProp(grove,"ArboledaAntigua",new Vector2(3.04f,1.49f),.78f);
             // The southern foreground is framed only along the extreme left;
             // the centre stays open for future unbuilt plots.
-            AddOriginalProp(grove,"ArboledaAntigua",new Vector2(-4.10f,-5.55f),.59f);
+            westernGrove=AddOriginalProp(grove,"ArboledaAntigua",new Vector2(-4.10f,-5.55f),.59f);
 
             // A well and a recognizable cultivated enclosure give the central
             // yard a social purpose, without introducing any new game mechanic.
             AddOriginalProp(commons,"PozoPiedra",new Vector2(-.37f,-.92f),.71f);
-            AddOriginalProp(commons,"HuertosValoria",new Vector2(-1.98f,-4.74f),.67f);
+            kitchenGarden=AddOriginalProp(commons,"HuertosValoria",new Vector2(-1.98f,-4.74f),.67f);
             AddOriginalProp(commons,"MatojosFlores",new Vector2(-2.75f,-5.56f),.45f);
 
             // Timber staging visibly connects sawmill to the haulers' road.
@@ -122,6 +124,19 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // for buildings or construction props.
             AddProp(scenery,Modular25DArt.Tuft(0),new Vector2(-.48f,-3.75f),.46f);
             AddProp(scenery,Modular25DArt.Tuft(1),new Vector2(1.07f,1.05f),.53f);
+
+            grainYard=NewChildRoot(scenery,"Granero | huertos y carga");
+            AddOriginalProp(grainYard,"HuertosValoria",new Vector2(2.07f,-8.60f),.91f);
+            AddOriginalProp(grainYard,"CarroMadera",new Vector2(4.86f,-8.42f),.62f);
+            AddOriginalProp(grainYard,"MatojosFlores",new Vector2(1.37f,-8.87f),.53f);
+            quarryYard=NewChildRoot(scenery,"Cantera | escombrera y lindero");
+            AddProp(quarryYard,Modular25DArt.Rock(),new Vector2(-4.48f,-11.72f),1.04f);
+            AddProp(quarryYard,Modular25DArt.Rock(),new Vector2(-4.82f,-11.47f),.69f);
+            AddProp(quarryYard,Modular25DArt.Rock(),new Vector2(-4.50f,-12.05f),.55f);
+            AddOriginalProp(quarryYard,"ArbolAntiguo",new Vector2(-.37f,-10.07f),.68f);
+            AddOriginalProp(quarryYard,"MatojosFlores",new Vector2(.02f,-10.21f),.55f);
+            grainYard.gameObject.SetActive(false);
+            quarryYard.gameObject.SetActive(false);
 
             CreateVillager(people,"Valoria citizen A",new [] {
                 // Real keep gate route: a messenger approaches the courtyard
@@ -268,14 +283,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             shadow.color=new Color(1f,1f,1f,.7f);
         }
 
-        void AddOriginalProp(Transform parent,string name,Vector2 foot,float scale)
+        Transform AddOriginalProp(Transform parent,string name,Vector2 foot,float scale)
         {
             var sprite=Resources.Load<Sprite>("ValoriaModular25D/RecoveredProps/"+name);
             if(sprite==null)
             {
                 Debug.LogError("[Valoria Modular25D] Missing original image-authored prop "+
                     name+"; refuse to fake the visual-quality gate.",this);
-                return;
+                return null;
             }
             var visual=AddSprite("Original Eldoria art | "+name,sprite,
                 foot,FootOrder(foot.y),parent);
@@ -284,6 +299,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // light/shadow from a consistent isometric direction. A second
             // baked shadow sprite would produce doubled dark blobs.
             RecoveredPropsPlaced++;
+            return visual.transform;
         }
 
         void AddRuin(Transform root,Vector2 foot,int variant,float scale)
@@ -401,10 +417,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             SetCompletedBuilding(StoneworksRenderer,snapshot.BastionLevel>=5 && (snapshot.ChapterThree?.StoneworksLevel??0)>0);
             GetComponentInChildren<Modular25DLandscape>()?.ApplyExpansionGround(
                 BarracksRenderer.gameObject.activeSelf,GranaryRenderer.gameObject.activeSelf,StoneworksRenderer.gameObject.activeSelf);
-            // The existing garden is displaced only when the real barracks occupies this envelope.
-            foreach(var visual in GetComponentsInChildren<SpriteRenderer>(true))
-                if(visual.gameObject.name=="Original Eldoria art | HuertosValoria")
-                    visual.gameObject.SetActive(!BarracksRenderer.gameObject.activeSelf);
+            bool garrison = BarracksRenderer.gameObject.activeSelf;
+            if(westernGrove)
+            {
+                var foot = garrison ? new Vector2(-6.48f,-4.23f) : new Vector2(-4.10f,-5.55f);
+                westernGrove.localPosition = foot;
+                westernGrove.GetComponent<SpriteRenderer>().sortingOrder = FootOrder(foot.y);
+            }
+            if(kitchenGarden) kitchenGarden.gameObject.SetActive(!garrison);
+            grainYard.gameObject.SetActive(GranaryRenderer.gameObject.activeSelf);
+            quarryYard.gameObject.SetActive(StoneworksRenderer.gameObject.activeSelf);
             var stage=ParcelBuildingStates.For(snapshot,"sawmill");
             // Three independently authored visuals; only the canonical snapshot
             // chooses which one is visible. No tinted finished-building ghost.

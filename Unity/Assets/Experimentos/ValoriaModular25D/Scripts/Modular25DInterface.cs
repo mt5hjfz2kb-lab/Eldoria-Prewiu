@@ -15,7 +15,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     /// the protected source art, game rules and persistence stay unchanged.
     /// </summary>
     [DefaultExecutionOrder(-200)]
-    public sealed class Modular25DInterface : MonoBehaviour
+    public sealed partial class Modular25DInterface : MonoBehaviour
     {
         public const string UiEdition = "Corona de la Brecha - Eldoria 2.5D";
         public const int FutureNavigationSlots = 8;
@@ -67,6 +67,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if (gateway == null || world == null) throw new InvalidOperationException("Umbral requires the canonical modular gateway");
             if (EventSystem.current == null)
                 new GameObject("ValoriaModular25D Events", typeof(EventSystem), typeof(InputSystemUIInputModule));
+#if UNITY_WEBGL && !UNITY_EDITOR
+            localJourneyProbe = Uri.TryCreate(UnityEngine.Application.absoluteURL, UriKind.Absolute, out var url)
+                && url.IsLoopback && url.Query == "?journey-qa";
+#endif
             InitializeArt();
             var root = new GameObject("CORONA DE LA BRECHA | HUD original",
                 typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
@@ -187,7 +191,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             center = DockButton("Center camera",rootTransform,"CENTRAR",cityIcon,
                 new Vector2(1f,0f),new Vector2(1f,0f),
                 () => GetComponent<Modular25DCameraInput>().Home());
-            statusDock = DockButton("Inspect city status",rootTransform,"ESTADO",taskIcon,
+            statusDock = DockButton("Inspect city status",rootTransform,"CONSEJO",taskIcon,
                 new Vector2(.5f,0f),new Vector2(.5f,0f),OpenStatus);
             objective=ButtonPlate("Current real construction objective",rootTransform,"",
                 null,new Vector2(1f,1f),new Vector2(1f,1f),
@@ -319,12 +323,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             statusSheet=Plate("Valoria state parchment",rootTransform,activityPanelPlate,
                 new Vector2(.5f,0f),new Vector2(.5f,0f),
                 new Vector2(0f,112f),new Vector2(330f,170f));
-            Label("ESTADO DE VALORIA",statusSheet,23,true,WarmWhite,TextAnchor.MiddleCenter,
-                new Vector2(0f,57f),new Vector2(278f,28f));
-            AccentHairline("State divider",statusSheet,AntiqueBrass,
-                new Vector2(0f,35f),new Vector2(281f,1.5f));
+            Label("CONSEJO DE VALORIA",statusSheet,23,true,WarmWhite,TextAnchor.MiddleCenter,
+                new Vector2(0f,0f),new Vector2(248f,28f)).rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top,10f,28f);
+
             stateSummary=Label("",statusSheet,14,false,WarmWhite,TextAnchor.MiddleLeft,
                 new Vector2(0f,-15f),new Vector2(278f,83f));
+            InitializeCouncil();
             var closeStatus=ButtonPlate("Close state",statusSheet,"×",navPlate,
                 new Vector2(1f,1f),new Vector2(.5f,.5f),new Vector2(-27f,-22f),
                 new Vector2(45f,45f),ClosePanels);
@@ -434,11 +438,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             SyncWorldNameplates();
             if (Time.unscaledTime < nextTick) return;
             nextTick = Time.unscaledTime + .25f;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if (localJourneyProbe) ReportJourneyControls();
+#endif
             // The Aserradero worksite timer remains readable on the world
             // even though Build closes its panel. Query at 4 Hz only during
             // canonical construction or an explicitly opened detail sheet.
             if(gateway!=null && (cachedSawmillPhase==ParcelBuildingState.UNDER_CONSTRUCTION ||
-                (buildingSheet!=null&&buildingSheet.activeSelf)))
+                (buildingSheet!=null&&buildingSheet.activeSelf) || statusSheet.gameObject.activeSelf))
                 Refresh(gateway.Snapshot());
         }
 
@@ -557,6 +564,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     "\nMadera: " + s.Resources.Wood.ToString("N0") +
                     "   Piedra: " + s.Resources.Stone.ToString("N0") +
                     "\nComida: " + s.Resources.Food.ToString("N0");
+            if(statusSheet.gameObject.activeSelf) RefreshCouncil(s);
             if (buildingSheet == null || !buildingSheet.activeSelf) return;
             var phase = ParcelBuildingStates.For(s, "sawmill");
             if(constructionProgressRoot!=null)
@@ -720,6 +728,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             float left=Mathf.Max(0f,safe.xMin/scale);
             float right=Mathf.Max(0f,(w-safe.xMax)/scale);
             float width=w/scale;
+            float height=h/scale;
             float safeWidth=width-left-right;
             bool wide=w>h;
 
@@ -821,7 +830,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(1f,.5f);
                 statusSheet.pivot=new Vector2(1f,.5f);
                 statusSheet.anchoredPosition=new Vector2(-12f-right,2f);
-                statusSheet.sizeDelta=new Vector2(328f,228f);
+                statusSheet.sizeDelta=new Vector2(328f, Mathf.Min(300f,height-top-bottom-12f));
             }
             else
             {
@@ -838,7 +847,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 statusSheet.pivot=new Vector2(.5f,0f);
                 statusSheet.anchoredPosition=new Vector2(0f,bottom+95f);
                 statusSheet.sizeDelta=new Vector2(
-                    Mathf.Min(330f,safeWidth-28f),229f);
+                    Mathf.Min(330f,safeWidth-28f),Mathf.Min(440f,height-top-bottom-112f));
             }
             lastWidth=w;
             lastHeight=h;

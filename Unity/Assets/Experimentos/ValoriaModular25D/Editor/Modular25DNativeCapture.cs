@@ -276,7 +276,29 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     Render(cam,output,report,"stage-"+level+"-fixture-1170x2532",1170,2532,framing,size);
                     Render(cam,output,report,"stage-"+level+"-keep-detail",1170,1170,new Vector3(-.4f,3.1f,-30f),3.3f);
                     if(level==5)
+                    {
                         Render(cam,output,report,"stage-5-district-1170x2532",1170,2532,new Vector3(-.45f,-6.4f,-30f),12.8f);
+                        Render(cam,output,report,"stage-5-baseline-camera",1170,2532,new Vector3(-.02f,-1.5f,-30f),9.15f);
+                        var stops = new[] { world.BastionRenderer, world.SawmillRenderer,
+                            world.BarracksRenderer, world.GranaryRenderer, world.StoneworksRenderer };
+                        for (int n=0; n<stops.Length; n++)
+                        {
+                            var center=stops[n].bounds.center;
+                            center.z=-30f;
+                            Render(cam,output,report,"district-close-"+n,390,844,center,portrait);
+                        }
+                        for (int frame=0; frame<120; frame++)
+                        {
+                            float t=frame*(stops.Length-1)/119f;
+                            int start=Mathf.Min(Mathf.FloorToInt(t),stops.Length-2);
+                            var center=Vector3.Lerp(stops[start].bounds.center,stops[start+1].bounds.center,
+                                Mathf.SmoothStep(0f,1f,t-start));
+                            center.z=-30f;
+                            foreach(var walker in walkers) walker.StepForNativeCapture(1f/15f);
+                            workshop[0].StepForNativeCapture(1f/15f);
+                            Render(cam,output,report,"district-tour-"+frame.ToString("D3"),390,844,center,portrait);
+                        }
+                    }
                     report.progressionStagesCaptured++;
                     // Unlocking a tier alone must never conjure completed architecture.
                     fixture.BarracksLevel=0;fixture.ChapterThree.GranaryLevel=0;fixture.ChapterThree.StoneworksLevel=0;
