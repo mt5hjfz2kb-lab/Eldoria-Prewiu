@@ -103,7 +103,7 @@ jobs:
           if(Test-Path $root){throw 'Refuse to overwrite existing scratch'}
           git init -q $root
           git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
-          $includes=@('/tools/valoria-modular25d/',
+          $includes=@('/tools/valoria-modular25d/','/tools/bastion-iii/author-frontier.py',
            '/Unity/Assets/Experimentos/ValoriaModular25D/',
            '/Unity/Assets/Experimentos/ValoriaModular25D.meta','/Unity/Assets/Experimentos.meta',
            '/Unity/Assets/Eldoria/','/Unity/Assets/Eldoria.meta',
@@ -144,6 +144,16 @@ jobs:
           $ErrorActionPreference='Stop'
           $project=Join-Path $env:MOD25D_SOURCE 'Unity'
           $out=Join-Path $project 'Artifacts/RegionModular'
+          New-Item -ItemType Directory -Force $out|Out-Null
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(!$blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          & $blender --background --python-exit-code 1 --python (Join-Path $env:MOD25D_SOURCE 'tools/bastion-iii/author-frontier.py')
+          if($LASTEXITCODE){throw 'Canonical private fissure authoring failed'}
+          $bakeLog=Join-Path $out 'canonical-bake.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',$project,'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',$bakeLog)
+          $bake=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($bake.ExitCode){Get-Content $bakeLog -Tail 160;throw 'Canonical chapter III prefab bake failed'}
+          $env:VALORIA_CONTENT_PROBE='1'
           $env:VALORIA_GAMEPLAY_PROBE='1'
           foreach($phase in @('before','after')){
             $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $out $phase
