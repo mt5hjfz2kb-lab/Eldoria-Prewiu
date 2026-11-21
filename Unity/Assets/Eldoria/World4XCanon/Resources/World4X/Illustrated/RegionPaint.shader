@@ -82,8 +82,13 @@ Shader "Eldoria/Region1/Illustrated ground" {
   colour=lerp(colour,riverColour,mask.r);
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
   float edge=min(910-abs(metre.x),1800-abs(metre.y));
-  edge+=24*sin(metre.x*.014+metre.y*.009)+13*cos(metre.y*.027-metre.x*.012);
-  half mist=smoothstep(880,1700,unity_OrthoParams.y)*(1-smoothstep(42,210,edge));
+  // Height variation already gives the mapped relief a natural silhouette.
+  // The former 37 m procedural wobble displaced this blend far enough to expose
+  // a dark, scalloped strip of the baked overview pigment on the eastern side.
+  // Feather a wider *render-only* band at panorama zoom; geography, fog of war,
+  // colliders and discovery bounds remain exactly the canonical Region 1 data.
+  edge+=7*sin(metre.x*.014+metre.y*.009)+4*cos(metre.y*.027-metre.x*.012);
+  half mist=smoothstep(880,1700,unity_OrthoParams.y)*(1-smoothstep(72,286,edge));
   half3 haze=mist>.001 ? peripheralMist(metre) : colour;
   return half4(lerp(colour,haze,mist),1);
  }
