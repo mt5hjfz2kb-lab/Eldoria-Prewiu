@@ -22,13 +22,14 @@ namespace Eldoria.World4XCanon
         readonly List<(Transform target,Renderer art,string id)> campaign=new List<(Transform,Renderer,string)>();
         float Ground(float x,float z)=>RegionOneBlenderLandscape.GeographicHeight(x,z);
         static Texture2D Texture(string name)=>Resources.Load<Texture2D>(Art+name);
-        public static void Install(Transform parent,ValoriaIntegratedWorld host,RegionOneModularArt kit)
+        public static System.Collections.IEnumerator Install(Transform parent,ValoriaIntegratedWorld host,RegionOneModularArt kit)
         {
             var service=parent.gameObject.AddComponent<RegionOneOriginalLandscape>();
             service.home=host.WorldHome;service.kit=kit;service.host=host;
             service.surface=new GameObject("Illustrated Region 1").transform;
             service.surface.SetParent(parent,false);service.surface.position=service.home;
-            service.Build();
+            var build=service.Build();
+            while(build.MoveNext())yield return null;
             foreach(string id in new[]{"corrupt-scout","engendro-valoria"}){
                 var target=host.FindTarget(id);
                 if(!target)continue;
@@ -36,12 +37,13 @@ namespace Eldoria.World4XCanon
                 service.campaign.Add((target.transform,visual,id));
             }
         }
-        void Build()
+        System.Collections.IEnumerator Build()
         {
             var ground=new Material(Shader.Find("Eldoria/Region1/Illustrated ground"));
             owned.Add(ground);
             ground.SetTexture("_Region",Texture("RegionColour"));ground.SetTexture("_Weights",Texture("SurfaceWeights"));
             foreach(string k in new[]{"Grass","Earth","Slate","Water"})ground.SetTexture("_"+k,Texture(k));
+            var slice=new RegionOneFrameSlice(14);
             const int columns=228,rows=450,tile=24;
             for(int z=0;z<rows;z+=tile)for(int x=0;x<columns;x+=tile){
                 int width=Mathf.Min(tile,columns-x),depth=Mathf.Min(tile,rows-z);
@@ -58,8 +60,10 @@ namespace Eldoria.World4XCanon
                 }
                 var mesh=new Mesh{name="Painted regional relief",vertices=v,uv=uv,triangles=tris};
                 mesh.RecalculateBounds();Draw(mesh,ground);
+                if(ValoriaIntegratedWorld.P0LazyWorldProbe&&slice.ShouldYield()){yield return null;slice.Resume();}
             }
-            Plant();
+            var planting=Plant();
+            while(planting.MoveNext())yield return null;
             var layout=JsonUtility.FromJson<Region>(Resources.Load<TextAsset>("World4X/Blender/production-region").text);
             foreach(var b in layout.bridges)Decal("Bridge",b.x,b.z,b.width*1.35f,b.length,0,.7f);
             foreach(var f in layout.faults){
@@ -70,8 +74,9 @@ namespace Eldoria.World4XCanon
             }
         }
         // Spatial batches keep woodland and rocks visible in the same geography at every scale.
-        void Plant()
+        System.Collections.IEnumerator Plant()
         {
+            var slice=new RegionOneFrameSlice(10);
             var rng=new System.Random(27132);
             var mats=new Dictionary<string,Material>();
             string[] names={"Fir","Oak","Grove","Crag","Ridge"};
@@ -110,6 +115,7 @@ namespace Eldoria.World4XCanon
                     var bounds=mesh.bounds;bounds.Expand(60);mesh.bounds=bounds;
                     Draw(mesh,mats[pair.Key]);
                 }
+                if(ValoriaIntegratedWorld.P0LazyWorldProbe&&slice.ShouldYield()){yield return null;slice.Resume();}
             }
         }
         void Draw(Mesh mesh,Material mat)
@@ -140,19 +146,39 @@ namespace Eldoria.World4XCanon
             }
             var mesh=new Mesh{name="Painted "+name,vertices=v,uv=uv,triangles=tri};mesh.RecalculateBounds();Draw(mesh,mat);
         }
+        static readonly string[] ChapterIds={"hunt-wolf","hunt-boar","meat-valoria","ash-stalker-valoria","fissure-valoria"};
+        readonly HashSet<string> illustratedChapter=new HashSet<string>();
+        void BindChapter()
+        {
+            foreach(var id in ChapterIds){
+                if(illustratedChapter.Contains(id))continue;
+                var target=host.FindTarget(id);
+                if(!target)continue;
+                foreach(var donor in target.GetComponentsInChildren<Renderer>(true))donor.forceRenderingOff=true;
+                var art=kit.Place(surface,RegionOneModularArt.Illustration(id),id=="fissure-valoria"?12:9,target.transform.position);
+                campaign.Add((target.transform,art,id));
+                if(id=="fissure-valoria")campaign.Add((target.transform,kit.Place(surface,"SealedFault",12,target.transform.position),"closing-scar"));
+                illustratedChapter.Add(id);
+            }
+        }
         Eldoria.Domain.PlayerState snapshot;
         float nextRead;
         void LateUpdate()
         {
             if(!host||!host.Ready||!host.InWorld||campaign.Count==0)return;
-            if(snapshot==null||Time.unscaledTime>=nextRead){snapshot=host.City.Gateway.Snapshot();nextRead=Time.unscaledTime+.25f;}
+            if(snapshot==null||Time.unscaledTime>=nextRead){snapshot=host.City.Gateway.Snapshot();nextRead=Time.unscaledTime+.25f;if(snapshot.BastionLevel>=3&&illustratedChapter.Count<ChapterIds.Length)BindChapter();}
             var state=snapshot;
             bool visible=!RegionOneResourcePlacement.IsPanoramic(host.WorldCamera.orthographicSize,host.WorldNavigation.globalZoom);
             foreach(var entry in campaign){
                 var pos=entry.target.position;
                 pos.y=home.y+Ground(pos.x-home.x,pos.z-home.z)+.3f;
                 entry.art.transform.position=pos;
-                entry.art.enabled=visible && (entry.id=="corrupt-scout"?!state.ScoutDefeated:!state.EngendroDefeated);
+                bool available=entry.target.gameObject.activeInHierarchy;
+                if(entry.id=="corrupt-scout")available&=!state.ScoutDefeated;
+                if(entry.id=="engendro-valoria")available&=!state.EngendroDefeated;
+                if(entry.id=="fissure-valoria")available&=!state.ChapterThree.FissureClosed;
+                if(entry.id=="closing-scar")available&=state.ChapterThree.FissureClosed;
+                entry.art.enabled=visible&&available;
             }
         }
         void OnDestroy(){foreach(var item in owned)if(item)Destroy(item);}

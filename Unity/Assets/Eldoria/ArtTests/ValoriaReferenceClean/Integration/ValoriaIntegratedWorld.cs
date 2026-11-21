@@ -134,6 +134,15 @@ namespace Eldoria.ReferenceClean {
    Hud.ResetPlaytestProgress=()=>city.ResetPlaytestProgress();
    // One authoritative Royal Gold session; V2 alters presentation only.
    if(!Hud.GetComponent<RoyalGoldV2Hud>())Hud.gameObject.AddComponent<RoyalGoldV2Hud>();
+   Hud.GetComponent<RoyalGoldV2Hud>().WorldIllustrationFor=id=>{
+    if(!InWorld||!RegionOneModularArt.Enabled||string.IsNullOrEmpty(id))return null;
+    string key=RegionOneModularArt.Illustration(id);
+    if(key==null && id.StartsWith("region1:",StringComparison.Ordinal) && boundGateway!=null){
+     var creature=boundGateway.Snapshot().WorldCreatureLocations.Find(x=>x.TargetId==id);
+     if(creature!=null)key=creature.CreatureKind=="boar"?"Boar":"Spawn";
+    }
+    return key==null?null:Resources.Load<Texture2D>("World4X/Illustrated/"+key);
+   };
    Hud.GetComponent<RoyalGoldV2Hud>().BuildingModelFor=id=>{
     if(id=="upgrade-barracks"||id=="march-main")id="barracks";
     var advanced=GetComponent<BastionIVVWorldPresentation>();

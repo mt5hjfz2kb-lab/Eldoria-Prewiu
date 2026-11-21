@@ -15,14 +15,14 @@ namespace Eldoria.World4XCanon
         readonly Dictionary<string, Material> materials = new Dictionary<string, Material>();
         readonly Dictionary<(string,int), Mesh> shapes = new Dictionary<(string,int), Mesh>();
 
-        public static RegionOneModularArt Install(GameObject artwork,Eldoria.ReferenceClean.ValoriaIntegratedWorld host)
+        public static System.Collections.IEnumerator Install(GameObject artwork,Eldoria.ReferenceClean.ValoriaIntegratedWorld host)
         {
             var art=artwork.AddComponent<RegionOneModularArt>();
             // Geometry, transforms and names remain available for the physical map.
             foreach(var renderer in artwork.GetComponentsInChildren<Renderer>(true))
                 renderer.forceRenderingOff=true;
-            RegionOneOriginalLandscape.Install(artwork.transform.parent,host,art);
-            return art;
+            var build=RegionOneOriginalLandscape.Install(artwork.transform.parent,host,art);
+            while(build.MoveNext())yield return null;
         }
 
         static string ResourcePath(string key)
@@ -30,6 +30,23 @@ namespace Eldoria.World4XCanon
             return key.StartsWith("World4X/",StringComparison.Ordinal) ? key : Root+key;
         }
 
+        public static string Illustration(string id)
+        {
+            if(string.IsNullOrEmpty(id))return null;
+            if(id=="forest-valoria"||id.StartsWith("region1:wood:",StringComparison.Ordinal))return "Timber";
+            if(id=="quarry-valoria"||id.StartsWith("region1:stone:",StringComparison.Ordinal))return "Quarry";
+            switch(id){
+                case "hunt-wolf":return "Wolf";
+                case "hunt-boar":return "Boar";
+                case "meat-valoria":return "HunterCache";
+                case "ash-stalker-valoria":return "AshStalker";
+                case "fissure-valoria":return "Fault";
+                case "corrupt-scout":return "Camp";
+                case "engendro-valoria":return "Spawn";
+                case "old-watch-ruin":return "Ruin";
+                default:return null;
+            }
+        }
         public MeshRenderer Place(Transform parent, string key, float width, Vector3 foot)
         {
             if (!materials.TryGetValue(key, out var material))

@@ -36,6 +36,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private RoyalGoldV3BuildingEngravingGraphic miniatureArt;
         private RoyalGoldV3BuildingPreview modelPreview;
         public System.Func<string, GameObject> BuildingModelFor;
+        public System.Func<string,Texture> WorldIllustrationFor;
         private CanvasGroup objectiveGroup, chapterCloseGroup, buildingGroup, buildingActionGroup;
         private bool buildingVisible;
         private bool ready, expanded, portrait, hasGeometry, compactObjective, lastCouncil, lastOperation;
@@ -789,6 +790,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if (modelPreview)
             {
                 modelPreview.ModelFor = BuildingModelFor;
+                modelPreview.IllustrationFor = WorldIllustrationFor;
                 bool genuineModel = modelPreview.Show(Source.SelectedBuildingId, Safe(source.Level));
                 if (miniatureArt) miniatureArt.enabled = !genuineModel;
             }

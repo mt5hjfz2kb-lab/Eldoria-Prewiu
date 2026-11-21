@@ -13,6 +13,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
  TEXTURE2D(_Region); SAMPLER(sampler_Region); TEXTURE2D(_Weights); SAMPLER(sampler_Weights);
  TEXTURE2D(_Grass); SAMPLER(sampler_Grass); TEXTURE2D(_Earth); SAMPLER(sampler_Earth);
  TEXTURE2D(_Water); SAMPLER(sampler_Water); TEXTURE2D(_Slate); SAMPLER(sampler_Slate);
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
  struct In {float3 p:POSITION;float2 uv:TEXCOORD0;};
  struct Out {float4 p:SV_POSITION;float2 uv:TEXCOORD0;};
  Out vert(In v){Out o;o.p=TransformObjectToHClip(v.p);o.uv=v.uv;return o;}
@@ -32,7 +33,14 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half close=1-smoothstep(.35,4.2,footprint);
   half3 colour=lerp(base,albedo,close*.57);
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
-  return half4(colour,1);
+  float edge=min(910-abs(metre.x),1800-abs(metre.y));
+  edge+=14*sin(metre.x*.014+metre.y*.009);
+  half mist=smoothstep(2900,3900,unity_OrthoParams.y)*(1-smoothstep(0,125,edge));
+  half3 haze=half3(.63,.685,.665);
+  #ifndef UNITY_COLORSPACE_GAMMA
+  haze=SRGBToLinear(haze);
+  #endif
+  return half4(lerp(colour,haze,mist),1);
  }
  ENDHLSL
  } }

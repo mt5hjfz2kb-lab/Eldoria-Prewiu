@@ -10,14 +10,23 @@ namespace Eldoria.UI.RoyalGold.V2
     public sealed class RoyalGoldV3BuildingPreview : MonoBehaviour
     {
         public Func<string, GameObject> ModelFor;
+        public Func<string, Texture> IllustrationFor;
         RawImage image;
         RenderTexture texture;
         GameObject lastModel;
         string lastKey;
-        public bool HasModelPreview => image && image.enabled && texture;
+        public bool HasModelPreview => image && image.enabled && image.texture;
         public void Initialize(RawImage target) { image = target; image.raycastTarget = false; }
         public bool Show(string id, string level)
         {
+            var illustration=IllustrationFor?.Invoke(id);
+            if(illustration){
+                image.texture=illustration;image.enabled=true;lastModel=null;lastKey=null;
+                float r=illustration.width/(float)illustration.height;
+                image.uvRect=r>=1?new Rect(0,(1-r)*.5f,1,r):new Rect((1-1/r)*.5f,0,1/r,1);
+                return true;
+            }
+            image.uvRect=new Rect(0,0,1,1);
             var model = ModelFor != null ? ModelFor(id) : null;
             string key = id + ":" + level;
             if (model == lastModel && key == lastKey && HasModelPreview) return true;
