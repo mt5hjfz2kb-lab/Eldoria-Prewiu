@@ -123,6 +123,18 @@ namespace Eldoria.World4XCanon
             // ground triangles. The connected terrain casts their shadow;
             // casting again from the exposure produces close-view triangle acne.
             foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true)){
+                // BLD_ContinentalContinuation is the lower, non-interactive
+                // landscape renderer that carries the painted region beyond
+                // the 1820 x 3600 playable relief. The higher BLD_Terrain was
+                // casting its irregular east edge onto this receiver, producing
+                // the dark scalloped strip seen only in panorama. It is an
+                // atmospheric continuation, not discovery or collision data.
+                for(var node=renderer.transform;node;node=node.parent)
+                    if(node.name=="BLD_ContinentalContinuation"){
+                        renderer.receiveShadows=false;
+                        renderer.shadowCastingMode=ShadowCastingMode.Off;
+                        break;
+                    }
                 if(renderer.name.StartsWith("Quarry cleared extraction floor",StringComparison.Ordinal))renderer.shadowCastingMode=ShadowCastingMode.Off;
                 for(var node=renderer.transform;node;node=node.parent){
                     string name=node.name;
