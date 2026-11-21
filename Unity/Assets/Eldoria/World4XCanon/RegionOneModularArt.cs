@@ -27,7 +27,8 @@ namespace Eldoria.World4XCanon
 
         static string ResourcePath(string key)
         {
-            return key.StartsWith("World4X/",StringComparison.Ordinal) ? key : Root+key;
+            return key.StartsWith("World4X/",StringComparison.Ordinal) ||
+                key.StartsWith("ValoriaModular25D/",StringComparison.Ordinal) ? key : Root+key;
         }
 
         public static string Illustration(string id)
@@ -132,3 +133,4 @@ namespace Eldoria.World4XCanon
         }
     }
 }
+

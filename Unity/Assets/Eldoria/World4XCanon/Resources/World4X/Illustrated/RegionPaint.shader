@@ -76,7 +76,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
   float edge=min(910-abs(metre.x),1800-abs(metre.y));
   edge+=24*sin(metre.x*.014+metre.y*.009)+13*cos(metre.y*.027-metre.x*.012);
-  half mist=smoothstep(1850,3500,unity_OrthoParams.y)*(1-smoothstep(-30,185,edge));
+  half mist=smoothstep(880,1700,unity_OrthoParams.y)*(1-smoothstep(42,210,edge));
   half3 haze=mist>.001 ? borderMist(metre) : colour;
   return half4(lerp(colour,haze,mist),1);
  }

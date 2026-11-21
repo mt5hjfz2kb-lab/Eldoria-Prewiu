@@ -20,6 +20,12 @@ namespace Eldoria.World4XCanon
         RegionOneModularArt kit;
         ValoriaIntegratedWorld host;
         readonly List<(Transform target,Renderer art,string id)> campaign=new List<(Transform,Renderer,string)>();
+        Renderer villageMill,villageGarrison,villageGranary;
+        Renderer CityDetail(string key,float x,float z,float width)
+        {
+            var foot=home+new Vector3(x,Ground(x,z)+.16f,z);
+            return kit.Place(surface,"ValoriaModular25D/"+key,width,foot);
+        }
         float Ground(float x,float z)=>RegionOneBlenderLandscape.GeographicHeight(x,z);
         static Texture2D Texture(string name)=>Resources.Load<Texture2D>(Art+name);
         public static System.Collections.IEnumerator Install(Transform parent,ValoriaIntegratedWorld host,RegionOneModularArt kit)
@@ -75,6 +81,15 @@ namespace Eldoria.World4XCanon
                 mesh.RecalculateBounds();Draw(mesh,ground);
                 if(ValoriaIntegratedWorld.P0LazyWorldProbe&&slice.ShouldYield()){yield return null;slice.Resume();}
             }
+            // The city landmark meets its approaches across the existing bridge.
+            // These fixed physical widths recede naturally at regional zoom.
+            CityDetail("RecoveredProps/PozoPiedra",-10,-4,3.8f);
+            CityDetail("RecoveredProps/ArboledaAntigua",-20,17,7.3f);
+            CityDetail("RecoveredProps/MatojosFlores",13,12,3.2f);
+            villageMill=CityDetail("sawmill_i",-16,7,10.4f);
+            villageGarrison=CityDetail("Progression/barracks",17,16,10.6f);
+            villageGranary=CityDetail("Progression/granary",-4,20,9.4f);
+            villageMill.enabled=villageGarrison.enabled=villageGranary.enabled=false;
             var planting=Plant();
             while(planting.MoveNext())yield return null;
             var layout=JsonUtility.FromJson<Region>(Resources.Load<TextAsset>("World4X/Blender/production-region").text);
@@ -245,6 +260,11 @@ namespace Eldoria.World4XCanon
             if(!host||!host.Ready||!host.InWorld||campaign.Count==0)return;
             if(snapshot==null||Time.unscaledTime>=nextRead){snapshot=host.City.Gateway.Snapshot();nextRead=Time.unscaledTime+.25f;if(snapshot.BastionLevel>=3&&illustratedChapter.Count<ChapterIds.Length)BindChapter();}
             var state=snapshot;
+            if(villageMill){
+                villageMill.enabled=state.SawmillLevel>0;
+                villageGarrison.enabled=state.BarracksLevel>0;
+                villageGranary.enabled=(state.ChapterThree?.GranaryLevel??0)>0;
+            }
             bool visible=!RegionOneResourcePlacement.IsPanoramic(host.WorldCamera.orthographicSize,host.WorldNavigation.globalZoom);
             foreach(var entry in campaign){
                 var pos=entry.target.position;
