@@ -1,5 +1,5 @@
 {
-  "source_base": "6bc50e5b0a59c130248ca006d2aeaefd4255322c",
+  "source_base": "f8e26b730d18ce9cd85d30081d1f885146a239bf",
   "scene": "BastionI_Modular25D",
-  "purpose": "Verify final phone-size HUD hierarchy, nickname glyphs, drawer, world labels and meadow scale with the real Unity player."
+  "purpose": "Validate refined UI textures, 12-frame inhabitants, architectural shadows, zoom-aware labels and actual DPR3 canvas."
 }
