@@ -130,9 +130,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             AddOriginalProp(grainYard,"CarroMadera",new Vector2(4.86f,-8.42f),.62f);
             AddOriginalProp(grainYard,"MatojosFlores",new Vector2(1.37f,-8.87f),.53f);
             quarryYard=NewChildRoot(scenery,"Cantera | escombrera y lindero");
-            AddProp(quarryYard,Modular25DArt.Rock(),new Vector2(-4.48f,-11.72f),1.04f);
-            AddProp(quarryYard,Modular25DArt.Rock(),new Vector2(-4.82f,-11.47f),.69f);
-            AddProp(quarryYard,Modular25DArt.Rock(),new Vector2(-4.50f,-12.05f),.55f);
             AddOriginalProp(quarryYard,"ArbolAntiguo",new Vector2(-.37f,-10.07f),.68f);
             AddOriginalProp(quarryYard,"MatojosFlores",new Vector2(.02f,-10.21f),.55f);
             grainYard.gameObject.SetActive(false);

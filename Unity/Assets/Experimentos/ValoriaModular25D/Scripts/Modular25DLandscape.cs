@@ -261,7 +261,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 for(int j=0;j<Across;j++)
                 {
                     float u=j/(float)(Across-1);
-                    float offset=(u-.5f)*width*wav;
+                    float taper=cobbled ? Mathf.Lerp(.05f,1f,Mathf.SmoothStep(0f,1f,along/1.6f)) : 1f;
+                    float offset=(u-.5f)*width*wav*taper;
                     int index=i*Across+j;
                     Vector2 p=spine[i]+normal*offset;
                     vtx[index]=new Vector3(p.x,p.y,-.075f);
@@ -276,9 +277,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     float erosion=N(p.x*1.7f+u*4.3f,p.y*1.5f+u*6.1f,721);
                     float patches=N(p.x*4.1f,p.y*3.2f+u*5.1f,203);
                     float ink=(cobbled ? .71f : .57f)+.19f*erosion+.09f*patches;
-                    // Taper the outer road into meadow instead of ending in a square.
-                    float endFade=cobbled ? Mathf.SmoothStep(0f,1f,along/1.6f) : 1f;
-                    float alpha=Mathf.Clamp01(feather*ink*endFade);
+                    float alpha=Mathf.Clamp01(feather*ink);
                     edgeColor[index]=(Color32)new Color(1f,1f,1f,alpha);
                 }
             }

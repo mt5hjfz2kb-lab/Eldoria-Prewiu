@@ -195,7 +195,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(.5f,0f),new Vector2(.5f,0f),OpenStatus);
             objective=ButtonPlate("Current real construction objective",rootTransform,"",
                 null,new Vector2(1f,1f),new Vector2(1f,1f),
-                new Vector2(-12f,-122f),new Vector2(172f,50f),OpenSawmill)
+                new Vector2(-12f,-122f),new Vector2(172f,50f),() => { if(cachedSawmillPhase==ParcelBuildingState.BUILT) OpenStatus(); else OpenSawmill(); })
                 .GetComponent<RectTransform>();
             // The row shares the drawer's painted surface and remains the real
             // sawmill shortcut in each construction phase.
@@ -302,7 +302,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     // open so the feedback is actionable. The worksite,
                     // progress clock and spend persist through the canonical
                     // gateway; no synthetic game state is introduced.
-                    var result=gateway.BuildSawmill();
+                    var result=cachedSawmillPhase==ParcelBuildingState.BUILT
+                        ? gateway.Issue("UpgradeBuilding","sawmill") : gateway.BuildSawmill();
                     if(result.Ok)ClosePanels();
                 });
             actionLabel = action.GetComponentInChildren<Text>();
@@ -556,7 +557,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             woodValue.color=s.Resources.Wood<SliceRules.SawmillWoodCost
                 ? Red : WarmWhite;
             if(objectiveText!=null)
-                objectiveText.text=s.SawmillLevel>0?"Aserradero · "+s.SawmillLevel:"Aserradero";
+                objectiveText.text=s.SawmillLevel>0?"Consejo":"Aserradero";
             if(stateSummary!=null)
                 stateSummary.text="Jugador: " +
                     (string.IsNullOrWhiteSpace(s.PlayerName)?"SIN NOMBRE":s.PlayerName.Trim())+
@@ -577,8 +578,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     stage.text = "CONSTRUIDO · NIVEL " + s.SawmillLevel;
                     cost.text = "Producción activa";
                     remaining.text = "La obra está terminada";
-                    actionLabel.text = "CONSTRUIDO";
-                    action.interactable = false;
+                    var offer = gateway.BuildingOffer("sawmill",s.Revision);
+                    bool canUpgrade = offer?.Action != null && offer.Action.Enabled;
+                    actionLabel.text = canUpgrade ? "MEJORAR" : "CONSTRUIDO";
+                    action.interactable = canUpgrade;
+                    if(canUpgrade) { cost.text=offer.Costs; remaining.text=offer.Time; }
                     break;
                 case ParcelBuildingState.UNDER_CONSTRUCTION:
                     stage.text = "RECONSTRUCCIÓN EN CURSO";

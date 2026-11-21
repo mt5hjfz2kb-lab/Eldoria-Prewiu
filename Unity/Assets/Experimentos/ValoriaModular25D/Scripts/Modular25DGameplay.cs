@@ -3,6 +3,7 @@ using System.IO;
 using Eldoria.Application;
 using Eldoria.Domain;
 using Eldoria.Infrastructure;
+using Eldoria.UI.RoyalGold;
 using UnityEngine;
 
 namespace Eldoria.Experimentos.ValoriaModular25D
@@ -18,6 +19,22 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         const string IsolatedSaveName = "eldoria-experiment-modular-25d-bastion1-v1.json";
         public const string SawmillId = "sawmill";
         ICommandGateway gateway;
+        ExistingSliceBinding buildingOffers;
+        long offerRevision=-1;
+        readonly System.Collections.Generic.Dictionary<string,RoyalBuilding> offers =
+            new System.Collections.Generic.Dictionary<string,RoyalBuilding>();
+
+        public RoyalBuilding BuildingOffer(string selection, long revision)
+        {
+            if (revision!=offerRevision) { offers.Clear(); offerRevision=revision; }
+            if (!offers.TryGetValue(selection,out var offer))
+            {
+                offer=buildingOffers.Read(selection,false).Building;
+                offers[selection]=offer;
+            }
+            return offer;
+        }
+
         Modular25DWorld world;
         PlayerState lastSnapshot;
         float nextTick;
@@ -77,9 +94,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 #else
                 save=new FileStateStore(SandboxSavePath);
 #endif
-                var local=new LocalGateway(new SystemClock(),save);
+                var clock=new SystemClock();
+                var local=new LocalGateway(clock,save);
                 local.ConfigureLocalResourceRespawn(new DistrictSupplies(), RenewablePopulationPolicy.Delay);
                 gateway=local;
+                buildingOffers=new ExistingSliceBinding(local,clock);
                 lastSnapshot=gateway.Snapshot();
                 world.Apply(lastSnapshot);
                 SetMessage("Partida experimental aislada · mecánicas reales de Eldoria");

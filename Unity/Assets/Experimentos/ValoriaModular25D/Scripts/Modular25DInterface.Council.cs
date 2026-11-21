@@ -60,10 +60,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             void Building(string name, string target, int built, int unlock)
             {
                 if (!workFree || level < unlock || built >= level || built >= 5) return;
-                if (built >= 2 && target != "barracks" && !c.Inventory.Contains(
-                    target == "sawmill" ? "iron-brace" : target == "granary" ? "treated-hide" : "stone-tusk")) return;
-                Order((built == 0 ? "Construir " : "Mejorar ") + name + " · " + (built + 1),
-                    built == 0 ? "Build" : "UpgradeBuilding", target);
+                string selection = target == "barracks" && built > 0 ? "upgrade-barracks" : target;
+                var offer = gateway.BuildingOffer(selection,s.Revision);
+                if (offer?.Action == null || !offer.Action.Enabled) return;
+                string price = offer.Costs.Replace("Coste de la acción\n", "");
+                Order((built == 0 ? "Construir " : "Mejorar ") + name + " · " + (built + 1) +
+                    "\n" + price, offer.Action.Kind, offer.Action.Target);
             }
             string summary = "Bastión " + level;
             string objective = SliceRules.CurrentObjectiveKey(s);

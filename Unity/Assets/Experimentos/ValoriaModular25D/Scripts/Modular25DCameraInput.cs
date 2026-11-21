@@ -33,7 +33,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             world=GetComponent<Modular25DWorld>();
             camera=world.ViewCamera;
             homeSize=HomeSizeForAspect(camera.aspect);
-            Home();
+            camera.orthographicSize=homeSize;
+            camera.transform.position=HomePosition;
         }
 
         bool IsUI(Vector2 screen)
