@@ -263,6 +263,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var uv=new Vector2[vtx.Length];
             var edgeColor=new Color32[vtx.Length];
             var tris=new int[(samples-1)*(Across-1)*6];
+            bool cartLane=renderedCartLane!=null && material==renderedCartLane;
             float along=0;
             for(int i=0;i<samples;i++)
             {
@@ -292,6 +293,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     float patches=N(p.x*4.1f,p.y*3.2f+u*5.1f,203);
                     float ink=(cobbled ? .71f : .57f)+.19f*erosion+.09f*patches;
                     float alpha=Mathf.Clamp01(feather*ink);
+                    if(cartLane)
+                    {
+                        // Grass persists between wheel tracks and crosses the path
+                        // in irregular patches. Let the road meet each yard softly.
+                        float wheelTrack=1f-Sm(.07f,.27f,Mathf.Abs(bank-.46f));
+                        float packed=Mathf.Lerp(.48f,.80f,wheelTrack);
+                        float groundCover=Mathf.Lerp(.64f,1f,Sm(.24f,.72f,erosion));
+                        float join=Mathf.Min(along,Vector2.Distance(spine[i],spine[samples-1]));
+                        alpha*=packed*groundCover*Mathf.Lerp(.28f,1f,Sm(0f,.72f,join));
+                    }
                     edgeColor[index]=(Color32)new Color(1f,1f,1f,alpha);
                 }
             }
