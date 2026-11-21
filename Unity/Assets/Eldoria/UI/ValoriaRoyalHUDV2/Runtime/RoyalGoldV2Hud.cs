@@ -18,6 +18,11 @@ namespace Eldoria.UI.RoyalGold.V2
     public sealed class RoyalGoldV2Hud : MonoBehaviour
     {
         public RoyalHUD Source;
+        public static bool UseCoronaArt =>
+            UnityEngine.SceneManagement.SceneUtility.GetBuildIndexByScenePath(
+                "Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity") == 0 &&
+            UnityEngine.SceneManagement.SceneUtility.GetBuildIndexByScenePath(
+                "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity") == 1;
 
         private RectTransform safe, headerPlate, objectiveCard, heraldicBanner, buildingCard, buildingMiniature, scrollContent, scrollViewport;
         private RoyalGoldV3BuildingCartoucheFinish buildingFinish;
@@ -215,7 +220,7 @@ namespace Eldoria.UI.RoyalGold.V2
             plateSkin.DecorativeCorners = false;
             plateSkin.color = Color.white;
             plateSkin.raycastTarget = false;
-            if (Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
+            if (UseCoronaArt)
                 AddCoronaSurface(headerPlate, plateSkin, "top_velvet_ribbon");
             headerPlate.SetAsFirstSibling();
 
@@ -1117,7 +1122,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
         Image CoronaDestination(RectTransform medal, RoyalSection section)
         {
-            if (!Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer ||
+            if (!UseCoronaArt ||
                 (section != RoyalSection.World && section != RoyalSection.Mailbox)) return null;
             var child = medal.Find("Corona destination");
             if (child) return child.GetComponent<Image>();
@@ -1201,7 +1206,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 frame.raycastTarget = false;
                 frame.DecorativeCorners = true;
                 frame.Primary = false;
-                if (Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
+                if (UseCoronaArt)
                     AddCoronaSurface(trim, frame, "top_velvet_ribbon");
                 trim.SetAsFirstSibling();
             }

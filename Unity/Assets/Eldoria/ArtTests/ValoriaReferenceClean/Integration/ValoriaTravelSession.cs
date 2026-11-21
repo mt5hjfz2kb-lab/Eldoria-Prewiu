@@ -15,11 +15,7 @@ namespace Eldoria.ReferenceClean
         public const string CityScene = "BastionI_Modular25D";
         public const string RegionScene = "Valoria_City_World_UI";
 
-        public static bool CombinedPlayer =>
-            UnityEngine.SceneManagement.SceneUtility.GetBuildIndexByScenePath(
-                "Assets/Experimentos/ValoriaModular25D/Scenes/" + CityScene + ".unity") == 0 &&
-            UnityEngine.SceneManagement.SceneUtility.GetBuildIndexByScenePath(
-                "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/" + RegionScene + ".unity") == 1;
+        public static bool CombinedPlayer => Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud.UseCoronaArt;
 
         public static IStateStore OpenStore()
         {
