@@ -3,7 +3,7 @@ name: Valoria Modular 2.5D — browser-only regression on certified Unity player
 on:
   push:
     branches:
-      - experiment/valoria-modular-25d-bastion1-from-zero-20261118
+      - experiment/corona-mobile-webgl-replay-20261121
     paths:
       - 'tools/valoria-modular25d/browser_smoke.mjs'
       - 'tools/valoria-modular25d/browser_camera_smoke.mjs'
@@ -23,8 +23,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 18
     env:
-      ELDORIA_PLAYER_SHA: 15671bb9a5353746a1f4276586908fb71af30a9b
-      ELDORIA_PLAYER_RUN: '44707009109'
+      ELDORIA_PLAYER_SHA: 56a174c68487b15185e9b2878106eed942801000
+      ELDORIA_PLAYER_RUN: '44840097187'
     steps:
       - name: Checkout isolated smoke and compare immutable game source
         uses: actions/checkout@v4
@@ -41,7 +41,7 @@ jobs:
           git fetch --no-tags --depth=1 --filter=blob:none origin "$ELDORIA_PLAYER_SHA"
           actual="$(git rev-parse HEAD)"
           test "$actual" = "$GITHUB_SHA"
-          # The run 44707009109 built this exact Unity program and all original art.
+          # The run 44840097187 built this exact Unity program and all original art.
           # This cheap test may change only browser QA, NEVER its built player.
           if ! git diff --quiet "$ELDORIA_PLAYER_SHA" "$GITHUB_SHA" -- \
             Unity/Assets/Experimentos/ValoriaModular25D \
@@ -57,16 +57,16 @@ jobs:
         with:
           github-token: ${{github.token}}
           repository: mt5hjfz2kb-lab/Eldoria-Prewiu
-          run-id: 44707009109
-          name: eldoria-mod25d-webgl-player-44707009109
+          run-id: 44840097187
+          name: corona-mod25d-webgl-player-44840097187
           path: webgl
       - name: Fetch native NUnit and resource isolation evidence
         uses: actions/download-artifact@v4
         with:
           github-token: ${{github.token}}
           repository: mt5hjfz2kb-lab/Eldoria-Prewiu
-          run-id: 44707009109
-          name: eldoria-mod25d-actual-playmode-44707009109
+          run-id: 44840097187
+          name: corona-mod25d-actual-playmode-44840097187
           path: unity-metadata
       - name: Validate source-pinned Unity artifacts, original game state and WebGL payload
         shell: bash
