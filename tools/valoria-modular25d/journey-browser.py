@@ -55,7 +55,7 @@ async def main():
         async def tap(name,scroll=True):
             target=find(name)
             if not target and scroll:
-                for a,b in [(465,690),(465,690),(690,480),(690,480),(690,480),(690,480),(690,480)]:
+                for a,b in [(470,680)]*3 + [(605,516)]*12:
                     await swipe(195,a,195,b)
                     target=find(name)
                     if target: break
@@ -93,13 +93,17 @@ async def main():
                     await elapse(301); await order(cmd,20)
                 assert state[field]>=need,(field,need,state)
         async def ascend(n,duration):
-            await order('AdvanceBastion/bastion',duration+1)
+            await council();rev=state['revision']
+            await tap('AdvanceBastion/bastion');await until(lambda:state['revision']>rev and state['busy'])
+            log.append({'command':'AdvanceBastion/bastion','target_level':n,'revision':state['revision']})
+            await reload();assert state['level']==n-1 and state['busy'],state
+            await elapse(duration+1);await until(lambda:state['level']==n)
             assert state['level']==n,state
             await reload();await page.screenshot(path=OUT/f'bastion-{n}.png');await council()
         try:
             await page.goto(URL,wait_until='domcontentloaded');await until(lambda:bool(state),240)
             assert state['level']==1 and state['sawmill']==0 and state['wood']==230,state
-            await page.screenshot(path=OUT/'bastion-1.png')
+            await page.wait_for_timeout(1800);await page.screenshot(path=OUT/'bastion-1.png')
             await tap('Toggle left activities',False);assert state['drawer']
             await tap('Current real construction objective',False);assert state['sawmillPanel']
             await tap('Close sawmill',False);await tap('Center camera',False)
