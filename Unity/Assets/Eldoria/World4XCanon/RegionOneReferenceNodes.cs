@@ -115,7 +115,7 @@ namespace Eldoria.World4XCanon
    // The authentic square-tower silhouette is shorter than the former atlas city.
    // Preserve the close bridge connection, then recover strategic legibility smoothly.
    float canonicalCityScale=cityScale*Mathf.Lerp(1f,1.12f,Mathf.InverseLerp(near,110f,zoom));
-   if(RegionOneModularArt.Enabled)canonicalCityScale*=Mathf.Lerp(1f,1.3f,Mathf.InverseLerp(110f,600f,zoom));
+   if(RegionOneModularArt.Enabled)canonicalCityScale*=Mathf.Lerp(1f,.82f,Mathf.InverseLerp(110f,700f,zoom));
    foreach(var material in cityMaterials)material.SetFloat("_BillboardScale",canonicalCityScale);
    var state=host.City.Gateway.Snapshot();
    var tierFive=host.GetComponent<BastionIVVWorldPresentation>();

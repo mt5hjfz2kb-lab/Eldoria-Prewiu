@@ -5,7 +5,7 @@ on:
     paths:
       - '.github/workflows/valoria-region-modular-native.yml'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs'
-      - 'Unity/Assets/Eldoria/World4XCanon/RegionOneModularArt.cs'
+      - 'Unity/Assets/Eldoria/World4XCanon/**'
   workflow_dispatch:
 permissions:
   contents: read

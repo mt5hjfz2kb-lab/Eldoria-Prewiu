@@ -1,6 +1,6 @@
 Shader "Eldoria/Region1/Illustrated ground" {
  Properties {
-  _Region("Geographic colour",2D)="white"{} _Weights("Geographic classes",2D)="black"{}
+  _Region("Geographic colour",2D)="white"{} _NearFeatures("Mapped footpaths and water",2D)="black"{} _Weights("Geographic classes",2D)="black"{}
   _Grass("Meadow",2D)="white"{} _Earth("Soil",2D)="white"{}
   _Water("River",2D)="white"{} _Slate("Broken slate",2D)="white"{}
  }
@@ -10,6 +10,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
  #pragma vertex vert
  #pragma fragment frag
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+ TEXTURE2D(_NearFeatures); SAMPLER(sampler_NearFeatures);
  TEXTURE2D(_Region); SAMPLER(sampler_Region); TEXTURE2D(_Weights); SAMPLER(sampler_Weights);
  TEXTURE2D(_Grass); SAMPLER(sampler_Grass); TEXTURE2D(_Earth); SAMPLER(sampler_Earth);
  TEXTURE2D(_Water); SAMPLER(sampler_Water); TEXTURE2D(_Slate); SAMPLER(sampler_Slate);
@@ -21,6 +22,12 @@ Shader "Eldoria/Region1/Illustrated ground" {
   float2 metre=(i.uv-.5)*float2(1820,3600);
   half3 base=SAMPLE_TEXTURE2D(_Region,sampler_Region,i.uv).rgb;
   half4 mask=SAMPLE_TEXTURE2D(_Weights,sampler_Weights,i.uv);
+  float2 localUV=(metre-float2(-200,-148))/float2(416,512);
+  float2 localBorder=min(localUV,1-localUV)*float2(416,512);
+  half local=smoothstep(0,8,min(localBorder.x,localBorder.y));
+  half3 features=SAMPLE_TEXTURE2D(_NearFeatures,sampler_NearFeatures,saturate(localUV)).rgb;
+  mask.r=lerp(mask.r,features.r,local);
+  mask.g=max(mask.g,features.g*local);
   float2 q=metre/15;
   half3 grass=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,q).rgb;
   half3 earth=SAMPLE_TEXTURE2D(_Earth,sampler_Earth,q*.94).rgb;
@@ -32,6 +39,11 @@ Shader "Eldoria/Region1/Illustrated ground" {
   float footprint=max(length(ddx(metre)),length(ddy(metre)));
   half close=1-smoothstep(.35,4.2,footprint);
   half3 colour=lerp(base,albedo,close*.57);
+  half3 pathColour=lerp(base*half3(1.20,.99,.73),earth,close*.56+.24);
+  colour=lerp(colour,pathColour,mask.g*(1-mask.r));
+  colour=lerp(colour,lerp(earth,slate,.34),features.b*local*.53);
+  half3 riverColour=lerp(half3(.035,.145,.16),water,.37+.40*close);
+  colour=lerp(colour,riverColour,mask.r);
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
   float edge=min(910-abs(metre.x),1800-abs(metre.y));
   edge+=14*sin(metre.x*.014+metre.y*.009);

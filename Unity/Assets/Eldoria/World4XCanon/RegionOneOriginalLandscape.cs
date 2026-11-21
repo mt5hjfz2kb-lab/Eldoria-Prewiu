@@ -41,6 +41,7 @@ namespace Eldoria.World4XCanon
         {
             var ground=new Material(Shader.Find("Eldoria/Region1/Illustrated ground"));
             owned.Add(ground);
+            ground.SetTexture("_NearFeatures",Texture("NearFeatures"));
             ground.SetTexture("_Region",Texture("RegionColour"));ground.SetTexture("_Weights",Texture("SurfaceWeights"));
             foreach(string k in new[]{"Grass","Earth","Slate","Water"})ground.SetTexture("_"+k,Texture(k));
             var slice=new RegionOneFrameSlice(14);
@@ -84,15 +85,36 @@ namespace Eldoria.World4XCanon
                 var material=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){mainTexture=Texture(k)};
                 mats.Add(k,material);owned.Add(material);
             }
+            var groves=new Dictionary<Vector2Int,List<Vector3>>();
+            var positions=Resources.Load<TextAsset>(Art+"ForestPositions");
+            using(var reader=new System.IO.BinaryReader(new System.IO.MemoryStream(positions.bytes))){
+                int count=reader.ReadInt32();
+                for(int i=0;i<count;i++){
+                    var tree=new Vector3(reader.ReadSingle(),0,reader.ReadSingle());
+                    tree.y=Mathf.Clamp(reader.ReadSingle()*4.6f,4f,11.5f);
+                    var cell=new Vector2Int(Mathf.FloorToInt((tree.x+910f)/182f),Mathf.FloorToInt((tree.z+1800f)/180f));
+                    if(!groves.TryGetValue(cell,out var clump)){clump=new List<Vector3>();groves.Add(cell,clump);}
+                    clump.Add(tree);
+                }
+            }
             for(int bz=-1800;bz<1800;bz+=180)for(int bx=-910;bx<910;bx+=182){
                 var batches=new Dictionary<string,List<Vector3>>();
                 foreach(var k in names)batches[k]=new List<Vector3>();
-                for(int n=0;n<115;n++){
+                var cityTrees=new Dictionary<Vector3,float>();
+                var tileId=new Vector2Int((bx+910)/182,(bz+1800)/180);
+                if(groves.TryGetValue(tileId,out var clump))foreach(var tree in clump){
+                    float px=tree.x,pz=tree.z;
+                    var foot=new Vector3(px,Ground(px,pz)+.12f,pz);
+                    int pick=Mathf.Abs(Mathf.RoundToInt(px*3.1f+pz*7.7f))%13;
+                    batches[pick<9?"Fir":pick<12?"Oak":"Grove"].Add(foot);
+                    cityTrees[foot]=tree.y;
+                }
+                for(int n=0;n<85;n++){
                     float x=bx+(float)rng.NextDouble()*182,z=bz+(float)rng.NextDouble()*180;
                     if(RegionOneBlenderLandscape.Water(x,z)>.08f||RegionOneBlenderLandscape.Shore(x,z)<2f||RegionOneBlenderLandscape.Road(x,z)>.22f)continue;
                     float forest=RegionOneBlenderLandscape.Forest(x,z);
                     float patch=Mathf.PerlinNoise(x*.036f+31,z*.036f+90);
-                    bool tree=rng.NextDouble()<forest*.92f || patch>.64f&&rng.NextDouble()<.32f;
+                    bool tree=rng.NextDouble()<forest*.18f || patch>.67f&&rng.NextDouble()<.14f;
                     if(!tree && rng.NextDouble()>(patch>.67f?.095:.012))continue;
                     if(Mathf.Abs(x)<15&&Mathf.Abs(z)<22)continue;
                     int type=tree?(patch>.67f?2:rng.Next(2)):(patch>.59f?4:3);
@@ -104,6 +126,7 @@ namespace Eldoria.World4XCanon
                     var tex=mats[pair.Key].mainTexture;
                     foreach(var foot in pair.Value){
                         float width=(pair.Key=="Ridge"?20f:pair.Key=="Crag"?7f:13f)*(.72f+(float)rng.NextDouble()*.62f);
+                        if(cityTrees.TryGetValue(foot,out float crownWidth))width=crownWidth;
                         float h=width*tex.height/tex.width;int start=v.Count;
                         foreach(var corner in new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up}){
                             v.Add(foot);uv.Add(corner);offsets.Add(new Vector2((corner.x-.5f)*width,(corner.y-.035f)*h));

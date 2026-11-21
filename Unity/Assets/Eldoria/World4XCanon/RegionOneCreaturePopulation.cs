@@ -139,6 +139,7 @@ namespace Eldoria.World4XCanon
                     entity.Painted.transform.position=foot;
                     entity.Painted.enabled=alive&&!panorama;
                     float scale=(near?closePresence:presence)*baseScale/entity.NearScale;
+                    scale*=Mathf.Lerp(1f,.71f,Mathf.InverseLerp(280f,860f,zoom));
                     if(Mathf.Abs(scale-entity.PaintScale)>.0001f){
                         entity.PaintScale=scale;
                         paintProperties.SetFloat("_BillboardScale",scale);

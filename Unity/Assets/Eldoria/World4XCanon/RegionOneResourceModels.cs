@@ -248,7 +248,7 @@ namespace Eldoria.World4XCanon
             float nearBillboardScale=(RegionOneReferenceNodes.BastionOneVisualWidth*NearCityWidthRatio)/32f;
             float regionalBlend=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(110f,280f,zoom));
             float screenScale=Mathf.Lerp(nearBillboardScale,1.4f,regionalBlend)*Mathf.Max(1f,zoom/280f);
-            float paintedScale=Mathf.Lerp(27.5f/32f,1.4f,regionalBlend)*Mathf.Max(1f,zoom/280f);
+            float paintedScale=Mathf.Lerp(27.5f/32f,.92f,regionalBlend)*Mathf.Max(1f,zoom/280f)*Mathf.Lerp(1f,.66f,Mathf.InverseLerp(280f,860f,zoom));
             if(impostorMaterial&&Mathf.Abs(lastImpostorScale-screenScale)>.0001f){
                 impostorMaterial.SetFloat("_BillboardScale",screenScale);lastImpostorScale=screenScale;
             }
@@ -282,6 +282,7 @@ namespace Eldoria.World4XCanon
                             var foot=piece.position;
                             foot.y=SoilAt(foot)+.08f;
                             piece.position=foot;
+                            if(piece.name=="Ground at site")modularArt.SettleYard(piece,SoilAt);
                         }
                         node.SiteFoot=p;node.SiteGrounded=true;
                     }

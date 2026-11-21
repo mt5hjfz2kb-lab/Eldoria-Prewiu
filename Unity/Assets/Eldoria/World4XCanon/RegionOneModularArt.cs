@@ -83,17 +83,50 @@ namespace Eldoria.World4XCanon
             return renderer;
         }
 
+        Material soilMaterial;
+        readonly List<Mesh> yards=new List<Mesh>();
+        public void SettleYard(Transform pad,Func<Vector3,float> ground)
+        {
+            var mesh=pad.GetComponent<MeshFilter>().sharedMesh;
+            var vertices=mesh.vertices;
+            for(int i=0;i<vertices.Length;i++){
+                var world=pad.TransformPoint(vertices[i]);
+                world.y=ground(world)+.08f;
+                vertices[i]=pad.InverseTransformPoint(world);
+            }
+            mesh.vertices=vertices;mesh.RecalculateBounds();
+        }
+        void AddYard(Transform site,float width)
+        {
+            if(!soilMaterial)soilMaterial=new Material(Shader.Find("Eldoria/Region1/Workyard")){mainTexture=Resources.Load<Texture2D>(Root+"Earth")};
+            const int n=6;var v=new Vector3[(n+1)*(n+1)];var uv=new Vector2[v.Length];var tris=new int[n*n*6];int t=0;
+            for(int j=0;j<=n;j++)for(int i=0;i<=n;i++){
+                int k=j*(n+1)+i;uv[k]=new Vector2(i/(float)n,j/(float)n);
+                v[k]=new Vector3((uv[k].x-.5f)*width,0,(uv[k].y-.5f)*width*.59f);
+                if(i==n||j==n)continue;
+                tris[t++]=k;tris[t++]=k+n+1;tris[t++]=k+1;
+                tris[t++]=k+1;tris[t++]=k+n+1;tris[t++]=k+n+2;
+            }
+            var mesh=new Mesh{name="Worn earth at work site",vertices=v,uv=uv,triangles=tris};mesh.RecalculateBounds();yards.Add(mesh);
+            var pad=new GameObject("Ground at site");pad.layer=29;pad.transform.SetParent(site,false);
+            pad.AddComponent<MeshFilter>().sharedMesh=mesh;
+            var renderer=pad.AddComponent<MeshRenderer>();renderer.sharedMaterial=soilMaterial;renderer.shadowCastingMode=ShadowCastingMode.Off;
+        }
+
         public GameObject WorkSite(string id, Transform parent)
         {
             var site=new GameObject("Valoria work site "+id);
             site.transform.SetParent(parent,false);
             var anchor=site.transform.position;
             bool wood=id=="forest-valoria" || id.StartsWith("region1:wood:",StringComparison.Ordinal);
+            AddYard(site.transform,wood?34f:39f);
             Place(site.transform,wood?"Timber":"Quarry",wood?25f:27.5f,anchor);
             return site;
         }
         void OnDestroy()
         {
+            if(soilMaterial)Destroy(soilMaterial);
+            foreach(var mesh in yards)Destroy(mesh);
             foreach(var shape in shapes.Values) Destroy(shape);
             foreach(var material in materials.Values) Destroy(material);
         }
