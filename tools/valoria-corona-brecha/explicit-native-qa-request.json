@@ -1,5 +1,5 @@
 {
-  "source_base": "f8e26b730d18ce9cd85d30081d1f885146a239bf",
+  "source_base": "90ab61ed922511f54e9105e00045dee80adefc55",
   "scene": "BastionI_Modular25D",
-  "purpose": "Validate refined UI textures, 12-frame inhabitants, architectural shadows, zoom-aware labels and actual DPR3 canvas."
+  "purpose": "Validate refined UI, actor atlas, architectural shadows and DPR3 after Unity Application namespace correction."
 }
