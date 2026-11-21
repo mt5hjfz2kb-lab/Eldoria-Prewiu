@@ -375,7 +375,31 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             Layout();
             Refresh(gateway.Snapshot());
             Feedback(gateway.LastMessage);
+            OpenNamesIfNeeded();
             SyncWorldNameplates();
+        }
+
+        void OpenNamesIfNeeded()
+        {
+            if (!Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer) return;
+            var state = gateway.Snapshot();
+            if (state == null || !string.IsNullOrWhiteSpace(state.PlayerName)) return;
+            var prompt = Eldoria.PlayerClarity.RoyalPlayerNamePrompt.Create((RectTransform)hudCanvas.transform);
+            var frame = prompt.transform.Find("Aged parchment");
+            var inner = frame.Find("Inner vellum").GetComponent<Image>();
+            inner.sprite = activityPanelPlate;
+            inner.color = Color.white;
+            frame.GetComponent<Image>().color = AntiqueBrass;
+            foreach (var text in inner.transform.parent.GetComponentsInChildren<Text>(true))
+            {
+                text.color = WarmWhite;
+                if (text.name == "Opening question") text.color = PaleGold;
+            }
+            var confirm = frame.Find("Confirm your name").GetComponent<Image>();
+            confirm.sprite = actionPlate;
+            confirm.color = Color.white;
+            prompt.Open(false, name => gateway.Issue("ChoosePlayerName", name).Ok &&
+                string.Equals(gateway.Snapshot().PlayerName, name, StringComparison.Ordinal));
         }
 
         public void ToggleActivities()

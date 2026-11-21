@@ -107,6 +107,14 @@ async def main():
         try:
             await page.goto(URL,wait_until='domcontentloaded');await until(lambda:bool(state),240)
             assert state['level']==1 and state['sawmill']==0 and state['wood']==230,state
+            if os.environ.get('VALORIA_TEST_REGION')=='1':
+                await until(lambda:find('Confirm your name'))
+                await page.screenshot(path=OUT/'nombre-inicial.png')
+                # The canonical prompt focuses its real InputField when opened.
+                await page.keyboard.type('ValoriaQA',delay=100)
+                await page.keyboard.press('Enter')
+                await tap('Confirm your name',False)
+                await until(lambda:not find('Confirm your name'))
             await page.wait_for_timeout(1800);await page.screenshot(path=OUT/'bastion-1.png')
             await tap('Toggle left activities',False);assert state['drawer']
             await tap('Current real construction objective',False);assert state['sawmillPanel']

@@ -6,6 +6,8 @@ on:
       - '.github/workflows/valoria-region-modular-native.yml'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs'
       - 'Unity/Assets/Eldoria/World4XCanon/**'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/**'
+      - 'tools/valoria-modular25d/journey-browser.py'
   workflow_dispatch:
 permissions:
   contents: read
