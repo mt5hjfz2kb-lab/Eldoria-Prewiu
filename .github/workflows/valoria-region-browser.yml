@@ -37,7 +37,8 @@ jobs:
           mkdir -p world-browser-evidence
           du -ah player | sort -hr | head -40 > world-browser-evidence/sizes.txt
           cat player/index.html > world-browser-evidence/template.html
-          python3 -m pip install --quiet playwright==1.56.0
+          python3 -m pip install --quiet playwright==1.56.0 UnityPy
+          python3 tools/valoria-modular25d/region-payload-inventory.py
           python3 -m http.server 8824 --directory player &
           python3 -u tools/valoria-modular25d/region-browser.py 'http://127.0.0.1:8824/index.html?eldoria_p0_lazy_world=1'
       - if: always()
