@@ -132,10 +132,10 @@ namespace Eldoria.Modular25D.Tests
             var header=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x && x.gameObject.name=="Independent resources");
             Assert.NotNull(header,"Mobile resource bar missing");
-            Assert.That(header.GetComponentsInChildren<Image>(true).Count(x=>x.sprite!=null && x.sprite.name=="resource_siglet" && x.type==Image.Type.Simple),
+            Assert.That(header.GetComponentsInChildren<Image>(true).Count(x=>x.sprite!=null && x.sprite.name=="wallet_inset" && x.type==Image.Type.Simple),
                 Is.GreaterThanOrEqualTo(3),"Three independently rendered resource plates are required");
             var material=header.GetComponentsInChildren<Image>(true)
-                .First(x=>x&&x.sprite!=null&&x.sprite.name=="resource_siglet");
+                .First(x=>x&&x.sprite!=null&&x.sprite.name=="wallet_inset");
             var onScreenAspect=material.rectTransform.rect.width/
                 Mathf.Max(1f,material.rectTransform.rect.height);
             var sourceAspect=material.sprite.rect.width/material.sprite.rect.height;
@@ -277,7 +277,7 @@ namespace Eldoria.Modular25D.Tests
             Assert.That(identity.anchoredPosition.y,Is.EqualTo(-safeTop-1f).Within(1.5f));
             Assert.That(ribbon.anchoredPosition.y,Is.EqualTo(-safeTop).Within(1.5f));
             Assert.That(header.GetComponentsInChildren<Image>(true)
-                .Count(x=>x.sprite!=null&&x.sprite.name=="resource_siglet"
+                .Count(x=>x.sprite!=null&&x.sprite.name=="wallet_inset"
                     &&x.preserveAspect),Is.EqualTo(3));
             float resourceLeft=logicalWidth+header.anchoredPosition.x-header.rect.width;
             float identityRight=identity.anchoredPosition.x+identity.rect.width;
@@ -286,6 +286,11 @@ namespace Eldoria.Modular25D.Tests
             var nickname=identity.GetComponentsInChildren<Text>(true)
                 .FirstOrDefault(x=>x.text=="VALORIA");
             Assert.NotNull(nickname);
+            Canvas.ForceUpdateCanvases();
+            Assert.That(nickname.cachedTextGenerator.lineCount, Is.EqualTo(1),
+                "The saved nickname must render on one line inside the ribbon");
+            Assert.GreaterOrEqual(nickname.cachedTextGenerator.characterCountVisible, nickname.text.Length,
+                "The last letter of the player name was clipped");
             float nicknameRight=identity.rect.width*.5f+
                 nickname.rectTransform.anchoredPosition.x+
                 nickname.rectTransform.rect.width*.5f;
@@ -293,8 +298,10 @@ namespace Eldoria.Modular25D.Tests
             float nicknameLeft=identity.rect.width*.5f+
                 nickname.rectTransform.anchoredPosition.x-
                 nickname.rectTransform.rect.width*.5f;
-            Assert.GreaterOrEqual(nicknameLeft,55f,
-                "Nickname must stay in right painted enamel, never across central amethyst");
+            var bezel=actualFace.parent as RectTransform;
+            Assert.NotNull(bezel);
+            Assert.GreaterOrEqual(nicknameLeft,bezel.anchoredPosition.x+bezel.rect.width*.5f+2f,
+                "The full player name area must clear the actual illustrated portrait");
             var nameMethod=ui.GetType().GetMethod("PlayerDisplayName",
                 BindingFlags.Public|BindingFlags.Static);
             Assert.NotNull(nameMethod);
@@ -462,7 +469,8 @@ namespace Eldoria.Modular25D.Tests
             var currentNameplate=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x && x.gameObject.name=="Sawmill world nameplate");
             Assert.NotNull(currentNameplate);
-            Assert.That(currentNameplate.rect.height,Is.GreaterThanOrEqualTo(44f),
+            var padding=currentNameplate.GetComponent<Image>().raycastPadding;
+            Assert.That(currentNameplate.rect.height-padding.y-padding.w,Is.GreaterThanOrEqualTo(44f),
                 "Commercial world nameplate must retain a touch-sized hit target");
             Assert.That(currentNameplate.GetComponent<Image>().sprite.name,
                 Is.EqualTo("world_rune"),
@@ -524,7 +532,7 @@ namespace Eldoria.Modular25D.Tests
                 "User can reopen live construction info from the left handle");
             var leftStatus=Member(ui,"activityProgress") as Text;
             Assert.NotNull(leftStatus);
-            Assert.IsTrue(leftStatus.text.StartsWith("ASERRADERO  "),
+            Assert.IsTrue(leftStatus.text.StartsWith("Finaliza en "),
                 "The left drawer must show the real remaining clock");
             var leftTrack=Member(ui,"activityTrack") as RectTransform;
             Assert.NotNull(leftTrack);
@@ -604,3 +612,4 @@ namespace Eldoria.Modular25D.Tests
     }
 }
 #endif
+

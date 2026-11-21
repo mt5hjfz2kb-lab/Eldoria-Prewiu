@@ -13,7 +13,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     public sealed class Modular25DGround : MonoBehaviour
     {
         const int Side = 8, HalfChunks = 4, TextureSize = 512;
-        const float PatternMeters = 14f;
+        const float PatternMeters = 6.5f;
         Material material;
         Texture2D texture;
         bool generatedAtRuntime;

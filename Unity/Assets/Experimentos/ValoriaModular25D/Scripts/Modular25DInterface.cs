@@ -31,7 +31,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private static readonly Color32 Green = new Color32(80, 209, 195, 255);
         private static readonly Color32 Red = new Color32(184, 84, 120, 255);
 
-        private static Sprite slatePlate, actionPlate, resourcePlate, portraitPlate, burgundyPlate, navPlate, topVelvetPlate, activityPanelPlate;
+        private static Sprite slatePlate, actionPlate, resourcePlate, portraitPlate, activityStandard, navPlate, topVelvetPlate, activityPanelPlate;
         private static Sprite woodIcon, stoneIcon, foodIcon, hammerIcon, cityIcon, taskIcon;
         private static Texture2D originalIconAtlas;
         private Modular25DGameplay gateway;
@@ -95,7 +95,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(6f, -6f),
                 new Vector2(102f, 44f));
             var sigil = Plate("Sir Aldric portrait bezel", identity, portraitPlate,
-                new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(24f,0f),
+                new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(19f,0f),
                 new Vector2(35f,35f));
             var aldricAvatar=Resources.Load<Sprite>(
                 "ValoriaModular25D/UI/UmbralII/aldric_avatar");
@@ -109,14 +109,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             face.GetComponent<RectTransform>().sizeDelta=new Vector2(28f,28f);
             // Real PlayerState.PlayerName is the user-selected name. Valoria
             // remains a fallback only for an older unnamed test save.
-            title = Label("VALORIA", identity, 14, true, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(26f,6f),new Vector2(42f,23f));
+            title = Label("VALORIA", identity, 13, false, WarmWhite, TextAnchor.MiddleLeft,
+                new Vector2(18f,6f),new Vector2(60f,19f));
             title.resizeTextForBestFit=true;
             title.resizeTextMinSize=10;
-            title.resizeTextMaxSize=14;
+            title.resizeTextMaxSize=13;
             title.horizontalOverflow=HorizontalWrapMode.Wrap;
-            level = Label("BAST. 1", identity, 9, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(26f,-9f),new Vector2(42f,16f));
+            level = Label("Bastión 1", identity, 11, false, PaleGold, TextAnchor.MiddleLeft,
+                new Vector2(18f,-8f),new Vector2(60f,16f));
             // SourceSans line metrics exceed the 20px legacy plate: Truncate
             // silently discarded all small-glyph geometry in actual WebGL.
             // Let ascenders/descenders use the designed clear lower half.
@@ -137,30 +137,32 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // camera and point only to canonical, currently implemented UI.
             bastionTag=ButtonPlate("Bastion world nameplate",rootTransform,"BASTIÓN · I",
                 slatePlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                Vector2.zero,new Vector2(slatePlate.rect.width * 44f / slatePlate.rect.height, 44f),OpenStatus).GetComponent<RectTransform>();
+                Vector2.zero,new Vector2(slatePlate.rect.width * 34f / slatePlate.rect.height, 34f),OpenStatus).GetComponent<RectTransform>();
+            bastionTag.GetComponent<Image>().raycastPadding=new Vector4(0f,-5f,0f,-5f);
             bastionTagText=bastionTag.GetComponentInChildren<Text>(true);
-            bastionTagText.fontSize=14;
+            bastionTagText.fontSize=12;
             bastionTagText.color=PaleGold;
             // Building nameplates are wayfinding, NOT a second enormous
             // turquoise Build CTA. The actual action stays in the real modal.
             // Keep the two original art plates short/readable in world-space.
             var keepGlyph=Plate("Bastion nameplate original icon",bastionTag,cityIcon,
                 new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                new Vector2(-48f,0f),new Vector2(23f,23f));
+                new Vector2(-42f,0f),new Vector2(20f,20f));
             keepGlyph.GetComponent<Image>().preserveAspect=true;
             bastionTagText.rectTransform.anchoredPosition=new Vector2(10f,0f);
             bastionTagText.rectTransform.sizeDelta=new Vector2(100f,28f);
             sawmillTag=ButtonPlate("Sawmill world nameplate",rootTransform,"ASERRADERO",
                 slatePlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                Vector2.zero,new Vector2(slatePlate.rect.width * 44f / slatePlate.rect.height, 44f),OpenSawmill).GetComponent<RectTransform>();
+                Vector2.zero,new Vector2(slatePlate.rect.width * 34f / slatePlate.rect.height, 34f),OpenSawmill).GetComponent<RectTransform>();
+            sawmillTag.GetComponent<Image>().raycastPadding=new Vector4(0f,-5f,0f,-5f);
             sawmillTagText=sawmillTag.GetComponentInChildren<Text>(true);
-            sawmillTagText.fontSize=14;
+            sawmillTagText.fontSize=12;
             sawmillTagText.color=PaleGold;
             sawmillTagText.rectTransform.anchoredPosition=new Vector2(12f,0f);
             sawmillTagText.rectTransform.sizeDelta=new Vector2(100f,30f);
             var sawmillGlyph=Plate("Sawmill nameplate original icon",sawmillTag,hammerIcon,
                 new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                new Vector2(-48f,0f),new Vector2(23f,23f));
+                new Vector2(-42f,0f),new Vector2(20f,20f));
             sawmillGlyph.GetComponent<Image>().preserveAspect=true;
             // Visible AFTER the successful Build auto-dismiss: real progress
             // belongs on the construction parcel, not a persistent modal.
@@ -188,18 +190,19 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             statusDock = DockButton("Inspect city status",rootTransform,"ESTADO",taskIcon,
                 new Vector2(.5f,0f),new Vector2(.5f,0f),OpenStatus);
             objective=ButtonPlate("Current real construction objective",rootTransform,"",
-                burgundyPlate,new Vector2(1f,1f),new Vector2(1f,1f),
+                null,new Vector2(1f,1f),new Vector2(1f,1f),
                 new Vector2(-12f,-122f),new Vector2(172f,50f),OpenSawmill)
                 .GetComponent<RectTransform>();
-            // The premium objective_rune source ALREADY includes its own
-            // sculpted hanging parchment insignia. Placing a second
-            // illustrated task medallion on top produced a visually noisy
-            // double icon, unlike commercial strategy quest plaques.
-            // Its existing Button keeps the real OpenSawmill action.
-            Label("PRÓXIMO PASO",objective,11,true,PaleGold,TextAnchor.MiddleLeft,
-                new Vector2(19f,11f),new Vector2(118f,16f));
-            objectiveText=Label("ASERRADERO · 0/1",objective,13,false,WarmWhite,
-                TextAnchor.MiddleLeft,new Vector2(19f,-8f),new Vector2(118f,24f));
+            // The row shares the drawer's painted surface and remains the real
+            // sawmill shortcut in each construction phase.
+            var workshop=Plate("Activity workshop illustration",objective,
+                Modular25DArt.Sawmill(),new Vector2(0f,.5f),new Vector2(0f,.5f),
+                new Vector2(1f,0f),new Vector2(49f,46f));
+            workshop.GetComponent<Image>().preserveAspect=true;
+            objectiveText=Label("Aserradero",objective,17,false,WarmWhite,
+                TextAnchor.MiddleLeft,new Vector2(14f,0f),new Vector2(105f,31f));
+            Label("›",objective,21,false,PaleGold,TextAnchor.MiddleRight,
+                new Vector2(77f,0f),new Vector2(18f,32f));
 
             // Hidden LEFT activity drawer: reuse the existing real quest
             // Button and live construction clock without adding a new
@@ -225,7 +228,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(2f,0f),new Vector2(2f,5f));
             activityFill.GetComponent<Image>().color=new Color32(75,214,199,255);
             activityTrack.gameObject.SetActive(false);
-            activityHandle=ButtonPlate("Toggle left activities",rootTransform,"",taskIcon,
+            activityHandle=ButtonPlate("Toggle left activities",rootTransform,"",activityStandard,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),Vector2.zero,
                 new Vector2(46f,62f),ToggleActivities).GetComponent<RectTransform>();
             activityHandle.GetComponent<Image>().type=Image.Type.Simple;
@@ -487,7 +490,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 return;
             }
             title.text=PlayerDisplayName(s.PlayerName);
-            level.text = "BAST. " + s.BastionLevel;
+            level.text = "Bastión " + s.BastionLevel;
             if(bastionTagText!=null)
                 bastionTagText.text="BASTIÓN · "+s.BastionLevel;
             cachedSawmillPhase=ParcelBuildingStates.For(s,"sawmill");
@@ -497,7 +500,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 long timeLeft=building==ParcelBuildingState.UNDER_CONSTRUCTION
                     ? gateway.SawmillSecondsRemaining() : 0L;
                 sawmillTagText.text=building==ParcelBuildingState.BUILT
-                    ? "ASERR. "+s.SawmillLevel
+                    ? "ASERRADERO · "+s.SawmillLevel
                     : building==ParcelBuildingState.UNDER_CONSTRUCTION
                         ? "OBRA  "+(timeLeft/60L).ToString()+":"+(timeLeft%60L).ToString("00")
                         : "ASERRADERO";
@@ -509,13 +512,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if(worldProgressTrack!=null)
                     worldProgressTrack.gameObject.SetActive(false);
                 if(activityTitle!=null)
-                    activityTitle.text=constructing?"OBRA EN CURSO":"TAREAS";
+                    activityTitle.text=constructing?"OBRA EN CURSO":"ACTIVIDADES";
                 if(activityProgress!=null)
                     activityProgress.text=constructing
-                        ? "ASERRADERO  "+(timeLeft/60L).ToString()+":"+
+                        ? "Finaliza en "+(timeLeft/60L).ToString()+":"+
                             (timeLeft%60L).ToString("00")
                         : building==ParcelBuildingState.BUILT
-                            ? "ASERRADERO CONSTRUIDO":"PARCELA DISPONIBLE";
+                            ? "Construcción terminada":"Parcela disponible";
                 if(activityTrack!=null)activityTrack.gameObject.SetActive(constructing);
                 if(constructing && activityFill!=null)
                 {
@@ -542,8 +545,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             woodValue.color=s.Resources.Wood<SliceRules.SawmillWoodCost
                 ? Red : WarmWhite;
             if(objectiveText!=null)
-                objectiveText.text=s.SawmillLevel>0?"ASERRADERO · 1/1":
-                    s.BuildingCompletesUtcTicks>0?"OBRA EN CURSO":"ASERRADERO · 0/1";
+                objectiveText.text=s.SawmillLevel>0?"Aserradero · "+s.SawmillLevel:"Aserradero";
             if(stateSummary!=null)
                 stateSummary.text="Jugador: " +
                     (string.IsNullOrWhiteSpace(s.PlayerName)?"SIN NOMBRE":s.PlayerName.Trim())+
@@ -556,7 +558,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(constructionProgressRoot!=null)
                 constructionProgressRoot.gameObject.SetActive(
                     phase==ParcelBuildingState.UNDER_CONSTRUCTION);
-            cost.text = "MADERA · " + SliceRules.SawmillWoodCost.ToString("N0") + " necesarias";
+            cost.text = "Coste · " + SliceRules.SawmillWoodCost.ToString("N0") + " de madera";
             switch (phase)
             {
                 case ParcelBuildingState.BUILT:
@@ -609,7 +611,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Above the western keep tower, the Bastion label also avoids
             // the civic well and the quest overlay at the upper right.
             PlaceWorldNameplate(bastionTag,baseRect,
-                new Vector3(-1.63f,3.05f,0f),hiddenByPanel);
+                new Vector3(-1.31f,3.08f,0f),hiddenByPanel);
             float millFootY=cachedSawmillPhase==ParcelBuildingState.BUILT
                 ? -3.86f : cachedSawmillPhase==ParcelBuildingState.UNDER_CONSTRUCTION
                     ? -3.45f : -2.90f;
@@ -679,7 +681,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var caption=rect.GetComponentInChildren<Text>(true);
             if(caption!=null)
             {
-                caption.fontSize=wide?9:10;
+                caption.fontSize=wide?11:12;
                 caption.alignment=TextAnchor.MiddleCenter;
                 caption.rectTransform.anchoredPosition=
                     new Vector2(0f,-cell.width*.5f-9f);
@@ -708,8 +710,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             topRibbon.anchorMin=topRibbon.anchorMax=new Vector2(.5f,1f);
             topRibbon.pivot=new Vector2(.5f,1f);
             float stripWidth=Mathf.Min(390f,safeWidth);
-            float stripLeft=left+(safeWidth-stripWidth)*.5f;
-            topRibbon.anchoredPosition=new Vector2((left-right)*.5f,-top);
+            float stripLeft=left+safeWidth-stripWidth;
+            topRibbon.anchoredPosition=new Vector2(stripLeft+stripWidth*.5f-width*.5f,-top);
             topRibbon.sizeDelta=new Vector2(stripWidth-6f,46f);
             topRibbonHairline.sizeDelta=new Vector2(stripWidth-18f,1.2f);
 
@@ -774,8 +776,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             activityHandle.anchorMin=activityHandle.anchorMax=
                 new Vector2(0f,.5f);
             activityHandle.pivot=new Vector2(0f,.5f);
-            activityHandle.anchoredPosition=new Vector2(left+3f,wide?-5f:0f);
-            activityHandle.sizeDelta=new Vector2(45f,60f);
+            activityHandle.anchoredPosition=new Vector2(left,wide?-5f:0f);
+            activityHandle.sizeDelta=new Vector2(44f,54f);
             activityDrawer.anchorMin=activityDrawer.anchorMax=
                 new Vector2(0f,.5f);
             activityDrawer.pivot=new Vector2(0f,.5f);
@@ -836,7 +838,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var chip=Plate("Resource "+caption,parent,resourcePlate,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
                 new Vector2(index*123f,0f),new Vector2(117f,52f));
-            chip.GetComponent<Image>().color=new Color32(158,149,165,255);
             var image=Plate(caption+" original resource art",chip,art,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
                 new Vector2(10f,0f),new Vector2(42f,42f));
@@ -999,11 +1000,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             topVelvetPlate=NeedCorona("top_velvet_ribbon");
             activityPanelPlate=NeedCorona("activity_panel_wide");
             slatePlate=NeedCorona("world_rune");
-            resourcePlate=NeedCorona("resource_siglet");
+            resourcePlate=NeedCorona("wallet_inset");
             portraitPlate=NeedCorona("portrait_ring");
             navPlate=NeedCorona("nav_medallion");
             actionPlate=NeedCorona("action_arcane");
-            burgundyPlate=NeedCorona("objective_rune");
+            activityStandard=NeedCorona("activity_standard");
             woodIcon=NeedCorona("icon_wood");
             stoneIcon=NeedCorona("icon_stone");
             foodIcon=NeedCorona("icon_food");
