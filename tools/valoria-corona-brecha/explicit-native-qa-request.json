@@ -1,5 +1,5 @@
 {
-  "source_base": "90ab61ed922511f54e9105e00045dee80adefc55",
+  "source_base": "a6ea9e66bcf2ea11ba316322b65f5ef4e2556aa2",
   "scene": "BastionI_Modular25D",
-  "purpose": "Validate refined UI, actor atlas, architectural shadows and DPR3 after Unity Application namespace correction."
+  "purpose": "Verify explicit alpha sampling for architectural shadows and labels clear of the workshop props, including landscape and DPR3."
 }

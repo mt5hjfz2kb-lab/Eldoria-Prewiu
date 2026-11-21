@@ -21,7 +21,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             shadow.transform.SetParent(transform,false);
             mesh=new Mesh { name="Ground projection of authored building silhouette" };
             shadow.AddComponent<MeshFilter>().sharedMesh=mesh;
-            material=new Material(Shader.Find("Sprites/Default"));
+            material=new Material(Resources.Load<Shader>("ValoriaModular25D/ArchitecturalShadow"));
             var renderer=shadow.AddComponent<MeshRenderer>();
             renderer.sharedMaterial=material;
             renderer.sortingOrder=-3900;
@@ -58,7 +58,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             mesh.colors=new[]{near,near,far,far};
             mesh.triangles=new[]{0,1,2,0,2,3};
             mesh.RecalculateBounds();
-            material.mainTexture=previous.texture;
+            material.SetTexture("_ShadowTex",previous.texture);
         }
 
         void OnDisable()

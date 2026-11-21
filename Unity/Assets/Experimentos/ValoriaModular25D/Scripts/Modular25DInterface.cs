@@ -610,7 +610,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             bool hiddenByPanel=(buildingSheet!=null&&buildingSheet.activeSelf)||
                                (statusSheet!=null&&statusSheet.gameObject.activeSelf);
             PlaceBuildingNameplate(bastionTag,baseRect,world.BastionRenderer,true,hiddenByPanel);
-            PlaceBuildingNameplate(sawmillTag,baseRect,world.SawmillRenderer,false,
+            PlaceBuildingNameplate(sawmillTag,baseRect,world.SawmillRenderer,true,
                 hiddenByPanel||cachedSawmillPhase==ParcelBuildingState.UNDER_CONSTRUCTION);
         }
 
@@ -619,7 +619,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             if(building==null)return;
             Bounds bounds=building.bounds;
-            Vector3 anchor=new Vector3(bounds.center.x,
+            Vector3 anchor=new Vector3(bounds.center.x+(building==world.SawmillRenderer?bounds.size.x*.10f:0f),
                 above?bounds.max.y:bounds.min.y,building.transform.position.z);
             // Keep a constant logical gap as the architecture changes size with zoom.
             float gap=label.rect.height*.5f+5f;
@@ -636,6 +636,20 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             float scale=hudCanvas.scaleFactor;
             var size=nameplate.rect.size*scale;
             var bounds=new Rect((Vector2)screen-size*.5f,size);
+            // In compact landscape, a small lateral clearance keeps the keep title
+            // beside the ribbon instead of suppressing it at the home camera.
+            if(OverlapsControl(bounds,topRibbon))
+            {
+                float ribbonLeft=RectTransformUtility.WorldToScreenPoint(null,
+                    topRibbon.TransformPoint(topRibbon.rect.min)).x;
+                float candidate=ribbonLeft-size.x*.5f-5f*scale;
+                if(Mathf.Abs(candidate-screen.x)<=size.x*.5f &&
+                    candidate-size.x*.5f>=safe.xMin)
+                {
+                    screen.x=candidate;
+                    bounds=new Rect((Vector2)screen-size*.5f,size);
+                }
+            }
             bool visible=!modalOpen && screen.z>0f &&
                 safe.Contains(bounds.min) && safe.Contains(bounds.max) &&
                 !OverlapsControl(bounds,topRibbon) && !OverlapsControl(bounds,activityHandle) &&
