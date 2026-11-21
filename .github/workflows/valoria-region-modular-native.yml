@@ -158,6 +158,51 @@ jobs:
           }
           "MOD25D_SOURCE=$root"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
           Write-Host "MOD25D_CHECKOUT_PINNED $env:GITHUB_SHA"
+      - name: Render actual Unity camera frames and validate canonical build + file reload
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('mod25d-native-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,
+            '-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.Modular25DNativeCapture.Capture',
+            '-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2400000)){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 240}
+            throw 'Scratch Unity capture timed out'}
+          if($p.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 260}
+            throw ('Unity native capture FAILED '+$p.ExitCode)}
+          $out=Join-Path $project 'Artifacts/ValoriaModular25D/Native'
+          $manifest=Join-Path $out 'evidence.json'
+          if(-not(Test-Path $manifest)){throw 'Missing real Unity evidence'}
+          $e=Get-Content $manifest -Raw|ConvertFrom-Json
+          if($e.engine -ne 'Unity' -or $e.engineVersion -ne '6000.3.23f1' -or
+             $e.sourceSha -ne $env:GITHUB_SHA -or $e.sourceFrames -lt 42 -or
+             -not $e.nativeWorldRender -or -not $e.gatewayBuild -or -not $e.savedAndReloaded -or
+             -not $e.noDoublePayment -or -not $e.continuousTerrainPresent -or
+             -not $e.roadAndFootprintKits -or
+             -not $e.paintedGroundSourceLoaded -or
+             $e.originalArtResourcesLoaded -lt 14 -or
+             $e.artApproved -ne 'NO' -or $e.physicalIphone -ne 'NOT_TESTED'){
+            throw 'Incomplete original-source QA; do not claim Unity/PlayMode approval'}
+          foreach($x in $e.frames){
+            $p=Join-Path $out $x.file
+            if(-not(Test-Path $p) -or (Get-Item $p).Length -lt 5000){throw ('Missing frame '+$x.file)}
+            if((Get-FileHash -Algorithm SHA256 $p).Hash.ToLowerInvariant() -ne $x.sha256){
+              throw ('Altered frame '+$x.file)}
+          }
+          Write-Host 'UNITY_REAL_SAVED_SCENE_42_FRAMES_AND_GATEWAY_PASS'
+          Get-Content $manifest -Head 28
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ciudad-cinco-bastiones-unity
+          path: |
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/stage-*.png
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/evidence.json
       - name: Native integrated scene, identical routes and fixed-camera art A/B
         shell: powershell
         run: |

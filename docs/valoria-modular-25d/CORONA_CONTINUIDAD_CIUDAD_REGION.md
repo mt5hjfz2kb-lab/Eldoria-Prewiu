@@ -4,7 +4,7 @@ La referencia de Bastión I es `09fac3a`, escena `Assets/Experimentos/ValoriaMod
 
 ## Ciudad
 
-Los sprites de cuartel, granero y cantera conservan sus GUID, escala de 288 píxeles por unidad y contacto inferior. El archivo CORONA_PROGRESSION_ASSET_PROVENANCE_20261121.json registra dimensiones, pivotes y huellas. Las tres láminas se derivaron de un atlas transparente original. Se separaron por componentes, se redimensionaron uniformemente y se registraron a la altura de los pies.
+Los sprites de cuartel, granero y cantera conservan sus GUID, escala de 288 píxeles por unidad y contacto inferior. El archivo CORONA_PROGRESSION_ASSET_PROVENANCE_20261121.json registra dimensiones, pivotes y huellas. El granero y la cantera se derivaron de un atlas transparente original. El cuartel recibió una nueva ilustración independiente después de revisar el recorrido real de Bastión V: galería de escudos, patio abierto y dos dianas para reconocer su función militar a escala móvil. Se separaron por componentes, se redimensionaron uniformemente y se registraron a la altura de los pies.
 
 Los accesos de distrito aparecen al completar el edificio. Cada uno filtra las órdenes del consejo por su destino. El cuartel reúne entrenamiento, marcha y mejora. La vista Entregas muestra correo reclamable y paquetes obtenidos. Las ubicaciones de los tres controles originales se mantienen.
 

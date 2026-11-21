@@ -55,16 +55,16 @@
     },
     {
       "name": "barracks",
-      "source": "Valoria three-district production atlas, 2026-11-21",
-      "source_sha256": "aedaea4142dbd335b2a6544bd898f354b542d3dd2dc21ba697a49327bd06e5db",
-      "sha256": "2b6f337714b9608f6bb4ba2953b736ea8d8a74541e038122393c5ffe17417688",
+      "source": "exec-598c7f4b-c876-4343-af8c-3d964451bd2a.png",
+      "source_sha256": "9d66f2fb3dcca8a1a425ca222a779e9c94190ee90f31151af3f3067cf952f585",
+      "sha256": "3c449f81c0da4a961ba2cdeff9cca3ef730ef1217335723ed8c691dd1e98ec4f",
       "dimensions": [
         1024,
-        887
+        658
       ],
       "pixels_per_unit": 288,
-      "pivot_y": 0.0777903043968433,
-      "brief": "Military hall, armory arcade and timber lookout"
+      "pivot_y": 0.10486322188449848,
+      "brief": "Open drill courtyard, archery butts, spear racks, shield gallery and timber watch platform; revised after native stage V review."
     },
     {
       "name": "granary",
