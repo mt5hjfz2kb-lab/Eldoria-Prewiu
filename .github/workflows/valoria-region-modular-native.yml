@@ -190,6 +190,31 @@ jobs:
           path: |
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/RegionModular/
             !${{env.MOD25D_SOURCE}}/Unity/Artifacts/RegionModular/before/terrain.bytes
+      - name: Stage mobile runtime assets from the verified project
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $source=Join-Path $project 'Assets/Eldoria/Resources/Valoria'
+          $dest=Join-Path $project 'Assets/ValoriaBuildInputs/LegacyModels'
+          New-Item -ItemType Directory -Force $dest|Out-Null
+          # Original optimized Valoria packaging excluded historical source GLBs.
+          # Keep their GUIDs inside Assets so serialized scene dependencies still resolve.
+          $files=@(Get-ChildItem $source -Recurse -File -Filter '*.glb')
+          foreach($file in $files){
+            $relative=$file.FullName.Substring($source.Length+1)
+            $target=Join-Path $dest $relative
+            New-Item -ItemType Directory -Force (Split-Path $target)|Out-Null
+            Move-Item $file.FullName $target
+            Move-Item ($file.FullName+'.meta') ($target+'.meta')
+          }
+          $art=Join-Path $project 'Assets/Experimentos/ValoriaModular25D/Resources'
+          $staged=Join-Path $project 'Assets/ValoriaBuildInputs/CityExperiment'
+          Move-Item $art $staged
+          if(Test-Path ($art+'.meta')){Move-Item ($art+'.meta') ($staged+'.meta')}
+          python (Join-Path $env:MOD25D_SOURCE 'tools/valoria-modular25d/pack-hidden-geography.py') $project
+          if($LASTEXITCODE){throw 'Hidden source geometry could not be verified'}
+          Write-Host ("Historical model roots removed from automatic player inclusion: "+$files.Count)
       - name: Build actual integrated WebGL player
         shell: powershell
         run: |
