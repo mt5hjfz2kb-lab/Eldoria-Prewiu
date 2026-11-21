@@ -16,6 +16,19 @@ permissions:
 # replaces a pending baseline. Always prioritize the latest baseline proof,
 # then queue isolated A/B after baseline completion.
 jobs:
+  verify-packaging:
+    runs-on: windows-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/valoria-modular25d
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Models
+          persist-credentials: false
+      - name: Check legacy texture staging against every real donor and compare geometry bytes
+        run: python tools/valoria-modular25d/pack-hidden-geography.py Unity --combined-player --donors-only
   earlier-city:
     runs-on: ubuntu-24.04
     timeout-minutes: 180
@@ -32,7 +45,7 @@ jobs:
             sleep 55
           done
   preflight:
-    needs: earlier-city
+    needs: [earlier-city, verify-packaging]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
@@ -230,7 +243,7 @@ jobs:
             Move-Item $file.FullName $target
             Move-Item ($file.FullName+'.meta') ($target+'.meta')
           }
-          & $env:MOD25D_PYTHON (Join-Path $env:MOD25D_SOURCE 'tools/valoria-modular25d/pack-hidden-geography.py') $project
+          & $env:MOD25D_PYTHON (Join-Path $env:MOD25D_SOURCE 'tools/valoria-modular25d/pack-hidden-geography.py') $project --combined-player
           if($LASTEXITCODE){throw 'Hidden source geometry could not be verified'}
           Write-Host ("Historical model roots removed from automatic player inclusion: "+$files.Count)
       - name: Build actual integrated WebGL player
