@@ -86,7 +86,6 @@ namespace Eldoria.World4XCanon
                     if(source.name.StartsWith("Original river turquoise shallow ford continuity",StringComparison.Ordinal))material.SetFloat("_WaterSurface",1f);
                     if(source.name.StartsWith("Continental river teal",StringComparison.Ordinal)){
                         material.SetFloat("_WaterSurface",1f);
-                        material.SetFloat("_EasternShelf",1f);
                     }
                     if(source.name.StartsWith("Breach naturally graded exposed mineral",StringComparison.Ordinal)){material.SetFloat("_MineralEmission",.65f);minerals.Add(material);}
                     if(source.name.StartsWith("Approved exposed quarry floor",StringComparison.Ordinal))material.SetFloat("_QuarryFloor",1f);
@@ -131,13 +130,23 @@ namespace Eldoria.World4XCanon
                 // beyond the 1820 x 3600 playable relief. Do not let either
                 // receive or cast strategic-camera shadows; their panorama
                 // transition is handled by the atmospheric material instead.
+                bool easternShelf=false;
                 for(var node=renderer.transform;node;node=node.parent)
                     if(node.name=="BLD_ContinentalContinuation"||
                        node.name=="BLD_EasternSeaContinuation"){
+                        easternShelf=node.name=="BLD_EasternSeaContinuation";
                         renderer.receiveShadows=false;
                         renderer.shadowCastingMode=ShadowCastingMode.Off;
                         break;
                     }
+                // The teal source material is also used by real rivers. Scope
+                // the early panorama dissolve to the decorative eastern shelf
+                // instead of changing every water renderer which shares it.
+                if(easternShelf)renderer.sharedMaterials=renderer.sharedMaterials.Select(source=>{
+                    var scopedMaterial=new Material(source){name=source.name+" eastern shelf"};
+                    scopedMaterial.SetFloat("_EasternShelf",1f);owned.Add(scopedMaterial);
+                    return scopedMaterial;
+                }).ToArray();
                 if(renderer.name.StartsWith("Quarry cleared extraction floor",StringComparison.Ordinal))renderer.shadowCastingMode=ShadowCastingMode.Off;
                 for(var node=renderer.transform;node;node=node.parent){
                     string name=node.name;

@@ -196,10 +196,10 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  // Existing sea remains, but no ink-dark stripe at the edge of the continental view.
  float coastHaze=smoothstep(560,940,region.x+35*sin(region.y*.002+1));
  // The exported eastern shelf begins at x=637 below the irregular playable
- // relief. In panorama its first metres formed a dark scalloped band. Fade
- // only this non-interactive continuation earlier; rivers and terrain retain
- // their established treatment and the regional camera has zero boundary weight.
- if(_EasternShelf>.5)coastHaze=smoothstep(430,680,region.x+35*sin(region.y*.002+1));
+ // relief. At that first visible metre it must already match the peripheral
+ // mist: the painted relief supplies the gradual in-map feather. Scope this
+ // to the exact non-interactive renderer; regional view has zero boundary weight.
+ if(_EasternShelf>.5)coastHaze=smoothstep(280,620,region.x+35*sin(region.y*.002+1));
  atmosphere=max(atmosphere,coastHaze*_BoundaryWeight);
  return half4(lerp(c.rgb,_BoundaryColour.rgb,atmosphere),1);
  }
