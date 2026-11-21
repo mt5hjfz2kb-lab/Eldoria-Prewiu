@@ -284,13 +284,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 for(int j=0;j<Across;j++)
                 {
                     float u=j/(float)(Across-1);
-                    // The imperial route may taper into open meadow. District
-                    // branches, however, JOIN an existing road/yard: narrowing
-                    // those to a geometric point produced the conspicuous
-                    // triangular spur beside the completed barracks.
-                    float taper=cobbled && !districtAccess
-                        ? Mathf.Lerp(.05f,1f,Mathf.SmoothStep(0f,1f,along/1.6f)) : 1f;
-                    float offset=(u-.5f)*width*wav*taper;
+                    // Keep a stable physical width at the open-meadow end.
+                    // Narrowing the spline itself to a point produced the
+                    // conspicuous triangular tongue below the barracks even
+                    // after its redundant access branch was removed. Fade the
+                    // paint longitudinally instead; route points stay exact.
+                    float offset=(u-.5f)*width*wav;
                     int index=i*Across+j;
                     Vector2 p=spine[i]+normal*offset;
                     vtx[index]=new Vector3(p.x,p.y,-.075f);
@@ -306,6 +305,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     float patches=N(p.x*4.1f,p.y*3.2f+u*5.1f,203);
                     float ink=(cobbled ? .71f : .57f)+.19f*erosion+.09f*patches;
                     float alpha=Mathf.Clamp01(feather*ink);
+                    if(cobbled&&!districtAccess)
+                        alpha*=Sm(.08f,1.62f,along);
                     if(cartLane)
                     {
                         // Grass persists between wheel tracks and crosses the path
