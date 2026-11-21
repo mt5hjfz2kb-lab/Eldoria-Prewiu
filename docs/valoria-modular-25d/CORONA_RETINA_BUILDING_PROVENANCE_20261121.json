@@ -1,0 +1,61 @@
+[
+  {
+    "file": "bastion_i_hd.png",
+    "sha256": "15e2a67b80ceaeda854f525e72082bd20442bc2b0f1d3a543353aa1f29aefab6",
+    "dimensions": [
+      1440,
+      942
+    ],
+    "ppu": 288,
+    "source": "generated_images/exec-3f13e0c7-604a-45a1-9091-cd1066900428.png",
+    "content_box": [
+      63,
+      10,
+      1347,
+      936
+    ],
+    "old_box": [
+      21,
+      2,
+      449,
+      312
+    ]
+  },
+  {
+    "file": "sawmill_i_hd.png",
+    "sha256": "6d10a8ab1375776b75fa6a785026943b0a3cc9436587d26ed7d5a23b6b1b6508",
+    "dimensions": [
+      1086,
+      819
+    ],
+    "ppu": 288,
+    "source": "generated_images/exec-e518003f-1103-4383-bdbe-616ed5328200.png",
+    "content_box": [
+      33,
+      25,
+      1023,
+      801
+    ],
+    "old_box": [
+      11,
+      0,
+      341,
+      267
+    ]
+  },
+  {
+    "file": "IdleAtlas.png",
+    "dimensions": [
+      448,
+      224
+    ],
+    "sha256": "c383482cc7dadc4fc03d65a4f6f9046c0681fe998b9baab2cf2c8fa1705d7680",
+    "ppu": 200,
+    "frame_pixels": [
+      224,
+      224
+    ],
+    "visible_height": 192,
+    "baseline_from_top": 208
+  }
+]

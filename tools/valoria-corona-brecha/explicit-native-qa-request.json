@@ -1,5 +1,5 @@
 {
-  "source_base": "a6ea9e66bcf2ea11ba316322b65f5ef4e2556aa2",
+  "source_base": "4b20945049c1f5328d58f08a02208f34336d40aa",
   "scene": "BastionI_Modular25D",
-  "purpose": "Verify explicit alpha sampling for architectural shadows and labels clear of the workshop props, including landscape and DPR3."
+  "purpose": "Validate HD architecture with invariant world bounds, planted idle poses, current-state shadows and 8-second Unity video at actual animation speed; retain full DPR3/browser build/persistence checks."
 }

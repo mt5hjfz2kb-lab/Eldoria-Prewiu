@@ -30,7 +30,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         void LateUpdate() => Refresh();
 
-        void Refresh()
+        public void Refresh()
         {
             if(source==null||source.sprite==null||source.sprite==previous)return;
             previous=source.sprite;

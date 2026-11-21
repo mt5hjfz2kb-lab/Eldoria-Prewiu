@@ -8,7 +8,7 @@ name: Valoria Modular 2.5D — CORONA DE LA BRECHA actual Unity PlayMode and Web
 # requested via the dedicated native-proof trigger or workflow_dispatch.
 on:
   push:
-    branches: [experiment/valoria-corona-de-la-brecha-ui-20261120]
+    branches: [experiment/corona-retina-building-pass-20261121]
     paths:
       - 'tools/valoria-corona-brecha/explicit-native-qa-request.json'
   workflow_dispatch:
@@ -476,6 +476,9 @@ jobs:
           assert len(paths)==1,paths
           data=json.load(open(paths[0],encoding="utf-8-sig"))
           assert data["engine"]=="Unity" and data["sourceFrames"]>=42
+          assert data["movementFrameRate"]==15 and data["movementFrames"]==120
+          assert data["movementSimulationSeconds"]==8
+          assert len([x for x in data["frames"] if x["file"].startswith("movement-")])==120
           directory=os.path.dirname(paths[0])
           for x in data["frames"]:
             path=os.path.join(directory,x["file"])
@@ -485,7 +488,7 @@ jobs:
           PY
           python3 -m pip install --disable-pip-version-check --quiet imageio-ffmpeg==0.6.0
           FFMPEG="$(python3 -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())')"
-          "$FFMPEG" -hide_banner -loglevel error -y -framerate 10 -i "$(cat frames_directory)/movement-%03d.png" \
+          "$FFMPEG" -hide_banner -loglevel error -y -framerate 15 -i "$(cat frames_directory)/movement-%03d.png" \
             -c:v libx264 -crf 20 -pix_fmt yuv420p -movflags +faststart BastionI_Unity_EditorMovement.mp4
           test -s BastionI_Unity_EditorMovement.mp4
       - uses: actions/upload-artifact@v4

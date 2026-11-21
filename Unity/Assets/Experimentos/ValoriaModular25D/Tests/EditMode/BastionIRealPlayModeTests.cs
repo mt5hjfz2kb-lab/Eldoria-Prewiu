@@ -81,6 +81,30 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(originalArtType,"Original artist sprite factory not loaded");
             var sawyerMethod=originalArtType.GetMethod("Sawyer",BindingFlags.Public|BindingFlags.Static);
             Assert.NotNull(sawyerMethod);
+            foreach(var key in new[]{"bastion_i","sawmill_i"})
+            {
+                var original=Resources.Load<Sprite>("ValoriaModular25D/"+key);
+                var hd=Resources.Load<Sprite>("ValoriaModular25D/"+key+"_hd");
+                Assert.NotNull(original,"Original artwork must remain available");
+                Assert.NotNull(hd,"Retina restoration must actually import as Sprite");
+                Assert.That(hd.rect.width,Is.EqualTo(original.rect.width*3f).Within(.01f));
+                Assert.That(hd.rect.height,Is.EqualTo(original.rect.height*3f).Within(.01f));
+                Assert.That(hd.pixelsPerUnit,Is.EqualTo(original.pixelsPerUnit*3f).Within(.01f));
+                Assert.That(Vector3.Distance(hd.bounds.size,original.bounds.size),Is.LessThan(.001f),
+                    "Higher texture resolution must not resize the actual building");
+                Assert.That(Vector3.Distance(hd.bounds.center,original.bounds.center),Is.LessThan(.001f),
+                    "Restored art must preserve the original foot pivot");
+                string factory=key=="bastion_i"?"Bastion":"Sawmill";
+                Assert.AreSame(hd,originalArtType.GetMethod(factory).Invoke(null,null),
+                    "The playable scene must actually use the restored art");
+            }
+            var idle=originalArtType.GetMethod("CitizenIdle");
+            Assert.NotNull(idle);
+            var idleFront=idle.Invoke(null,new object[]{false}) as Sprite;
+            var idleRear=idle.Invoke(null,new object[]{true}) as Sprite;
+            Assert.NotNull(idleFront);Assert.NotNull(idleRear);
+            Assert.AreNotEqual(idleFront.rect,idleRear.rect);
+            Assert.That(idleFront.rect.height,Is.EqualTo(224f));
             Assert.NotNull(sawyerMethod.Invoke(null,new object[]{0}) as Sprite,
                 "Original artist-painted sawyer frame 0 must remain importable");
             Assert.NotNull(sawyerMethod.Invoke(null,new object[]{1}) as Sprite,

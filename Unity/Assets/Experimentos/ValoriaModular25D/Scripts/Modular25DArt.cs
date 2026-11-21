@@ -34,6 +34,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             if (Cache.TryGetValue(key, out var s)) return s;
 
+            // Retina restoration preserves the original world-space dimensions and anchors.
+            var hd=Resources.Load<Sprite>("ValoriaModular25D/"+key+"_hd");
+            if(hd!=null){Cache.Add(key,hd);return hd;}
+
             // Optional production artwork: each original Blender bake is an
             // independent Sprite in this experiment's own Resources folder.
             // The procedural fallback lets the sandbox compile and test even
@@ -254,6 +258,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         public static Sprite Sawmill()
         {
+            var hd=Resources.Load<Sprite>("ValoriaModular25D/sawmill_i_hd");
+            if(hd!=null)return hd;
             var original=Resources.Load<Sprite>("ValoriaModular25D/sawmill_i");
             if(original!=null)return FinishedSawmillWithCleanMatte(original);
             return Make("sawmill_i",362,299,96f,P(.5f,.085f),a =>
@@ -481,6 +487,20 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public static Sprite Citizen(int frame,bool facingAway)
         {
             return ActorFrame((facingAway?4:0)+(frame%4));
+        }
+
+        public static Sprite CitizenIdle(bool facingAway)
+        {
+            string key="corona_idle_"+facingAway;
+            if(Cache.TryGetValue(key,out var sprite))return sprite;
+            var atlas=Resources.Load<Texture2D>("ValoriaModular25D/Actors/IdleAtlas");
+            if(atlas==null||atlas.width!=448||atlas.height!=224)
+                throw new InvalidOperationException("Missing authored standing courier poses");
+            sprite=Sprite.Create(atlas,new Rect(facingAway?224:0,0,224,224),
+                new Vector2(.5f,.075f),200f,0,SpriteMeshType.FullRect);
+            sprite.name=key;
+            Cache.Add(key,sprite);
+            return sprite;
         }
 
         public static Sprite Carpenter(int frame)

@@ -376,6 +376,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 ? Modular25DArt.Sawmill()
                 : stage==ParcelBuildingState.UNDER_CONSTRUCTION
                     ? Modular25DArt.SawmillWorksite() : Modular25DArt.SawmillSite();
+            // Native captures may render in the same Editor call without a LateUpdate.
+            // Synchronize presentation immediately with the canonical sprite transition.
+            SawmillRenderer.GetComponent<Modular25DArchitecturalShadow>()?.Refresh();
             if(WorkshopAction!=null)
                 WorkshopAction.gameObject.SetActive(stage==ParcelBuildingState.BUILT);
         }

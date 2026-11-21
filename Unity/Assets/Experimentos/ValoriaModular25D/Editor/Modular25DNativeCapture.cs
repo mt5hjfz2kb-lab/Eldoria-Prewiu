@@ -35,6 +35,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             public string mode, artApproved="NO", physicalIphone="NOT_TESTED";
             public bool nativeWorldRender, gatewayBuild, savedAndReloaded, noDoublePayment, didNotAlterBeta;
             public bool continuousTerrainPresent, paintedGroundSourceLoaded, roadAndFootprintKits, noLegacyHudInEditorPreview, movingCharactersAreUnityTransforms, workshopActorAnimated, composedSettlementZones;
+            public int movementFrameRate=15, movementFrames=120;
+            public float movementSimulationSeconds=8f;
             public int sourceFrames, originalArtResourcesLoaded, bastionLevel, initialWood, afterStartWood, afterCompletedWood, sawmillLevel, completionReceiptCount;
             public string disclaimer="Unity Editor Camera.Render on real scene, no PlayMode, no UI overlay, no physical device.";
             public List<Frame> frames = new List<Frame>();
@@ -159,6 +161,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 var portrait=Modular25DCameraInput.HomeSizeForAspect(390f/844f);
                 var landscapeOrtho=Modular25DCameraInput.HomeSizeForAspect(844f/390f);
                 world.Apply(state);
+                AssertCurrentBuildingArt(world);
                 if(world.WorkshopAction==null||world.WorkshopAction.gameObject.activeInHierarchy)
                     throw new Exception("Worker visible or missing at unbuilt sawmill");
                 Render(cam,output,report,"01-available-390x844",390,844,home,portrait);
@@ -179,6 +182,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                    ParcelBuildingStates.For(during,"sawmill")!=ParcelBuildingState.UNDER_CONSTRUCTION)
                     throw new Exception("Canonical debit or worksite transition was not applied");
                 world.Apply(during);
+                AssertCurrentBuildingArt(world);
                 if(world.WorkshopAction.gameObject.activeInHierarchy)
                     throw new Exception("Worker productive before completion of real worksite");
                 Render(cam,output,report,"06-real-building-worksite",390,844,home,portrait);
@@ -198,6 +202,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 report.completionReceiptCount=complete.ChapterProgress.GrantedRewards.FindAll(x=>x=="c1-sawmill").Count;
                 if(report.completionReceiptCount!=1)throw new Exception("Chapter-I receipt missing or duplicated");
                 world.Apply(complete);
+                AssertCurrentBuildingArt(world);
                 if(!world.WorkshopAction.gameObject.activeInHierarchy)
                     throw new Exception("Finished sawmill worker not active after real save reload");
                 Render(cam,output,report,"08-sawmill-built-390x844",390,844,home,portrait);
@@ -225,7 +230,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 report.savedAndReloaded=true;
                 report.didNotAlterBeta=savePath.StartsWith(output,StringComparison.OrdinalIgnoreCase);
                 // Real Unity Editor scene graph and real camera changes in
-                // 32 sequential frames. It is explicitly not a PlayMode clip.
+                // 120 sequential frames at 1/15 s match the export frame rate.
+                // This is a real-time-speed Editor capture, not a PlayMode/FPS benchmark.
                 var walkers=UnityEngine.Object.FindObjectsByType<Modular25DWalker>(FindObjectsSortMode.None);
                 if(walkers.Length<2)throw new Exception("Missing real independent actor sprites");
                 var workshop=UnityEngine.Object.FindObjectsByType<Modular25DWorkshopAction>(
@@ -233,11 +239,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 if(workshop.Length!=1||world.WorkshopWorkersPlaced!=1||!workshop[0].Configured)
                     throw new Exception("One real illustrated lumberyard worker required");
                 cam.orthographicSize=6.4f;
-                for(int i=0;i<32;i++)
+                for(int i=0;i<report.movementFrames;i++)
                 {
-                    foreach(var w in walkers)w.StepForNativeCapture(.56f);
-                    workshop[0].StepForNativeCapture(.56f);
-                    var phase=i/31f;
+                    foreach(var w in walkers)w.StepForNativeCapture(1f/report.movementFrameRate);
+                    workshop[0].StepForNativeCapture(1f/report.movementFrameRate);
+                    var phase=i/(float)(report.movementFrames-1);
                     var offset=new Vector3(Mathf.Lerp(-1.70f,.45f,phase),
                         Mathf.Lerp(.13f,1.75f,phase),-30f);
                     float ortho=portrait-Mathf.Sin(phase*Mathf.PI)*1.2f;
@@ -260,6 +266,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             {
                 SliceContentProfiles.SetRuntimeProfileOverride(null);
             }
+        }
+
+        static void AssertCurrentBuildingArt(Modular25DWorld world)
+        {
+            var renderer=world.SawmillRenderer.GetComponentInChildren<MeshRenderer>();
+            if(renderer==null||renderer.sharedMaterial==null||
+               renderer.sharedMaterial.GetTexture("_ShadowTex")!=world.SawmillRenderer.sprite.texture)
+                throw new Exception("Ground shadow must match the CURRENT canonical building state before render");
+            if(world.BastionRenderer.sprite!=Resources.Load<Sprite>("ValoriaModular25D/bastion_i_hd"))
+                throw new Exception("Native camera did not receive high-definition Bastion artwork");
         }
 
         static void Render(Camera cam,string folder,Evidence report,string name,
