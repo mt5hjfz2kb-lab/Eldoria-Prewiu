@@ -69,6 +69,10 @@ namespace Eldoria.World4XCanon
                     // imported colour merged with the deck in the player view.
                     if(source.name.StartsWith("Bridge sunlit weathered oak rails",StringComparison.Ordinal))
                         colour*=new Color(.60f,.52f,.40f,1f);
+                    if(RegionOneModularArt.Enabled){
+                        material.SetFloat("_ModularWorld",1);
+                        material.SetTexture("_FaultPigment",Resources.Load<Texture2D>("World4X/CoronaFaultPigment"));
+                    }
                     material.SetColor("_BaseColor",colour);material.SetVector("_RegionOrigin",origin);
                     if(source.name.StartsWith("Breach fractured basalt",StringComparison.Ordinal)||source.name.StartsWith("Breach shaded stratified",StringComparison.Ordinal))material.SetFloat("_GeologicalRock",1f);
                     if(source.name.StartsWith("Original river turquoise shallow ford continuity",StringComparison.Ordinal))material.SetFloat("_WaterSurface",1f);

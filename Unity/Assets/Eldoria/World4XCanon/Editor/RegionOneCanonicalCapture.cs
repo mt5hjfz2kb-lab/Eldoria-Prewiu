@@ -30,11 +30,15 @@ namespace Eldoria.World4XCanon.Editor
         {
             const string scene="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
             var dest=Environment.GetEnvironmentVariable("ELDORIA_WORLD_PLAYER_OUT");
-            PlayerSettings.productName="Valoria · Región 1 experimental";
-            PlayerSettings.WebGL.compressionFormat=WebGLCompressionFormat.Gzip;
-            PlayerSettings.WebGL.decompressionFallback=true;
-            var result=BuildPipeline.BuildPlayer(new[]{scene},dest,BuildTarget.WebGL,BuildOptions.StrictMode);
-            if(result.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new IOException("World player failed");
+            var libraries=new System.Collections.Generic.Dictionary<string,byte[]>();
+            try{
+                Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.PrepareWebPlayer(libraries,false);
+                PlayerSettings.productName="Valoria · Región 1 experimental";
+                var result=BuildPipeline.BuildPlayer(new[]{scene},dest,BuildTarget.WebGL,BuildOptions.StrictMode);
+                if(result.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new IOException("World player failed");
+            }finally{
+                foreach(var library in libraries)File.WriteAllBytes(library.Key,library.Value);
+            }
         }
 
         [MenuItem("Eldoria/Region 1/Capture 3 actual integrated game views")]

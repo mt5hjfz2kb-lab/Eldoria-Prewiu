@@ -107,6 +107,7 @@ jobs:
            '/Unity/Assets/Experimentos/ValoriaModular25D/',
            '/Unity/Assets/Experimentos/ValoriaModular25D.meta','/Unity/Assets/Experimentos.meta',
            '/Unity/Assets/Eldoria/','/Unity/Assets/Eldoria.meta',
+           '/Unity/Assets/StreamingAssets/','/Unity/Assets/StreamingAssets.meta',
            '/Unity/Assets/Plugins/','/Unity/Assets/Plugins.meta',
            '/Unity/Assets/DefaultVolumeProfile.asset',
            '/Unity/Assets/UniversalRenderPipelineGlobalSettings.asset',

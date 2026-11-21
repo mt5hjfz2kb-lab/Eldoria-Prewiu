@@ -10,7 +10,7 @@ namespace Eldoria.World4XCanon
     [DefaultExecutionOrder(1400)]
     public sealed class RegionOneResourceModels : MonoBehaviour
     {
-        sealed class Node { public string Id; public GameObject WorkSite; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; public bool AnchorCached; public Vector3 VisualAnchorOffset; public Collider Hit; public bool PickCached; public Vector3 HitCenter,HitSize; public float HitRadius; public bool LastPickRegional; public float LastPickScale=-1; public Vector3 LastPickPosition; public Quaternion LastPickRotation; }
+        sealed class Node { public string Id; public Vector3 SiteFoot; public bool SiteGrounded; public GameObject WorkSite; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; public bool AnchorCached; public Vector3 VisualAnchorOffset; public Collider Hit; public bool PickCached; public Vector3 HitCenter,HitSize; public float HitRadius; public bool LastPickRegional; public float LastPickScale=-1; public Vector3 LastPickPosition; public Quaternion LastPickRotation; }
         readonly List<Node> nodes=new List<Node>();
         float lastImpostorScale=-1;
         ValoriaIntegratedWorld host;
@@ -268,7 +268,15 @@ namespace Eldoria.World4XCanon
                 bool drawMesh=alive&&near&&!node.WorkSite;
                 foreach(var renderer in node.Renderers)if(renderer.enabled!=drawMesh)renderer.enabled=drawMesh;
                 if(node.WorkSite){
-                    node.WorkSite.transform.position=p;
+                    if(!node.SiteGrounded || (node.SiteFoot-p).sqrMagnitude>.000001f){
+                        node.WorkSite.transform.position=p;
+                        foreach(Transform piece in node.WorkSite.transform){
+                            var foot=piece.position;
+                            foot.y=SoilAt(foot)+.08f;
+                            piece.position=foot;
+                        }
+                        node.SiteFoot=p;node.SiteGrounded=true;
+                    }
                     bool show=alive&&near;
                     if(node.WorkSite.activeSelf!=show)node.WorkSite.SetActive(show);
                 }

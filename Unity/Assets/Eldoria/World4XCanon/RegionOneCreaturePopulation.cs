@@ -17,6 +17,8 @@ namespace Eldoria.World4XCanon
             public Eldoria.Presentation.WorldHotspot Hotspot;
             public GameObject Near, Far;
             public float NearScale;
+            public MeshRenderer Painted;
+            public float PaintScale=-1;
         }
         readonly Dictionary<string,Encounter> instances=new Dictionary<string,Encounter>();
         readonly Dictionary<string,GameObject> prefabs=new Dictionary<string,GameObject>();
@@ -24,6 +26,8 @@ namespace Eldoria.World4XCanon
         ICommandGateway gateway;
         RegionOneResourcePlacement placement;
         float nextSnapshot;
+        RegionOneModularArt modularArt;
+        MaterialPropertyBlock paintProperties;
         public static void Install(Transform parent,ValoriaIntegratedWorld host,RegionOneResourcePlacement placement)
         {
             var boarNear=Resources.Load<GameObject>("World4X/Creatures/RockBoarNear");
@@ -36,6 +40,8 @@ namespace Eldoria.World4XCanon
                 return;
             }
             var service=parent.gameObject.AddComponent<RegionOneCreaturePopulation>();
+            service.modularArt=parent.GetComponentInChildren<RegionOneModularArt>();
+            service.paintProperties=new MaterialPropertyBlock();
             service.host=host;
             service.placement=placement;
             service.prefabs["boar:near"]=boarNear;
@@ -92,6 +98,15 @@ namespace Eldoria.World4XCanon
                     float nearScale=RegionOneResourceModels.FitNearWidth(close,
                         RegionOneReferenceNodes.BastionOneVisualWidth*(creature.CreatureKind=="boar"?.45f:.55f));
                     entity=new Encounter{Hotspot=hot,Near=close,Far=far,NearScale=nearScale};
+                    if(modularArt){
+                        var family=creature.CreatureKind=="boar"?"RockBoar":"Spawnling";
+                        int variant=0;
+                        foreach(char c in creature.TargetId)variant=(variant+c)&1;
+                        var width=RegionOneReferenceNodes.BastionOneVisualWidth*(creature.CreatureKind=="boar"?.45f:.55f);
+                        foreach(var donor in new[]{close,far})
+                            foreach(var original in donor.GetComponentsInChildren<Renderer>(true))original.forceRenderingOff=true;
+                        entity.Painted=modularArt.Place(go.transform,"World4X/Creatures/"+family+"Paint"+variant,width,go.transform.position);
+                    }
                     instances.Add(creature.TargetId,entity);
                 }
                 entity.Hotspot.transform.position=new Vector3(creature.X,creature.Y,creature.Z);
@@ -121,6 +136,21 @@ namespace Eldoria.World4XCanon
                 // Hide visual, impostor and shadows in panorama without removing state.
                 SetVisible(entity.Near,alive&&!panorama&&near);
                 SetVisible(entity.Far,alive&&!panorama&&!near);
+                if(entity.Painted){
+                    var foot=entity.Hotspot.transform.position;
+                    foot.y=host.WorldHome.y+RegionOneBlenderLandscape.Height(foot.x-host.WorldHome.x,foot.z-host.WorldHome.z)+.08f;
+                    entity.Painted.transform.position=foot;
+                    entity.Painted.enabled=alive&&!panorama;
+                    float scale=(near?closePresence:presence)*baseScale/entity.NearScale;
+                    if(Mathf.Abs(scale-entity.PaintScale)>.0001f){
+                        entity.PaintScale=scale;
+                        paintProperties.SetFloat("_BillboardScale",scale);
+                        entity.Painted.SetPropertyBlock(paintProperties);
+                        var bounds=entity.Painted.GetComponent<MeshFilter>().sharedMesh.bounds;
+                        bounds.size*=scale;
+                        entity.Painted.localBounds=bounds;
+                    }
+                }
             }
         }
         GameObject MakeModel(string kind,string lod,Transform parent,string id)

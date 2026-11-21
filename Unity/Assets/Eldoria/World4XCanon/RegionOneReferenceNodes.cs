@@ -15,6 +15,9 @@ namespace Eldoria.World4XCanon
   ValoriaIntegratedWorld host;Material nodes,trees;bool before,canonicalCity;
   [Serializable] sealed class CityAnchor {public float u,v;}
   readonly List<Material> cityMaterials=new List<Material>();
+  int shownBastionLevel;
+  GameObject hiddenFive;
+  readonly Sprite[] citySprites=new Sprite[6];
   BoxCollider cityHit;Vector3 cityHitCenter,cityHitSize;bool cityHitCached;
   readonly Dictionary<string,Vector3> resourceOrigins=new Dictionary<string,Vector3>();
   readonly List<Renderer> old=new List<Renderer>();readonly List<bool> states=new List<bool>();readonly List<bool> mountains=new List<bool>();
@@ -111,6 +114,29 @@ namespace Eldoria.World4XCanon
    var state=host.City.Gateway.Snapshot();
    var tierFive=host.GetComponent<BastionIVVWorldPresentation>();
    bool meshCity=state.BastionLevel>=5&&tierFive&&tierFive.WorldModel&&tierFive.WorldModel.activeInHierarchy;
+   if(RegionOneModularArt.Enabled && canonicalCity){
+    int level=Mathf.Clamp(state.BastionLevel,1,5);
+    if(shownBastionLevel!=level){
+     if(!citySprites[level])citySprites[level]=Resources.Load<Sprite>("ValoriaModular25D/"+(level==1?"bastion_i_hd":"Progression/bastion_"+level));
+     var sprite=citySprites[level];
+     if(sprite){
+      var pivot=sprite.pivot/sprite.rect.size;
+      float width=BastionOneVisualWidth,height=width*sprite.rect.height/sprite.rect.width;
+      foreach(var renderer in current){
+       if(!renderer.name.StartsWith("Reference city Bastion",StringComparison.Ordinal))continue;
+       renderer.sharedMaterial.mainTexture=sprite.texture;
+       var mesh=renderer.GetComponent<MeshFilter>().sharedMesh;
+       mesh.uv2=new[]{new Vector2(-width*pivot.x,-height*pivot.y),new Vector2(width*(1-pivot.x),-height*pivot.y),
+        new Vector2(width*(1-pivot.x),height*(1-pivot.y)),new Vector2(-width*pivot.x,height*(1-pivot.y))};
+      }
+      shownBastionLevel=level;
+     }
+    }
+    if(meshCity && hiddenFive!=tierFive.WorldModel){
+     hiddenFive=tierFive.WorldModel;
+     foreach(var renderer in hiddenFive.GetComponentsInChildren<Renderer>(true))renderer.forceRenderingOff=true;
+    }
+   }
    if(!cityHitCached){
     var target=host.FindTarget("valoria-map-city");cityHit=target?target.GetComponent<BoxCollider>():null;
     if(cityHit){cityHitCenter=cityHit.center;cityHitSize=cityHit.size;cityHitCached=true;}
@@ -124,7 +150,8 @@ namespace Eldoria.World4XCanon
     if(id!=null&&resourceOrigins.TryGetValue(id,out var original)){var target=host.FindTarget(id);if(target){var delta=target.transform.position-original;var saved=state.WorldResourceLocations.Find(x=>x.TargetId==id);if(saved!=null&&saved.Generation>0)delta.y=target.transform.position.y-GroundFoot(original).y;current[i].transform.position=delta;}}
     bool city=current[i].name.StartsWith("Reference city Bastion",StringComparison.Ordinal);
     current[i].enabled=!(id!=null&&Resources.Load<GameObject>("World4X/Blender/RegionOneResources"))&&!before&&
-     (city?(canonicalCity||!panorama):!far)&&available&&(!gates[i]||gates[i].activeInHierarchy);
+     (city?(canonicalCity||!panorama):!far)&&available&&(!gates[i]||gates[i].activeInHierarchy||
+      (RegionOneModularArt.Enabled&&meshCity&&gates[i]==host.WorldBastionTwo));
     if(city){
      var mesh=current[i].GetComponent<MeshFilter>().sharedMesh;var foot=mesh.vertices[0];
      float renderedScale=canonicalCity?canonicalCityScale:cityScale;

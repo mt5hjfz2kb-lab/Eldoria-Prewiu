@@ -40,11 +40,16 @@ namespace Eldoria.World4XCanon
             return art;
         }
 
+        static string ResourcePath(string key)
+        {
+            return key.StartsWith("World4X/",StringComparison.Ordinal) ? key : Root+key;
+        }
+
         public MeshRenderer Place(Transform parent, string key, float width, Vector3 foot)
         {
             if (!materials.TryGetValue(key, out var material))
             {
-                var texture = Resources.Load<Texture2D>(Root + key);
+                var texture = Resources.Load<Texture2D>(ResourcePath(key));
                 if (!texture) throw new InvalidOperationException("Missing modular world art " + key);
                 material = new Material(Shader.Find("Eldoria/World4X/LocalCanopy")) {mainTexture=texture, name="Valoria · "+key};
                 materials.Add(key, material);
@@ -52,7 +57,7 @@ namespace Eldoria.World4XCanon
             int size = Mathf.Max(1, Mathf.RoundToInt(width*4));
             if (!shapes.TryGetValue((key,size), out var mesh))
             {
-                var sprite = Resources.Load<Sprite>(Root + key);
+                var sprite = Resources.Load<Sprite>(ResourcePath(key));
                 float w = size/4f, h = w*material.mainTexture.height/material.mainTexture.width;
                 Vector2 pivot = sprite ? sprite.pivot / sprite.rect.size : new Vector2(.5f,.07f);
                 var uv = new[]{Vector2.zero, Vector2.right, Vector2.one, Vector2.up};
