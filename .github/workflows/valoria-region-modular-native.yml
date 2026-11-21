@@ -108,7 +108,7 @@ jobs:
            '/Unity/Assets/Experimentos/ValoriaModular25D.meta','/Unity/Assets/Experimentos.meta',
            '/Unity/Assets/Eldoria/','/Unity/Assets/Eldoria.meta',
            '/Unity/Assets/EmaceArt/Slavic World Free/Meshes/','/Unity/Assets/EmaceArt/Slavic World Free/Materials/',
-           '/Unity/Assets/EmaceArt/Slavic World Free/Textures/','/Unity/Assets/EmaceArt/Slavic World Free/Prefabs/Village/Building/Shed/',
+           '/Unity/Assets/EmaceArt/Slavic World Free/Texture/','/Unity/Assets/EmaceArt/Slavic World Free/URP_Support/','/Unity/Assets/EmaceArt/Slavic World Free/Prefabs/Village/Building/Shed/',
            '/Unity/Assets/Holotna/','/Unity/Assets/Holotna.meta','/Unity/Assets/StreamingAssets/','/Unity/Assets/StreamingAssets.meta',
            '/Unity/Assets/Plugins/','/Unity/Assets/Plugins.meta',
            '/Unity/Assets/DefaultVolumeProfile.asset',
