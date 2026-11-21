@@ -770,16 +770,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
 
         // Eight genuine future positions; absent systems never create buttons.
-        // Below 380 logical points use two rows rather than undersized touch targets.
+        // Reserve a full caption width per column. Portrait uses two stable rows.
         public static Rect NavigationCell(int index,float logicalWidth,
             float leftInset,float rightInset,float bottomInset,bool wide)
         {
             if(index<0 || index>=FutureNavigationSlots)
                 throw new ArgumentOutOfRangeException(nameof(index));
             float safeWidth=logicalWidth-leftInset-rightInset;
-            int columns=safeWidth>=380f?8:4;
-            float step=Mathf.Min(48f,(safeWidth-12f)/columns);
-            float diameter=Mathf.Max(44f,step-3f);
+            int columns=safeWidth>=492f?8:4;
+            float step=Mathf.Min(60f,(safeWidth-12f)/columns);
+            float diameter=Mathf.Clamp(step-3f,44f,46f);
             float origin=logicalWidth-rightInset-6f-columns*step;
             int column=index%columns;
             int row=(FutureNavigationSlots-1-index)/columns;
@@ -800,7 +800,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 caption.alignment=TextAnchor.MiddleCenter;
                 caption.rectTransform.anchoredPosition=
                     new Vector2(0f,-cell.width*.5f-9f);
-                caption.rectTransform.sizeDelta=new Vector2(cell.width+5f,16f);
+                caption.rectTransform.sizeDelta=new Vector2(cell.width+8f,16f);
+                caption.horizontalOverflow=HorizontalWrapMode.Wrap;
+                caption.resizeTextForBestFit=true;
+                caption.resizeTextMinSize=9;
+                caption.resizeTextMaxSize=11;
             }
         }
 
