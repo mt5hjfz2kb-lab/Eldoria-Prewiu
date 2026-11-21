@@ -84,6 +84,10 @@ namespace Eldoria.World4XCanon
                     material.SetColor("_BaseColor",colour);material.SetVector("_RegionOrigin",origin);
                     if(source.name.StartsWith("Breach fractured basalt",StringComparison.Ordinal)||source.name.StartsWith("Breach shaded stratified",StringComparison.Ordinal))material.SetFloat("_GeologicalRock",1f);
                     if(source.name.StartsWith("Original river turquoise shallow ford continuity",StringComparison.Ordinal))material.SetFloat("_WaterSurface",1f);
+                    if(source.name.StartsWith("Continental river teal",StringComparison.Ordinal)){
+                        material.SetFloat("_WaterSurface",1f);
+                        material.SetFloat("_EasternShelf",1f);
+                    }
                     if(source.name.StartsWith("Breach naturally graded exposed mineral",StringComparison.Ordinal)){material.SetFloat("_MineralEmission",.65f);minerals.Add(material);}
                     if(source.name.StartsWith("Approved exposed quarry floor",StringComparison.Ordinal))material.SetFloat("_QuarryFloor",1f);
                     bool meadow=source.name.Contains("Region1 open meadows")||source.name.StartsWith("Ochre meadow",StringComparison.Ordinal)||
@@ -123,14 +127,13 @@ namespace Eldoria.World4XCanon
             // ground triangles. The connected terrain casts their shadow;
             // casting again from the exposure produces close-view triangle acne.
             foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true)){
-                // BLD_ContinentalContinuation is the lower, non-interactive
-                // landscape renderer that carries the painted region beyond
-                // the 1820 x 3600 playable relief. The higher BLD_Terrain was
-                // casting its irregular east edge onto this receiver, producing
-                // the dark scalloped strip seen only in panorama. It is an
-                // atmospheric continuation, not discovery or collision data.
+                // The two continuation renderers are non-interactive scenery
+                // beyond the 1820 x 3600 playable relief. Do not let either
+                // receive or cast strategic-camera shadows; their panorama
+                // transition is handled by the atmospheric material instead.
                 for(var node=renderer.transform;node;node=node.parent)
-                    if(node.name=="BLD_ContinentalContinuation"){
+                    if(node.name=="BLD_ContinentalContinuation"||
+                       node.name=="BLD_EasternSeaContinuation"){
                         renderer.receiveShadows=false;
                         renderer.shadowCastingMode=ShadowCastingMode.Off;
                         break;
