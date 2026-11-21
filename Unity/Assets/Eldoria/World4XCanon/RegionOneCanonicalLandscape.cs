@@ -182,6 +182,7 @@ namespace Eldoria.World4XCanon
             host.WorldCamera.cullingMask=1<<29;
             host.WorldCamera.backgroundColor=new Color(.48f,.53f,.35f,1); // continental boundary haze, never implied surrounding sea
             ConfigureRegionCoverage();
+            RegionOneBlenderLandscape.TraceStartupMemory("coverage-ready");
             built = true;
             building=false;
             UpdateLevelOfDetail(true);
@@ -212,9 +213,12 @@ namespace Eldoria.World4XCanon
   Bounds regionBounds;
   void ConfigureRegionCoverage()
   {
-   var vertices=geography.WorldVertices;
-   regionBounds=new Bounds(vertices[0],Vector3.zero);
-   foreach(var p in vertices)regionBounds.Encapsulate(p);
+   // The query tape is the certified geographic source and already carries
+   // the exact 1820 x 3600 domain plus its measured height range. Copying and
+   // transforming every mesh vertex here retained another enormous array and
+   // blocked WebGL immediately after creature placement. Camera coverage can
+   // consume the same exact bounds without touching geometry or discovery.
+   regionBounds=RegionOneBlenderLandscape.GeographicBounds(origin);
    navigation.AllowWholeRegionOverview=true;
    navigation.minimum=new Vector2(regionBounds.min.x,regionBounds.min.z);
    navigation.maximum=new Vector2(regionBounds.max.x,regionBounds.max.z);
@@ -284,6 +288,7 @@ namespace Eldoria.World4XCanon
    creaturePopulation=root.GetComponent<RegionOneCreaturePopulation>();
    yield return null;
    originalTripoActor=existingWorld.GetComponentInChildren<Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual>(true);
+   RegionOneBlenderLandscape.TraceStartupMemory("staged-ready");
   }
   void UpdateLevelOfDetail(bool force)
   {

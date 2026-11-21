@@ -41,7 +41,9 @@ namespace Eldoria.World4XCanon
  public sealed class RegionOneBlenderLandscape : MonoBehaviour
  {
   const string AssetRoot="World4X/Blender/";
-  static int nx,nz; static float width,depth; static float[] heights; static byte[] masks; static CompactTerrainVerification sourceVertices; static int sourceVertexCount;
+  static int nx,nz; static float width,depth; static float[] heights; static byte[] masks;
+  static float minimumHeight,maximumHeight; static bool heightRangeReady;
+  static CompactTerrainVerification sourceVertices; static int sourceVertexCount;
   GameObject artwork; MeshFilter terrain; readonly List<Mesh> fittedPigments=new List<Mesh>();
   static RegionOneBlenderLandscape activeSurface;
   Vector3[] contactVertices,contactNormals;int[] contactTriangles;
@@ -135,6 +137,14 @@ namespace Eldoria.World4XCanon
     for(int i=0;i<positions.Length;i++)positions[i]=terrain.transform.TransformPoint(positions[i]);
     return positions;
    }
+  }
+  public static Bounds GeographicBounds(Vector3 origin)
+  {
+   EnsureData();
+   if(!heightRangeReady)throw new InvalidOperationException("Canonical Blender height range is unavailable");
+   float height=Mathf.Max(.01f,maximumHeight-minimumHeight);
+   return new Bounds(origin+new Vector3(0,(minimumHeight+maximumHeight)*.5f,0),
+    new Vector3(width,height,depth));
   }
   public Texture2D GeographicMask
   {
@@ -253,7 +263,13 @@ namespace Eldoria.World4XCanon
     if(reader.ReadInt32()!=0x31424c45)throw new InvalidDataException("Unknown Blender query format");
     nx=reader.ReadInt32();nz=reader.ReadInt32();width=reader.ReadSingle();depth=reader.ReadSingle();
     if(nx<2||nz<2||nx*nz>2000000||width!=1820||depth!=3600)throw new InvalidDataException("Unexpected Blender terrain dimensions");
-    var data=heights??new float[nx*nz];for(int i=0;i<data.Length;i++)data[i]=reader.ReadSingle();
+    var data=heights??new float[nx*nz];
+    float low=float.PositiveInfinity,high=float.NegativeInfinity;
+    for(int i=0;i<data.Length;i++){
+     float value=reader.ReadSingle();data[i]=value;
+     low=Mathf.Min(low,value);high=Mathf.Max(high,value);
+    }
+    minimumHeight=low;maximumHeight=high;heightRangeReady=true;
     masks=reader.ReadBytes(data.Length*4);if(masks.Length!=data.Length*4)throw new InvalidDataException("Truncated Blender masks");
     if(!includeVerification){heights=data;return;}
     if(reader.ReadInt32()!=0x32564c45)throw new InvalidDataException("Exact Blender source vertices missing");
