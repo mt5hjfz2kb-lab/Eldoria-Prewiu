@@ -1,5 +1,5 @@
 {
-  "source_base": "c010887ca41dd2a47cbdf34bfd988d907bd8513d",
+  "source_base": "6bc50e5b0a59c130248ca006d2aeaefd4255322c",
   "scene": "BastionI_Modular25D",
-  "purpose": "Validate painted worksite states, continuous meadow, Corona ribbon, true-aspect materials and canonical mobile construction on the actual Unity WebGL player."
+  "purpose": "Verify final phone-size HUD hierarchy, nickname glyphs, drawer, world labels and meadow scale with the real Unity player."
 }
