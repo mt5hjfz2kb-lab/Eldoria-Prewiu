@@ -329,35 +329,53 @@ namespace Eldoria.ReferenceClean {
 #if UNITY_WEBGL && !UNITY_EDITOR
   [Serializable] sealed class TravelView
   {
-   public int level,sawmill;
-   public float x,y,zoom,modalX,modalY;
-   public bool modal;
+   public int level,sawmill,sample;
+   public float x,y,zoom,modalX,modalY,blockerX,blockerY;
+   public bool modal,canTravel;
+   public string blocker;
   }
   bool travelProbe;
+  static Vector2 TravelProbePoint(RectTransform rect){
+   if(!rect)return Vector2.zero;
+   var canvas=rect.GetComponentInParent<Canvas>();
+   if(!canvas)return Vector2.zero;
+   canvas=canvas.rootCanvas;
+   return RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,
+    rect.TransformPoint(rect.rect.center));
+  }
   void ReportTravelView(){
    if(!travelProbe||!InWorld||!WorldCamera.enabled||!WorldRoot.activeInHierarchy)return;
+   Button travelButton=null;
    foreach(var item in Hud.Navigation.Items){
-    if(item.Section!=RoyalSection.World||!item.Button||!item.Button.isActiveAndEnabled)continue;
-    var rect=(RectTransform)item.Button.transform;
-    var canvas=item.Button.GetComponentInParent<Canvas>().rootCanvas;
-    var point=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,rect.TransformPoint(rect.rect.center));
-    var state=boundGateway.Snapshot();
-    var narrative=Hud.Modal?Hud.Modal.GetComponent<RoyalNarrativePresentation>():null;
-    bool blocks=narrative&&narrative.IsShowing&&Hud.Modal.Extra&&
-     Hud.Modal.Extra.gameObject.activeInHierarchy;
-    Vector2 modalPoint=Vector2.zero;
-    if(blocks){
-     var action=(RectTransform)Hud.Modal.Extra.transform;
-     modalPoint=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,
-      action.TransformPoint(action.rect.center));
-    }
-    Debug.Log("VALORIA_REGION "+JsonUtility.ToJson(new TravelView{
-     level=state.BastionLevel,sawmill=state.SawmillLevel,
-     x=point.x/Screen.width,y=1f-point.y/Screen.height,zoom=WorldCamera.orthographicSize,
-     modal=blocks,modalX=blocks?modalPoint.x/Screen.width:0,
-     modalY=blocks?1f-modalPoint.y/Screen.height:0}));
-    break;
+    if(item.Section==RoyalSection.World&&item.Button){travelButton=item.Button;break;}
    }
+   var state=boundGateway.Snapshot();
+   var travelPoint=travelButton?TravelProbePoint((RectTransform)travelButton.transform):Vector2.zero;
+   var narrative=Hud.Modal?Hud.Modal.GetComponent<RoyalNarrativePresentation>():null;
+   bool narrativeBlocks=narrative&&narrative.IsShowing&&Hud.Modal.Extra&&
+    Hud.Modal.Extra.gameObject.activeInHierarchy;
+   Vector2 blockerPoint=Vector2.zero;
+   string blocker="";
+   if(narrativeBlocks){
+    blocker="narrative";
+    blockerPoint=TravelProbePoint((RectTransform)Hud.Modal.Extra.transform);
+   }else{
+    var heroes=Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+    if(heroes&&heroes.IsOpen&&heroes.VisibleRoot){
+     var close=heroes.VisibleRoot.GetComponentsInChildren<Button>(true)
+      .FirstOrDefault(button=>button&&button.name=="Close heroes"&&button.gameObject.activeInHierarchy&&button.interactable);
+     if(close){blocker="heroes";blockerPoint=TravelProbePoint((RectTransform)close.transform);}
+    }
+   }
+   bool blocked=!string.IsNullOrEmpty(blocker);
+   bool canTravel=!blocked&&travelButton&&travelButton.isActiveAndEnabled&&travelButton.interactable;
+   Debug.Log("VALORIA_REGION "+JsonUtility.ToJson(new TravelView{
+    level=state.BastionLevel,sawmill=state.SawmillLevel,sample=Time.frameCount,
+    x=travelButton?travelPoint.x/Screen.width:0,y=travelButton?1f-travelPoint.y/Screen.height:0,
+    zoom=WorldCamera.orthographicSize,canTravel=canTravel,blocker=blocker,
+    blockerX=blocked?blockerPoint.x/Screen.width:0,blockerY=blocked?1f-blockerPoint.y/Screen.height:0,
+    modal=narrativeBlocks,modalX=narrativeBlocks?blockerPoint.x/Screen.width:0,
+    modalY=narrativeBlocks?1f-blockerPoint.y/Screen.height:0}));
   }
 #endif
   void LateUpdate(){

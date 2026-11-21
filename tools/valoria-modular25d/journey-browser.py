@@ -109,14 +109,22 @@ async def main():
             await until(lambda:bool(world_view),200)
             assert world_view['level']==before['level'] and world_view['sawmill']==before['sawmill']
             await page.wait_for_timeout(1500)
-            # The canonical first-world narrative is a real blocking modal.
-            # Advance its actual action button before asking the same bottom
-            # navigation control to return; never click through or hide it.
-            for _ in range(12):
-                if not world_view.get('modal'): break
-                await touch({'x':world_view['modalX'],'y':world_view['modalY']})
-                await page.wait_for_timeout(260)
-            assert not world_view.get('modal'),world_view
+            # World entry can legitimately open the canonical narrative and,
+            # after Lyra is recruited, her real hero presentation. Traverse
+            # the visible action/close controls in order; never click through,
+            # disable or silently skip authored progression content.
+            for _ in range(24):
+                blocker=world_view.get('blocker','')
+                if blocker:
+                    sample=world_view.get('sample',0)
+                    await touch({'x':world_view['blockerX'],'y':world_view['blockerY']})
+                    await until(lambda:world_view.get('sample',0)>sample,15)
+                    await page.wait_for_timeout(260)
+                    continue
+                if world_view.get('canTravel'): break
+                sample=world_view.get('sample',0)
+                await until(lambda:world_view.get('sample',0)>sample,15)
+            assert not world_view.get('blocker') and world_view.get('canTravel'),world_view
             await page.screenshot(path=OUT/f'ciudad-a-region-{state["level"]}.png')
             seq=sequence
             await touch(world_view)
