@@ -1,0 +1,58 @@
+name: Valoria · Traverse the real WebGL city from a fresh save
+on:
+  push:
+    branches: [experiment/corona-retina-building-pass-20261121]
+    paths: [tools/valoria-modular25d/journey-request.json]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  city:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - name: Identify the exact Unity player
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          request=tools/valoria-modular25d/journey-request.json
+          run=$(jq -er .run "$request")
+          sha=$(jq -er .source "$request")
+          actual=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run" --jq .head_sha)
+          test "$actual" = "$sha"
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+          for attempt in $(seq 1 80); do
+            available=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run/artifacts" --jq ".artifacts[] | select(.name == \"corona-mod25d-webgl-player-$run\") | .id")
+            if [ -n "$available" ]; then exit 0; fi
+            status=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run" --jq .status)
+            if [ "$status" = "completed" ]; then echo "Missing the exact player"; exit 1; fi
+            sleep 35
+          done
+          exit 1
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ steps.source.outputs.run }}
+          github-token: ${{ github.token }}
+          name: corona-mod25d-webgl-player-${{ steps.source.outputs.run }}
+          path: player
+      - name: Play I–V through actual touchscreen inputs
+        env:
+          VALORIA_EVIDENCE: evidence
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet playwright==1.56.0
+          (cd player && zip -q -0 -r ../player-for-host.zip .)
+          python3 tools/valoria-modular25d/journey-host.py player-for-host.zip site
+          python3 tools/valoria-modular25d/journey-serve.py site 8824 &
+          python3 -u tools/valoria-modular25d/journey-browser.py 'http://127.0.0.1:8824/index.html?journey-qa'
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-city-journey-${{ github.run_id }}
+          path: evidence/
