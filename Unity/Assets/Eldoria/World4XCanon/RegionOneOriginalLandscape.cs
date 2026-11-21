@@ -97,6 +97,7 @@ namespace Eldoria.World4XCanon
                     clump.Add(tree);
                 }
             }
+            PlantBanksAndWoodland(groves);
             for(int bz=-1800;bz<1800;bz+=180)for(int bx=-910;bx<910;bx+=182){
                 var batches=new Dictionary<string,List<Vector3>>();
                 foreach(var k in names)batches[k]=new List<Vector3>();
@@ -140,6 +141,47 @@ namespace Eldoria.World4XCanon
                 }
                 if(ValoriaIntegratedWorld.P0LazyWorldProbe&&slice.ShouldYield()){yield return null;slice.Resume();}
             }
+        }
+        // A single batched foreground material shares the painted light across
+        // reeds, slate and fallen wood. Its geometry never enters spatial queries.
+        void PlantBanksAndWoodland(Dictionary<Vector2Int,List<Vector3>> groves)
+        {
+            var v=new List<Vector3>(); var uv=new List<Vector2>();
+            var offsets=new List<Vector2>(); var triangles=new List<int>();
+            void Place(float x,float z,int tile,float width)
+            {
+                int first=v.Count;
+                var foot=new Vector3(x,Ground(x,z)+.12f,z);
+                for(int i=0;i<4;i++)
+                {
+                    float u=(i==1||i==2)?1:0, h=i>=2?1:0;
+                    v.Add(foot); uv.Add(new Vector2((tile+u)*.25f,h));
+                    offsets.Add(new Vector2((u-.5f)*width,(h-.035f)*width));
+                }
+                triangles.Add(first);triangles.Add(first+1);triangles.Add(first+2);
+                triangles.Add(first);triangles.Add(first+2);triangles.Add(first+3);
+            }
+            var sites=Resources.Load<TextAsset>(Art+"BankPositions");
+            using(var reader=new System.IO.BinaryReader(new System.IO.MemoryStream(sites.bytes)))
+            {
+                int count=reader.ReadInt32();
+                for(int n=0;n<count;n++)
+                    Place(reader.ReadSingle(),reader.ReadSingle(),reader.ReadByte(),reader.ReadSingle());
+            }
+            var rng=new System.Random(4427);
+            foreach(var group in groves.Values)foreach(var tree in group)
+            {
+                if(tree.x < -200 || tree.x > 216 || tree.z < -148 || tree.z > 364 || rng.Next(4)!=0)continue;
+                float x=tree.x+(float)rng.NextDouble()*4f-2f,z=tree.z-2.6f;
+                if(x*x+z*z<15f*15f || RegionOneBlenderLandscape.Water(x,z)>.01f ||
+                   RegionOneBlenderLandscape.Road(x,z)>.12f)continue;
+                Place(x,z,2,Mathf.Clamp(tree.y*.72f,2.4f,5.8f));
+            }
+            var mesh=new Mesh{name="Painted riverbanks and woodland margins"};
+            mesh.SetVertices(v);mesh.SetUVs(0,uv);mesh.SetUVs(1,offsets);mesh.SetTriangles(triangles,0);
+            var bounds=mesh.bounds;bounds.Expand(16f);mesh.bounds=bounds;
+            var material=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){mainTexture=Texture("MarginAtlas")};
+            owned.Add(material);Draw(mesh,material);
         }
         void Draw(Mesh mesh,Material mat)
         {
@@ -207,3 +249,4 @@ namespace Eldoria.World4XCanon
         void OnDestroy(){foreach(var item in owned)if(item)Destroy(item);}
     }
 }
+

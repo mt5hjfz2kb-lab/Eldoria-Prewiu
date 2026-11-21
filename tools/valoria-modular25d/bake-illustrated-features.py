@@ -58,3 +58,24 @@ with (out/'ForestPositions.bytes').open('wb') as f:
     f.write(struct.pack('<I',len(trees)))
     for tree in trees:f.write(struct.pack('<3f',*tree))
 
+
+# Ground dressing is sampled from the illustrated water and route masks.
+import random
+m=np.asarray(Image.open(out/'NearFeatures.png'))
+rng=random.Random(606101)
+sites=[]
+for z0 in range(-143,362,3):
+ for x0 in range(-194,210,3):
+  x=x0+rng.random()*2.9;z=z0+rng.random()*2.9
+  px=int((x+200)*2); py=int((364-z)*2)
+  wet,road,bank,distance=[int(v) for v in m[py,px]]
+  if road>12 or wet>20 or not 19<distance<124 or x*x+z*z<18**2:continue
+  # Dense pockets with clear intervals, retaining each actual crossing.
+  if m[max(0,py-5):py+6,max(0,px-5):px+6,1].max()>50:continue
+  weight=(np.sin(x*.068+z*.043)+1)/2
+  if rng.random()>.19+.61*weight:continue
+  kind=0 if rng.random()<.78 else 1
+  sites.append((x,z,kind,rng.uniform(1.7,3.8) if kind==0 else rng.uniform(2.4,5.6)))
+with open(out/'BankPositions.bytes','wb') as f:
+ f.write(struct.pack('<i',len(sites)))
+ for x,z,k,w in sites:f.write(struct.pack('<ffBf',x,z,k,w))
