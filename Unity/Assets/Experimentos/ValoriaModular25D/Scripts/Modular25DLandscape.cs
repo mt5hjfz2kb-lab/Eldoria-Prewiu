@@ -23,7 +23,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         readonly List<Texture2D> textures=new List<Texture2D>();
         readonly List<Material> materials=new List<Material>();
         bool built;
-        Material expansionRoadMaterial, expansionPaving, renderedCartLane;
+        Material expansionRoadMaterial, renderedCartLane;
         public int RoadCount { get; private set; }
         public bool OriginalCobbleRoadLoaded { get; private set; }
         public int FootprintCount { get; private set; }
@@ -67,7 +67,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     "fallback is not artistic acceptance.",this);
             // The road is described as spatial segments; bend is interpolated,
             // not simulated by shifting a static full-scene background.
-            expansionPaving=imperialMat;
             var main=new []{
                 new Vector2(-6.65f,-7.5f),new Vector2(-4.85f,-5.3f),
                 new Vector2(-3.88f,-3.76f),new Vector2(-2.70f,-2.5f),
@@ -127,8 +126,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                         materials.Add(renderedCartLane);
                     }
                 }
-                AddRoad("Access | "+id,path,military ? 1.12f : 1.13f,
-                    military ? expansionPaving : (renderedCartLane ? renderedCartLane : expansionRoadMaterial),military);
+                // The barracks gate was authored directly on the Imperial Way:
+                // its visual entrance is already at the route waypoint
+                // (-3.88,-3.76). Drawing a second spline to the sprite's lower
+                // pivot made the road continue beneath the building and emerge
+                // as a long triangular tongue. Keep the canonical building and
+                // main route coordinates; only the genuinely detached districts
+                // need a new cart lane.
+                if(!military)
+                    AddRoad("Access | "+id,path,1.13f,
+                        renderedCartLane ? renderedCartLane : expansionRoadMaterial,false);
                 Color soil=stone ? new Color(.50f,.46f,.40f) : new Color(.45f,.34f,.22f);
                 Color worn=stone ? new Color(.77f,.73f,.62f) : new Color(.71f,.58f,.39f);
                 PutFoot("Contact | "+id,MakeFootprint(id,soil,worn,stone,false),
