@@ -32,6 +32,10 @@ async def main():
             elif 'VALORIA_REGION {' in msg.text:
                 try: world_view.update(json.JSONDecoder().raw_decode(msg.text.split('VALORIA_REGION ',1)[1])[0])
                 except ValueError: pass
+            elif msg.text.startswith('ELDORIA_MEMORY_PHASE') or 'REGION1_P0_LAZY' in msg.text:
+                log.append({'region_phase':msg.text[:350],'browser_seconds':round(time.monotonic(),2)})
+                print(log[-1],flush=True)
+                if msg.type=='error': errors.append(msg.text[:600])
             elif msg.type=='error': errors.append(msg.text[:600])
         page.on('console',console)
         page.on('pageerror',lambda e: errors.append(str(e)))

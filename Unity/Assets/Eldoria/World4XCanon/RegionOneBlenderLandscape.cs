@@ -152,7 +152,8 @@ namespace Eldoria.World4XCanon
   internal static void TraceStartupMemory(string phase)
   {
    bool enabled=UnityEngine.Application.platform==RuntimePlatform.WebGLPlayer
-    ?UnityEngine.Application.absoluteURL.Contains("eldoria_profile=1")
+    ?(UnityEngine.Application.absoluteURL.Contains("eldoria_profile=1") ||
+      (Uri.TryCreate(UnityEngine.Application.absoluteURL,UriKind.Absolute,out var probe) && probe.IsLoopback && probe.Query=="?journey-qa"))
     :Environment.GetEnvironmentVariable("ELDORIA_MEMORY_PHASES")=="1";
    if(!enabled)return;
    Debug.Log("ELDORIA_MEMORY_PHASE phase="+phase+
@@ -205,7 +206,10 @@ namespace Eldoria.World4XCanon
    else instance.BuildContactSurface(host.WorldHome);
    TraceStartupMemory("contact-ready");
    yield return null;
-   instance.FitImportedPigment(host.WorldHome);
+   // These five meshes are hidden by the illustrated presentation. Their
+   // fitted vertices and normals never supply terrain queries or navigation.
+   if(!ValoriaTravelSession.CombinedPlayer || !RegionOneModularArt.Enabled)
+    instance.FitImportedPigment(host.WorldHome);
    // Only CoincidentGroundNormal reads these copied normals, exclusively during
    // FitImportedPigment above. Keep contact vertices/triangles/cells for gameplay.
    // Do not discard shared Mesh CPU data: a later scene load still reads it.

@@ -226,6 +226,9 @@ namespace Eldoria.ReferenceClean {
     travelProbe=Uri.TryCreate(betaUrl,UriKind.Absolute,out var testUri)&&testUri.IsLoopback&&testUri.Query=="?journey-qa";
 #endif
     while(!Ready)yield return null;
+    // The persistent transition canvas is already opaque. Avoid drawing the
+    // old 3D city every frame while the canonical terrain and routes prepare.
+    if(city.PlayerCamera)city.PlayerCamera.enabled=false;
     TrySetWorld(true);
    }
   }
