@@ -63,7 +63,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         void OnDisable()
         {
-            if(Application.isPlaying)
+            if(UnityEngine.Application.isPlaying)
             {
                 Destroy(shadow);Destroy(mesh);Destroy(material);
             }
