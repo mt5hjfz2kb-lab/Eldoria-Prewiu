@@ -1,5 +1,6 @@
 Shader "Eldoria/Region1/Illustrated ground" {
  Properties {
+  _BeyondMap("Outside charted terrain",Float)=0
   _Region("Geographic colour",2D)="white"{} _NearFeatures("Mapped footpaths and water",2D)="black"{} _Weights("Geographic classes",2D)="black"{}
   _Grass("Meadow",2D)="white"{} _Earth("Soil",2D)="white"{}
   _Water("River",2D)="white"{} _Slate("Broken slate",2D)="white"{}
@@ -18,8 +19,23 @@ Shader "Eldoria/Region1/Illustrated ground" {
  struct In {float3 p:POSITION;float2 uv:TEXCOORD0;};
  struct Out {float4 p:SV_POSITION;float2 uv:TEXCOORD0;};
  Out vert(In v){Out o;o.p=TransformObjectToHClip(v.p);o.uv=v.uv;return o;}
+ float _BeyondMap;
+ half3 borderMist(float2 metres) {
+  float2 cloud=metres/float2(670,450);
+  float veil=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,cloud).g;
+  float drift=SAMPLE_TEXTURE2D(_Slate,sampler_Slate,cloud*.49+float2(.37,.21)).g;
+  #ifndef UNITY_COLORSPACE_GAMMA
+  veil=LinearToSRGB(veil); drift=LinearToSRGB(drift);
+  #endif
+  half3 mist=lerp(half3(.33,.375,.385),half3(.66,.685,.64),saturate(.07+veil*.9+drift*.36));
+  #ifndef UNITY_COLORSPACE_GAMMA
+  mist=SRGBToLinear(mist);
+  #endif
+  return mist;
+ }
  half4 frag(Out i):SV_Target {
   float2 metre=(i.uv-.5)*float2(1820,3600);
+  if (_BeyondMap>.5) return half4(borderMist(metre),1);
   half3 base=SAMPLE_TEXTURE2D(_Region,sampler_Region,i.uv).rgb;
   half4 mask=SAMPLE_TEXTURE2D(_Weights,sampler_Weights,i.uv);
   float2 localUV=(metre-float2(-200,-148))/float2(416,512);
@@ -59,12 +75,9 @@ Shader "Eldoria/Region1/Illustrated ground" {
   colour=lerp(colour,riverColour,mask.r);
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
   float edge=min(910-abs(metre.x),1800-abs(metre.y));
-  edge+=14*sin(metre.x*.014+metre.y*.009);
-  half mist=smoothstep(2900,3900,unity_OrthoParams.y)*(1-smoothstep(0,125,edge));
-  half3 haze=half3(.63,.685,.665);
-  #ifndef UNITY_COLORSPACE_GAMMA
-  haze=SRGBToLinear(haze);
-  #endif
+  edge+=24*sin(metre.x*.014+metre.y*.009)+13*cos(metre.y*.027-metre.x*.012);
+  half mist=smoothstep(1850,3500,unity_OrthoParams.y)*(1-smoothstep(-30,185,edge));
+  half3 haze=mist>.001 ? borderMist(metre) : colour;
   return half4(lerp(colour,haze,mist),1);
  }
  ENDHLSL

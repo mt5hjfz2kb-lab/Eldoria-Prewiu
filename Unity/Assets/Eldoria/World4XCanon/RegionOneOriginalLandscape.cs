@@ -44,6 +44,18 @@ namespace Eldoria.World4XCanon
             ground.SetTexture("_NearFeatures",Texture("NearFeatures"));
             ground.SetTexture("_Region",Texture("RegionColour"));ground.SetTexture("_Weights",Texture("SurfaceWeights"));
             foreach(string k in new[]{"Grass","Earth","Slate","Water"})ground.SetTexture("_"+k,Texture(k));
+            // Extend only the painted mist beyond the known region. This backing
+            // has no collider and is below the geographic relief at every point.
+            var fogMesh=new Mesh{name="Mist beyond the mapped region"};
+            const float horizon=6500f;
+            fogMesh.vertices=new[]{new Vector3(-horizon,-90,-horizon),new Vector3(-horizon,-90,horizon),
+                new Vector3(horizon,-90,horizon),new Vector3(horizon,-90,-horizon)};
+            // Keep mist variations aligned with the geographic UVs used by the relief.
+            var fogUv=new Vector2[4];var corners=fogMesh.vertices;
+            for(int i=0;i<corners.Length;i++) fogUv[i]=new Vector2(corners[i].x/1820f+.5f,corners[i].z/3600f+.5f);
+            fogMesh.uv=fogUv;fogMesh.triangles=new[]{0,1,2,0,2,3};fogMesh.RecalculateBounds();
+            var fogMaterial=new Material(ground);fogMaterial.SetFloat("_BeyondMap",1f);
+            owned.Add(fogMaterial);Draw(fogMesh,fogMaterial);
             var slice=new RegionOneFrameSlice(14);
             const int columns=228,rows=450,tile=24;
             for(int z=0;z<rows;z+=tile)for(int x=0;x<columns;x+=tile){
