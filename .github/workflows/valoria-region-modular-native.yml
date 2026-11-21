@@ -1,7 +1,7 @@
 name: Valoria Region 1 modular art and navigation parity
 on:
   push:
-    branches: [experiment/valoria-continuidad-hud-region1-20261121]
+    branches: [experiment/valoria-ciudad-region-unificada-20261121]
     paths:
       - '.github/workflows/valoria-region-modular-native.yml'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs'
@@ -13,11 +13,24 @@ permissions:
 # GitHub concurrency preserves one running + one pending; a new candidate
 # replaces a pending baseline. Always prioritize the latest baseline proof,
 # then queue isolated A/B after baseline completion.
-concurrency:
-  group: eldoria-modular25d-exclusive-unity-native
-  cancel-in-progress: false
 jobs:
+  earlier-city:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - name: Wait for the already requested city proof to release the shared Unity queue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          while true; do
+            status=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/44932090657" --jq .status)
+            if [[ "$status" == completed ]]; then break; fi
+            sleep 55
+          done
   preflight:
+    needs: earlier-city
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
@@ -53,6 +66,9 @@ jobs:
           print("MOD25D_NATIVE_LEASE_PASS")
           PY
   unity:
+    concurrency:
+      group: eldoria-modular25d-exclusive-unity-native
+      cancel-in-progress: false
     needs: preflight
     if: needs.preflight.outputs.allowed == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
@@ -212,10 +228,6 @@ jobs:
             Move-Item $file.FullName $target
             Move-Item ($file.FullName+'.meta') ($target+'.meta')
           }
-          $art=Join-Path $project 'Assets/Experimentos/ValoriaModular25D/Resources'
-          $staged=Join-Path $project 'Assets/ValoriaBuildInputs/CityExperiment'
-          Move-Item $art $staged
-          if(Test-Path ($art+'.meta')){Move-Item ($art+'.meta') ($staged+'.meta')}
           & $env:MOD25D_PYTHON (Join-Path $env:MOD25D_SOURCE 'tools/valoria-modular25d/pack-hidden-geography.py') $project
           if($LASTEXITCODE){throw 'Hidden source geometry could not be verified'}
           Write-Host ("Historical model roots removed from automatic player inclusion: "+$files.Count)
@@ -233,3 +245,30 @@ jobs:
           name: valoria-region1-webgl
           path: ${{env.MOD25D_SOURCE}}/Unity/Builds/RegionModular/
 
+  mobile-journey:
+    needs: unity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-region1-webgl
+          path: player
+      - name: Play a fresh city through Bastion V and visit the canonical region
+        env:
+          VALORIA_EVIDENCE: evidence
+          VALORIA_TEST_REGION: '1'
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet playwright==1.56.0
+          python3 tools/valoria-modular25d/journey-serve.py player 8824 &
+          python3 -u tools/valoria-modular25d/journey-browser.py 'http://127.0.0.1:8824/index.html?journey-qa'
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad-region-recorrido
+          path: evidence/

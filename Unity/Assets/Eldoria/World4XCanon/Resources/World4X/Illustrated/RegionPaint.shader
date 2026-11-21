@@ -25,14 +25,22 @@ Shader "Eldoria/Region1/Illustrated ground" {
   float2 localUV=(metre-float2(-200,-148))/float2(416,512);
   float2 localBorder=min(localUV,1-localUV)*float2(416,512);
   half local=smoothstep(0,8,min(localBorder.x,localBorder.y));
-  half3 features=SAMPLE_TEXTURE2D(_NearFeatures,sampler_NearFeatures,saturate(localUV)).rgb;
+  half4 features=SAMPLE_TEXTURE2D(_NearFeatures,sampler_NearFeatures,saturate(localUV));
   mask.r=lerp(mask.r,features.r,local);
   mask.g=max(mask.g,features.g*local);
   float2 q=metre/15;
   half3 grass=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,q).rgb;
+  // A second rotated meadow sample breaks the repeated 15 m texture pattern.
+  float2 meadowUV=float2(.8*q.x-.6*q.y,.6*q.x+.8*q.y)*.37;
+  half3 meadow=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,meadowUV).rgb;
+  grass=lerp(grass,meadow,.32);
   half3 earth=SAMPLE_TEXTURE2D(_Earth,sampler_Earth,q*.94).rgb;
   half3 slate=SAMPLE_TEXTURE2D(_Slate,sampler_Slate,q*.61).rgb;
   half3 water=SAMPLE_TEXTURE2D(_Water,sampler_Water,q*.81+float2(0,_Time.y*.012)).rgb;
+  float shore=(features.a-.5)*12;
+  float aa=clamp(fwidth(shore),.32,1.4);
+  half wet=smoothstep(-aa,aa,shore);
+  mask.r=lerp(mask.r,wet,local);
   half3 albedo=lerp(grass,earth,mask.g);
   albedo=lerp(albedo,slate,mask.b);
   albedo=lerp(albedo,water,mask.r);
@@ -40,9 +48,14 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half close=1-smoothstep(.35,4.2,footprint);
   half3 colour=lerp(base,albedo,close*.57);
   half3 pathColour=lerp(base*half3(1.20,.99,.73),earth,close*.56+.24);
-  colour=lerp(colour,pathColour,mask.g*(1-mask.r));
+  half wheelWear=saturate(.67+dot(earth-meadow,half3(.33,.48,.19))*.65);
+  colour=lerp(colour,pathColour,mask.g*(1-mask.r)*lerp(1,wheelWear,close));
   colour=lerp(colour,lerp(earth,slate,.34),features.b*local*.53);
   half3 riverColour=lerp(half3(.035,.145,.16),water,.37+.40*close);
+  half shelf=1-smoothstep(0,3.8,shore);
+  half bank=(1-smoothstep(.15,2.1,abs(shore)))*local*close;
+  colour=lerp(colour,lerp(earth,slate,.32),bank*.68);
+  riverColour=lerp(riverColour,lerp(water,earth,.38),shelf*local*close*.72);
   colour=lerp(colour,riverColour,mask.r);
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
   float edge=min(910-abs(metre.x),1800-abs(metre.y));
@@ -57,3 +70,4 @@ Shader "Eldoria/Region1/Illustrated ground" {
  ENDHLSL
  } }
 }
+

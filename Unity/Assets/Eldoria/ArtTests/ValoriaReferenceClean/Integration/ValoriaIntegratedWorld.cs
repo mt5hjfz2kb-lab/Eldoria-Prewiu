@@ -47,7 +47,7 @@ namespace Eldoria.ReferenceClean {
 #if UNITY_EDITOR
     return P0LazyWorldEditorTestOverride;
 #elif UNITY_WEBGL
-    return !P0CityOnlyProbe && UnityEngine.Application.absoluteURL.Contains("eldoria_p0_lazy_world=1");
+    return !P0CityOnlyProbe && (ValoriaTravelSession.CombinedPlayer || UnityEngine.Application.absoluteURL.Contains("eldoria_p0_lazy_world=1"));
 #else
     return false;
 #endif
@@ -221,7 +221,15 @@ namespace Eldoria.ReferenceClean {
    var betaUrl=UnityEngine.Application.absoluteURL??"";
    betaMetricsEnabled=UnityEngine.Application.platform==RuntimePlatform.WebGLPlayer &&
     (betaUrl.Contains("?eldoriaBetaTelemetry=1")||betaUrl.Contains("&eldoriaBetaTelemetry=1"));
+   if(ValoriaTravelSession.CombinedPlayer){
+#if UNITY_WEBGL && !UNITY_EDITOR
+    travelProbe=Uri.TryCreate(betaUrl,UriKind.Absolute,out var testUri)&&testUri.IsLoopback&&testUri.Query=="?journey-qa";
+#endif
+    while(!Ready)yield return null;
+    TrySetWorld(true);
+   }
   }
+  bool returningToModularCity;
   void BindSession(){boundGateway=city.Gateway;binding=new ExistingSliceBinding(boundGateway,city.Clock);world=new ZoneOneGatewayHost(boundGateway,()=>SetWorld(false),()=>city.Clock.UtcTicks);Hud.Bind(this,this);
    var buildings=Hud.GetComponent<RoyalGoldV3BuildingScreens>();if(!buildings)buildings=Hud.gameObject.AddComponent<RoyalGoldV3BuildingScreens>();
    buildings.Initialize(Hud,boundGateway,id=>Read(id,English).Building,()=>{city.Presenter.RefreshState();Hud.Refresh();});
@@ -315,6 +323,22 @@ namespace Eldoria.ReferenceClean {
    };
   }
   public void RefreshNavigation(){if(Hud==null)return;Hud.Navigation.WorldIsCity=InWorld;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
+#if UNITY_WEBGL && !UNITY_EDITOR
+  [Serializable] sealed class TravelView { public int level,sawmill; public float x,y,zoom; }
+  bool travelProbe;
+  void ReportTravelView(){
+   if(!travelProbe||!InWorld||!WorldCamera.enabled||!WorldRoot.activeInHierarchy)return;
+   foreach(var item in Hud.Navigation.Items){
+    if(item.Section!=RoyalSection.World||!item.Button||!item.Button.isActiveAndEnabled)continue;
+    var rect=(RectTransform)item.Button.transform;
+    var canvas=item.Button.GetComponentInParent<Canvas>().rootCanvas;
+    var point=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,rect.TransformPoint(rect.rect.center));
+    var state=boundGateway.Snapshot();
+    Debug.Log("VALORIA_REGION "+JsonUtility.ToJson(new TravelView{level=state.BastionLevel,sawmill=state.SawmillLevel,x=point.x/Screen.width,y=1f-point.y/Screen.height,zoom=WorldCamera.orthographicSize}));
+    break;
+   }
+  }
+#endif
   void LateUpdate(){
    if(!Ready)return;
    SmoothCameraDrag();
@@ -325,6 +349,9 @@ namespace Eldoria.ReferenceClean {
    if(!ReferenceEquals(boundGateway,city.Gateway))BindSession();
    RefreshNavigation();if(Time.unscaledTime>=nextVisualSync){
     nextVisualSync=Time.unscaledTime+.25f;SyncWorldCity();
+#if UNITY_WEBGL && !UNITY_EDITOR
+    ReportTravelView();
+#endif
     if(!string.IsNullOrEmpty(Selected)){
      var area=UIVisibleSceneViewport();
      if(Mathf.Abs(area.xMin-observedVisibleArea.xMin)+Mathf.Abs(area.yMin-observedVisibleArea.yMin)+Mathf.Abs(area.xMax-observedVisibleArea.xMax)+Mathf.Abs(area.yMax-observedVisibleArea.yMax)>.005f||FocusStage(Selected)!=observedFocusStage){observedVisibleArea=area;SelectionChanged(Selected);}
@@ -436,6 +463,13 @@ namespace Eldoria.ReferenceClean {
    if(open&&!CanEnterWorld(city.Gateway.Snapshot())){
     Hud.Feedback.Put(L("Construye primero el aserradero. Pulsa «Ir al objetivo» para encontrar la parcela.","Build the sawmill first. Choose Go to objective to find its plot."));
     Hud.SelectBuilding("sawmill");return false;
+   }
+   if(!open && InWorld && ValoriaTravelSession.CombinedPlayer){
+    if(!returningToModularCity){
+     returningToModularCity=true;
+     UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(ValoriaTravelSession.CityScene);
+    }
+    return true;
    }
    if(!open){
     deferredWorldObjective=null;
@@ -820,5 +854,6 @@ namespace Eldoria.ReferenceClean {
   string L(string es,string en)=>englishInterface?en:es;
  }
 }
+
 
 

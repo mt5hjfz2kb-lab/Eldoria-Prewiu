@@ -36,6 +36,13 @@ namespace Eldoria.ReferenceClean {
    Controls.gameplayOwnsInput=true;
    Clock=Probe?(IClock)new TestClock():new SystemClock();
    try {
+    if(ValoriaTravelSession.CombinedPlayer){
+     var travelStore=ValoriaTravelSession.OpenStore();
+     HadExistingSave=travelStore.Load()!=null;
+     Gateway=new LocalGateway(Clock,travelStore,RuntimeResolver);
+     BindPresenter();
+     return;
+    }
     SaveFile=Probe?Path.Combine(Path.GetTempPath(),"eldoria-valoria-gameplay-"+Guid.NewGuid().ToString("N")+".json"):SliceBoot.SavePath;
     var legacySave=Path.Combine(UnityEngine.Application.persistentDataPath,"eldoria-unity-slice-v1.json");
     // Treat both an existing owner save and a legacy save awaiting import as
@@ -65,9 +72,12 @@ namespace Eldoria.ReferenceClean {
     foreach(var beat in NarrativeCoherenceRules.LegacyAcknowledgements(originalNarrativeSave,
      key=>PlayerPrefs.GetInt("valoria.journey.story."+key,0)==1))
      Gateway.AcknowledgeNarrative(beat);
+    BindPresenter();
+   }catch(Exception e){LoadError="No se pudo abrir el guardado. Se conserva intacto.";Debug.LogError("VALORIA_SAVE_PRESERVED "+e);}
+  }
+  void BindPresenter(){
     if(Presenter==null)Presenter=GetComponent<SlicePresenter>();
     Presenter.SceneHost=this;Presenter.UtcNowTicks=()=>Clock.UtcTicks;Presenter.Initialize(Gateway);Ready=true;
-   }catch(Exception e){LoadError="No se pudo abrir el guardado. Se conserva intacto.";Debug.LogError("VALORIA_SAVE_PRESERVED "+e);}
   }
   void Start(){if(Ready)Presenter.OnSceneLoaded(SceneManager.GetActiveScene(),LoadSceneMode.Single);}
   void OnDestroy(){SliceContentProfiles.SetRuntimeProfileOverride(priorProfile);}
@@ -164,3 +174,4 @@ namespace Eldoria.ReferenceClean {
   }
  }
 }
+

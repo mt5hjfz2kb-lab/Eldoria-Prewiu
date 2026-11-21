@@ -22,10 +22,14 @@ async def main():
         await ctx.add_init_script(TIME_SHIFT)
         page=await ctx.new_page()
         state={}; log=[]; errors=[]; sequence=0
+        world_view={}
         def console(msg):
             nonlocal state,sequence
             if 'VALORIA_JOURNEY {' in msg.text:
                 try: state=json.JSONDecoder().raw_decode(msg.text.split('VALORIA_JOURNEY ',1)[1])[0]; sequence+=1
+                except ValueError: pass
+            elif 'VALORIA_REGION {' in msg.text:
+                try: world_view.update(json.JSONDecoder().raw_decode(msg.text.split('VALORIA_REGION ',1)[1])[0])
                 except ValueError: pass
             elif msg.type=='error': errors.append(msg.text[:600])
         page.on('console',console)
@@ -99,7 +103,7 @@ async def main():
             await reload();assert state['level']==n-1 and state['busy'],state
             await elapse(duration+1);await until(lambda:state['level']==n)
             assert state['level']==n,state
-            await reload();await page.screenshot(path=OUT/f'bastion-{n}.png');await council()
+            await reload();await page.wait_for_timeout(1400);await page.screenshot(path=OUT/f'bastion-{n}.png');await council()
         try:
             await page.goto(URL,wait_until='domcontentloaded');await until(lambda:bool(state),240)
             assert state['level']==1 and state['sawmill']==0 and state['wood']==230,state
@@ -129,6 +133,11 @@ async def main():
             await order('ChooseDevelopment/civil');await elapse(301);await order('Gather/meat-valoria')
             await funds(1100,900);await ascend(5,600);await funds(500,0);await order('Build/stoneworks');await reload()
             assert state['sawmill']>=2 and state['granary']>=2 and state['barracks']>=2 and state['stoneworks']==1
+            for name in ['Abrir Cuartel','Abrir Granero','Abrir Cantera']:
+                await tap(name,False)
+                assert state['council']
+                await tap('Close state',False)
+            await page.wait_for_timeout(1200)
             await page.screenshot(path=OUT/'bastion-5-completo.png')
             # The final camera tour starts in the persisted city, with the HUD
             # closed. Pinch inward in world units, then traverse via actual
@@ -145,8 +154,28 @@ async def main():
             for n,(x1,y1,x2,y2) in enumerate([(145,530,320,350),(160,560,325,355),(319,540,70,402),(330,525,55,400),(218,560,276,360),(140,540,300,370)]):
                 await swipe(x1,y1,x2,y2)
                 await page.screenshot(path=OUT/f'bastion-5-recorrido-{n}.png')
+            if os.environ.get('VALORIA_TEST_REGION')=='1':
+                control=find('Visitar Región 1')
+                assert control,state
+                box=await page.locator('canvas').bounding_box()
+                async def touch(control):
+                    await page.touchscreen.tap(box['x']+control['x']*box['width'],box['y']+control['y']*box['height'])
+                before=state.copy()
+                await touch(control)
+                await until(lambda:bool(world_view),200)
+                assert world_view['level']==before['level'] and world_view['sawmill']==before['sawmill']
+                await page.wait_for_timeout(1500)
+                await page.screenshot(path=OUT/'ciudad-a-region.png')
+                seq=sequence
+                await touch(world_view)
+                await until(lambda:sequence>seq,150)
+                for key in ['level','sawmill','granary','barracks','stoneworks','lyra','fissure']:
+                    assert state[key]==before[key],(key,before,state)
+                await page.screenshot(path=OUT/'regreso-a-valoria.png')
+                log.append({'world_round_trip':True,'level':state['level']})
             print('PASS',browser.version,state,flush=True)
         finally:
             (OUT/'journey.json').write_text(json.dumps({'browser':browser.version,'viewport':[390,844],'clock':'UTC elapsed by test, normal game timers','log':log,'last':state,'errors':errors},indent=2))
             await page.screenshot(path=OUT/'last.png');await browser.close()
 asyncio.run(main())
+

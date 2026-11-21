@@ -34,7 +34,7 @@ namespace Eldoria.World4XCanon.Editor
             try{
                 Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.PrepareWebPlayer(libraries,false);
                 PlayerSettings.productName="Valoria · Región 1 experimental";
-                var result=BuildPipeline.BuildPlayer(new[]{scene},dest,BuildTarget.WebGL,BuildOptions.StrictMode);
+                var result=BuildPipeline.BuildPlayer(new[]{"Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity",scene},dest,BuildTarget.WebGL,BuildOptions.StrictMode);
                 if(result.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new IOException("World player failed");
             }finally{
                 foreach(var library in libraries)File.WriteAllBytes(library.Key,library.Value);
@@ -141,3 +141,4 @@ namespace Eldoria.World4XCanon.Editor
     }
 }
 #endif
+

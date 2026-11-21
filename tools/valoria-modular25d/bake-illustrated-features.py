@@ -45,7 +45,9 @@ for p in g['meshes'][nodes['BLD_Terrain']['mesh']]['primitives'][1:4]:
     road=np.maximum(road,road_class(p,X,Z))
 road=nd.maximum_filter(road,size=3)
 bank=np.exp(-nd.distance_transform_edt(wet==0)/2.8)*(1-wet)
-Image.fromarray(np.uint8(np.stack([wet,road,bank],axis=2).clip(0,1)*255)).save(out/'NearFeatures.png')
+signed=(nd.distance_transform_edt(wet>0)-nd.distance_transform_edt(wet==0))*.5
+shore=np.clip(.5+nd.gaussian_filter(signed,.95)/12,0,1)
+Image.fromarray(np.dstack((np.uint8(np.stack([wet,road,bank],axis=2).clip(0,1)*255),np.uint8(shore*255+.5)))).save(out/'NearFeatures.png')
 # Collision ford gaps stay traversable, while the illustrated river now passes beneath them.
 p=out/'SurfaceWeights.png';geo=np.array(Image.open(p).convert('RGBA'));geo[:,:,0]=np.maximum(geo[:,:,0],water((-910,-1800,910,1800),(geo.shape[1],geo.shape[0])));Image.fromarray(geo).save(p)
 trees=[]
@@ -55,3 +57,4 @@ for name,n in sorted(nodes.items()):
 with (out/'ForestPositions.bytes').open('wb') as f:
     f.write(struct.pack('<I',len(trees)))
     for tree in trees:f.write(struct.pack('<3f',*tree))
+

@@ -52,6 +52,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private Text title, level, woodValue, stoneValue, foodValue;
         private Text stage, cost, remaining, actionLabel, notice, objectiveText, stateSummary;
         private Button action;
+        private RectTransform regionDock;
+        private bool worldUnlocked, enteringWorld;
         private Image woodAccent;
         private float nextTick, noticeExpires;
         // Read-only presentation cache of the EXISTING canonical construction
@@ -194,6 +196,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             statusDock = DockButton("Inspect city status",rootTransform,"CONSEJO",taskIcon,
                 new Vector2(.5f,0f),new Vector2(.5f,0f),OpenStatus);
             InitializeDistrictNavigation(rootTransform);
+            if (Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
+            {
+                regionDock = DockButton("Visitar Región 1", rootTransform, "MUNDO", cityIcon,
+                    Vector2.zero, Vector2.zero, EnterRegion);
+                regionDock.gameObject.SetActive(false);
+            }
             objective=ButtonPlate("Current real construction objective",rootTransform,"",
                 null,new Vector2(1f,1f),new Vector2(1f,1f),
                 new Vector2(-12f,-122f),new Vector2(172f,50f),() => { if(cachedSawmillPhase==ParcelBuildingState.BUILT) OpenStatus(); else OpenSawmill(); })
@@ -389,6 +397,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             Refresh(gateway.Snapshot());
         }
 
+        void EnterRegion()
+        {
+            if (enteringWorld || !Eldoria.ReferenceClean.ValoriaIntegratedWorld.CanEnterWorld(gateway.Snapshot()))
+                return;
+            enteringWorld = true;
+            regionDock.GetComponent<Button>().interactable = false;
+            Feedback("Preparando Región 1…");
+            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(Eldoria.ReferenceClean.ValoriaTravelSession.RegionScene);
+        }
+
         public void OpenStatus()
         {
             ShowCouncil(null);
@@ -425,6 +443,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             bool open=(buildingSheet!=null&&buildingSheet.activeSelf)||
                       (statusSheet!=null&&statusSheet.gameObject.activeSelf);
             UpdateDistrictVisibility(open);
+            if (regionDock) regionDock.gameObject.SetActive(!open && worldUnlocked);
             if(inspect!=null)inspect.gameObject.SetActive(!open);
             if(center!=null)center.gameObject.SetActive(!open);
             if(statusDock!=null)statusDock.gameObject.SetActive(!open);
@@ -511,6 +530,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 woodValue.text = stoneValue.text = foodValue.text = "—";
                 if (action != null) action.interactable = false;
                 return;
+            }
+            if (regionDock)
+            {
+                worldUnlocked = Eldoria.ReferenceClean.ValoriaIntegratedWorld.CanEnterWorld(s);
+                regionDock.gameObject.SetActive(worldUnlocked && !buildingSheet.activeSelf && !statusSheet.gameObject.activeSelf);
             }
             RefreshDistrictNavigation(s);
             title.text=PlayerDisplayName(s.PlayerName);
@@ -678,7 +702,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 safe.Contains(bounds.min) && safe.Contains(bounds.max) &&
                 !OverlapsControl(bounds,topRibbon) && !OverlapsControl(bounds,activityHandle) &&
                 !OverlapsControl(bounds,statusDock) && !OverlapsControl(bounds,center) &&
-                !OverlapsDistrictNavigation(bounds) && !OverlapsControl(bounds,inspect) && !OverlapsControl(bounds,activityDrawer);
+                !OverlapsControl(bounds,regionDock) && !OverlapsDistrictNavigation(bounds) && !OverlapsControl(bounds,inspect) && !OverlapsControl(bounds,activityDrawer);
             if(nameplate.gameObject.activeSelf!=visible)
                 nameplate.gameObject.SetActive(visible);
             if(visible && RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -807,6 +831,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
 
             // Eight compact positions, only the last three have real actions.
+            PlaceNavigation(supplyDock,NavigationCell(0,width,left,right,bottom,wide),wide);
+            if (regionDock) PlaceNavigation(regionDock,NavigationCell(1,width,left,right,bottom,wide),wide);
             for (int i = 0; i < districtDocks.Length; i++)
                 PlaceNavigation(districtDocks[i], NavigationCell(4-i,width,left,right,bottom,wide),wide);
             PlaceNavigation(statusDock,

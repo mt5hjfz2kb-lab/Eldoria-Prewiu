@@ -215,6 +215,8 @@ namespace Eldoria.UI.RoyalGold.V2
             plateSkin.DecorativeCorners = false;
             plateSkin.color = Color.white;
             plateSkin.raycastTarget = false;
+            if (Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
+                AddCoronaSurface(headerPlate, plateSkin, "top_velvet_ribbon");
             headerPlate.SetAsFirstSibling();
 
             objectiveCard = Panel("V2 / current objective", safe);
@@ -1096,6 +1098,23 @@ namespace Eldoria.UI.RoyalGold.V2
                 buildingCard.anchoredPosition = new Vector2(at.x,safeBottom);
         }
 
+        static void AddCoronaSurface(RectTransform root, Graphic original, string key)
+        {
+            var sprite = Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/" + key);
+            if (!sprite) return;
+            var painted = new GameObject("Corona de la Brecha", typeof(RectTransform), typeof(Image));
+            var rect = (RectTransform)painted.transform;
+            rect.SetParent(root, false);
+            rect.SetAsFirstSibling();
+            rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+            rect.offsetMin = rect.offsetMax = Vector2.zero;
+            painted.layer = root.gameObject.layer;
+            var image = painted.GetComponent<Image>();
+            image.sprite = sprite;
+            image.raycastTarget = false;
+            original.enabled = false;
+        }
+
         private void LayoutNavigation()
         {
             if (!Source.Navigation || !safe) return;
@@ -1161,6 +1180,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 frame.raycastTarget = false;
                 frame.DecorativeCorners = true;
                 frame.Primary = false;
+                if (Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
+                    AddCoronaSurface(trim, frame, "top_velvet_ribbon");
                 trim.SetAsFirstSibling();
             }
             trim.anchorMin = Vector2.zero;
@@ -1506,4 +1527,5 @@ namespace Eldoria.UI.RoyalGold.V2
         }
     }
 }
+
 

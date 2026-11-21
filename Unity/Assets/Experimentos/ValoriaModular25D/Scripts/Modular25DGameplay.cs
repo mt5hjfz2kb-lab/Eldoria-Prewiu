@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Eldoria.Application;
+using Eldoria.ReferenceClean;
 using Eldoria.Domain;
 using Eldoria.Infrastructure;
 using Eldoria.UI.RoyalGold;
@@ -16,7 +17,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     [DefaultExecutionOrder(-300)]
     public sealed class Modular25DGameplay : MonoBehaviour
     {
-        const string IsolatedSaveName = "eldoria-experiment-modular-25d-bastion1-v1.json";
+        const string IsolatedSaveName = ValoriaTravelSession.IsolatedSaveName;
         public const string SawmillId = "sawmill";
         ICommandGateway gateway;
         ExistingSliceBinding buildingOffers;
@@ -88,15 +89,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 // In WebGL the canonical project uses PlayerPrefs.Save to flush
                 // durable browser storage; the virtual filesystem does not
                 // guarantee immediate persistence across a browser refresh.
-                IStateStore save;
-#if UNITY_WEBGL && !UNITY_EDITOR
-                save=new IsolatedWebGlPrefsStore();
-#else
-                save=new FileStateStore(SandboxSavePath);
-#endif
                 var clock=new SystemClock();
-                var local=new LocalGateway(clock,save);
-                local.ConfigureLocalResourceRespawn(new DistrictSupplies(), RenewablePopulationPolicy.Delay);
+                var local = ValoriaTravelSession.CombinedPlayer
+                    ? new LocalGateway(clock, OpenStore(), EldoriaV41GatewayResolver.Campaign())
+                    : new LocalGateway(clock, OpenStore());
+                if (!ValoriaTravelSession.CombinedPlayer)
+                    local.ConfigureLocalResourceRespawn(new DistrictSupplies(), RenewablePopulationPolicy.Delay);
                 gateway=local;
                 buildingOffers=new ExistingSliceBinding(local,clock);
                 lastSnapshot=gateway.Snapshot();
@@ -111,6 +109,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 SetMessage("Guardado experimental inaccesible: "+error.Message);
                 Debug.LogError("[ValoriaModular25D] Save/gateway unavailable: "+error);
             }
+        }
+
+        IStateStore OpenStore()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            return ValoriaTravelSession.OpenStore();
+#else
+            return new FileStateStore(SandboxSavePath);
+#endif
         }
 
         // Two gathering approaches per resource on the experimental map.
@@ -226,40 +233,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
         }
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-        /// <summary>
-        /// The exact WebGL storage principle already used by SliceBoot; this
-        /// adapter only changes the SANDBOX key, never the economic rules.
-        /// </summary>
-        sealed class IsolatedWebGlPrefsStore : IStateStore
-        {
-            const string Key = "eldoria.experiment.modular25d.bastion1.v1";
-            public PlayerState Load()
-            {
-                if(!PlayerPrefs.HasKey(Key))return null;
-                string json=PlayerPrefs.GetString(Key,"");
-                if(string.IsNullOrEmpty(json))return null;
-                try
-                {
-                    var state=JsonUtility.FromJson<PlayerState>(json);
-                    if(state==null||state.SchemaVersion!=1)
-                        throw new InvalidDataException("Unknown sandbox save schema");
-                    return state;
-                }
-                catch(Exception e)
-                {
-                    throw new InvalidDataException(
-                        "Experimental WebGL save unreadable; original preserved",e);
-                }
-            }
-            public void Save(PlayerState state)
-            {
-                PlayerPrefs.SetString(Key,JsonUtility.ToJson(state,true));
-                PlayerPrefs.Save();
-            }
-        }
-#endif
-
         void OnDestroy()
         {
             // Avoid leaking the owner's temporary profile into unrelated Editor
@@ -268,4 +241,5 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+
 
