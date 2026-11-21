@@ -9,6 +9,7 @@ namespace Eldoria.World4XCanon {
   readonly Dictionary<Material,Vector4> original=new Dictionary<Material,Vector4>();
   readonly Dictionary<Renderer,bool> rails=new Dictionary<Renderer,bool>();GameObject bridge;
   public static void Install(Transform parent,ValoriaIntegratedWorld host){
+   if(RegionOneModularArt.Enabled)return;
    var prefab=Resources.Load<GameObject>("ValoriaStrategic/StoneBridge");if(!prefab||parent.GetComponent<RegionOneStoneBridge>())return;
    var service=parent.gameObject.AddComponent<RegionOneStoneBridge>();service.Build(host,prefab);
   }

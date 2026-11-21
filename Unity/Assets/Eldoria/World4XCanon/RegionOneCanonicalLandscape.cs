@@ -208,6 +208,7 @@ namespace Eldoria.World4XCanon
         }
 
 
+  GameObject paintedHiddenActor;
   Bounds regionBounds;
   void ConfigureRegionCoverage()
   {
@@ -321,6 +322,9 @@ namespace Eldoria.World4XCanon
    if(originalTripoActor&&originalTripoActor.ModelRoot)
    {
     var model=originalTripoActor.ModelRoot;
+    if(RegionOneModularArt.Enabled && paintedHiddenActor!=model){
+     paintedHiddenActor=model;foreach(var donor in model.GetComponentsInChildren<Renderer>(true))donor.forceRenderingOff=true;
+    }
     if(panorama&&model.activeSelf)model.SetActive(false);
     else if(!panorama&&previousPanorama&&!model.activeSelf&&
       host.City!=null&&host.City.Gateway!=null&&

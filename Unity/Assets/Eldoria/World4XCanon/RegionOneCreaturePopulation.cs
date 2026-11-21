@@ -99,13 +99,10 @@ namespace Eldoria.World4XCanon
                         RegionOneReferenceNodes.BastionOneVisualWidth*(creature.CreatureKind=="boar"?.45f:.55f));
                     entity=new Encounter{Hotspot=hot,Near=close,Far=far,NearScale=nearScale};
                     if(modularArt){
-                        var family=creature.CreatureKind=="boar"?"RockBoar":"Spawnling";
-                        int variant=0;
-                        foreach(char c in creature.TargetId)variant=(variant+c)&1;
                         var width=RegionOneReferenceNodes.BastionOneVisualWidth*(creature.CreatureKind=="boar"?.45f:.55f);
                         foreach(var donor in new[]{close,far})
                             foreach(var original in donor.GetComponentsInChildren<Renderer>(true))original.forceRenderingOff=true;
-                        entity.Painted=modularArt.Place(go.transform,"World4X/Creatures/"+family+"Paint"+variant,width,go.transform.position);
+                        entity.Painted=modularArt.Place(go.transform,creature.CreatureKind=="boar"?"Boar":"Spawn",width,go.transform.position);
                     }
                     instances.Add(creature.TargetId,entity);
                 }

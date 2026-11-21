@@ -70,7 +70,7 @@ namespace Eldoria.World4XCanon
     var texture=Resources.Load<Texture2D>("ValoriaStrategic/"+key);
     var anchor=JsonUtility.FromJson<CityAnchor>(Resources.Load<TextAsset>("ValoriaStrategic/"+key+"-anchor").text);
     if(RegionOneModularArt.Enabled){
-     var art=Resources.Load<Sprite>("ValoriaModular25D/"+(gate==host.WorldBastionTwo?"Progression/bastion_2":"bastion_i_hd"));
+     var art=Resources.Load<Sprite>("World4X/Illustrated/"+(gate==host.WorldBastionTwo?"Keep2":"Keep1"));
      if(art){texture=art.texture;anchor=new CityAnchor{u=.5f,v=.035f};}
     }
     var material=new Material(nodes){name="Valoria approved original "+key,mainTexture=texture};cityMaterials.Add(material);
@@ -78,6 +78,11 @@ namespace Eldoria.World4XCanon
     foot=host.WorldHome+new Vector3(3.3f,0,-7.5f);foot.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(3.3f,-7.5f)+.18f;
     Create(name,new[]{foot,foot,foot,foot},new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up},
      new[]{new Vector2(-width*anchor.u,-h*anchor.v),new Vector2(width*(1-anchor.u),-h*anchor.v),new Vector2(width*(1-anchor.u),h*(1-anchor.v)),new Vector2(-width*anchor.u,h*(1-anchor.v))},new[]{0,1,2,0,2,3},material,gate);return;
+   }
+   if(RegionOneModularArt.Enabled && cell!=0){
+    var kit=host.WorldRoot.GetComponentInChildren<RegionOneModularArt>(true);
+    if(kit && name!="Reference existing quarry")kit.Place(transform,cell==2?"Ruin":"Crag",width,foot);
+    return;
    }
    // Measured alpha bounds in the original2172x724asset, no destructive cropping.
    var boxes=new[]{new Vector4(56,16,675,681),new Vector4(773,111,1420,643),new Vector4(1515,129,2130,650)};
@@ -118,7 +123,7 @@ namespace Eldoria.World4XCanon
    if(RegionOneModularArt.Enabled && canonicalCity){
     int level=Mathf.Clamp(state.BastionLevel,1,5);
     if(shownBastionLevel!=level){
-     if(!citySprites[level])citySprites[level]=Resources.Load<Sprite>("ValoriaModular25D/"+(level==1?"bastion_i_hd":"Progression/bastion_"+level));
+     if(!citySprites[level])citySprites[level]=Resources.Load<Sprite>("World4X/Illustrated/Keep"+level);
      var sprite=citySprites[level];
      if(sprite){
       var pivot=new Vector2(.5f,.035f);

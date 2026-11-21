@@ -183,7 +183,7 @@ namespace Eldoria.World4XCanon
             if(!impostorMaterial)return null;
             int tile=id=="forest-valoria"||id.StartsWith("region1:wood:",StringComparison.Ordinal)?0:1;
             if(modularArt){
-                var painted=modularArt.Place(parent,tile==0?"sawmill_i_hd":"Progression/stoneworks",32f,Vector3.zero);
+                var painted=modularArt.Place(parent,tile==0?"Timber":"Quarry",32f,Vector3.zero);
                 painted.name="Production resource impostor "+id;
                 painted.enabled=false;
                 return painted;

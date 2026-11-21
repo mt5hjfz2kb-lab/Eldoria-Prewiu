@@ -214,7 +214,7 @@ namespace Eldoria.World4XCanon
    yield return null;
    RegionOneProductionLod.Install(instance.artwork);
    RegionOneLookDevelopment.Install(instance.artwork,host.WorldCamera);
-   if(RegionOneModularArt.Enabled)RegionOneModularArt.Install(instance.artwork);
+   if(RegionOneModularArt.Enabled)RegionOneModularArt.Install(instance.artwork,host);
    Debug.Log("REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150");
    completed(instance);
   }
@@ -271,6 +271,7 @@ namespace Eldoria.World4XCanon
   // Saturates at +/-16m: explicitly a signed proximity mask, not unbounded distance.
   public static float Shore(float x,float z)=>(Sample(x,z,0)-.5f)*32;
   public static float Water(float x,float z)=>Sample(x,z,1);
+  internal static float GeographicHeight(float x,float z)=>Sample(x,z,-1);
   public static float Road(float x,float z)=>Sample(x,z,2);
   public static float Forest(float x,float z)=>Sample(x,z,3);
   public static float RoadDistance(float x,float z)=>(1-Road(x,z))*3;

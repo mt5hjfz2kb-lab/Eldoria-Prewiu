@@ -11,34 +11,17 @@ namespace Eldoria.World4XCanon
     {
         public static bool Enabled => !UnityEngine.Application.isEditor ||
             Environment.GetEnvironmentVariable("ELDORIA_WORLD_ART_BASELINE") != "1";
-        const string Root = "ValoriaModular25D/";
+        const string Root = "World4X/Illustrated/";
         readonly Dictionary<string, Material> materials = new Dictionary<string, Material>();
         readonly Dictionary<(string,int), Mesh> shapes = new Dictionary<(string,int), Mesh>();
 
-        public static RegionOneModularArt Install(GameObject artwork)
+        public static RegionOneModularArt Install(GameObject artwork,Eldoria.ReferenceClean.ValoriaIntegratedWorld host)
         {
-            var art = artwork.AddComponent<RegionOneModularArt>();
-            foreach (var group in artwork.GetComponentsInChildren<LODGroup>(true))
-            {
-                if (!group.enabled || !group.name.StartsWith("LOD ", StringComparison.Ordinal)) continue;
-                var levels = group.GetLODs();
-                if (levels.Length == 0 || levels[0].renderers.Length != 1) continue;
-                var crown = levels[0].renderers[0];
-                if (!crown || crown.forceRenderingOff) continue;
-                var box = crown.bounds;
-                var width = Mathf.Max(box.size.x, box.size.z);
-                if (width < 2f || width > 14f) continue;
-                var foot = new Vector3(box.center.x, box.min.y, box.center.z);
-                bool pine = crown.name.StartsWith("Pilot_Pine", StringComparison.Ordinal) ||
-                    crown.name.IndexOf("Fir", StringComparison.OrdinalIgnoreCase) >= 0;
-                int variant = Mathf.Abs(Mathf.FloorToInt(foot.x*.53f + foot.z*.29f)) % 3;
-                string key = pine ? "pine_"+variant : "oak_"+(variant%2);
-                var sprite = art.Place(group.transform, key, width * (pine ? 1.65f : 1.45f), foot);
-                crown.forceRenderingOff = true;
-                levels[0].renderers = new Renderer[]{sprite};
-                // Keep the original group's size and reference point for the far LOD.
-                group.SetLODs(levels);
-            }
+            var art=artwork.AddComponent<RegionOneModularArt>();
+            // Geometry, transforms and names remain available for the physical map.
+            foreach(var renderer in artwork.GetComponentsInChildren<Renderer>(true))
+                renderer.forceRenderingOff=true;
+            RegionOneOriginalLandscape.Install(artwork.transform.parent,host,art);
             return art;
         }
 
@@ -88,16 +71,8 @@ namespace Eldoria.World4XCanon
             var site=new GameObject("Valoria work site "+id);
             site.transform.SetParent(parent,false);
             var anchor=site.transform.position;
-            if(id=="forest-valoria" || id.StartsWith("region1:wood:",StringComparison.Ordinal))
-            {
-                Place(site.transform,"pine_0",10f,anchor+new Vector3(-9f,0,4f));
-                Place(site.transform,"pine_2",9.25f,anchor+new Vector3(-6f,0,7f));
-                Place(site.transform,"oak_1",12f,anchor+new Vector3(6f,0,6f));
-                Place(site.transform,"sawmill_i_hd",23.5f,anchor);
-                Place(site.transform,"RecoveredProps/VallaLenador",7f,anchor+new Vector3(-7f,0,-3.5f));
-                Place(site.transform,"RecoveredProps/CarroMadera",7f,anchor+new Vector3(8f,0,-4f));
-            }
-            else Place(site.transform,"Progression/stoneworks",27.5f,anchor);
+            bool wood=id=="forest-valoria" || id.StartsWith("region1:wood:",StringComparison.Ordinal);
+            Place(site.transform,wood?"Timber":"Quarry",wood?25f:27.5f,anchor);
             return site;
         }
         void OnDestroy()
