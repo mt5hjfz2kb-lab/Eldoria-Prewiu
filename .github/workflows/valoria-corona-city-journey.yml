@@ -1,7 +1,7 @@
 name: Valoria · Traverse the real WebGL city from a fresh save
 on:
   push:
-    branches: [experiment/corona-retina-building-pass-20261121]
+    branches: [experiment/valoria-continuidad-hud-region1-20261121]
     paths: [tools/valoria-modular25d/journey-request.json]
 permissions:
   contents: read
@@ -56,3 +56,4 @@ jobs:
         with:
           name: valoria-city-journey-${{ github.run_id }}
           path: evidence/
+
