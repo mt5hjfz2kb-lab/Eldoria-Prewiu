@@ -20,6 +20,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public Camera ViewCamera { get; private set; }
         public Modular25DGameplay Gameplay { get; private set; }
         public Modular25DInterface Hud { get; private set; }
+        public SpriteRenderer BastionRenderer { get; private set; }
         public SpriteRenderer SawmillRenderer { get; private set; }
         public int RecoveredPropsPlaced { get; private set; }
         public int WorkshopWorkersPlaced { get; private set; }
@@ -59,10 +60,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
             var landscape=paths.gameObject.AddComponent<Modular25DLandscape>();
             landscape.Build();
-            AddSprite("Bastion_I_unique",Modular25DArt.Bastion(),new Vector2(-.40f,1.45f),
+            BastionRenderer=AddSprite("Bastion_I_unique",Modular25DArt.Bastion(),new Vector2(-.40f,1.45f),
                 FootOrder(1.3f),buildings);
             SawmillRenderer=AddSprite("Aserradero_state",Modular25DArt.Sawmill(),
                 new Vector2(.96f,-2.07f),FootOrder(-2.2f),buildings);
+            BastionRenderer.gameObject.AddComponent<Modular25DArchitecturalShadow>();
+            SawmillRenderer.gameObject.AddComponent<Modular25DArchitecturalShadow>();
             AddContact("Bastion_contact",new Vector2(-.40f,1.37f),300,FootOrder(1.3f)-2,buildings);
             // The finished illustrated sprite already contains ground contact.
             // Its broad baked exterior shadow is trimmed by Modular25DArt; do
@@ -325,7 +328,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             actor.transform.localPosition=new Vector3(route[0].x,route[0].y,0);
             var shadow=AddSprite("moving contact shadow",Modular25DArt.Shadow(65,18),
                 new Vector2(0,-.08f),0,actor.transform);
-            var body=AddSprite("four-frame gait",Modular25DArt.Villager(0),
+            var body=AddSprite("Direction-aware four-phase gait",Modular25DArt.Citizen(1,false),
                 Vector2.zero,0,actor.transform);
             // Original actor sheet is a much larger pixel figure than the
             // detailed building sprites. Reduce visible body, preserve world
@@ -351,7 +354,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             contact.transform.localScale=Vector3.one*.43f;
             contact.color=new Color(.73f,.77f,.67f,.22f);
             var body=AddSprite("sawyer at log trestle — original 2.5D keyframe",
-                Modular25DArt.Sawyer(0),
+                Modular25DArt.Carpenter(0),
                 Vector2.zero,FootOrder(foot.y),actor.transform);
             body.transform.localScale=Vector3.one*.81f;
             var action=actor.AddComponent<Modular25DWorkshopAction>();
@@ -386,3 +389,4 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+

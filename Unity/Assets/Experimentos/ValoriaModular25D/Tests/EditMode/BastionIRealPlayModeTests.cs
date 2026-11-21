@@ -90,6 +90,27 @@ namespace Eldoria.Modular25D.Tests
             Assert.IsFalse(work.gameObject.activeInHierarchy,"Unbuilt sawmill cannot be productive");
             Assert.That(all.Count(x=>x && x.GetType().Name=="Modular25DWorkshopAction"),
                 Is.EqualTo(1),"Sawmill must have one animated worker at the real log rack");
+            var citizen=originalArtType.GetMethod("Citizen",BindingFlags.Public|BindingFlags.Static);
+            var carpenter=originalArtType.GetMethod("Carpenter",BindingFlags.Public|BindingFlags.Static);
+            Assert.NotNull(citizen);
+            Assert.NotNull(carpenter);
+            var poses=new System.Collections.Generic.HashSet<Rect>();
+            for(int index=0;index<8;index++)
+            {
+                var frame=citizen.Invoke(null,new object[]{index%4,index>=4}) as Sprite;
+                Assert.NotNull(frame);
+                Assert.GreaterOrEqual(frame.rect.height,192f);
+                poses.Add(frame.rect);
+            }
+            Assert.That(poses.Count,Is.EqualTo(8),"Front and back walking phases must use distinct authored frames");
+            for(int index=0;index<4;index++)
+            {
+                var frame=carpenter.Invoke(null,new object[]{index}) as Sprite;
+                Assert.NotNull(frame);
+                Assert.GreaterOrEqual(frame.rect.height,192f);
+                poses.Add(frame.rect);
+            }
+            Assert.That(poses.Count,Is.EqualTo(12),"Carpenter phases must have their own artwork");
             Assert.NotNull(Member(world,"ViewCamera") as Camera);
             var gameplay=Member(world,"Gameplay") as Component;
             var ui=Member(world,"Hud") as Component;
@@ -612,4 +633,5 @@ namespace Eldoria.Modular25D.Tests
     }
 }
 #endif
+
 

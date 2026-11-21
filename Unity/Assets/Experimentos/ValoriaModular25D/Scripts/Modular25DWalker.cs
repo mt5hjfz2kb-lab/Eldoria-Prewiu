@@ -10,6 +10,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         float clock;
         float delay;
         float dwell;
+        bool facingAway;
         const float Speed = .75f;
 
         public void Configure(Vector2[] points,float initialDelay,SpriteRenderer sprite,SpriteRenderer contact)
@@ -32,7 +33,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(dwell>0)
             {
                 dwell-=deltaTime;
-                body.sprite=Modular25DArt.Villager(0);
+                body.sprite=Modular25DArt.Citizen(1,facingAway);
                 body.transform.localPosition=Vector3.zero;
                 return;
             }
@@ -49,10 +50,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             body.sortingOrder=sort;
             shadow.sortingOrder=sort-1;
             clock+=deltaTime;
-            body.sprite=Modular25DArt.Villager(Mathf.FloorToInt(clock*5f)%2);
+            var direction=goal-previous;
+            if(Mathf.Abs(direction.y)>.03f)facingAway=direction.y>0f;
+            body.sprite=Modular25DArt.Citizen(Mathf.FloorToInt(clock*6f)%4,facingAway);
             if(Mathf.Abs(next.x-previous.x)>.0001f)body.flipX=next.x<previous.x;
             // One coherent foot anchor; no screen-space puppet movement.
-            body.transform.localPosition=new Vector3(0,Mathf.Abs(Mathf.Sin(clock*12f))*.025f,0);
+            body.transform.localPosition=new Vector3(0,Mathf.Abs(Mathf.Sin(clock*6f*Mathf.PI))*.008f,0);
         }
     }
 }
+

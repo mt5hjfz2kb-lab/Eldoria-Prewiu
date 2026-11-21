@@ -415,7 +415,10 @@ jobs:
           d=json.load(open(p,encoding='utf8'))
           assert d['sourceSha']==os.environ['GITHUB_SHA']
           assert d['status']=='BROWSER_UI_SMOKE_PASSED_NOT_DEVICE_QA'
-          assert [ (x['width'],x['height']) for x in d['resolutions'] ] == [(390,844),(1170,2532)]
+          assert [ (x['width'],x['height']) for x in d['resolutions'] ] == [(390,844),(1170,2532),(390,844)]
+          assert d['resolutions'][2]['density']==3
+          assert d['resolutions'][2]['context']['renderWidth']==1170
+          assert d['resolutions'][2]['context']['renderHeight']==2532
           assert d['actualBrowserHUD'] and d['physicalIphone']=='NOT_TESTED'
           print('REAL_CHROMIUM_WEBGL_HUD_INTERACTION_SCREENSHOTS_PASS; NO_IPHONE_CERTIFICATION')
           PY
@@ -491,3 +494,4 @@ jobs:
           path: BastionI_Unity_EditorMovement.mp4
           retention-days: 14
           if-no-files-found: error
+

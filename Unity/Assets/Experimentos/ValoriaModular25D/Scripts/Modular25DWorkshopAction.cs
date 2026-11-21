@@ -20,7 +20,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public void Configure(SpriteRenderer worker,SpriteRenderer ground)
         {
             body=worker;contact=ground;
-            keyframes=new[]{Modular25DArt.Sawyer(0),Modular25DArt.Sawyer(1)};
+            keyframes=new[]{Modular25DArt.Carpenter(0),Modular25DArt.Carpenter(1),
+                Modular25DArt.Carpenter(2),Modular25DArt.Carpenter(3)};
             Configured=body!=null&&contact!=null&&
                 keyframes[0]!=null&&keyframes[1]!=null;
             if(Configured)ApplyPose();
@@ -41,7 +42,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         void ApplyPose()
         {
             float stroke=Mathf.Sin(clock*2f*Mathf.PI*1.07f);
-            body.sprite=keyframes[stroke>0f?0:1];
+            body.sprite=keyframes[Mathf.FloorToInt(WorkCycles*4f)%4];
             body.flipX=false;
             // Repeated two-phase push and recovery, visually grounded at one
             // sawing station; no pedestrian walking in place or world-space warp.
@@ -56,3 +57,4 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+

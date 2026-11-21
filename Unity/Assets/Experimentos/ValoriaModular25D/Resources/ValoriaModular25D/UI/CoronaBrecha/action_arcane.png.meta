@@ -27,3 +27,9 @@ TextureImporter:
   spriteAlignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 28, y: 28, z: 28, w: 28}
+
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    textureCompression: 0

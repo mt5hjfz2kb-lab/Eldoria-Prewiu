@@ -260,12 +260,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             preview.type = Image.Type.Simple;
             preview.color = Color.white;
             preview.raycastTarget = false;
-            stage = Label("", sheet, 13, false, WarmWhite, TextAnchor.MiddleLeft,
+            stage = Label("", sheet, 14, false, WarmWhite, TextAnchor.MiddleLeft,
                 new Vector2(56f, 26f), new Vector2(185f, 22f));
-            cost = Label("", sheet, 13, false, MutedInk, TextAnchor.MiddleLeft,
-                new Vector2(56f, 0f), new Vector2(185f, 19f));
-            remaining = Label("", sheet, 13, false, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(56f, -28f), new Vector2(185f, 19f));
+            cost = Label("", sheet, 14, false, MutedInk, TextAnchor.MiddleLeft,
+                new Vector2(56f, 0f), new Vector2(185f, 23f));
+            remaining = Label("", sheet, 14, false, WarmWhite, TextAnchor.MiddleLeft,
+                new Vector2(56f, -28f), new Vector2(185f, 23f));
+
+            stage.verticalOverflow=VerticalWrapMode.Overflow;
+            cost.verticalOverflow=VerticalWrapMode.Overflow;
+            remaining.verticalOverflow=VerticalWrapMode.Overflow;
 
             // Commercial construction feedback, but backed solely by the
             // canonical action clock. No invented production, new save or
@@ -605,28 +609,29 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var baseRect=hudCanvas.GetComponent<RectTransform>();
             bool hiddenByPanel=(buildingSheet!=null&&buildingSheet.activeSelf)||
                                (statusSheet!=null&&statusSheet.gameObject.activeSelf);
-            // Actual three-state WebGL evidence: the unbuilt plot finishes
-            // near screen y~570, while the completed sawmill occupies screen
-            // y~450..625. One fixed plaque would overlay the built workshop.
-            // Above the western keep tower, the Bastion label also avoids
-            // the civic well and the quest overlay at the upper right.
-            PlaceWorldNameplate(bastionTag,baseRect,
-                new Vector3(-1.31f,3.08f,0f),hiddenByPanel);
-            float millFootY=cachedSawmillPhase==ParcelBuildingState.BUILT
-                ? -3.86f : cachedSawmillPhase==ParcelBuildingState.UNDER_CONSTRUCTION
-                    ? -3.45f : -2.90f;
-            // The OBRA badge is exclusively inside the left drawer when
-            // construction is running. Keep the actual parcel visible.
-            PlaceWorldNameplate(sawmillTag,baseRect,
-                new Vector3(.96f,millFootY,0f),
+            PlaceBuildingNameplate(bastionTag,baseRect,world.BastionRenderer,true,hiddenByPanel);
+            PlaceBuildingNameplate(sawmillTag,baseRect,world.SawmillRenderer,false,
                 hiddenByPanel||cachedSawmillPhase==ParcelBuildingState.UNDER_CONSTRUCTION);
         }
 
+        private void PlaceBuildingNameplate(RectTransform label,RectTransform canvas,
+            SpriteRenderer building,bool above,bool hidden)
+        {
+            if(building==null)return;
+            Bounds bounds=building.bounds;
+            Vector3 anchor=new Vector3(bounds.center.x,
+                above?bounds.max.y:bounds.min.y,building.transform.position.z);
+            // Keep a constant logical gap as the architecture changes size with zoom.
+            float gap=label.rect.height*.5f+5f;
+            PlaceWorldNameplate(label,canvas,anchor,hidden,above?gap:-gap);
+        }
+
         private void PlaceWorldNameplate(RectTransform nameplate,RectTransform canvasRect,
-            Vector3 worldPosition,bool modalOpen)
+            Vector3 worldPosition,bool modalOpen,float verticalOffset)
         {
             var cam=world.ViewCamera;
             var screen=cam.WorldToScreenPoint(worldPosition);
+            screen.y+=verticalOffset*hudCanvas.scaleFactor;
             var safe=Screen.safeArea;
             float scale=hudCanvas.scaleFactor;
             var size=nameplate.rect.size*scale;
@@ -926,7 +931,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // outline keeps the caption legible against animated grass.
             var outline=word.gameObject.AddComponent<Outline>();
             outline.effectColor=new Color(.075f,.045f,.12f,.92f);
-            outline.effectDistance=new Vector2(1.25f,-1.25f);
+            outline.effectDistance=new Vector2(.65f,-.65f);
             return rect;
         }
 
@@ -1058,4 +1063,5 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+
 

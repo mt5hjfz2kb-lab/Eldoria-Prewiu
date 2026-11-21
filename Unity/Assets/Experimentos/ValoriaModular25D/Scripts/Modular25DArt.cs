@@ -478,6 +478,31 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             return image;
         }
 
+        public static Sprite Citizen(int frame,bool facingAway)
+        {
+            return ActorFrame((facingAway?4:0)+(frame%4));
+        }
+
+        public static Sprite Carpenter(int frame)
+        {
+            return ActorFrame(8+(frame%4));
+        }
+
+        private static Sprite ActorFrame(int index)
+        {
+            string key="corona_actor_"+index;
+            if(Cache.TryGetValue(key,out var sprite))return sprite;
+            var atlas=Resources.Load<Texture2D>("ValoriaModular25D/Actors/ActorAtlas");
+            if(atlas==null||atlas.width!=896||atlas.height!=672)
+                throw new InvalidOperationException("Missing authored 12-frame actor atlas");
+            var rectangle=new Rect((index%4)*224,672-(index/4+1)*224,224,224);
+            sprite=Sprite.Create(atlas,rectangle,
+                new Vector2(.5f,index<8?.075f:.06f),index<8?200f:256f,0,SpriteMeshType.FullRect);
+            sprite.name=key;
+            Cache.Add(key,sprite);
+            return sprite;
+        }
+
         public static Sprite Villager(int frame)
         {
             return Make("villager_walk_"+frame,78,120,96f,P(.5f,.07f),a =>
@@ -603,3 +628,4 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+

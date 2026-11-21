@@ -211,9 +211,9 @@ try {
     args: ['--no-sandbox', '--disable-dev-shm-usage', '--use-gl=angle', '--use-angle=swiftshader',
       '--enable-unsafe-swiftshader']
   });
-  for (const [width, height] of [[390, 844], [1170, 2532]]) {
+  for (const [width, height, density] of [[390, 844, 1], [1170, 2532, 1], [390, 844, 3]]) {
     const ctx = await browser.newContext({
-      viewport: { width, height }, isMobile: true, hasTouch: true, deviceScaleFactor: 1,
+      viewport: { width, height }, isMobile: true, hasTouch: true, deviceScaleFactor: density,
       // Unity's default WebGL template switches to responsive mobile CSS by UA.
       // isMobile alone changes viewport emulation, not navigator.userAgent.
       userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36'
@@ -234,23 +234,28 @@ try {
       return canvas && canvas.getBoundingClientRect().width > 120 &&
         (!loading || getComputedStyle(loading).display === 'none');
     }, null, { timeout: 200_000 });
-    const firstReadiness=await awaitUnfadedWorld(page,width,height,'before-build');
+    const firstReadiness=await awaitUnfadedWorld(page,width*density,height*density,'before-build');
     const scene = await page.evaluate(() => {
       const canvas = document.querySelector('canvas');
       const rect = canvas?.getBoundingClientRect();
       return {
-        canvasWidth: rect?.width || 0, canvasHeight: rect?.height || 0,
+        canvasWidth: rect?.width || 0,
+        renderWidth: canvas?.width || 0,
+        renderHeight: canvas?.height || 0,
+        devicePixelRatio: window.devicePixelRatio, canvasHeight: rect?.height || 0,
         webglContext: Boolean(canvas && (canvas.getContext('webgl2') || canvas.getContext('webgl'))),
         visible: Boolean(rect && rect.width > 120 && rect.height > 200)
       };
     });
     if (!scene.visible || !scene.webglContext) throw Error(width + 'x' + height + ': no real visible Unity WebGL canvas/context');
+    if(scene.renderWidth!==width*density || scene.renderHeight!==height*density)
+      throw Error('Render target does not match mobile pixel density '+JSON.stringify(scene));
     const box = await page.locator('canvas').boundingBox();
     if (!box) throw Error('Actual Unity canvas has no on-screen bounds');
     if (box.width > width * 1.05 || box.height > height * 1.05)
       throw Error(width + 'x' + height + ': WebGL canvas overflows responsive mobile viewport');
     const capture = async label => {
-      const file = path.join(out, width + 'x' + height + '-' + label + '.png');
+      const file = path.join(out, width + 'x' + height + (density>1?'-dpr'+density:'') + '-' + label + '.png');
       const bytes = await page.screenshot({ path: file, animations: 'disabled', timeout: 50_000 });
       if (bytes.length < 10_000) throw Error('Empty/broken WebGL screenshot: ' + file);
       return { filename: path.basename(file), sha256: sha(bytes), bytes };
@@ -316,7 +321,7 @@ try {
       return canvas&&canvas.getBoundingClientRect().width>120 &&
         (!loading || getComputedStyle(loading).display==='none');
     },null,{timeout:200_000});
-    const reloadReadiness=await awaitUnfadedWorld(page,width,height,'after-reload');
+    const reloadReadiness=await awaitUnfadedWorld(page,width*density,height*density,'after-reload');
     const reloaded=await capture('real-after-browser-reload');
     // Capture the real finished architecture after the normal six-second construction.
     // Chromium reload and startup may already have consumed the entire interval.
@@ -332,7 +337,7 @@ try {
         if (errors.length || failures.length)
       throw Error(width + 'x' + height + ': browser errors: ' + [...errors, ...failures].slice(0, 10).join(' | '));
     manifest.resolutions.push({
-      width, height, context: scene, sawmillPanelPixelChange: change,
+      width, height, density, context: scene, sawmillPanelPixelChange: change,
       inputActions: ['screen-space ASERRADERO button', 'screen-space CONSTRUIR button'],
       screenshots: [before, opened, building, drawerOpened, drawerClosed, reloaded, completed, completedPanel].map(({ filename, sha256 }) => ({ filename, sha256 })),
       collapsedByDefaultAndDrawerToggle: {opened:drawerSpread,closed:drawerResidual},
@@ -356,3 +361,4 @@ try {
   await new Promise(resolve => server.close(resolve));
   fs.writeFileSync(path.join(out, 'browser-evidence.json'), JSON.stringify(manifest, null, 2) + '\n');
 }
+
