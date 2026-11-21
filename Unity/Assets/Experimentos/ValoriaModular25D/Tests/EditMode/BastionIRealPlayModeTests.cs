@@ -83,16 +83,16 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(sawyerMethod);
             foreach(var key in new[]{"bastion_i","sawmill_i"})
             {
-                var original=Resources.Load<Sprite>("ValoriaModular25D/"+key);
+                var baselineSprite=Resources.Load<Sprite>("ValoriaModular25D/"+key);
                 var hd=Resources.Load<Sprite>("ValoriaModular25D/"+key+"_hd");
-                Assert.NotNull(original,"Original artwork must remain available");
+                Assert.NotNull(baselineSprite,"Original artwork must remain available");
                 Assert.NotNull(hd,"Retina restoration must actually import as Sprite");
-                Assert.That(hd.rect.width,Is.EqualTo(original.rect.width*3f).Within(.01f));
-                Assert.That(hd.rect.height,Is.EqualTo(original.rect.height*3f).Within(.01f));
-                Assert.That(hd.pixelsPerUnit,Is.EqualTo(original.pixelsPerUnit*3f).Within(.01f));
-                Assert.That(Vector3.Distance(hd.bounds.size,original.bounds.size),Is.LessThan(.001f),
+                Assert.That(hd.rect.width,Is.EqualTo(baselineSprite.rect.width*3f).Within(.01f));
+                Assert.That(hd.rect.height,Is.EqualTo(baselineSprite.rect.height*3f).Within(.01f));
+                Assert.That(hd.pixelsPerUnit,Is.EqualTo(baselineSprite.pixelsPerUnit*3f).Within(.01f));
+                Assert.That(Vector3.Distance(hd.bounds.size,baselineSprite.bounds.size),Is.LessThan(.001f),
                     "Higher texture resolution must not resize the actual building");
-                Assert.That(Vector3.Distance(hd.bounds.center,original.bounds.center),Is.LessThan(.001f),
+                Assert.That(Vector3.Distance(hd.bounds.center,baselineSprite.bounds.center),Is.LessThan(.001f),
                     "Restored art must preserve the original foot pivot");
                 string factory=key=="bastion_i"?"Bastion":"Sawmill";
                 Assert.AreSame(hd,originalArtType.GetMethod(factory).Invoke(null,null),

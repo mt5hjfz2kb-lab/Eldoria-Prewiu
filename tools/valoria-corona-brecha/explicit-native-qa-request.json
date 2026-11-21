@@ -1,5 +1,5 @@
 {
-  "source_base": "4b20945049c1f5328d58f08a02208f34336d40aa",
+  "source_base": "1aa56df20704c1de45a10ec8a920530b027450da",
   "scene": "BastionI_Modular25D",
-  "purpose": "Validate HD architecture with invariant world bounds, planted idle poses, current-state shadows and 8-second Unity video at actual animation speed; retain full DPR3/browser build/persistence checks."
+  "purpose": "Repeat full HD/idle/real-speed validation after resolving test local-variable shadowing; all runtime and art unchanged."
 }
