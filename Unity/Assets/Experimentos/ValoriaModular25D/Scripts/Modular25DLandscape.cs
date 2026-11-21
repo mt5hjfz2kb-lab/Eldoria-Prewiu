@@ -264,6 +264,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var edgeColor=new Color32[vtx.Length];
             var tris=new int[(samples-1)*(Across-1)*6];
             bool cartLane=renderedCartLane!=null && material==renderedCartLane;
+            bool districtAccess=name.StartsWith("Access |",StringComparison.Ordinal);
             float along=0;
             for(int i=0;i<samples;i++)
             {
@@ -276,7 +277,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 for(int j=0;j<Across;j++)
                 {
                     float u=j/(float)(Across-1);
-                    float taper=cobbled ? Mathf.Lerp(.05f,1f,Mathf.SmoothStep(0f,1f,along/1.6f)) : 1f;
+                    // The imperial route may taper into open meadow. District
+                    // branches, however, JOIN an existing road/yard: narrowing
+                    // those to a geometric point produced the conspicuous
+                    // triangular spur beside the completed barracks.
+                    float taper=cobbled && !districtAccess
+                        ? Mathf.Lerp(.05f,1f,Mathf.SmoothStep(0f,1f,along/1.6f)) : 1f;
                     float offset=(u-.5f)*width*wav*taper;
                     int index=i*Across+j;
                     Vector2 p=spine[i]+normal*offset;
@@ -302,6 +308,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                         float groundCover=Mathf.Lerp(.64f,1f,Sm(.24f,.72f,erosion));
                         float join=Mathf.Min(along,Vector2.Distance(spine[i],spine[samples-1]));
                         alpha*=packed*groundCover*Mathf.Lerp(.28f,1f,Sm(0f,.72f,join));
+                    }
+                    else if(districtAccess)
+                    {
+                        float join=Mathf.Min(along,Vector2.Distance(spine[i],spine[samples-1]));
+                        alpha*=Mathf.Lerp(.34f,1f,Sm(0f,.82f,join));
                     }
                     edgeColor[index]=(Color32)new Color(1f,1f,1f,alpha);
                 }
