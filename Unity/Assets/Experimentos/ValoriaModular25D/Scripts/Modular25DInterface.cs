@@ -454,11 +454,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(statusSheet==null)return;
             selectedDistrict = district;
             orderList.anchoredPosition = Vector2.zero;
-            orderList.GetComponentInParent<ScrollRect>().StopMovement();
             if(activityDrawer!=null)activityDrawer.gameObject.SetActive(false);
             activityExpanded=false;
             if(buildingSheet!=null)buildingSheet.SetActive(false);
             statusSheet.gameObject.SetActive(true);
+            orderList.GetComponentInParent<ScrollRect>().StopMovement();
             SetModalChrome();
             Refresh(gateway.Snapshot());
         }
