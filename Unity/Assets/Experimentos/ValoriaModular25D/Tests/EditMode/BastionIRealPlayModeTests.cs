@@ -422,8 +422,9 @@ namespace Eldoria.Modular25D.Tests
                 .Any(x=>x && x.gameObject.name=="Aserradero_contact"),Is.False,
                 "Do not restore the second dark contact-shadow oval around the original Aserradero");
             foreach(var key in new[]{"BarracksRenderer","GranaryRenderer","StoneworksRenderer"})
-                Assert.IsNull((Member(world,key) as SpriteRenderer)
-                    .GetComponent<Modular25DArchitecturalShadow>(),
+                Assert.IsFalse((Member(world,key) as SpriteRenderer)
+                    .GetComponents<Component>().Any(component=>
+                        component.GetType().Name=="Modular25DArchitecturalShadow"),
                     "Expansion art has painted contact; a second alpha projection leaves a rectangular platform");
 
             Debug.Log("MOD25D_QA_STEP_2_WORLD_HUD_AND_ART");
