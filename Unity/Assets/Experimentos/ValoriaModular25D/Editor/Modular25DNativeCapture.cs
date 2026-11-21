@@ -270,11 +270,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                        world.GranaryRenderer.gameObject.activeSelf!=(level>=3) ||
                        world.StoneworksRenderer.gameObject.activeSelf!=(level>=5))
                         throw new Exception("Progression visual gate mismatch "+level);
-                    var framing=level==1?home:new Vector3(-.02f,-1.5f,-30f);
-                    float size=level==1?portrait:9.15f;
+                    var framing=level==1?home:Modular25DCameraInput.ExpansionCenter;
+                    float size=level==1?portrait:Modular25DCameraInput.ExpansionSize(390f/844f);
                     Render(cam,output,report,"stage-"+level+"-fixture-390x844",390,844,framing,size);
                     Render(cam,output,report,"stage-"+level+"-fixture-1170x2532",1170,2532,framing,size);
                     Render(cam,output,report,"stage-"+level+"-keep-detail",1170,1170,new Vector3(-.4f,3.1f,-30f),3.3f);
+                    if(level==5)
+                        Render(cam,output,report,"stage-5-district-1170x2532",1170,2532,new Vector3(-.45f,-6.4f,-30f),12.8f);
                     report.progressionStagesCaptured++;
                     // Unlocking a tier alone must never conjure completed architecture.
                     fixture.BarracksLevel=0;fixture.ChapterThree.GranaryLevel=0;fixture.ChapterThree.StoneworksLevel=0;

@@ -13,6 +13,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     [DisallowMultipleComponent]
     public sealed class Modular25DLandscape : MonoBehaviour
     {
+        public static readonly Vector2 BarracksFoot = new Vector2(-4.85f,-4.95f);
+        public static readonly Vector2 GranaryFoot = new Vector2(3.85f,-7.65f);
+        public static readonly Vector2 StoneworksFoot = new Vector2(-2.85f,-11.70f);
         const int RoadW=256, RoadH=512, FootW=512, FootH=320;
         static readonly Vector2 Keep=new Vector2(-.40f,1.45f);
         static readonly Vector2 Sawmill=new Vector2(.96f,-2.07f);
@@ -97,12 +100,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         public void ApplyExpansionGround(bool barracks,bool granary,bool stoneworks)
         {
-            ExpansionGround("barracks",barracks,new Vector2(-1.65f,-4.20f),
-                new[]{new Vector2(-3.88f,-3.76f),new Vector2(-2.8f,-4.50f),new Vector2(-1.65f,-4.40f)});
-            ExpansionGround("granary",granary,new Vector2(1.15f,-6.00f),
-                new[]{new Vector2(-2.8f,-4.50f),new Vector2(-1.6f,-5.45f),new Vector2(.1f,-6.45f),new Vector2(1.15f,-6.20f)});
-            ExpansionGround("stoneworks",stoneworks,new Vector2(-1.65f,-7.65f),
-                new[]{new Vector2(-4.85f,-5.3f),new Vector2(-3.60f,-6.5f),new Vector2(-2.75f,-7.6f),new Vector2(-1.65f,-7.85f)});
+            ExpansionGround("barracks",barracks,BarracksFoot,
+                new[]{new Vector2(-3.88f,-3.76f),new Vector2(-4.2f,-4.65f),BarracksFoot+Vector2.down*.2f});
+            ExpansionGround("granary",granary,GranaryFoot,
+                new[]{new Vector2(-3.88f,-3.76f),new Vector2(-2.25f,-5.65f),new Vector2(.15f,-6.55f),new Vector2(1.95f,-7.9f),GranaryFoot+Vector2.down*.2f});
+            ExpansionGround("stoneworks",stoneworks,StoneworksFoot,
+                new[]{new Vector2(-4.85f,-5.3f),new Vector2(-4.00f,-7.65f),new Vector2(-4.40f,-9.6f),new Vector2(-4.35f,-11.65f),StoneworksFoot+Vector2.down*.2f});
         }
 
         void ExpansionGround(string id,bool visible,Vector2 foot,Vector2[] path)

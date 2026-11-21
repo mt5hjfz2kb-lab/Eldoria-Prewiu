@@ -25,6 +25,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             return Mathf.Clamp(3.05f/Mathf.Max(.42f,aspect),4.90f,7.10f);
         }
 
+        public static Vector3 ExpansionCenter => new Vector3(-.5f,-3.45f,-30f);
+        public static float ExpansionSize(float aspect) => Mathf.Max(9.8f,6.45f/Mathf.Max(.35f,aspect));
+
         void Start()
         {
             world=GetComponent<Modular25DWorld>();
@@ -146,22 +149,22 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             Vector3 p=camera.transform.position;
             float scale=2f*camera.orthographicSize/Mathf.Max(1f,Screen.height);
             p.x=Mathf.Clamp(p.x-pixels.x*scale,-6f,6f);
-            p.y=Mathf.Clamp(p.y-pixels.y*scale,-5f,5f);
+            p.y=Mathf.Clamp(p.y-pixels.y*scale,world.DisplayedBastionLevel>=2?-12.5f:-5f,5f);
             camera.transform.position=p;
         }
 
         void Zoom(float ratio)
         {
             if(float.IsNaN(ratio)||float.IsInfinity(ratio)||ratio<=0)return;
-            camera.orthographicSize=Mathf.Clamp(camera.orthographicSize*ratio,4.2f,11.8f);
+            camera.orthographicSize=Mathf.Clamp(camera.orthographicSize*ratio,4.2f,world.DisplayedBastionLevel>=2?Mathf.Max(11.8f,ExpansionSize(camera.aspect)):11.8f);
         }
 
         public void Home()
         {
             if(camera==null)return;
             bool expanded=world!=null && world.DisplayedBastionLevel>=2;
-            camera.orthographicSize=expanded?Mathf.Max(homeSize,9.15f):homeSize;
-            camera.transform.position=expanded?new Vector3(-.02f,-1.5f,-30f):HomePosition;
+            camera.orthographicSize=expanded?ExpansionSize(camera.aspect):homeSize;
+            camera.transform.position=expanded?ExpansionCenter:HomePosition;
         }
 
         void TrySelect(Vector2 screen)
