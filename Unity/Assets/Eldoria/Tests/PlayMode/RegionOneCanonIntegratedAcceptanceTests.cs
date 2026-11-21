@@ -1342,6 +1342,14 @@ namespace Eldoria.Tests
                 Assert.IsTrue(routes.TryRoute(state,id,out var points),id);
                 lines.Add(id+" "+string.Join(" ",points.Select(p=>new Vector3(p.X,p.Y,p.Z).ToString("F4"))));
             }
+            var cellField=routes.GetType().GetField("cells",BindingFlags.Instance|BindingFlags.NonPublic);
+            var cells=(System.Collections.Generic.Dictionary<Vector2Int,Vector3>)cellField.GetValue(routes);
+            using(var writer=new System.IO.BinaryWriter(File.Create(Path.Combine(output,"grid.bin")))){
+                foreach(var entry in cells.OrderBy(e=>e.Key.y).ThenBy(e=>e.Key.x)){
+                    writer.Write(entry.Key.x);writer.Write(entry.Key.y);
+                    writer.Write(entry.Value.x);writer.Write(entry.Value.y);writer.Write(entry.Value.z);
+                }
+            }
             File.WriteAllLines(Path.Combine(output,"routes.txt"),lines);
             if(Environment.GetEnvironmentVariable("ELDORIA_BAKE_TERRAIN_QUERIES")=="1"){
                 var tape=(byte[])placement.GetType().GetProperty("CapturedTerrainQueries").GetValue(null);
@@ -1358,6 +1366,26 @@ namespace Eldoria.Tests
                 yield return null;yield return null;
                 SaveRetainedSectorFrame(camera,Path.Combine(output,view.Item1+".png"),390,844);
             }
+            Assert.IsTrue((bool)Call(host,"Select","forest-valoria"));
+            var gather=Member(Member(Call(host,"Read","forest-valoria",false),"Building"),"Action");
+            Assert.AreEqual("Gather",Member(gather,"Kind"));
+            Assert.IsTrue((bool)Member(gather,"Enabled"));
+            Call(host,"Submit",gather);
+            var dispatched=gateway.Snapshot();
+            Assert.AreEqual("outbound",dispatched.March.Phase);
+            Assert.Greater(dispatched.March.Route.Count,1);
+            var savedRoute=dispatched.March.Route.Select(p=>new Vector3(p.X,p.Y,p.Z)).ToArray();
+            Call(city,"ReloadForProbe");
+            gateway=(Eldoria.Application.LocalGateway)Member(city,"Gateway");
+            Assert.AreEqual(savedRoute,gateway.Snapshot().March.Route.Select(p=>new Vector3(p.X,p.Y,p.Z)).ToArray());
+            Call(Member(city,"Clock"),"Step",2*Eldoria.Domain.SliceRules.TravelSeconds+Eldoria.Domain.SliceRules.GatherSeconds+1);
+            gateway.Advance();
+            var returned=gateway.Snapshot();
+            Assert.AreEqual("idle",returned.March.Phase);
+            Assert.Greater(returned.Resources.Wood,dispatched.Resources.Wood);
+            Call(city,"ReloadForProbe");
+            gateway=(Eldoria.Application.LocalGateway)Member(city,"Gateway");
+            Assert.AreEqual(returned.Resources.Wood,gateway.Snapshot().Resources.Wood);
             Assert.IsTrue((bool)Call(host,"TrySetWorld",false));
         }
 

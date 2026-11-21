@@ -161,6 +161,7 @@ jobs:
             if($phase -eq 'before'){Copy-Item (Join-Path $env:ELDORIA_REGION1_CAPTURE_OUT 'terrain.bytes') (Join-Path $project 'Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes')}
           }
           if((Get-FileHash "$out/before/routes.txt").Hash -ne (Get-FileHash "$out/after/routes.txt").Hash){throw 'Canonical route or cells changed'}
+          if((Get-FileHash "$out/before/grid.bin").Hash -ne (Get-FileHash "$out/after/grid.bin").Hash){throw 'Navigable X/Z lattice differs'}
       - uses: actions/upload-artifact@v4
         if: always()
         with:

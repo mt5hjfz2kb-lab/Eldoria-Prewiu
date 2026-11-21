@@ -135,7 +135,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
 
  }
  if(_ModularWorld>.5 && (_MeadowFinish>.5 || _GeologicalRock>.5)){
-     float2 faultUV=(groundPosition-float2(-430,32))/float2(320,256);
+     float2 faultUV=(groundPosition-float2(-430,0))/float2(320,288);
      half3 mark=SAMPLE_TEXTURE2D(_FaultPigment,sampler_FaultPigment,saturate(faultUV)).rgb;
      half3 slate=half3(.27,.235,.255),seam=half3(.34,.18,.395);
      #ifndef UNITY_COLORSPACE_GAMMA
