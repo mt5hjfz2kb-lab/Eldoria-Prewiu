@@ -164,6 +164,17 @@ async def main():
                 await swipe(x1,y1,x2,y2)
                 await page.screenshot(path=OUT/f'bastion-5-recorrido-{n}.png')
             if os.environ.get('VALORIA_TEST_REGION')=='1':
+                async def visit_room(name,back):
+                    await council()
+                    await tap('OpenSystem/'+name)
+                    await until(lambda:state.get('room')==name)
+                    await page.wait_for_timeout(650)
+                    await page.screenshot(path=OUT/('sistema-'+name+'.png'))
+                    await tap(back,False)
+                    await until(lambda:not state.get('room'))
+                for name,back in [('training','Return to Valoria'),('heroes','Close heroes'),
+                                  ('daily','Close tributes'),('mail','Volver')]:
+                    await visit_room(name,back)
                 control=find('Visitar Región 1')
                 assert control,state
                 box=await page.locator('canvas').bounding_box()

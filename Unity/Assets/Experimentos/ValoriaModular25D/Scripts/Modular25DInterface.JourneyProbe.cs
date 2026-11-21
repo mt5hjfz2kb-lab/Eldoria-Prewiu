@@ -17,6 +17,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             public int level, sawmill, barracks, granary, stoneworks, wood, stone, food, army;
             public long revision;
+            public string room;
             public bool journey, lyra, fissure, council, sawmillPanel, drawer, busy;
             public List<Tap> taps = new List<Tap>();
         }
@@ -26,7 +27,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var s = gateway.Snapshot();
             if (s == null) return;
             var view = new JourneyView {
-                level=s.BastionLevel, sawmill=s.SawmillLevel, barracks=s.BarracksLevel,
+                room=activeRoom, level=s.BastionLevel, sawmill=s.SawmillLevel, barracks=s.BarracksLevel,
                 granary=s.ChapterThree.GranaryLevel, stoneworks=s.ChapterThree.StoneworksLevel,
                 wood=s.Resources.Wood, stone=s.Resources.Stone, food=s.Resources.Food,
                 army=s.Available.Total, revision=s.Revision, journey=s.JourneyComplete,
@@ -35,7 +36,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                      s.RecruitmentCompletesUtcTicks>0 || MarchCapacityRules.ActiveCount(s,DateTime.UtcNow.Ticks)>0,
                 council=statusSheet.gameObject.activeSelf, sawmillPanel=buildingSheet.activeSelf, drawer=activityExpanded
             };
-            foreach (var b in hudCanvas.GetComponentsInChildren<Button>())
+            var buttons = roomHost ? roomHost.GetComponentsInChildren<Button>() : hudCanvas.GetComponentsInChildren<Button>();
+            foreach (var b in buttons)
             {
                 if (!b.interactable || !b.gameObject.activeInHierarchy) continue;
                 var r=(RectTransform)b.transform;
@@ -54,3 +56,4 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     }
 }
 #endif
+

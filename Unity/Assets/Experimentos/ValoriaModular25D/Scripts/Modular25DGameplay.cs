@@ -25,6 +25,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         readonly System.Collections.Generic.Dictionary<string,RoyalBuilding> offers =
             new System.Collections.Generic.Dictionary<string,RoyalBuilding>();
 
+        internal ICommandGateway Commands => gateway;
+        internal IRoyalSession Session => buildingOffers;
+
         public RoyalBuilding BuildingOffer(string selection, long revision)
         {
             if (revision!=offerRevision) { offers.Clear(); offerRevision=revision; }

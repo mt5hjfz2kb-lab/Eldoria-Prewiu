@@ -29,23 +29,8 @@ jobs:
           persist-credentials: false
       - name: Check legacy texture staging against every real donor and compare geometry bytes
         run: python tools/valoria-modular25d/pack-hidden-geography.py Unity --combined-player --donors-only
-  earlier-city:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 180
-    steps:
-      - name: Wait for the already requested city proof to release the shared Unity queue
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          while true; do
-            status=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/44932090657" --jq .status)
-            if [[ "$status" == completed ]]; then break; fi
-            sleep 55
-          done
   preflight:
-    needs: [earlier-city, verify-packaging]
+    needs: verify-packaging
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:

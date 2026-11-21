@@ -17,6 +17,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     [DefaultExecutionOrder(-400)]
     public sealed class Modular25DWorld : MonoBehaviour
     {
+        public GameObject ManagementHudPrefab;
         public Camera ViewCamera { get; private set; }
         public Modular25DGameplay Gameplay { get; private set; }
         public Modular25DInterface Hud { get; private set; }
@@ -449,5 +450,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+
 
 

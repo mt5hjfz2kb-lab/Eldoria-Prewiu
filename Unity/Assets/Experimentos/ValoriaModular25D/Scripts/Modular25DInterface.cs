@@ -52,6 +52,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private Text title, level, woodValue, stoneValue, foodValue;
         private Text stage, cost, remaining, actionLabel, notice, objectiveText, stateSummary;
         private Button action;
+        private RectTransform firstBuildGuide;
         private RectTransform regionDock;
         private bool worldUnlocked, enteringWorld;
         private Image woodAccent;
@@ -373,6 +374,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             Canvas.ForceUpdateCanvases();
             Layout();
+            if (Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
+            {
+                var hand = Resources.Load<Sprite>("Issue186ResourceArt/tutorial_pointing_hand");
+                if (hand)
+                {
+                    firstBuildGuide = Plate("Guía de la primera obra",inspect,hand,new Vector2(.5f,.5f),
+                        new Vector2(.16f,.696f),Vector2.zero,new Vector2(32f,32f));
+                    firstBuildGuide.GetComponent<Image>().preserveAspect = true;
+                    firstBuildGuide.gameObject.SetActive(false);
+                }
+            }
             Refresh(gateway.Snapshot());
             Feedback(gateway.LastMessage);
             OpenNamesIfNeeded();
@@ -483,6 +495,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         private void Update()
         {
+            if(firstBuildGuide)
+            {
+                bool atSite = cachedSawmillPhase == ParcelBuildingState.AVAILABLE;
+                bool show = atSite && !roomHost && !statusSheet.gameObject.activeSelf && !activityExpanded &&
+                    (!buildingSheet.activeSelf || action.interactable);
+                var target = buildingSheet.activeSelf ? (RectTransform)action.transform : inspect;
+                if(firstBuildGuide.parent != target) firstBuildGuide.SetParent(target,false);
+                if(firstBuildGuide.gameObject.activeSelf != show) firstBuildGuide.gameObject.SetActive(show);
+                if(show) firstBuildGuide.anchoredPosition = new Vector2(-4f,3f+2f*Mathf.Sin(Time.unscaledTime*3f));
+            }
+            if (roomHost && roomIsOpen != null && !roomIsOpen()) CloseCanonicalRoom();
             if (Screen.width != lastWidth || Screen.height != lastHeight ||
                 Screen.safeArea != lastSafeArea)
                 Layout();

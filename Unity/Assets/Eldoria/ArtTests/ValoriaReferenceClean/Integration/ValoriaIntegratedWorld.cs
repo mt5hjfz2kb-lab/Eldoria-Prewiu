@@ -304,7 +304,7 @@ namespace Eldoria.ReferenceClean {
    var state=boundGateway.Snapshot();
    return new[]{ReadCanonicalHero(state,"aldric"),ReadCanonicalHero(state,"lyra")};
   }
-  Eldoria.HeroesUI.HeroesApprovedDestination.HeroState ReadCanonicalHero(PlayerState state,string id){
+  public static Eldoria.HeroesUI.HeroesApprovedDestination.HeroState ReadCanonicalHero(PlayerState state,string id){
    bool lyra=id=="lyra";var stats=SliceRules.HeroIntrinsicStats(id);
    int xp=lyra?Math.Max(state.Retention?.LyraExperience??0,state.ChapterThree?.LyraXp??0):state.Retention?.AldricExperience??0;
    int mastery=EarlyRetentionRules.HeroMasteryLevel(state,id);

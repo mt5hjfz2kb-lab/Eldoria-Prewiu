@@ -61,7 +61,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if (state.ResourceRewards?.Packets != null)
                 foreach (var packet in state.ResourceRewards.Packets)
                     if (!packet.Used) pending++;
-            hasSupplies = pending > 0;
+            hasSupplies = pending > 0 || (state.ChapterThree.Inventory?.Count ?? 0) > 0 ||
+                (state.Mailbox?.ReceivedEventIds?.Count ?? 0) > 0 || (state.Mailbox?.Messages?.Count ?? 0) > 0;
+            supplyCount.transform.parent.gameObject.SetActive(pending > 0);
             supplyCount.text = pending > 99 ? "99+" : pending.ToString();
             receivedDistrictState = true;
             districtLevels[0] = state.BarracksLevel;
@@ -219,6 +221,23 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                         ResourceRewardCommands.UsePacket, p.ReceiptId);
                 }
             }
+            if (Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
+            {
+                if (s.BarracksLevel > 0 && level >= 2)
+                {
+                    Order("Gestionar entrenamiento", "OpenSystem", "training");
+                    if (NarrativeCoherenceRules.Seen(s,"march-preparation"))
+                        Order("Componer marcha", "OpenSystem", "march");
+                }
+                if (c.LyraRecruited) Order("Salón de héroes", "OpenSystem", "heroes");
+                if (EarlyRetentionRules.VigilantsUnlocked(s)) Order("Vigilantes", "OpenSystem", "vigilants");
+                if (EarlyRetentionRules.ScoutsUnlocked(s)) Order("Exploradores", "OpenSystem", "scouts");
+                if ((s.Mailbox?.ReceivedEventIds?.Count ?? 0) > 0 || (s.Mailbox?.Messages?.Count ?? 0) > 0)
+                    Order("Abrir buzón", "OpenSystem", "mail");
+                if ((s.ResourceRewards?.Packets?.Count ?? 0) > 0) Order("Abrir bolsa", "OpenSystem", "bag");
+                if ((c.Inventory?.Count ?? 0) > 0) Order("Materiales y manuscritos", "Inventory", "inventory");
+                Order("Tesoros de Valoria", "OpenSystem", "daily");
+            }
             int selected = Array.IndexOf(DistrictIds, selectedDistrict);
             if (selected >= 0)
             {
@@ -226,16 +245,28 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 int built = districtLevels[selected];
                 orders.RemoveAll(order => order.target != selectedDistrict &&
                     order.target != "upgrade-" + selectedDistrict &&
-                    !(selectedDistrict == "barracks" && (order.command == "Recruit" || order.command == "ConfigureMarch")));
+                    !(selectedDistrict == "barracks" && (order.command == "Recruit" || order.command == "ConfigureMarch" || order.target == "training" || order.target == "march")));
                 stateSummary.text = (built > 0 ? "Nivel " + built : "Parcela disponible") +
                     (orders.Count == 0 ? " · Sin órdenes disponibles" : "");
             }
             if (selectedDistrict == "supplies")
             {
                 orders.RemoveAll(order => order.command != ResourceRewardCommands.ClaimMail &&
-                    order.command != ResourceRewardCommands.UsePacket);
+                    order.command != ResourceRewardCommands.UsePacket && order.target != "mail" && order.target != "bag" && order.target != "inventory");
                 councilTitle.text = "ENTREGAS";
                 stateSummary.text = orders.Count > 0 ? "Buzón y paquetes de la bolsa" : "Todo recogido";
+            }
+            if (selectedDistrict == "inventory")
+            {
+                orders.Clear();
+                councilTitle.text = "BOLSA";
+                stateSummary.text = "Materiales y manuscritos";
+                if (c.Inventory != null)
+                    foreach (var item in c.Inventory)
+                        Order(item == "breach-manuscript" ? "Manuscrito de la Fisura" :
+                            item == "treated-hide" ? "Piel curtida de ceniza" :
+                            item == "iron-brace" ? "Abrazadera de hierro antiguo" :
+                            item == "stone-tusk" ? "Colmillo pétreo" : item, "", item);
             }
             orderList.sizeDelta = new Vector2(0f, orders.Count * 50f);
             for (int i = 0; i < orders.Count; i++)
@@ -249,6 +280,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     orderRows.Add(row);
                 }
                 orderRows[i].gameObject.SetActive(true);
+                orderRows[i].interactable = orders[i].command.Length > 0;
                 orderRows[i].GetComponentInChildren<Text>().text = orders[i].caption;
             }
             for (int i = orders.Count; i < orderRows.Count; i++) orderRows[i].gameObject.SetActive(false);
@@ -264,7 +296,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             if (slot >= orders.Count) return;
             var order = orders[slot];
-            gateway.Issue(order.command, order.target);
+            if (order.command == "Inventory") ShowCouncil("inventory");
+            else if (order.command.Length == 0) return;
+            else if (order.command == "OpenSystem") OpenCanonicalRoom(order.target);
+            else gateway.Issue(order.command, order.target);
         }
     }
 }

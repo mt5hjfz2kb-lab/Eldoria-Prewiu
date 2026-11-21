@@ -82,6 +82,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fb45ef16fe045e1b9d8249db47c36c1, type: 3}
+  ManagementHudPrefab: {fileID: 1001, guid: 95f6f7d7a892258b43606c1e88b2fddc, type: 3}
   m_Name:
   m_EditorClassIdentifier:
 --- !u!1 &200000
@@ -134,3 +135,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 100001}
   - {fileID: 200001}
+
