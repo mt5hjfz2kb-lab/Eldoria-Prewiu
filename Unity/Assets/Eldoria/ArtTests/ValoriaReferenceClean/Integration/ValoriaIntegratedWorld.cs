@@ -73,7 +73,7 @@ namespace Eldoria.ReferenceClean {
    if(worldPresentation&&worldPresentation.IsReady){
     Debug.Log("ELDORIA_P0_LAZY_WORLD_READY_FOR_ENTRY");
     if(TrySetWorld(true)&&!string.IsNullOrEmpty(objective))Select(objective);
-   }else if(Hud)Hud.Feedback.Put("No se ha podido preparar el mundo. La ciudad y tu progreso siguen disponibles.");
+   }else {ValoriaTravelCurtain.Failed();if(Hud)Hud.Feedback.Put("No se ha podido preparar el mundo. La ciudad y tu progreso siguen disponibles.");}
   }
   public bool English=>englishInterface;
   public string Selected=>Hud?Hud.SelectedBuildingId:"";
@@ -467,7 +467,7 @@ namespace Eldoria.ReferenceClean {
    if(!open && InWorld && ValoriaTravelSession.CombinedPlayer){
     if(!returningToModularCity){
      returningToModularCity=true;
-     UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(ValoriaTravelSession.CityScene);
+     ValoriaTravelCurtain.Travel(ValoriaTravelSession.CityScene);
     }
     return true;
    }
@@ -515,7 +515,9 @@ namespace Eldoria.ReferenceClean {
    // Restore the existing tier-V city models before the first render after
    // returning from the world; do not leave the city empty until LateUpdate.
    var advanced=GetComponent<BastionIVVWorldPresentation>();if(advanced)advanced.Apply();
-   Hud.Refresh();RefreshNavigation();Guidance?.Refresh();return true;
+   Hud.Refresh();RefreshNavigation();Guidance?.Refresh();
+   if(open)ValoriaTravelCurtain.Arrived(ValoriaTravelSession.RegionScene);
+   return true;
   }
   public bool CanOpen(RoyalSection section){
    if(city==null||city.Gateway==null)return false;var s=city.Gateway.Snapshot();

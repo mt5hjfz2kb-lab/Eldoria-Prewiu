@@ -1,7 +1,7 @@
 name: Valoria regional WebGL player verification
 on:
   push:
-    branches: [experiment/valoria-continuidad-hud-region1-20261121]
+    branches: [experiment/valoria-ciudad-region-unificada-20261121]
     paths: [tools/valoria-modular25d/region-browser.json]
 permissions:
   actions: read

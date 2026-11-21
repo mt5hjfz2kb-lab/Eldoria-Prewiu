@@ -376,6 +376,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             Refresh(gateway.Snapshot());
             Feedback(gateway.LastMessage);
             OpenNamesIfNeeded();
+            Eldoria.ReferenceClean.ValoriaTravelCurtain.Arrived(Eldoria.ReferenceClean.ValoriaTravelSession.CityScene);
             SyncWorldNameplates();
         }
 
@@ -428,7 +429,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             enteringWorld = true;
             regionDock.GetComponent<Button>().interactable = false;
             Feedback("Preparando Región 1…");
-            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(Eldoria.ReferenceClean.ValoriaTravelSession.RegionScene);
+            Eldoria.ReferenceClean.ValoriaTravelCurtain.Travel(Eldoria.ReferenceClean.ValoriaTravelSession.RegionScene);
         }
 
         public void OpenStatus()
