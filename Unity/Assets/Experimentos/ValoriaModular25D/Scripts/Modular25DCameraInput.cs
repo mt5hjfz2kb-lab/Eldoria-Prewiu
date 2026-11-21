@@ -25,8 +25,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             return Mathf.Clamp(3.05f/Mathf.Max(.42f,aspect),4.90f,7.10f);
         }
 
-        public static Vector3 ExpansionCenter => new Vector3(-.5f,-3.45f,-30f);
-        public static float ExpansionSize(float aspect) => Mathf.Max(9.8f,6.45f/Mathf.Max(.35f,aspect));
+        public static Vector3 ExpansionCenter => new Vector3(-.54f,-4.55f,-30f);
+        public static float ExpansionSize(float aspect) => Mathf.Max(9.8f,6.95f/Mathf.Max(.35f,aspect));
 
         void Start()
         {

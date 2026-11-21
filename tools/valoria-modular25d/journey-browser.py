@@ -91,11 +91,37 @@ async def main():
             for _ in range(4):
                 if not state['busy']: break
                 await elapse(16)
+        async def travel_round_trip():
+            if state['council']:
+                await tap('Close state',False)
+            world_view.clear()
+            control=find('Visitar Región 1')
+            assert control,state
+            box=await page.locator('canvas').bounding_box()
+            async def touch(control):
+                await page.touchscreen.tap(box['x']+control['x']*box['width'],box['y']+control['y']*box['height'])
+            before=state.copy()
+            await touch(control)
+            await until(lambda:bool(world_view),200)
+            assert world_view['level']==before['level'] and world_view['sawmill']==before['sawmill']
+            await page.wait_for_timeout(1500)
+            await page.screenshot(path=OUT/f'ciudad-a-region-{state["level"]}.png')
+            seq=sequence
+            await touch(world_view)
+            await until(lambda:sequence>seq,150)
+            for key in ['level','sawmill','granary','barracks','stoneworks','lyra','fissure']:
+                assert state[key]==before[key],(key,before,state)
+            await page.screenshot(path=OUT/f'regreso-a-valoria-{state["level"]}.png')
+            log.append({'world_round_trip':True,'level':state['level']})
         async def funds(wood,stone):
             for field,need,cmd in [('wood',wood,'Gather/forest-valoria'),('stone',stone,'Gather/quarry-valoria')]:
                 for _ in range(18):
                     if state[field]>=need:break
-                    await elapse(301); await order(cmd,20)
+                    await elapse(301)
+                    remaining = 'forestRemaining' if field=='wood' else 'quarryRemaining'
+                    if os.environ.get('VALORIA_TEST_REGION')=='1' and state[remaining]<=0:
+                        await travel_round_trip()
+                    await order(cmd,20)
                 assert state[field]>=need,(field,need,state)
         async def ascend(n,duration):
             await council();rev=state['revision']
@@ -175,24 +201,7 @@ async def main():
                 for name,back in [('training','Return to Valoria'),('heroes','Close heroes'),
                                   ('daily','Close tributes'),('mail','Volver')]:
                     await visit_room(name,back)
-                control=find('Visitar Región 1')
-                assert control,state
-                box=await page.locator('canvas').bounding_box()
-                async def touch(control):
-                    await page.touchscreen.tap(box['x']+control['x']*box['width'],box['y']+control['y']*box['height'])
-                before=state.copy()
-                await touch(control)
-                await until(lambda:bool(world_view),200)
-                assert world_view['level']==before['level'] and world_view['sawmill']==before['sawmill']
-                await page.wait_for_timeout(1500)
-                await page.screenshot(path=OUT/'ciudad-a-region.png')
-                seq=sequence
-                await touch(world_view)
-                await until(lambda:sequence>seq,150)
-                for key in ['level','sawmill','granary','barracks','stoneworks','lyra','fissure']:
-                    assert state[key]==before[key],(key,before,state)
-                await page.screenshot(path=OUT/'regreso-a-valoria.png')
-                log.append({'world_round_trip':True,'level':state['level']})
+                await travel_round_trip()
             print('PASS',browser.version,state,flush=True)
         finally:
             (OUT/'journey.json').write_text(json.dumps({'browser':browser.version,'viewport':[390,844],'clock':'UTC elapsed by test, normal game timers','log':log,'last':state,'errors':errors},indent=2))

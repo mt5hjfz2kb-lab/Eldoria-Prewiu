@@ -17,6 +17,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             public int level, sawmill, barracks, granary, stoneworks, wood, stone, food, army;
             public long revision;
+            public int forestRemaining,quarryRemaining;
             public string room;
             public bool journey, lyra, fissure, council, sawmillPanel, drawer, busy;
             public List<Tap> taps = new List<Tap>();
@@ -30,6 +31,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 room=activeRoom, level=s.BastionLevel, sawmill=s.SawmillLevel, barracks=s.BarracksLevel,
                 granary=s.ChapterThree.GranaryLevel, stoneworks=s.ChapterThree.StoneworksLevel,
                 wood=s.Resources.Wood, stone=s.Resources.Stone, food=s.Resources.Food,
+                forestRemaining=s.ForestRemaining,quarryRemaining=s.QuarryRemaining,
                 army=s.Available.Total, revision=s.Revision, journey=s.JourneyComplete,
                 lyra=s.ChapterThree.LyraRecruited, fissure=s.ChapterThree.FissureClosed,
                 busy=s.BuildingCompletesUtcTicks>0 || s.BastionUpgradeCompletesUtcTicks>0 ||

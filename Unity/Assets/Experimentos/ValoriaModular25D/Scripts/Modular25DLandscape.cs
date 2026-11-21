@@ -23,7 +23,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         readonly List<Texture2D> textures=new List<Texture2D>();
         readonly List<Material> materials=new List<Material>();
         bool built;
-        Material expansionRoadMaterial;
+        Material expansionRoadMaterial, expansionPaving;
         public int RoadCount { get; private set; }
         public bool OriginalCobbleRoadLoaded { get; private set; }
         public int FootprintCount { get; private set; }
@@ -67,6 +67,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     "fallback is not artistic acceptance.",this);
             // The road is described as spatial segments; bend is interpolated,
             // not simulated by shifting a static full-scene background.
+            expansionPaving=imperialMat;
             var main=new []{
                 new Vector2(-6.65f,-7.5f),new Vector2(-4.85f,-5.3f),
                 new Vector2(-3.88f,-3.76f),new Vector2(-2.70f,-2.5f),
@@ -116,9 +117,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 root=new GameObject("Unlocked ground | "+id).transform;
                 root.SetParent(transform,false);
                 int first=transform.childCount;
-                AddRoad("Access | "+id,path,.80f,expansionRoadMaterial,false);
-                PutFoot("Contact | "+id,MakeFootprint(id,new Color(.49f,.41f,.31f,1),
-                    new Color(.70f,.64f,.49f,1),false),foot+new Vector2(0,-.18f),.83f);
+                bool military=id=="barracks", stone=id=="stoneworks";
+                AddRoad("Access | "+id,path,military ? 1.12f : .91f,
+                    military ? expansionPaving : expansionRoadMaterial,military);
+                Color soil=stone ? new Color(.50f,.46f,.40f) : new Color(.45f,.34f,.22f);
+                Color worn=stone ? new Color(.77f,.73f,.62f) : new Color(.71f,.58f,.39f);
+                PutFoot("Contact | "+id,MakeFootprint(id,soil,worn,stone||military),
+                    foot+new Vector2(.10f,-.41f),stone ? 1.26f : 1.05f);
                 while(transform.childCount>first)transform.GetChild(first).SetParent(root,true);
             }
             if(root!=null)root.gameObject.SetActive(visible);
