@@ -55,42 +55,42 @@
     },
     {
       "name": "barracks",
-      "source": "exec-f1b94946-2650-47aa-a50e-c86f4471c309.png",
-      "source_sha256": "7a2136705e92c943d5341131b8f8ed7c8300a6742bc53b543929aea4a94e3826",
-      "sha256": "9de2f0b1b7c1734cf6133810932a6f3fbbe231a21b0251f2491dd737370826e2",
+      "source": "exec-1762563c-27c9-4d17-8a59-27f4c6bb696a.png",
+      "source_sha256": "e49887a1a95bc911e773ae22bd2593c7eb8b020edb92a92482f504e5ead87f4b",
+      "sha256": "ffb272643c5d214440dd033075c3f802696f9fdc32f1c6f6b61ac90d2f0855e6",
       "dimensions": [
         1024,
-        665
+        810
       ],
       "pixels_per_unit": 288,
-      "pivot_y": 0.1037593984962406,
-      "brief": "Open training yard and watchtower"
+      "pivot_y": 0.08518518518518518,
+      "brief": "Fortified gatehouse and integrated stone watchtower"
     },
     {
       "name": "granary",
-      "source": "exec-f1b94946-2650-47aa-a50e-c86f4471c309.png",
-      "source_sha256": "7a2136705e92c943d5341131b8f8ed7c8300a6742bc53b543929aea4a94e3826",
-      "sha256": "489bc3b463f56a7f086be8f9b7a052b436e6e8458e81f360764772f985ad9540",
+      "source": "exec-bcbcd541-49e0-4ba5-812e-7c6cd51f421f.png",
+      "source_sha256": "b5994a08136159fc772442876582449f7db437088803f173c20d858e25df80c2",
+      "sha256": "71ea3308c7f7574568a657318e0bbc19a1a3d694b65b2d7f5cafe02e4b308677",
       "dimensions": [
         1024,
-        737
+        756
       ],
       "pixels_per_unit": 288,
-      "pivot_y": 0.09362279511533243,
-      "brief": "Twin grain silos with thatched roofs"
+      "pivot_y": 0.09126984126984126,
+      "brief": "Grain silo with covered loading bay"
     },
     {
       "name": "stoneworks",
-      "source": "exec-f1b94946-2650-47aa-a50e-c86f4471c309.png",
-      "source_sha256": "7a2136705e92c943d5341131b8f8ed7c8300a6742bc53b543929aea4a94e3826",
-      "sha256": "ba46dfdd040062c82aa0f0d03ddb862b86a7b71a9a44bce6b6977838b92425f5",
+      "source": "exec-c30dc967-0111-4f4a-89db-b99c3d747977.png",
+      "source_sha256": "434c40dfb91c88987172c9104115d96eecb40a0567c6e181f16e48600f46a123",
+      "sha256": "dc98b9fc3900fcefede70e1b9eb9b4ed76fe9c33bac474f6620e4797ef624f15",
       "dimensions": [
         1024,
-        703
+        661
       ],
       "pixels_per_unit": 288,
-      "pivot_y": 0.09815078236130868,
-      "brief": "Stepped limestone quarry with treadwheel crane"
+      "pivot_y": 0.1043872919818457,
+      "brief": "Stepped quarry and heavy treadwheel"
     },
     {
       "name": "sawmill_available_hd",
