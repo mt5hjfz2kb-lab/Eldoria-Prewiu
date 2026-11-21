@@ -197,19 +197,38 @@ async def main():
                 await swipe(x1,y1,x2,y2)
                 await page.screenshot(path=OUT/f'bastion-5-recorrido-{n}.png')
             if os.environ.get('VALORIA_TEST_REGION')=='1':
-                async def visit_room(name,back):
+                async def visit_room(name,back,required=True):
                     if name=='mail':
                         if state['council']: await tap('Close state',False)
                     else: await council()
-                    await tap('OpenSystem/'+name)
+                    try:
+                        # The Council can exceed one phone screen at Bastion V;
+                        # tap() scrolls the real masked order list before deciding
+                        # that a progression-gated destination is unavailable.
+                        await tap('OpenSystem/'+name)
+                    except RuntimeError:
+                        if required: raise
+                        log.append({'room_unavailable_at_bastion_v':name})
+                        if state['council']: await tap('Close state',False)
+                        return False
                     await until(lambda:state.get('room')==name)
                     await page.wait_for_timeout(650)
                     await page.screenshot(path=OUT/('sistema-'+name+'.png'))
                     await tap(back,False)
                     await until(lambda:not state.get('room'))
+                    log.append({'room_traversed':name,'level':state['level']})
+                    return True
                 for name,back in [('training','Return to Valoria'),('heroes','Close heroes'),
                                   ('daily','Close tributes'),('mail','Volver')]:
                     await visit_room(name,back)
+                # Exercise every additional canonical room that this exact
+                # saved progression exposes. These are not invented dock
+                # buttons: they remain contextual Council orders, as in main.
+                for name,back in [('march','Return to Valoria'),
+                                  ('vigilants','Return to actual kingdom'),
+                                  ('scouts','Return to actual kingdom'),
+                                  ('bag','Issue186 bag close')]:
+                    await visit_room(name,back,False)
                 await travel_round_trip()
             print('PASS',browser.version,state,flush=True)
         finally:
