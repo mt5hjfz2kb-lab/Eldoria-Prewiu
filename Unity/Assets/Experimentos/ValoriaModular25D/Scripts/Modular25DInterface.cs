@@ -182,9 +182,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Commercial strategy-game grammar: three illustrated action tiles
             // and one honest contextual task, not an app-style navigation bar.
             // Every available action has a real behaviour from the sandbox.
-            inspect = DockButton("Inspect sawmill",rootTransform,"OBRAS",hammerIcon,
+            inspect = DockButton("Inspect sawmill",rootTransform,"ASERRADERO",hammerIcon,
                 new Vector2(0f,0f),new Vector2(0f,0f),OpenSawmill);
-            center = DockButton("Center camera",rootTransform,"CIUDAD",cityIcon,
+            center = DockButton("Center camera",rootTransform,"CENTRAR",cityIcon,
                 new Vector2(1f,0f),new Vector2(1f,0f),
                 () => GetComponent<Modular25DCameraInput>().Home());
             statusDock = DockButton("Inspect city status",rootTransform,"ESTADO",taskIcon,

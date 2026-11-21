@@ -76,9 +76,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // not add another large dark ellipse over the sawdust footprint.
 
             // Future completed architecture stays invisible until canonical level AND completion.
-            BarracksRenderer=AddExpansionBuilding(buildings,"barracks",new Vector2(-1.65f,-4.20f));
-            GranaryRenderer=AddExpansionBuilding(buildings,"granary",new Vector2(1.15f,-6.00f));
-            StoneworksRenderer=AddExpansionBuilding(buildings,"stoneworks",new Vector2(-1.65f,-7.65f));
+            BarracksRenderer=AddExpansionBuilding(buildings,"barracks",new Vector2(-2.04f,-4.10f));
+            GranaryRenderer=AddExpansionBuilding(buildings,"granary",new Vector2(1.95f,-6.18f));
+            StoneworksRenderer=AddExpansionBuilding(buildings,"stoneworks",new Vector2(-2.05f,-8.30f));
 
             // BASTION I PRODUCTION COMPOSITION: a deliberate rebuilt hamlet,
             // not random RPG decorations on an empty lawn. Four readable zones

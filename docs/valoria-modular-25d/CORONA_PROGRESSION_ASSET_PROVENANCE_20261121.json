@@ -55,42 +55,42 @@
     },
     {
       "name": "barracks",
-      "source": "exec-e2decd60-15f8-422c-9932-af9532b821bb.png",
-      "source_sha256": "50457a9c2b641323da9c0a2c272f0001d68d7793bd05730e17430eb8d737859f",
-      "sha256": "c6dad4e075270fa748725b1f6e1bc45011c2c833e87b949df65c2b4e4c007666",
+      "source": "exec-f1b94946-2650-47aa-a50e-c86f4471c309.png",
+      "source_sha256": "7a2136705e92c943d5341131b8f8ed7c8300a6742bc53b543929aea4a94e3826",
+      "sha256": "9de2f0b1b7c1734cf6133810932a6f3fbbe231a21b0251f2491dd737370826e2",
       "dimensions": [
         1024,
         665
       ],
       "pixels_per_unit": 288,
       "pivot_y": 0.1037593984962406,
-      "brief": "Compact fortified guard hall, slate roof, modest watch post, crossed swords and training equipment. Same camera and stone/timber language. Background extraction pass preserved architecture."
+      "brief": "Open training yard and watchtower"
     },
     {
       "name": "granary",
-      "source": "exec-91b42fba-164e-481c-bda1-676a448aee47.png",
-      "source_sha256": "57e10f03ab00d5b53742dea2eafc1f2ed3fa5f620e597885b42a1acc2cea620c",
-      "sha256": "2ec90b0bf8887de74f4d31b6353f80472a8be0192928a10098ef2ed5378dd72f",
+      "source": "exec-f1b94946-2650-47aa-a50e-c86f4471c309.png",
+      "source_sha256": "7a2136705e92c943d5341131b8f8ed7c8300a6742bc53b543929aea4a94e3826",
+      "sha256": "489bc3b463f56a7f086be8f9b7a052b436e6e8458e81f360764772f985ad9540",
       "dimensions": [
         1024,
         737
       ],
       "pixels_per_unit": 288,
       "pivot_y": 0.09362279511533243,
-      "brief": "Distinct timber grain barn, slate roof with ventilation cupola, wheat crest, grain sacks. Same warm light, scale and materials."
+      "brief": "Twin grain silos with thatched roofs"
     },
     {
       "name": "stoneworks",
-      "source": "exec-fcfe6601-8390-41f1-adc3-dce8bce08196.png",
-      "source_sha256": "d5859db8c5016ac76d88e5e1d6cf4b3e8992cf88f9623b6c502f30ef88886bb8",
-      "sha256": "048e0e676fcc9652a33dfc82eeb6bde7aee87f2e4082c5929d3b177df393d600",
+      "source": "exec-f1b94946-2650-47aa-a50e-c86f4471c309.png",
+      "source_sha256": "7a2136705e92c943d5341131b8f8ed7c8300a6742bc53b543929aea4a94e3826",
+      "sha256": "ba46dfdd040062c82aa0f0d03ddb862b86a7b71a9a44bce6b6977838b92425f5",
       "dimensions": [
         1024,
         703
       ],
       "pixels_per_unit": 288,
       "pivot_y": 0.09815078236130868,
-      "brief": "Compact stonemason workshop, timber lifting derrick, rope stone block, cutting bench; no sawblade or logs; same city materials."
+      "brief": "Stepped limestone quarry with treadwheel crane"
     },
     {
       "name": "sawmill_available_hd",
