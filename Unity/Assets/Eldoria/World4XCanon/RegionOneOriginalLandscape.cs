@@ -62,6 +62,13 @@ namespace Eldoria.World4XCanon
             fogMesh.uv=fogUv;fogMesh.triangles=new[]{0,1,2,0,2,3};fogMesh.RecalculateBounds();
             var fogMaterial=new Material(ground);fogMaterial.SetFloat("_BeyondMap",1f);
             owned.Add(fogMaterial);Draw(fogMesh,fogMaterial);
+            // At panoramic zoom both the relief edge and its backing must meet
+            // the exact camera haze used by the imported continuation. Earlier
+            // builds left the illustrated backing dark on the eastern coast.
+            var look=transform.GetComponentInChildren<RegionOneLookDevelopment>(true);
+            if(!look)throw new InvalidOperationException("Region 1 look development must exist before illustrated relief");
+            look.RegisterPeripheralMaterial(ground);
+            look.RegisterPeripheralMaterial(fogMaterial);
             var slice=new RegionOneFrameSlice(14);
             const int columns=228,rows=450,tile=24;
             for(int z=0;z<rows;z+=tile)for(int x=0;x<columns;x+=tile){

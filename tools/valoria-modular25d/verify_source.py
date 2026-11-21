@@ -149,7 +149,8 @@ class SandboxSourceContracts(unittest.TestCase):
         self.assertIn('originalIconAtlas.width!=144',src)
         self.assertIn('woodIcon=AtlasIcon(0,"wood")',src)
         self.assertIn('taskIcon=AtlasIcon(5,"task")',src)
-        self.assertIn('DockButton("Inspect sawmill",rootTransform,"OBRAS",hammerIcon',src)
+        self.assertIn('mailboxDock = DockButton("OpenSystem/mail",rootTransform,"CORREO"',src)
+        self.assertNotIn('DockButton("Abrir "',src)
         self.assertNotIn('woodIcon=ResourceIcon(',src)
 
     def test_original_two_frame_sawyer_art_manifest_and_import(self):

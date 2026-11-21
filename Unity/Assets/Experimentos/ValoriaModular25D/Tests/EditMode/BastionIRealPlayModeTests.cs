@@ -382,18 +382,19 @@ namespace Eldoria.Modular25D.Tests
                         "All eight future touch zones must fit without overlap");
                 }
             }
-            foreach(var item in new[]{
-                new {name="Inspect city status",slot=5},
-                new {name="Center camera",slot=6},
-                new {name="Inspect sawmill",slot=7}
-            })
-            {
-                var btn=world.GetComponentsInChildren<RectTransform>(true)
-                    .FirstOrDefault(x=>x && x.gameObject.name==item.name);
-                Assert.NotNull(btn);
-                Assert.That(btn.anchoredPosition.x,Is.EqualTo(cells[item.slot].xMin).Within(1f));
-                Assert.That(btn.anchoredPosition.y,Is.EqualTo(cells[item.slot].yMin).Within(1f));
-            }
+            var mailboxRect=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x&&x.gameObject.name=="OpenSystem/mail");
+            Assert.NotNull(mailboxRect,"Main's Correo destination must remain in the bottom navigation");
+            Assert.GreaterOrEqual(mailboxRect.rect.width,72f);
+            Assert.IsNull(world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x&&x.gameObject.name=="Inspect sawmill"));
+            Assert.IsNull(world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x&&x.gameObject.name=="Center camera"));
+            Assert.IsNull(world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x&&x.gameObject.name=="Inspect city status"));
+            Assert.That(world.GetComponentsInChildren<RectTransform>(true)
+                .Count(x=>x&&x.gameObject.name.StartsWith("Abrir ")),Is.EqualTo(0),
+                "Building districts are contextual world interactions, never invented bottom destinations");
             var quest=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x&&x.gameObject.name=="Current real construction objective");
             Assert.NotNull(quest);
@@ -420,6 +421,10 @@ namespace Eldoria.Modular25D.Tests
             Assert.That(world.GetComponentsInChildren<SpriteRenderer>(true)
                 .Any(x=>x && x.gameObject.name=="Aserradero_contact"),Is.False,
                 "Do not restore the second dark contact-shadow oval around the original Aserradero");
+            foreach(var key in new[]{"BarracksRenderer","GranaryRenderer","StoneworksRenderer"})
+                Assert.IsNull((Member(world,key) as SpriteRenderer)
+                    .GetComponent<Modular25DArchitecturalShadow>(),
+                    "Expansion art has painted contact; a second alpha projection leaves a rectangular platform");
 
             Debug.Log("MOD25D_QA_STEP_2_WORLD_HUD_AND_ART");
             var first=Call(gameplay,"Snapshot");
@@ -505,11 +510,9 @@ namespace Eldoria.Modular25D.Tests
                 "Readable ivory wood count must retain blue channel");
 
             var buttons=world.GetComponentsInChildren<Button>(true);
-            var inspect=buttons.FirstOrDefault(x=>x && x.gameObject.name=="Inspect sawmill");
-            Assert.NotNull(inspect,"Functional sawmill inspection button absent");
-            var center=buttons.FirstOrDefault(x=>x && x.gameObject.name=="Center camera");
-            Assert.NotNull(center,"Functional centering action absent");
-            foreach(var control in new[]{inspect,center})
+            var mailbox=buttons.FirstOrDefault(x=>x&&x.gameObject.name=="OpenSystem/mail");
+            Assert.NotNull(mailbox,"Main's functional Correo destination is absent");
+            foreach(var control in new[]{mailbox})
             {
                 var caption=control.GetComponentInChildren<Text>(true);
                 Assert.NotNull(caption,"Missing original Corona icon caption");
@@ -523,9 +526,7 @@ namespace Eldoria.Modular25D.Tests
                 Assert.NotNull(image.sprite,"Original Corona illustrated button art is not imported");
                 Assert.That(image.type,Is.EqualTo(Image.Type.Simple),
                     "Complete Corona illustrated medallion cannot be distorted by 9-slice");
-                var expected=control.gameObject.name=="Inspect sawmill"
-                    ? "icon_hammer" : "icon_city";
-                Assert.That(image.sprite.name,Is.EqualTo(expected),
+                Assert.That(image.sprite.name,Is.EqualTo("icon_supplies"),
                     "Do not nest a tiny 42px medallion within another ornate ring");
                 Assert.That(image.preserveAspect,Is.True,
                     "Premium medallion must retain original 1:1 artist silhouette");
@@ -537,22 +538,20 @@ namespace Eldoria.Modular25D.Tests
                     .Count(x=>x.sprite!=null && x.sprite.name.StartsWith("icon_")),
                     Is.EqualTo(1),"Only ONE illustrated premium icon per action, no nested duplicate");
             }
+            var currentNameplate=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.gameObject.name=="Sawmill world nameplate");
+            Assert.NotNull(currentNameplate);
             var data=new PointerEventData(EventSystem.current){
                 button=PointerEventData.InputButton.Left,
                 position=new Vector2(Screen.width*.5f,Screen.height*.5f)};
-            ExecuteEvents.Execute<IPointerClickHandler>(inspect.gameObject,data,
+            ExecuteEvents.Execute<IPointerClickHandler>(currentNameplate.gameObject,data,
                 ExecuteEvents.pointerClickHandler);
             yield return null;
             var panel=Member(ui,"buildingSheet") as GameObject;
             Assert.NotNull(panel);
             Assert.IsTrue(panel.activeInHierarchy,"Real Unity pointer click failed to open build panel");
-            Assert.IsFalse(inspect.gameObject.activeInHierarchy,
+            Assert.IsFalse(mailbox.gameObject.activeInHierarchy,
                 "Real Corona modal must hide behind-panel dock hit targets");
-            Assert.IsFalse(center.gameObject.activeInHierarchy,
-                "An open construction modal must not overlap center camera navigation");
-            var currentNameplate=world.GetComponentsInChildren<RectTransform>(true)
-                .FirstOrDefault(x=>x && x.gameObject.name=="Sawmill world nameplate");
-            Assert.NotNull(currentNameplate);
             var padding=currentNameplate.GetComponent<Image>().raycastPadding;
             Assert.That(currentNameplate.rect.height-padding.y-padding.w,Is.GreaterThanOrEqualTo(44f),
                 "Commercial world nameplate must retain a touch-sized hit target");
@@ -633,8 +632,8 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(onScreenNotice);
             Assert.IsTrue(string.IsNullOrEmpty(onScreenNotice.text),
                 "Do not obscure the premium Bastion with a generic Action started debug toast after Build");
-            Assert.IsTrue(center.gameObject.activeInHierarchy,
-                "Close after Build must restore navigation without a second tap");
+            Assert.IsTrue(mailbox.gameObject.activeInHierarchy,
+                "Close after Build must restore main's navigation without a second tap");
             Call(ui,"OpenSawmill");
             yield return null;
             Assert.IsTrue(progress.gameObject.activeInHierarchy,
@@ -654,8 +653,8 @@ namespace Eldoria.Modular25D.Tests
             Call(ui,"ClosePanels");
             yield return null;
             Assert.IsFalse(panel.activeInHierarchy,"Close button must dismiss modal");
-            Assert.IsTrue(center.gameObject.activeInHierarchy,
-                "Original active camera button must return when the construction sheet closes");
+            Assert.IsTrue(mailbox.gameObject.activeInHierarchy,
+                "Main's Correo button must return when the construction sheet closes");
             Debug.Log("MOD25D_QA_STEP_4_BUILD_AND_FILE_VERIFIED");
 
             // Camera Home is a runtime action, not an inert button/gesture.

@@ -83,7 +83,7 @@ async def main():
                 assert state[key]==before[key],(key,before[key],state[key])
             log.append({'reload_level':state['level'],'revision':state['revision']})
         async def council():
-            if not state['council']: await tap('Inspect city status',False)
+            if not state['council']: await tap('Bastion world nameplate',False)
             assert state['council']
         async def order(name,seconds=15):
             await council(); rev=state['revision']
@@ -149,8 +149,8 @@ async def main():
             await page.wait_for_timeout(1800);await page.screenshot(path=OUT/'bastion-1.png')
             await tap('Toggle left activities',False);assert state['drawer']
             await tap('Current real construction objective',False);assert state['sawmillPanel']
-            await tap('Close sawmill',False);await tap('Center camera',False)
-            await tap('Inspect sawmill',False);assert state['sawmillPanel']
+            await tap('Close sawmill',False)
+            await tap('Sawmill world nameplate',False);assert state['sawmillPanel']
             await tap('Execute canonical Build command',False);await elapse(10)
             assert state['sawmill']==1 and state['wood']==150,state
             await reload();assert state['wood']==150
@@ -172,16 +172,11 @@ async def main():
             await order('ChooseDevelopment/civil');await elapse(301);await order('Gather/meat-valoria')
             await funds(1100,900);await ascend(5,600);await funds(500,0);await order('Build/stoneworks');await reload()
             assert state['sawmill']>=2 and state['granary']>=2 and state['barracks']>=2 and state['stoneworks']==1
-            for name in ['Abrir Cuartel','Abrir Granero','Abrir Cantera']:
-                await tap(name,False)
-                assert state['council']
-                await tap('Close state',False)
             await page.wait_for_timeout(1200)
             await page.screenshot(path=OUT/'bastion-5-completo.png')
             # The final camera tour starts in the persisted city, with the HUD
             # closed. Pinch inward in world units, then traverse via actual
             # browser touch gestures, capturing the Unity canvas throughout.
-            await tap('Center camera',False)
             await page.screenshot(path=OUT/'bastion-5-panorama.png')
             await cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':170,'y':360,'id':0},{'x':220,'y':360,'id':1}]})
             for i in range(1,13):
@@ -195,7 +190,9 @@ async def main():
                 await page.screenshot(path=OUT/f'bastion-5-recorrido-{n}.png')
             if os.environ.get('VALORIA_TEST_REGION')=='1':
                 async def visit_room(name,back):
-                    await council()
+                    if name=='mail':
+                        if state['council']: await tap('Close state',False)
+                    else: await council()
                     await tap('OpenSystem/'+name)
                     await until(lambda:state.get('room')==name)
                     await page.wait_for_timeout(650)

@@ -395,7 +395,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         SpriteRenderer AddExpansionBuilding(Transform parent,string id,Vector2 foot)
         {
             var visual=AddSprite("Progression | "+id,null,foot,FootOrder(foot.y),parent);
-            visual.gameObject.AddComponent<Modular25DArchitecturalShadow>();
+            // These three authored sprites already include irregular painted
+            // ground contact. Projecting their full alpha again creates a
+            // conspicuous rectangular band at the near texture edge.
             visual.gameObject.SetActive(false);
             return visual;
         }
@@ -406,7 +408,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(visible && visual.sprite==null)
                 visual.sprite=Modular25DArt.ExpansionBuilding(visual.gameObject.name.Substring("Progression | ".Length));
             visual.gameObject.SetActive(visible);
-            if(visible)visual.GetComponent<Modular25DArchitecturalShadow>()?.Refresh();
         }
 
         public void Apply(PlayerState snapshot)

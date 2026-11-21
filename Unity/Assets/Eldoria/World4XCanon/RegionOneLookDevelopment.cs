@@ -13,6 +13,10 @@ namespace Eldoria.World4XCanon
         Camera worldCamera; Light sun,configuredSun,fill; Quaternion rotation; LightShadows shadows; float strength,distance,depthBias,normalBias;int cascades;
         UniversalRenderPipelineAsset pipeline; bool scoped; Color background;
         readonly List<Material> owned=new List<Material>();
+        // RegionOneOriginalLandscape is installed after the imported AG world.
+        // Keep its painted relief in the same camera-scoped panorama treatment
+        // without transferring ownership of those materials to this component.
+        readonly List<Material> peripheral=new List<Material>();
         readonly List<Material> minerals=new List<Material>();
         readonly List<Material> meadows=new List<Material>();
         readonly List<Renderer> fineDetails=new List<Renderer>();
@@ -37,6 +41,10 @@ namespace Eldoria.World4XCanon
                 light.color=new Color(.48f,.07f,1f);light.shadows=LightShadows.None;light.cullingMask=1<<29;
                 light.renderMode=LightRenderMode.ForcePixel;light.enabled=false;scope.interiorLights.Add(light);
             }
+        }
+        public void RegisterPeripheralMaterial(Material material)
+        {
+            if(material&&!peripheral.Contains(material))peripheral.Add(material);
         }
         static Texture BasePigment(Material source)
         {
@@ -198,6 +206,7 @@ namespace Eldoria.World4XCanon
             var fog=QualitySettings.activeColorSpace==ColorSpace.Linear?mist.linear:mist;
             camera.backgroundColor=mist;
             foreach(var material in owned){material.SetFloat("_BoundaryWeight",atmosphere);material.SetVector("_BoundaryColour",new Vector4(fog.r,fog.g,fog.b,1));}
+            foreach(var material in peripheral){material.SetFloat("_BoundaryWeight",atmosphere);material.SetVector("_BoundaryColour",new Vector4(fog.r,fog.g,fog.b,1));}
             float mineralEmission=Mathf.Lerp(.65f,.85f,Mathf.InverseLerp(36f,280f,camera.orthographicSize));
             if(camera.orthographicSize>280f)mineralEmission=Mathf.Lerp(.85f,1.10f,Mathf.InverseLerp(280f,navigation?navigation.globalZoom:2500f,camera.orthographicSize));
             foreach(var material in minerals)material.SetFloat("_MineralEmission",mineralEmission);

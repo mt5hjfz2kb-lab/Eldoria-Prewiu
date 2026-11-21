@@ -1,6 +1,8 @@
 Shader "Eldoria/Region1/Illustrated ground" {
  Properties {
   _BeyondMap("Outside charted terrain",Float)=0
+  _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0
+  _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1)
   _Region("Geographic colour",2D)="white"{} _NearFeatures("Mapped footpaths and water",2D)="black"{} _Weights("Geographic classes",2D)="black"{}
   _Grass("Meadow",2D)="white"{} _Earth("Soil",2D)="white"{}
   _Water("River",2D)="white"{} _Slate("Broken slate",2D)="white"{}
@@ -19,7 +21,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
  struct In {float3 p:POSITION;float2 uv:TEXCOORD0;};
  struct Out {float4 p:SV_POSITION;float2 uv:TEXCOORD0;};
  Out vert(In v){Out o;o.p=TransformObjectToHClip(v.p);o.uv=v.uv;return o;}
- float _BeyondMap;
+ float _BeyondMap; float _BoundaryWeight; float4 _BoundaryColour;
  half3 borderMist(float2 metres) {
   float2 cloud=metres/float2(670,450);
   float veil=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,cloud).g;
@@ -33,9 +35,14 @@ Shader "Eldoria/Region1/Illustrated ground" {
   #endif
   return mist;
  }
+ half3 peripheralMist(float2 metres) {
+  // Retain a restrained painted variation while converging on the same
+  // neutral panorama haze as the imported regional continuation.
+  return lerp(borderMist(metres),_BoundaryColour.rgb,saturate(_BoundaryWeight*.86));
+ }
  half4 frag(Out i):SV_Target {
   float2 metre=(i.uv-.5)*float2(1820,3600);
-  if (_BeyondMap>.5) return half4(borderMist(metre),1);
+  if (_BeyondMap>.5) return half4(peripheralMist(metre),1);
   half3 base=SAMPLE_TEXTURE2D(_Region,sampler_Region,i.uv).rgb;
   half4 mask=SAMPLE_TEXTURE2D(_Weights,sampler_Weights,i.uv);
   float2 localUV=(metre-float2(-200,-148))/float2(416,512);
@@ -77,7 +84,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
   float edge=min(910-abs(metre.x),1800-abs(metre.y));
   edge+=24*sin(metre.x*.014+metre.y*.009)+13*cos(metre.y*.027-metre.x*.012);
   half mist=smoothstep(880,1700,unity_OrthoParams.y)*(1-smoothstep(42,210,edge));
-  half3 haze=mist>.001 ? borderMist(metre) : colour;
+  half3 haze=mist>.001 ? peripheralMist(metre) : colour;
   return half4(lerp(colour,haze,mist),1);
  }
  ENDHLSL

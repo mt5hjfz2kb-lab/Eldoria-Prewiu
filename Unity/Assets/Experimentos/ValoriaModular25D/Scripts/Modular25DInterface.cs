@@ -10,7 +10,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     /// <summary>
     /// CORONA DE LA BRECHA UI: illustrated arcane medallions, identity and 9-slice surfaces.
     /// One dynamic Canvas, the canonical LocalGateway, and only two real player
-    /// actions (inspect the sawmill and reset the camera). No invented systems.
+    /// actions exposed by the canonical game. No invented systems.
     /// New 9-slice materials are created once as small in-memory textures;
     /// the protected source art, game rules and persistence stay unchanged.
     /// </summary>
@@ -37,7 +37,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private Modular25DGameplay gateway;
         private GameObject buildingSheet;
         private Canvas hudCanvas;
-        private RectTransform identity, resourceRow, inspect, center, statusDock, sheet, statusSheet, objective, noticeRoot;
+        private RectTransform identity, resourceRow, mailboxDock, sheet, statusSheet, objective, noticeRoot;
         private RectTransform topRibbon, topRibbonHairline, activityHandle, activityDrawer, activityFill, activityTrack;
         private Text activityTitle, activityProgress;
         private bool activityExpanded;
@@ -184,19 +184,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             worldProgressFill.GetComponent<Image>().color=new Color32(76,211,192,255);
             worldProgressTrack.gameObject.SetActive(false);
 
-            // Two contextual, accessible actions; no false shortcuts to
-            // heroes/world/bag until the gameplay genuinely exposes them.
-            // Commercial strategy-game grammar: three illustrated action tiles
-            // and one honest contextual task, not an app-style navigation bar.
-            // Every available action has a real behaviour from the sandbox.
-            inspect = DockButton("Inspect sawmill",rootTransform,"ASERRADERO",hammerIcon,
-                new Vector2(0f,0f),new Vector2(0f,0f),OpenSawmill);
-            center = DockButton("Center camera",rootTransform,"CENTRAR",cityIcon,
-                new Vector2(1f,0f),new Vector2(1f,0f),
-                () => GetComponent<Modular25DCameraInput>().Home());
-            statusDock = DockButton("Inspect city status",rootTransform,"CONSEJO",taskIcon,
-                new Vector2(.5f,0f),new Vector2(.5f,0f),OpenStatus);
-            InitializeDistrictNavigation(rootTransform);
+            // Main's Chronicle bottom navigation contains only the two live
+            // destinations World and Mailbox. Contextual city actions remain
+            // on the existing Bastion/Sawmill world labels and objective card.
+            mailboxDock = DockButton("OpenSystem/mail",rootTransform,"CORREO",NeedCorona("icon_supplies"),
+                Vector2.zero,Vector2.zero,() => OpenCanonicalRoom("mail"));
             if (Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
             {
                 regionDock = DockButton("Visitar Región 1", rootTransform, "MUNDO", NeedCorona("icon_world"),
@@ -379,7 +371,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 var hand = Resources.Load<Sprite>("Issue186ResourceArt/tutorial_pointing_hand");
                 if (hand)
                 {
-                    firstBuildGuide = Plate("Guía de la primera obra",inspect,hand,new Vector2(.5f,.5f),
+                    firstBuildGuide = Plate("Guía de la primera obra",sawmillTag,hand,new Vector2(.5f,.5f),
                         new Vector2(.16f,.696f),Vector2.zero,new Vector2(32f,32f));
                     firstBuildGuide.GetComponent<Image>().preserveAspect = true;
                     firstBuildGuide.gameObject.SetActive(false);
@@ -446,13 +438,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         public void OpenStatus()
         {
-            ShowCouncil(null);
+            ShowCouncil();
         }
 
-        private void ShowCouncil(string district)
+        private void ShowCouncil()
         {
             if(statusSheet==null)return;
-            selectedDistrict = district;
             orderList.anchoredPosition = Vector2.zero;
             if(activityDrawer!=null)activityDrawer.gameObject.SetActive(false);
             activityExpanded=false;
@@ -471,19 +462,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
 
         // The 844x390 construction panel occupies the bottom-right camera
-        // region. Showing the CIUDAD dock under it created overlapping hit
-        // targets. Hide ALL three nav medallions while a contextual sheet is
-        // open; they return immediately through the real close control.
+        // region. Showing bottom navigation under it creates overlapping hit
+        // targets. Hide both canonical destinations while a contextual sheet
+        // is open; they return immediately through the real close control.
         // No gameplay action or backend state changes here.
         private void SetModalChrome()
         {
             bool open=(buildingSheet!=null&&buildingSheet.activeSelf)||
                       (statusSheet!=null&&statusSheet.gameObject.activeSelf);
-            UpdateDistrictVisibility(open);
+            if(mailboxDock)mailboxDock.gameObject.SetActive(!open);
             if (regionDock) regionDock.gameObject.SetActive(!open && worldUnlocked);
-            if(inspect!=null)inspect.gameObject.SetActive(!open);
-            if(center!=null)center.gameObject.SetActive(!open);
-            if(statusDock!=null)statusDock.gameObject.SetActive(!open);
             if(objective!=null)objective.gameObject.SetActive(!open);
             if(activityHandle!=null)activityHandle.gameObject.SetActive(!open);
             if(open && activityDrawer!=null)
@@ -500,7 +488,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 bool atSite = cachedSawmillPhase == ParcelBuildingState.AVAILABLE;
                 bool show = atSite && !roomHost && !statusSheet.gameObject.activeSelf && !activityExpanded &&
                     (!buildingSheet.activeSelf || action.interactable);
-                var target = buildingSheet.activeSelf ? (RectTransform)action.transform : inspect;
+                var target = buildingSheet.activeSelf ? (RectTransform)action.transform : sawmillTag;
                 if(firstBuildGuide.parent != target) firstBuildGuide.SetParent(target,false);
                 if(firstBuildGuide.gameObject.activeSelf != show) firstBuildGuide.gameObject.SetActive(show);
                 if(show) firstBuildGuide.anchoredPosition = new Vector2(-4f,3f+2f*Mathf.Sin(Time.unscaledTime*3f));
@@ -584,7 +572,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 worldUnlocked = Eldoria.ReferenceClean.ValoriaIntegratedWorld.CanEnterWorld(s);
                 regionDock.gameObject.SetActive(worldUnlocked && !buildingSheet.activeSelf && !statusSheet.gameObject.activeSelf);
             }
-            RefreshDistrictNavigation(s);
+            if(mailboxDock)mailboxDock.gameObject.SetActive(!buildingSheet.activeSelf&&!statusSheet.gameObject.activeSelf);
             title.text=PlayerDisplayName(s.PlayerName);
             level.text = "Bastión " + s.BastionLevel;
             if(bastionTagText!=null)
@@ -749,8 +737,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             bool visible=!modalOpen && screen.z>0f &&
                 safe.Contains(bounds.min) && safe.Contains(bounds.max) &&
                 !OverlapsControl(bounds,topRibbon) && !OverlapsControl(bounds,activityHandle) &&
-                !OverlapsControl(bounds,statusDock) && !OverlapsControl(bounds,center) &&
-                !OverlapsControl(bounds,regionDock) && !OverlapsDistrictNavigation(bounds) && !OverlapsControl(bounds,inspect) && !OverlapsControl(bounds,activityDrawer);
+                !OverlapsControl(bounds,mailboxDock) && !OverlapsControl(bounds,regionDock) &&
+                !OverlapsControl(bounds,activityDrawer);
             if(nameplate.gameObject.activeSelf!=visible)
                 nameplate.gameObject.SetActive(visible);
             if(visible && RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -882,17 +870,26 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 }
             }
 
-            // Eight compact positions, only the last three have real actions.
-            PlaceNavigation(supplyDock,NavigationCell(0,width,left,right,bottom,wide),wide);
-            if (regionDock) PlaceNavigation(regionDock,NavigationCell(1,width,left,right,bottom,wide),wide);
-            for (int i = 0; i < districtDocks.Length; i++)
-                PlaceNavigation(districtDocks[i], NavigationCell(4-i,width,left,right,bottom,wide),wide);
-            PlaceNavigation(statusDock,
-                NavigationCell(5,width,left,right,bottom,wide),wide);
-            PlaceNavigation(center,
-                NavigationCell(6,width,left,right,bottom,wide),wide);
-            PlaceNavigation(inspect,
-                NavigationCell(7,width,left,right,bottom,wide),wide);
+            // Match main's live Chronicle navigation exactly: Mailbox and,
+            // once the canonical rule unlocks it, World. No district shortcuts.
+            int canonicalCount=regionDock&&regionDock.gameObject.activeSelf?2:1;
+            float canonicalWidth=78f,canonicalGap=16f;
+            float canonicalTotal=canonicalCount*canonicalWidth+(canonicalCount-1)*canonicalGap;
+            Rect CanonicalCell(int index)=>new Rect(
+                left+(safeWidth-canonicalTotal)*.5f+index*(canonicalWidth+canonicalGap),
+                bottom+8f,canonicalWidth,84f);
+            // ChronicleOrder in main is World=0, Mailbox=1. Before World is
+            // unlocked, Mailbox occupies the single centred cell.
+            if(regionDock&&regionDock.gameObject.activeSelf)
+            {
+                PlaceNavigation(regionDock,CanonicalCell(0),wide);
+                PlaceNavigation(mailboxDock,CanonicalCell(1),wide);
+            }
+            else
+            {
+                PlaceNavigation(mailboxDock,CanonicalCell(0),wide);
+                if(regionDock)PlaceNavigation(regionDock,CanonicalCell(0),wide);
+            }
 
             // The progress/quest card is tucked behind ONE tiny LEFT tab
             // by default. Opening it never changes the game state.

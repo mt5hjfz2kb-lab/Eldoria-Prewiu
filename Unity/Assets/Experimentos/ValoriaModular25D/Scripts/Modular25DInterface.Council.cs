@@ -13,84 +13,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         readonly List<(string caption, string command, string target)> orders =
             new List<(string, string, string)>();
 
-        static readonly string[] DistrictIds = { "barracks", "granary", "stoneworks" };
-        static readonly string[] DistrictNames = { "Cuartel", "Granero", "Cantera" };
-        readonly RectTransform[] districtDocks = new RectTransform[DistrictIds.Length];
-        readonly Image[] districtArt = new Image[DistrictIds.Length];
-        readonly int[] districtLevels = new int[DistrictIds.Length];
-        Text councilTitle, supplyCount;
-        RectTransform supplyDock;
-        bool hasSupplies;
-        string selectedDistrict;
-        bool receivedDistrictState;
-
-        void InitializeDistrictNavigation(Transform parent)
-        {
-            supplyDock = DockButton("Ver entregas y bolsa", parent, "ENTREGAS", NeedCorona("icon_supplies"),
-                Vector2.zero, Vector2.zero, () => ShowCouncil("supplies"));
-            var badge = Plate("Entregas pendientes",supplyDock,slatePlate,new Vector2(1f,1f),
-                Vector2.one,new Vector2(1f,-4f),new Vector2(23f,19f));
-            supplyCount = Label("",badge,12,true,PaleGold,TextAnchor.MiddleCenter,
-                Vector2.zero,new Vector2(22f,18f));
-            supplyDock.gameObject.SetActive(false);
-            for (int i = 0; i < DistrictIds.Length; i++)
-            {
-                string id = DistrictIds[i];
-                var dock = DockButton("Abrir " + DistrictNames[i], parent, DistrictNames[i].ToUpperInvariant(),
-                    navPlate, Vector2.zero, Vector2.zero, () => OpenDistrict(id));
-                districtDocks[i] = dock;
-                var icon = Plate("Edificio", dock, null, new Vector2(.5f,.5f), new Vector2(.5f,.5f),
-                    Vector2.zero, new Vector2(33f,33f)).GetComponent<Image>();
-                icon.color = Color.white;
-                icon.preserveAspect = true;
-                districtArt[i] = icon;
-                dock.gameObject.SetActive(false);
-            }
-        }
-
-        void RefreshDistrictNavigation(PlayerState state)
-        {
-            if (receivedDistrictState)
-            {
-                string opened = districtLevels[2] == 0 && state.ChapterThree.StoneworksLevel > 0 ? DistrictNames[2] :
-                    districtLevels[1] == 0 && state.ChapterThree.GranaryLevel > 0 ? DistrictNames[1] :
-                    districtLevels[0] == 0 && state.BarracksLevel > 0 ? DistrictNames[0] : null;
-                if (opened != null) Feedback(opened + " disponible en la barra inferior");
-            }
-            int pending = 0;
-            if (state.ResourceRewards?.Packets != null)
-                foreach (var packet in state.ResourceRewards.Packets)
-                    if (!packet.Used) pending++;
-            hasSupplies = pending > 0 || (state.ChapterThree.Inventory?.Count ?? 0) > 0 ||
-                (state.Mailbox?.ReceivedEventIds?.Count ?? 0) > 0 || (state.Mailbox?.Messages?.Count ?? 0) > 0;
-            supplyCount.transform.parent.gameObject.SetActive(pending > 0);
-            supplyCount.text = pending > 99 ? "99+" : pending.ToString();
-            receivedDistrictState = true;
-            districtLevels[0] = state.BarracksLevel;
-            districtLevels[1] = state.ChapterThree.GranaryLevel;
-            districtLevels[2] = state.ChapterThree.StoneworksLevel;
-            UpdateDistrictVisibility(buildingSheet.activeSelf || statusSheet.gameObject.activeSelf);
-        }
-
-        void UpdateDistrictVisibility(bool modal)
-        {
-            supplyDock.gameObject.SetActive(hasSupplies && !modal);
-            for (int i = 0; i < districtDocks.Length; i++)
-            {
-                bool visible = districtLevels[i] > 0 && !modal;
-                if (visible && !districtArt[i].sprite)
-                    districtArt[i].sprite = Modular25DArt.ExpansionBuilding(DistrictIds[i]);
-                districtDocks[i].gameObject.SetActive(visible);
-            }
-        }
-
-        bool OverlapsDistrictNavigation(Rect bounds)
-        {
-            if (OverlapsControl(bounds, supplyDock)) return true;
-            foreach (var dock in districtDocks)
-                if (OverlapsControl(bounds, dock)) return true;
-            return false;
-        }
+        Text councilTitle;
 
         void InitializeCouncil()
         {
@@ -238,36 +161,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if ((c.Inventory?.Count ?? 0) > 0) Order("Materiales y manuscritos", "Inventory", "inventory");
                 Order("Tesoros de Valoria", "OpenSystem", "daily");
             }
-            int selected = Array.IndexOf(DistrictIds, selectedDistrict);
-            if (selected >= 0)
-            {
-                councilTitle.text = DistrictNames[selected].ToUpperInvariant();
-                int built = districtLevels[selected];
-                orders.RemoveAll(order => order.target != selectedDistrict &&
-                    order.target != "upgrade-" + selectedDistrict &&
-                    !(selectedDistrict == "barracks" && (order.command == "Recruit" || order.command == "ConfigureMarch" || order.target == "training" || order.target == "march")));
-                stateSummary.text = (built > 0 ? "Nivel " + built : "Parcela disponible") +
-                    (orders.Count == 0 ? " · Sin órdenes disponibles" : "");
-            }
-            if (selectedDistrict == "supplies")
-            {
-                orders.RemoveAll(order => order.command != ResourceRewardCommands.ClaimMail &&
-                    order.command != ResourceRewardCommands.UsePacket && order.target != "mail" && order.target != "bag" && order.target != "inventory");
-                councilTitle.text = "ENTREGAS";
-                stateSummary.text = orders.Count > 0 ? "Buzón y paquetes de la bolsa" : "Todo recogido";
-            }
-            if (selectedDistrict == "inventory")
-            {
-                orders.Clear();
-                councilTitle.text = "BOLSA";
-                stateSummary.text = "Materiales y manuscritos";
-                if (c.Inventory != null)
-                    foreach (var item in c.Inventory)
-                        Order(item == "breach-manuscript" ? "Manuscrito de la Fisura" :
-                            item == "treated-hide" ? "Piel curtida de ceniza" :
-                            item == "iron-brace" ? "Abrazadera de hierro antiguo" :
-                            item == "stone-tusk" ? "Colmillo pétreo" : item, "", item);
-            }
             orderList.sizeDelta = new Vector2(0f, orders.Count * 50f);
             for (int i = 0; i < orders.Count; i++)
             {
@@ -286,17 +179,18 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             for (int i = orders.Count; i < orderRows.Count; i++) orderRows[i].gameObject.SetActive(false);
         }
 
+        // World building taps keep their established contextual entry point.
+        // The bottom navigation itself stays identical to main.
         public void OpenDistrict(string target)
         {
-            if (Array.IndexOf(DistrictIds, target) < 0) { OpenStatus(); return; }
-            ShowCouncil(target);
+            OpenStatus();
         }
 
         void ExecuteOrder(int slot)
         {
             if (slot >= orders.Count) return;
             var order = orders[slot];
-            if (order.command == "Inventory") ShowCouncil("inventory");
+            if (order.command == "Inventory") OpenCanonicalRoom("bag");
             else if (order.command.Length == 0) return;
             else if (order.command == "OpenSystem") OpenCanonicalRoom(order.target);
             else gateway.Issue(order.command, order.target);
