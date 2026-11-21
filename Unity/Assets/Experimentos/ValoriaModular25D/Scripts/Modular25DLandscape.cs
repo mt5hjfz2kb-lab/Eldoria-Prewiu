@@ -83,9 +83,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             AddRoad("Haulers' path — compacted earth and gravel",lumber,1.26f,earthMat,false);
 
             var keep=MakeFootprint("Bastion",new Color(.49f,.41f,.31f,1),
-                new Color(.74f,.69f,.52f,1),true);
+                new Color(.74f,.69f,.52f,1),true,false);
             var mill=MakeFootprint("Sawmill",new Color(.54f,.44f,.31f,1),
-                new Color(.73f,.59f,.38f,1),false);
+                new Color(.73f,.59f,.38f,1),false,true);
             PutFoot("Bastion — no straight borders, stone approach",keep,
                 Keep+new Vector2(0,-.23f),1.19f);
             PutFoot("Sawmill — earth, sawdust, trampled grass",mill,
@@ -131,7 +131,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     military ? expansionPaving : (renderedCartLane ? renderedCartLane : expansionRoadMaterial),military);
                 Color soil=stone ? new Color(.50f,.46f,.40f) : new Color(.45f,.34f,.22f);
                 Color worn=stone ? new Color(.77f,.73f,.62f) : new Color(.71f,.58f,.39f);
-                PutFoot("Contact | "+id,MakeFootprint(id,soil,worn,stone||military),
+                PutFoot("Contact | "+id,MakeFootprint(id,soil,worn,stone,false),
                     foot+new Vector2(.10f,-.41f),stone ? 1.26f : 1.05f);
                 while(transform.childCount>first)transform.GetChild(first).SetParent(root,true);
             }
@@ -337,7 +337,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             RoadCount++;
         }
 
-        Texture2D MakeFootprint(string label,Color soil,Color lit,bool cobbled)
+        Texture2D MakeFootprint(string label,Color soil,Color lit,bool cobbled,bool workshopDust)
         {
             var tex=new Texture2D(FootW,FootH,TextureFormat.RGBA32,false,false){
                 name=label+" authored foot-plane earth/grass/stone transition",
@@ -353,6 +353,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 float fine=N(xx*33f,yy*28f,79);
                 float irregular=(broad-.5f)*.31f+(fine-.5f)*.07f;
                 float fade=1f-Sm(.42f+irregular,1.02f+irregular,r);
+                // Even an organic radial mask can retain a few alpha values
+                // exactly on the texture frame. Bilinear sampling then reveals
+                // the quad as a horizontal platform at retina resolution.
+                float frame=Mathf.Min(1f-Mathf.Abs(xx),1f-Mathf.Abs(yy));
+                fade*=Sm(0f,.13f,frame);
                 float dirt=N(xx*14f,yy*12f,8),grit=N(xx*59f,yy*58f,17);
                 Color c=Color.Lerp(soil,lit,Mathf.Clamp01(.20f+.54f*dirt));
                 // Stone paving around the keep gate is part of its own
@@ -377,7 +382,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     c=Color.Lerp(c,paving,stoneZone*.90f);
                 }
                 // Sawdust subtly warms the middle of the mill footprint.
-                if(!cobbled)
+                if(workshopDust)
                 {
                     float sawdust=(1f-Sm(.10f,.69f,r))*(.28f+.2f*grit);
                     c=Color.Lerp(c,new Color(.78f,.65f,.40f,1),sawdust);
