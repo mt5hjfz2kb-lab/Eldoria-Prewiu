@@ -214,6 +214,7 @@ namespace Eldoria.World4XCanon
    yield return null;
    RegionOneProductionLod.Install(instance.artwork);
    RegionOneLookDevelopment.Install(instance.artwork,host.WorldCamera);
+   if(RegionOneModularArt.Enabled)RegionOneModularArt.Install(instance.artwork);
    Debug.Log("REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150");
    completed(instance);
   }

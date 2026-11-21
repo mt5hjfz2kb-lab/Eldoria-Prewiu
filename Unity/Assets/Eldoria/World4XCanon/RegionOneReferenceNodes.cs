@@ -66,6 +66,10 @@ namespace Eldoria.World4XCanon
     string key=gate==host.WorldBastionTwo?"BastionII":"BastionI";
     var texture=Resources.Load<Texture2D>("ValoriaStrategic/"+key);
     var anchor=JsonUtility.FromJson<CityAnchor>(Resources.Load<TextAsset>("ValoriaStrategic/"+key+"-anchor").text);
+    if(RegionOneModularArt.Enabled){
+     var art=Resources.Load<Sprite>("ValoriaModular25D/"+(gate==host.WorldBastionTwo?"Progression/bastion_2":"bastion_i_hd"));
+     if(art){texture=art.texture;var pivot=art.pivot/art.rect.size;anchor=new CityAnchor{u=pivot.x,v=pivot.y};}
+    }
     var material=new Material(nodes){name="Valoria approved original "+key,mainTexture=texture};cityMaterials.Add(material);
     width=BastionOneVisualWidth;float h=width*texture.height/texture.width;
     foot=host.WorldHome+new Vector3(3.3f,0,-7.5f);foot.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(3.3f,-7.5f)+.18f;

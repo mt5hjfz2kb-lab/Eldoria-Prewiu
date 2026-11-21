@@ -1315,6 +1315,53 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator CoronaRegionRendersAndRetainsGeographicRoutes()
+        {
+            var output=Environment.GetEnvironmentVariable("ELDORIA_REGION1_CAPTURE_OUT");
+            if(string.IsNullOrEmpty(output)||Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE")!="1")Assert.Ignore("Dedicated disposable world proof");
+            Directory.CreateDirectory(output);
+            MonoBehaviour host=null;GameObject world=null;Component nav=null;Camera camera=null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;nav=c;camera=d;});
+            var city=Member(host,"City");
+            var gateway=(Eldoria.Application.LocalGateway)Member(city,"Gateway");
+            if(!(bool)Call(host,"TrySetWorld",true)){
+                var offer=Member(Member(Call(host,"Read","sawmill",false),"Building"),"Action");
+                Assert.AreEqual("Build",Member(offer,"Kind"));
+                Call(host,"Submit",offer);
+                Call(Member(city,"Clock"),"Step",Eldoria.Domain.SliceRules.SawmillBuildSeconds+1);
+                gateway.Advance();yield return null;
+                Assert.IsTrue((bool)Call(host,"TrySetWorld",true));
+            }
+            var components=world.GetComponentsInChildren<MonoBehaviour>(true);
+            var placement=components.Single(x=>x&&x.GetType().Name=="RegionOneResourcePlacement");
+            var canon=components.Single(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
+            var routes=(Eldoria.Application.IWorldMarchRoutes)Member(placement,"MarchRoutes");
+            var state=gateway.Snapshot();
+            var lines=new System.Collections.Generic.List<string>{Member(routes,"WalkableCells").ToString()};
+            foreach(var id in state.WorldResourceLocations.Select(x=>x.TargetId).Concat(new[]{"forest-valoria","quarry-valoria","corrupt-scout"}).Distinct().OrderBy(x=>x)){
+                Assert.IsTrue(routes.TryRoute(state,id,out var points),id);
+                lines.Add(id+" "+string.Join(" ",points.Select(p=>new Vector3(p.X,p.Y,p.Z).ToString("F4"))));
+            }
+            File.WriteAllLines(Path.Combine(output,"routes.txt"),lines);
+            if(Environment.GetEnvironmentVariable("ELDORIA_BAKE_TERRAIN_QUERIES")=="1"){
+                var tape=(byte[])placement.GetType().GetProperty("CapturedTerrainQueries").GetValue(null);
+                Assert.IsNotNull(tape);
+                File.WriteAllBytes(Path.Combine(output,"terrain.bytes"),tape);
+            }
+            var home=(Vector3)Member(host,"WorldHome");
+            foreach(var view in new[]{("home",2,""),("wood",2,"forest-valoria"),("stone",2,"quarry-valoria"),("region",1,""),("breach",1,""),("panorama",0,"")}){
+                var pos=home;
+                if(view.Item3!=""){var target=(Component)Call(host,"FindTarget",view.Item3);Assert.IsNotNull(target,view.Item3);pos=target.transform.position;}
+                if(view.Item1=="breach")pos=home+new Vector3(-260,0,150);
+                camera.aspect=390f/844;
+                Call(nav,"SetZoomLevel",view.Item2,true);Call(nav,"PanTo",pos);Call(canon,"RefreshForCapture");
+                yield return null;yield return null;
+                SaveRetainedSectorFrame(camera,Path.Combine(output,view.Item1+".png"),390,844);
+            }
+            Assert.IsTrue((bool)Call(host,"TrySetWorld",false));
+        }
+
+        [UnityTest]
         public IEnumerator ActualPlayableWorldCapturesThreeZoomsOnDisposableProbe()
         {
             // Do not purchase anything on the owner's save. This is the same

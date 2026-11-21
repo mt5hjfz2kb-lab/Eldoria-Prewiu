@@ -26,6 +26,17 @@ namespace Eldoria.World4XCanon.Editor
             public bool isActualUnityCamera, isPlayMode, isPhysicalIphone;
         }
 
+        public static void BuildModularWorld()
+        {
+            const string scene="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
+            var dest=Environment.GetEnvironmentVariable("ELDORIA_WORLD_PLAYER_OUT");
+            PlayerSettings.productName="Valoria · Región 1 experimental";
+            PlayerSettings.WebGL.compressionFormat=WebGLCompressionFormat.Gzip;
+            PlayerSettings.WebGL.decompressionFallback=true;
+            var result=BuildPipeline.BuildPlayer(new[]{scene},dest,BuildTarget.WebGL,BuildOptions.StrictMode);
+            if(result.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new IOException("World player failed");
+        }
+
         [MenuItem("Eldoria/Region 1/Capture 3 actual integrated game views")]
         public static void Capture()
         {

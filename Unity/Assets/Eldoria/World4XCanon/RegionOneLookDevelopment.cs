@@ -86,10 +86,10 @@ namespace Eldoria.World4XCanon
                         else if(source.name.StartsWith("AI open meadow",StringComparison.Ordinal))sourceMean=new Color(.54429120f,.53390694f,.26453816f,1);
                         material.SetVector("_MeadowSourceMean",QualitySettings.activeColorSpace==ColorSpace.Linear?sourceMean.linear:sourceMean);
                         material.SetTexture("_BasinPigment",basinPigment);material.SetFloat("_BasinPigmentEnabled",1);
-                        var brush=Resources.Load<Texture2D>("World4X/RegionOnePaintedMeadow");
+                        var brush=Resources.Load<Texture2D>(RegionOneModularArt.Enabled ? "ValoriaModular25D/OrganicMeadowTile" : "World4X/RegionOnePaintedMeadow");
                         if(brush){
                             material.SetTexture("_MeadowBrush",brush);material.SetFloat("_MeadowBrushEnabled",1);
-                            var mean=new Color(.51184069f,.47712201f,.18659264f,1);
+                            var mean=RegionOneModularArt.Enabled ? new Color(.4730f,.4982f,.1836f,1) : new Color(.51184069f,.47712201f,.18659264f,1);
                             material.SetVector("_MeadowBrushMean",QualitySettings.activeColorSpace==ColorSpace.Linear?mean.linear:mean);
                         }
                         var detail=Resources.Load<Texture2D>("World4X/Blender/RegionOneGrassDetail");

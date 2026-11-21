@@ -10,10 +10,11 @@ namespace Eldoria.World4XCanon
     [DefaultExecutionOrder(1400)]
     public sealed class RegionOneResourceModels : MonoBehaviour
     {
-        sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; public bool AnchorCached; public Vector3 VisualAnchorOffset; public Collider Hit; public bool PickCached; public Vector3 HitCenter,HitSize; public float HitRadius; public bool LastPickRegional; public float LastPickScale=-1; public Vector3 LastPickPosition; public Quaternion LastPickRotation; }
+        sealed class Node { public string Id; public GameObject WorkSite; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; public bool AnchorCached; public Vector3 VisualAnchorOffset; public Collider Hit; public bool PickCached; public Vector3 HitCenter,HitSize; public float HitRadius; public bool LastPickRegional; public float LastPickScale=-1; public Vector3 LastPickPosition; public Quaternion LastPickRotation; }
         readonly List<Node> nodes=new List<Node>();
         float lastImpostorScale=-1;
         ValoriaIntegratedWorld host;
+        RegionOneModularArt modularArt;
         GameObject library;RegionOneLookDevelopment look;
         Eldoria.Domain.PlayerState cachedState;ICommandGateway cachedGateway;float nextState;
         Material impostorMaterial;readonly Mesh[] impostorMeshes=new Mesh[2];
@@ -198,7 +199,7 @@ namespace Eldoria.World4XCanon
         {
             var library=Resources.Load<GameObject>("World4X/Blender/RegionOneResources");
             if(!library)return;
-            var service=parent.gameObject.AddComponent<RegionOneResourceModels>();service.host=host;service.library=library;service.look=parent.GetComponentInChildren<RegionOneLookDevelopment>();
+            var service=parent.gameObject.AddComponent<RegionOneResourceModels>();service.host=host;service.library=library;service.modularArt=parent.GetComponentInChildren<RegionOneModularArt>();service.look=parent.GetComponentInChildren<RegionOneLookDevelopment>();
             var atlas=Resources.Load<Texture2D>("World4X/Blender/RegionOneResourceImpostors");
             if(atlas){service.impostorMaterial=new Material(Shader.Find("Eldoria/World4X/LocalCanopy"));service.impostorMaterial.mainTexture=atlas;}
             foreach(var pair in new[]{("forest-valoria","Resource_Wood_0"),("quarry-valoria","Resource_Stone_0")})
@@ -211,7 +212,7 @@ namespace Eldoria.World4XCanon
                 visual.transform.localScale=Vector3.one*(pair.Item1=="forest-valoria"?1.55f:1.35f);visual.transform.rotation=Quaternion.Euler(0,180,0);
                 FitNearWidth(visual,RegionOneReferenceNodes.BastionOneVisualWidth*NearCityWidthRatio);
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
-                service.nodes.Add(new Node{Id=pair.Item1,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=service.MakeImpostor(pair.Item1,parent)});
+                service.nodes.Add(new Node{WorkSite=service.modularArt?service.modularArt.WorkSite(pair.Item1,parent):null,Id=pair.Item1,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=service.MakeImpostor(pair.Item1,parent)});
             }
         }
         void LateUpdate()
@@ -230,7 +231,7 @@ namespace Eldoria.World4XCanon
                 FitNearWidth(visual,RegionOneReferenceNodes.BastionOneVisualWidth*NearCityWidthRatio);
                 if(look)look.ApplyMaterials(visual);
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
-                nodes.Add(new Node{Id=item.TargetId,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=MakeImpostor(item.TargetId,transform)});
+                nodes.Add(new Node{WorkSite=modularArt?modularArt.WorkSite(item.TargetId,transform):null,Id=item.TargetId,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=MakeImpostor(item.TargetId,transform)});
             }
             // LOD silhouette continuity: the close mesh is 20.4m wide,
             // while this regional billboard's UV2 spans 32m. At the exact
@@ -264,7 +265,13 @@ namespace Eldoria.World4XCanon
                 node.Visual.transform.position=p+node.VisualAnchorOffset;
                 GroundParts(node,p);
                 bool alive=LocalGateway.ResourceRemaining(state,node.Id)>0;
-                foreach(var renderer in node.Renderers)if(renderer.enabled!=(alive&&near))renderer.enabled=alive&&near;
+                bool drawMesh=alive&&near&&!node.WorkSite;
+                foreach(var renderer in node.Renderers)if(renderer.enabled!=drawMesh)renderer.enabled=drawMesh;
+                if(node.WorkSite){
+                    node.WorkSite.transform.position=p;
+                    bool show=alive&&near;
+                    if(node.WorkSite.activeSelf!=show)node.WorkSite.SetActive(show);
+                }
                 if(node.Impostor){
                     // The near mesh's imported pivot is recentered once above
                     // using VisualAnchorOffset. Its rendered footprint now
