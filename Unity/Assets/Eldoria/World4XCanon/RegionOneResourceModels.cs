@@ -15,6 +15,7 @@ namespace Eldoria.World4XCanon
         float lastImpostorScale=-1;
         ValoriaIntegratedWorld host;
         RegionOneModularArt modularArt;
+        MaterialPropertyBlock regionalPaint;
         GameObject library;RegionOneLookDevelopment look;
         Eldoria.Domain.PlayerState cachedState;ICommandGateway cachedGateway;float nextState;
         Material impostorMaterial;readonly Mesh[] impostorMeshes=new Mesh[2];
@@ -181,6 +182,12 @@ namespace Eldoria.World4XCanon
         {
             if(!impostorMaterial)return null;
             int tile=id=="forest-valoria"||id.StartsWith("region1:wood:",StringComparison.Ordinal)?0:1;
+            if(modularArt){
+                var painted=modularArt.Place(parent,tile==0?"sawmill_i_hd":"Progression/stoneworks",32f,Vector3.zero);
+                painted.name="Production resource impostor "+id;
+                painted.enabled=false;
+                return painted;
+            }
             if(!impostorMeshes[tile]){
                 float u=tile*.5f;var mesh=new Mesh{name="Resource actual-model impostor "+tile};
                 mesh.vertices=new[]{Vector3.zero,Vector3.zero,Vector3.zero,Vector3.zero};mesh.uv=new[]{new Vector2(u,0),new Vector2(u+.5f,0),new Vector2(u+.5f,1),new Vector2(u,1)};
@@ -241,6 +248,7 @@ namespace Eldoria.World4XCanon
             float nearBillboardScale=(RegionOneReferenceNodes.BastionOneVisualWidth*NearCityWidthRatio)/32f;
             float regionalBlend=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(110f,280f,zoom));
             float screenScale=Mathf.Lerp(nearBillboardScale,1.4f,regionalBlend)*Mathf.Max(1f,zoom/280f);
+            float paintedScale=Mathf.Lerp(27.5f/32f,1.4f,regionalBlend)*Mathf.Max(1f,zoom/280f);
             if(impostorMaterial&&Mathf.Abs(lastImpostorScale-screenScale)>.0001f){
                 impostorMaterial.SetFloat("_BillboardScale",screenScale);lastImpostorScale=screenScale;
             }
@@ -287,6 +295,11 @@ namespace Eldoria.World4XCanon
                     // shares that SAME anchor at every zoom and camera aspect.
                     // No per-frame bounds calculation or logical site relocation.
                     node.Impostor.transform.position=p;
+                    if(modularArt && regional){
+                        if(regionalPaint==null)regionalPaint=new MaterialPropertyBlock();
+                        regionalPaint.SetFloat("_BillboardScale",paintedScale);
+                        node.Impostor.SetPropertyBlock(regionalPaint);
+                    }
                     node.Impostor.enabled=alive&&regional;
                     node.Impostor.localBounds=new Bounds(Vector3.up*12f*screenScale,Vector3.one*40f*screenScale);
                     FitRegionalPicking(node,p,screenScale,regional);

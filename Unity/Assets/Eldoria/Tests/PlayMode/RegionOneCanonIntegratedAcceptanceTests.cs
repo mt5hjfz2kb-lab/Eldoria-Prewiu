@@ -1368,6 +1368,28 @@ namespace Eldoria.Tests
                 Assert.IsNotNull(tape);
                 File.WriteAllBytes(Path.Combine(output,"terrain.bytes"),tape);
             }
+            var forest=(Component)Call(host,"FindTarget","forest-valoria");
+            var quarry=(Component)Call(host,"FindTarget","quarry-valoria");
+            Call(nav,"SetZoomLevel",2,true);
+            if(Environment.GetEnvironmentVariable("ELDORIA_WORLD_ART_BASELINE")!="1"){
+                var film=Path.Combine(output,"camera");
+                Directory.CreateDirectory(film);
+                for(int frame=0;frame<60;frame++){
+                    var start=frame<30?home:forest.transform.position;
+                    var end=frame<30?forest.transform.position:quarry.transform.position;
+                    var point=Vector3.Lerp(start,end,Mathf.SmoothStep(0f,1f,(frame%30)/29f));
+                    Call(nav,"PanTo",point);Call(canon,"RefreshForCapture");
+                    yield return null;
+                    SaveRetainedSectorFrame(camera,Path.Combine(film,frame.ToString("D3")),390,844);
+                }
+                SaveRetainedSectorFrame(camera,Path.Combine(output,"stone-retina"),1170,2532);
+            }
+            Call(nav,"PanTo",forest.transform.position);Call(canon,"RefreshForCapture");
+            yield return null;Physics.SyncTransforms();
+            var pointOnScreen=camera.WorldToScreenPoint(forest.GetComponent<Collider>().bounds.center);
+            var picked=Call(host,"Pick",new Vector2(pointOnScreen.x,pointOnScreen.y));
+            Assert.IsNotNull(picked,"Forest needs a selectable visible target");
+            Assert.AreEqual("forest-valoria",Member(picked,"Id"));
             Assert.IsTrue((bool)Call(host,"Select","forest-valoria"));
             var gather=Member(Member(Call(host,"Read","forest-valoria",false),"Building"),"Action");
             Assert.AreEqual("Gather",Member(gather,"Kind"));

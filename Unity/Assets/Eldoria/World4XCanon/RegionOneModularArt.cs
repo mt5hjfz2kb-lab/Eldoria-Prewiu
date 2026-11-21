@@ -31,7 +31,9 @@ namespace Eldoria.World4XCanon
                 var foot = new Vector3(box.center.x, box.min.y, box.center.z);
                 bool pine = crown.name.StartsWith("Pilot_Pine", StringComparison.Ordinal) ||
                     crown.name.IndexOf("Fir", StringComparison.OrdinalIgnoreCase) >= 0;
-                var sprite = art.Place(group.transform, pine ? "pine_1" : "oak_0", width, foot);
+                int variant = Mathf.Abs(Mathf.FloorToInt(foot.x*.53f + foot.z*.29f)) % 3;
+                string key = pine ? "pine_"+variant : "oak_"+(variant%2);
+                var sprite = art.Place(group.transform, key, width * (pine ? 1.65f : 1.45f), foot);
                 crown.forceRenderingOff = true;
                 levels[0].renderers = new Renderer[]{sprite};
                 // Keep the original group's size and reference point for the far LOD.
@@ -57,9 +59,11 @@ namespace Eldoria.World4XCanon
             int size = Mathf.Max(1, Mathf.RoundToInt(width*4));
             if (!shapes.TryGetValue((key,size), out var mesh))
             {
-                var sprite = Resources.Load<Sprite>(ResourcePath(key));
+
                 float w = size/4f, h = w*material.mainTexture.height/material.mainTexture.width;
-                Vector2 pivot = sprite ? sprite.pivot / sprite.rect.size : new Vector2(.5f,.07f);
+                // Camera-facing art is clipped by the walkable surface below its anchor.
+                // The visible base of each isolated PNG meets the ground here.
+                Vector2 pivot = new Vector2(.5f, key.StartsWith("World4X/") ? .07f : .042f);
                 var uv = new[]{Vector2.zero, Vector2.right, Vector2.one, Vector2.up};
                 var offsets = new Vector2[4];
                 for(int i=0;i<4;i++) offsets[i]=Vector2.Scale(uv[i]-pivot,new Vector2(w,h));
@@ -86,12 +90,14 @@ namespace Eldoria.World4XCanon
             var anchor=site.transform.position;
             if(id=="forest-valoria" || id.StartsWith("region1:wood:",StringComparison.Ordinal))
             {
-                Place(site.transform,"pine_0",8.5f,anchor+new Vector3(-5f,0,2f));
-                Place(site.transform,"oak_1",10.5f,anchor+new Vector3(1f,0,3f));
-                Place(site.transform,"RecoveredProps/VallaLenador",7f,anchor+new Vector3(-3f,0,-2f));
-                Place(site.transform,"RecoveredProps/CarroMadera",7f,anchor+new Vector3(5f,0,-2.5f));
+                Place(site.transform,"pine_0",10f,anchor+new Vector3(-9f,0,4f));
+                Place(site.transform,"pine_2",9.25f,anchor+new Vector3(-6f,0,7f));
+                Place(site.transform,"oak_1",12f,anchor+new Vector3(6f,0,6f));
+                Place(site.transform,"sawmill_i_hd",23.5f,anchor);
+                Place(site.transform,"RecoveredProps/VallaLenador",7f,anchor+new Vector3(-7f,0,-3.5f));
+                Place(site.transform,"RecoveredProps/CarroMadera",7f,anchor+new Vector3(8f,0,-4f));
             }
-            else Place(site.transform,"Progression/stoneworks",20.4f,anchor);
+            else Place(site.transform,"Progression/stoneworks",27.5f,anchor);
             return site;
         }
         void OnDestroy()

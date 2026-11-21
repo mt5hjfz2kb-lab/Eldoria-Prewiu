@@ -59,6 +59,12 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  // Geological pigment is continuous across material slots, on the same
  // physical source surface. Unity imported UVs use Blender's original V.
  float2 groundPosition=i.world.xz-_RegionOrigin.xz;
+ if(_ModularWorld>.5 && _WaterSurface>.5){
+     float2 flow=groundPosition*.23;
+     float ripple=sin(flow.y+flow.x*.32+sin(flow.x*.72)*1.3);
+     c.rgb=c.rgb*half3(.70,.84,.68)+half3(.016,.038,.025);
+     c.rgb*=1+.065*ripple*(1-smoothstep(.22,1.1,fwidth(flow.y)));
+ }
  float basinRadius=distance(groundPosition,float2(-260,150));
  if(_BasinPigmentEnabled>.5&&_MeadowFinish>.5&&basinRadius<130){
      float2 basinUV=(groundPosition-float2(-430,15))/float2(320,275);
@@ -105,6 +111,12 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
          // Source-specific grain/value may classify paths, never draw a sector.
          half value=clamp(dot(grain,half3(.2126,.7152,.0722)),.92,1.08);
          unified=brush*palette*value;
+         if(_ModularWorld>.5){
+             float2 landscapeUV=q/132;
+             half3 broad=SAMPLE_TEXTURE2D(_MeadowBrush,sampler_MeadowBrush,landscapeUV).rgb/max(_MeadowBrushMean.rgb,.01);
+             unified*=lerp(half3(1,1,1),clamp(broad,.69,1.32),.58);
+             unified*=lerp(half3(1,1,1),clamp(relative,.78,1.22),.42);
+         }
      }
      c.rgb=lerp(c.rgb,unified,groundWeight);
      // Use one soft meadow light response. Keep real cast shadows and the

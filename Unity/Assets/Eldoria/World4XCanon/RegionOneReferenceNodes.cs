@@ -71,10 +71,10 @@ namespace Eldoria.World4XCanon
     var anchor=JsonUtility.FromJson<CityAnchor>(Resources.Load<TextAsset>("ValoriaStrategic/"+key+"-anchor").text);
     if(RegionOneModularArt.Enabled){
      var art=Resources.Load<Sprite>("ValoriaModular25D/"+(gate==host.WorldBastionTwo?"Progression/bastion_2":"bastion_i_hd"));
-     if(art){texture=art.texture;var pivot=art.pivot/art.rect.size;anchor=new CityAnchor{u=pivot.x,v=pivot.y};}
+     if(art){texture=art.texture;anchor=new CityAnchor{u=.5f,v=.035f};}
     }
     var material=new Material(nodes){name="Valoria approved original "+key,mainTexture=texture};cityMaterials.Add(material);
-    width=BastionOneVisualWidth;float h=width*texture.height/texture.width;
+    width=RegionOneModularArt.Enabled ? 31f : BastionOneVisualWidth;float h=width*texture.height/texture.width;
     foot=host.WorldHome+new Vector3(3.3f,0,-7.5f);foot.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(3.3f,-7.5f)+.18f;
     Create(name,new[]{foot,foot,foot,foot},new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up},
      new[]{new Vector2(-width*anchor.u,-h*anchor.v),new Vector2(width*(1-anchor.u),-h*anchor.v),new Vector2(width*(1-anchor.u),h*(1-anchor.v)),new Vector2(-width*anchor.u,h*(1-anchor.v))},new[]{0,1,2,0,2,3},material,gate);return;
@@ -110,6 +110,7 @@ namespace Eldoria.World4XCanon
    // The authentic square-tower silhouette is shorter than the former atlas city.
    // Preserve the close bridge connection, then recover strategic legibility smoothly.
    float canonicalCityScale=cityScale*Mathf.Lerp(1f,1.12f,Mathf.InverseLerp(near,110f,zoom));
+   if(RegionOneModularArt.Enabled)canonicalCityScale*=Mathf.Lerp(1f,1.3f,Mathf.InverseLerp(110f,600f,zoom));
    foreach(var material in cityMaterials)material.SetFloat("_BillboardScale",canonicalCityScale);
    var state=host.City.Gateway.Snapshot();
    var tierFive=host.GetComponent<BastionIVVWorldPresentation>();
@@ -120,8 +121,8 @@ namespace Eldoria.World4XCanon
      if(!citySprites[level])citySprites[level]=Resources.Load<Sprite>("ValoriaModular25D/"+(level==1?"bastion_i_hd":"Progression/bastion_"+level));
      var sprite=citySprites[level];
      if(sprite){
-      var pivot=sprite.pivot/sprite.rect.size;
-      float width=BastionOneVisualWidth,height=width*sprite.rect.height/sprite.rect.width;
+      var pivot=new Vector2(.5f,.035f);
+      float width=31f,height=width*sprite.rect.height/sprite.rect.width;
       foreach(var renderer in current){
        if(!renderer.name.StartsWith("Reference city Bastion",StringComparison.Ordinal))continue;
        renderer.sharedMaterial.mainTexture=sprite.texture;
