@@ -6,13 +6,21 @@ La referencia de Bastión I es `09fac3a`, escena `Assets/Experimentos/ValoriaMod
 
 Los sprites de cuartel, granero y cantera conservan sus GUID, escala de 288 píxeles por unidad y contacto inferior. El archivo CORONA_PROGRESSION_ASSET_PROVENANCE_20261121.json registra dimensiones, pivotes y huellas. El granero se derivó de un atlas transparente original. La cantera usa una excavación de pizarra fracturada con polea, piedra suspendida y rodadas de salida. Se sustituyó la versión de bloques claros al revisar el fotograma de Bastión V en 3c2a08c. El camino de acarreo de los distritos incorpora rodadas y piedras pintadas sobre su trazado original. El cuartel recibió una nueva ilustración independiente después de revisar el recorrido real de Bastión V: galería de escudos, patio abierto y dos dianas para reconocer su función militar a escala móvil. Se separaron por componentes, se redimensionaron uniformemente y se registraron a la altura de los pies.
 
-La barra inferior no crea accesos de distrito: replica la navegación `ChronicleLayout` de `main`, con Mundo y Correo en ese orden cuando ambos están disponibles, y únicamente Correo antes del desbloqueo real del mundo. Cuartel, Granero, Cantera, Aserradero y Bastión conservan sus entradas contextuales en el escenario. El Consejo sigue reuniendo las órdenes que las reglas canónicas permiten en cada fase.
+La barra inferior no crea accesos de distrito: replica la navegación `ChronicleLayout` de `main`, cuyo `BottomNavigation.ChronicleOrder` solo ordena Mundo (`0`) y Correo (`1`). Muestra únicamente Correo en Bastión I y, tras el desbloqueo canónico, Mundo a la izquierda y Correo a la derecha. Reutiliza los medallones Corona aprobados `icon_world` e `icon_supplies` y cada medallón ejecuta su destino real. Cuartel, Granero, Cantera, Aserradero y Bastión conservan sus entradas contextuales en el escenario. El Consejo sigue reuniendo las órdenes que las reglas canónicas permiten en cada fase.
+
+Las huellas visuales de los distritos difuminan su alfa antes del límite de la textura para integrarse en la pradera. Solo el aserradero conserva serrín; cuartel, granero y cantera usan contactos adecuados a su función. El cuartel no añade un segundo ramal: su puerta ya coincide con el camino imperial, por lo que ese trazado termina en el acceso real sin prolongarse bajo el sprite.
 
 ## Región y partida
 
 El jugador combinado arranca en la escena modular y carga la escena geográfica con la regla CanEnterWorld. Cada escena recupera el mismo almacén experimental. Los controladores y las cámaras se descargan al cambiar de escena. La vista regional conserva los sistemas de selección, marcha y navegación del proyecto.
 
+La cobertura regional usa `RegionOneBlenderLandscape.GeographicBounds`: los límites exactos del dominio de consulta (1820 × 3600) y el intervalo de altura medido. No copia ni recorre en WebGL cada vértice del mundo para calcular la cobertura; así conserva la geografía y elimina el trabajo gráfico oculto que bloqueaba el viaje en navegador.
+
+La primera entrada al mundo mantiene la narrativa canónica de Aldric. La prueba de recorrido la avanza mediante la acción real del panel antes de accionar el medallón Ciudad; no omite ni desactiva la escena narrativa. `ReportTravelView` solo publica la coordenada de esa acción cuando está activo el trazado de QA.
+
 El canal alfa de NearFeatures codifica distancia firmada a la orilla. El shader usa ese canal para la transición de tierra húmeda a agua somera y conserva las máscaras de colisión y rutas. La superficie de pradera combina dos escalas de su textura original.
+
+El borde oriental oscuro procedía del renderer de presentación `BLD_ContinentalContinuation`: el terreno jugable, situado por encima, proyectaba sobre esa continuación una sombra con la ondulación de su borde. `RegionOneLookDevelopment` desactiva recepción y proyección de sombras únicamente en ese renderer atmosférico, sin tocar descubrimiento, colisiones, rutas ni límites del terreno jugable. El shader mantiene la pluma panorámica que mezcla el límite con la bruma exterior.
 
 ## Validación reproducible
 
