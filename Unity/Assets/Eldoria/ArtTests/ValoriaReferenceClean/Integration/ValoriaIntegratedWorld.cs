@@ -327,7 +327,12 @@ namespace Eldoria.ReferenceClean {
   }
   public void RefreshNavigation(){if(Hud==null)return;Hud.Navigation.WorldIsCity=InWorld;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
 #if UNITY_WEBGL && !UNITY_EDITOR
-  [Serializable] sealed class TravelView { public int level,sawmill; public float x,y,zoom; }
+  [Serializable] sealed class TravelView
+  {
+   public int level,sawmill;
+   public float x,y,zoom,modalX,modalY;
+   public bool modal;
+  }
   bool travelProbe;
   void ReportTravelView(){
    if(!travelProbe||!InWorld||!WorldCamera.enabled||!WorldRoot.activeInHierarchy)return;
@@ -337,7 +342,20 @@ namespace Eldoria.ReferenceClean {
     var canvas=item.Button.GetComponentInParent<Canvas>().rootCanvas;
     var point=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,rect.TransformPoint(rect.rect.center));
     var state=boundGateway.Snapshot();
-    Debug.Log("VALORIA_REGION "+JsonUtility.ToJson(new TravelView{level=state.BastionLevel,sawmill=state.SawmillLevel,x=point.x/Screen.width,y=1f-point.y/Screen.height,zoom=WorldCamera.orthographicSize}));
+    var narrative=Hud.Modal?Hud.Modal.GetComponent<RoyalNarrativePresentation>():null;
+    bool blocks=narrative&&narrative.IsShowing&&Hud.Modal.Extra&&
+     Hud.Modal.Extra.gameObject.activeInHierarchy;
+    Vector2 modalPoint=Vector2.zero;
+    if(blocks){
+     var action=(RectTransform)Hud.Modal.Extra.transform;
+     modalPoint=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,
+      action.TransformPoint(action.rect.center));
+    }
+    Debug.Log("VALORIA_REGION "+JsonUtility.ToJson(new TravelView{
+     level=state.BastionLevel,sawmill=state.SawmillLevel,
+     x=point.x/Screen.width,y=1f-point.y/Screen.height,zoom=WorldCamera.orthographicSize,
+     modal=blocks,modalX=blocks?modalPoint.x/Screen.width:0,
+     modalY=blocks?1f-modalPoint.y/Screen.height:0}));
     break;
    }
   }
