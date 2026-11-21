@@ -198,7 +198,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             InitializeDistrictNavigation(rootTransform);
             if (Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
             {
-                regionDock = DockButton("Visitar Región 1", rootTransform, "MUNDO", cityIcon,
+                regionDock = DockButton("Visitar Región 1", rootTransform, "MUNDO", NeedCorona("icon_world"),
                     Vector2.zero, Vector2.zero, EnterRegion);
                 regionDock.gameObject.SetActive(false);
             }

@@ -18,7 +18,8 @@ TIME_SHIFT='''(() => {
 async def main():
     async with async_playwright() as pw:
         browser=await pw.chromium.launch(executable_path=shutil.which('google-chrome') or shutil.which('chromium'),args=['--no-sandbox','--disable-dev-shm-usage','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
-        ctx=await browser.new_context(viewport={'width':390,'height':844},has_touch=True,is_mobile=True,user_agent="Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36",device_scale_factor=1)
+        recording = {'record_video_dir':str(OUT/'video'),'record_video_size':{'width':390,'height':844}} if os.environ.get('VALORIA_TEST_REGION')=='1' else {}
+        ctx=await browser.new_context(**recording,viewport={'width':390,'height':844},has_touch=True,is_mobile=True,user_agent="Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36",device_scale_factor=1)
         await ctx.add_init_script(TIME_SHIFT)
         page=await ctx.new_page()
         state={}; log=[]; errors=[]; sequence=0
@@ -184,6 +185,6 @@ async def main():
             print('PASS',browser.version,state,flush=True)
         finally:
             (OUT/'journey.json').write_text(json.dumps({'browser':browser.version,'viewport':[390,844],'clock':'UTC elapsed by test, normal game timers','log':log,'last':state,'errors':errors},indent=2))
-            await page.screenshot(path=OUT/'last.png');await browser.close()
+            await page.screenshot(path=OUT/'last.png');await ctx.close();await browser.close()
 asyncio.run(main())
 

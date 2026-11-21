@@ -26,10 +26,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         void InitializeDistrictNavigation(Transform parent)
         {
-            supplyDock = DockButton("Ver entregas y bolsa", parent, "ENTREGAS", navPlate,
+            supplyDock = DockButton("Ver entregas y bolsa", parent, "ENTREGAS", NeedCorona("icon_supplies"),
                 Vector2.zero, Vector2.zero, () => ShowCouncil("supplies"));
-            supplyCount = Label("",supplyDock,16,true,PaleGold,TextAnchor.MiddleCenter,
-                Vector2.zero,new Vector2(32f,24f));
+            var badge = Plate("Entregas pendientes",supplyDock,slatePlate,new Vector2(1f,1f),
+                Vector2.one,new Vector2(1f,-4f),new Vector2(23f,19f));
+            supplyCount = Label("",badge,12,true,PaleGold,TextAnchor.MiddleCenter,
+                Vector2.zero,new Vector2(22f,18f));
             supplyDock.gameObject.SetActive(false);
             for (int i = 0; i < DistrictIds.Length; i++)
             {

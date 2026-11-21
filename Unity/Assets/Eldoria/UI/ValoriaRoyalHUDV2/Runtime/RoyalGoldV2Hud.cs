@@ -1115,6 +1115,27 @@ namespace Eldoria.UI.RoyalGold.V2
             original.enabled = false;
         }
 
+        Image CoronaDestination(RectTransform medal, RoyalSection section)
+        {
+            if (!Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer ||
+                (section != RoyalSection.World && section != RoyalSection.Mailbox)) return null;
+            var child = medal.Find("Corona destination");
+            if (child) return child.GetComponent<Image>();
+            var key = section == RoyalSection.World ? "icon_city" : "icon_supplies";
+            var sprite = Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/" + key);
+            if (!sprite) return null;
+            var face = new GameObject("Corona destination",typeof(RectTransform),typeof(Image));
+            var rect = (RectTransform)face.transform;
+            rect.SetParent(medal,false);
+            rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+            rect.offsetMin = rect.offsetMax = Vector2.zero;
+            var image = face.GetComponent<Image>();
+            image.sprite = sprite;
+            image.preserveAspect = true;
+            image.raycastTarget = false;
+            return image;
+        }
+
         private void LayoutNavigation()
         {
             if (!Source.Navigation || !safe) return;
@@ -1236,8 +1257,13 @@ namespace Eldoria.UI.RoyalGold.V2
                             medalSize * .67f);
                         glyph.anchoredPosition = Vector2.zero;
                         var icon = glyph.GetComponent<RoyalIconGraphic>();
-                        if (icon && item.Button.targetGraphic != icon)
-                            item.Button.targetGraphic = icon;
+                        var painted = CoronaDestination(medal,item.Section);
+                        if (painted)
+                        {
+                            if (icon) icon.enabled = false;
+                            item.Button.targetGraphic = painted;
+                        }
+                        else if (icon && item.Button.targetGraphic != icon) item.Button.targetGraphic = icon;
                         int desired = item.Section == RoyalSection.Bastion ? 9 :
                             item.Section == RoyalSection.Inventory ? 15 :
                             item.Section == RoyalSection.Army ? 4 :
