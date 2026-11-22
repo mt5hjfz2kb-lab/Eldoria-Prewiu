@@ -61,10 +61,16 @@ namespace Eldoria.World4XCanon
             if (!shapes.TryGetValue((key,size), out var mesh))
             {
 
-                float w = size/4f, h = w*material.mainTexture.height/material.mainTexture.width;
-                // Camera-facing art is clipped by the walkable surface below its anchor.
-                // The visible base of each isolated PNG meets the ground here.
-                Vector2 pivot = new Vector2(.5f, key.StartsWith("World4X/") ? .07f : .042f);
+                // The city sprite owns its actual painted footprint. Reuse
+                // the original pixel-space pivot rather than the old generic
+                // 4.2% baseline which made granaries, mills and groves float.
+                var sprite=Resources.Load<Sprite>(ResourcePath(key));
+                float w=size/4f;
+                float h=w*(sprite ? sprite.rect.height/sprite.rect.width
+                                  : material.mainTexture.height/(float)material.mainTexture.width);
+                Vector2 pivot=sprite
+                    ?new Vector2(sprite.pivot.x/sprite.rect.width,sprite.pivot.y/sprite.rect.height)
+                    :new Vector2(.5f,.07f);
                 var uv = new[]{Vector2.zero, Vector2.right, Vector2.one, Vector2.up};
                 var offsets = new Vector2[4];
                 for(int i=0;i<4;i++) offsets[i]=Vector2.Scale(uv[i]-pivot,new Vector2(w,h));
