@@ -50,12 +50,18 @@ namespace Eldoria.World4XCanon
             ground.SetTexture("_NearFeatures",Texture("NearFeatures"));
             ground.SetTexture("_Region",Texture("RegionColour"));ground.SetTexture("_Weights",Texture("SurfaceWeights"));
             foreach(string k in new[]{"Grass","Earth","Slate","Water"})ground.SetTexture("_"+k,Texture(k));
-            // Extend only the painted mist beyond the known region. This backing
-            // has no collider and is below the geographic relief at every point.
+            // Extend only the painted mist beyond the known region. Keep the
+            // backing immediately below the lowest canonical height. The former
+            // fixed y=-90 plane was safe, but the inclined panorama projected
+            // that 90 m vertical gap beside the eastern relief as a second,
+            // wavy dark silhouette. GeographicBounds comes from the unchanged
+            // query export; the backing remains non-interactive and below every
+            // playable point.
             var fogMesh=new Mesh{name="Mist beyond the mapped region"};
             const float horizon=6500f;
-            fogMesh.vertices=new[]{new Vector3(-horizon,-90,-horizon),new Vector3(-horizon,-90,horizon),
-                new Vector3(horizon,-90,horizon),new Vector3(horizon,-90,-horizon)};
+            float fogHeight=RegionOneBlenderLandscape.GeographicBounds(Vector3.zero).min.y-.5f;
+            fogMesh.vertices=new[]{new Vector3(-horizon,fogHeight,-horizon),new Vector3(-horizon,fogHeight,horizon),
+                new Vector3(horizon,fogHeight,horizon),new Vector3(horizon,fogHeight,-horizon)};
             // Keep mist variations aligned with the geographic UVs used by the relief.
             var fogUv=new Vector2[4];var corners=fogMesh.vertices;
             for(int i=0;i<corners.Length;i++) fogUv[i]=new Vector2(corners[i].x/1820f+.5f,corners[i].z/3600f+.5f);

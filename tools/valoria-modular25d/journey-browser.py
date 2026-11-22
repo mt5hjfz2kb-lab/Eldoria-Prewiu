@@ -64,7 +64,11 @@ async def main():
         async def tap(name,scroll=True):
             target=find(name)
             if not target and scroll:
-                for a,b in [(470,680)]*3 + [(605,516)]*12:
+                # Reset towards the first Council row, then traverse the real
+                # masked list far enough to pass accumulated reward packets.
+                # A complete I-V journey can legitimately expose more than
+                # twenty orders before the canonical system destinations.
+                for a,b in [(430,690)]*4 + [(655,300)]*28:
                     await swipe(195,a,195,b)
                     target=find(name)
                     if target: break
