@@ -249,7 +249,12 @@ async def main():
             await tap('Current real construction objective',False);assert state['sawmillPanel']
             await tap('Close sawmill',False)
             await tap('Sawmill world nameplate',False);assert state['sawmillPanel']
-            await tap('Execute canonical Build command',False);await elapse(10)
+            assert state.get('handVisible'),state
+            await page.screenshot(path=OUT/'guia-iniciar-obra.png')
+            await tap('Execute canonical Build command',False)
+            await until(lambda:state.get('sawmillClockVisible'),5)
+            await page.screenshot(path=OUT/'temporizador-en-parcela.png')
+            await elapse(10)
             assert state['sawmill']==1 and state['wood']==150,state
             await reload();assert state['wood']==150
             for cmd in ['Gather/forest-valoria','Gather/forest-valoria','Gather/quarry-valoria','Fight/corrupt-scout']: await order(cmd)

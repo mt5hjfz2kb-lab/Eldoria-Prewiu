@@ -19,7 +19,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             public long revision;
             public int forestRemaining,quarryRemaining;
             public string room, activeScene;
-            public bool travelCurtainVisible;
+            public bool travelCurtainVisible, handVisible, sawmillClockVisible;
             public bool journey, lyra, fissure, council, sawmillPanel, drawer, busy;
             public List<Tap> taps = new List<Tap>();
         }
@@ -30,6 +30,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if (s == null) return;
             var view = new JourneyView {
                 room=activeRoom,
+                handVisible=firstBuildGuide && firstBuildGuide.gameObject.activeInHierarchy,
+                sawmillClockVisible=worldProgressTrack && worldProgressTrack.gameObject.activeInHierarchy && sawmillTagText.text.StartsWith("OBRA"),
                 activeScene=UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,
                 travelCurtainVisible=GameObject.Find("Paso entre Valoria y la Región") != null,
                 level=s.BastionLevel, sawmill=s.SawmillLevel, barracks=s.BarracksLevel,

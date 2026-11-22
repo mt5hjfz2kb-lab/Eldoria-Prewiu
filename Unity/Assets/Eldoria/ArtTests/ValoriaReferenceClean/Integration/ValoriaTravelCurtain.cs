@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -13,7 +14,7 @@ namespace Eldoria.ReferenceClean
         Text caption;
         Button back;
         float started;
-        AsyncOperation load;
+        bool travelling;
         string destination;
 
         public static void Travel(string scene)
@@ -27,7 +28,7 @@ namespace Eldoria.ReferenceClean
                 current = root.AddComponent<ValoriaTravelCurtain>();
                 current.Build();
             }
-            if (current.load != null && !current.load.isDone) return;
+            if (current.travelling) return;
             current.Open(scene);
         }
 
@@ -85,8 +86,38 @@ namespace Eldoria.ReferenceClean
             started = Time.realtimeSinceStartup;
             caption.text = scene == ValoriaTravelSession.CityScene ? "Regresando a Valoria…" : "Abriendo Región 1…";
             back.gameObject.SetActive(false);
-            try { load = SceneManager.LoadSceneAsync(scene,LoadSceneMode.Single); }
-            catch (Exception e) { Debug.LogException(e); Failed(); }
+            travelling = true;
+            StartCoroutine(ChangeScene(scene));
+        }
+
+        IEnumerator ChangeScene(string scene)
+        {
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+            yield return new WaitForEndOfFrame();
+            if (!UnityEngine.Application.CanStreamedLevelBeLoaded(scene)) { travelling=false; Failed(); yield break; }
+            var leaving = SceneManager.GetActiveScene();
+            if (scene == ValoriaTravelSession.RegionScene && leaving.name == ValoriaTravelSession.CityScene)
+            {
+                // Single-mode loading can retain both large scenes until activation.
+                // Keep only the curtain alive while releasing city-only art.
+                var transit = SceneManager.CreateScene("Valoria en tránsito");
+                SceneManager.SetActiveScene(transit);
+                var camera = new GameObject("Fondo del viaje").AddComponent<Camera>();
+                camera.clearFlags = CameraClearFlags.SolidColor;
+                camera.backgroundColor = new Color32(30,23,39,255);
+                camera.cullingMask = 0;
+                yield return SceneManager.UnloadSceneAsync(leaving);
+                yield return Resources.UnloadUnusedAssets();
+                System.GC.Collect();
+                yield return null;
+            }
+            AsyncOperation operation = null;
+            try { operation = SceneManager.LoadSceneAsync(scene,LoadSceneMode.Single); }
+            catch (Exception e) { Debug.LogException(e); }
+            if (operation == null) { travelling=false; Failed(); yield break; }
+            yield return operation;
+            travelling = false;
         }
 
         static public void Arrived(string scene)

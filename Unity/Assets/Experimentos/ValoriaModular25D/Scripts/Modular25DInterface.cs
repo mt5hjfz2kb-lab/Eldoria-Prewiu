@@ -52,7 +52,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private Text title, level, woodValue, stoneValue, foodValue;
         private Text stage, cost, remaining, actionLabel, notice, objectiveText, stateSummary;
         private Button action;
-        private RectTransform firstBuildGuide;
+        private RectTransform firstBuildGuide, districtClock;
+        private Text districtClockText;
+        private SpriteRenderer districtClockBuilding;
+        private bool hasConstructionDeadline;
         private RectTransform regionDock;
         private bool worldUnlocked, enteringWorld;
         private Image woodAccent;
@@ -368,11 +371,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             Layout();
             if (Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
             {
-                var hand = Resources.Load<Sprite>("Issue186ResourceArt/tutorial_pointing_hand");
+                districtClock = Plate("Plazo de la obra", hudCanvas.transform, slatePlate,
+                    new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(158f,38f));
+                districtClockText = Label("", districtClock, 15, true, PaleGold, TextAnchor.MiddleCenter,
+                    Vector2.zero, new Vector2(148f,32f));
+                districtClock.gameObject.SetActive(false);
+                var hand = Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/guante_guia");
                 if (hand)
                 {
-                    firstBuildGuide = Plate("Guía de la primera obra",sawmillTag,hand,new Vector2(.5f,.5f),
-                        new Vector2(.16f,.696f),Vector2.zero,new Vector2(32f,32f));
+                    firstBuildGuide = Plate("Guía de la primera obra",sawmillTag,hand,new Vector2(.68f,.18f),
+                        new Vector2(.21f,.86f),Vector2.zero,new Vector2(64f,64f));
                     firstBuildGuide.GetComponent<Image>().preserveAspect = true;
                     firstBuildGuide.gameObject.SetActive(false);
                 }
@@ -491,7 +499,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 var target = buildingSheet.activeSelf ? (RectTransform)action.transform : sawmillTag;
                 if(firstBuildGuide.parent != target) firstBuildGuide.SetParent(target,false);
                 if(firstBuildGuide.gameObject.activeSelf != show) firstBuildGuide.gameObject.SetActive(show);
-                if(show) firstBuildGuide.anchoredPosition = new Vector2(-4f,3f+2f*Mathf.Sin(Time.unscaledTime*3f));
+                if(show) firstBuildGuide.anchoredPosition = new Vector2(2f,-2f-3f*Mathf.Sin(Time.unscaledTime*3f));
             }
             if (roomHost && roomIsOpen != null && !roomIsOpen()) CloseCanonicalRoom();
             if (Screen.width != lastWidth || Screen.height != lastHeight ||
@@ -511,7 +519,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // The Aserradero worksite timer remains readable on the world
             // even though Build closes its panel. Query at 4 Hz only during
             // canonical construction or an explicitly opened detail sheet.
-            if(gateway!=null && (cachedSawmillPhase==ParcelBuildingState.UNDER_CONSTRUCTION ||
+            if(gateway!=null && (hasConstructionDeadline || cachedSawmillPhase==ParcelBuildingState.UNDER_CONSTRUCTION ||
                 (buildingSheet!=null&&buildingSheet.activeSelf) || statusSheet.gameObject.activeSelf))
                 Refresh(gateway.Snapshot());
         }
@@ -584,6 +592,22 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(bastionTagText!=null)
                 bastionTagText.text="BASTIÓN · "+s.BastionLevel;
             cachedSawmillPhase=ParcelBuildingStates.For(s,"sawmill");
+            long deadline = Math.Max(s.BuildingCompletesUtcTicks,s.BastionUpgradeCompletesUtcTicks);
+            hasConstructionDeadline = deadline > DateTime.UtcNow.Ticks;
+            districtClockBuilding = null;
+            if (hasConstructionDeadline && districtClockText)
+            {
+                string task = s.BuildingTaskId ?? "";
+                string name = "";
+                if (s.BastionUpgradeCompletesUtcTicks > 0) { districtClockBuilding = world.BastionRenderer; name = "BASTIÓN"; }
+                else if (task.Contains("barracks")) { districtClockBuilding = world.BarracksRenderer; name = "CUARTEL"; }
+                else if (task.Contains("granary")) { districtClockBuilding = world.GranaryRenderer; name = "GRANERO"; }
+                else if (task.Contains("stoneworks")) { districtClockBuilding = world.StoneworksRenderer; name = "CANTERA"; }
+                else if (task.Contains("sawmill") && cachedSawmillPhase != ParcelBuildingState.UNDER_CONSTRUCTION)
+                { districtClockBuilding = world.SawmillRenderer; name = "ASERRADERO"; }
+                long seconds = Math.Max(0L,(long)Math.Ceiling((deadline-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond));
+                districtClockText.text = name + "  " + (seconds/60L) + ":" + (seconds%60L).ToString("00");
+            }
             if(sawmillTag!=null && sawmillTagText!=null)
             {
                 var building=cachedSawmillPhase;
@@ -600,7 +624,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sawmillTagText.rectTransform.sizeDelta=
                     new Vector2(100f,constructing?23f:30f);
                 if(worldProgressTrack!=null)
-                    worldProgressTrack.gameObject.SetActive(false);
+                    worldProgressTrack.gameObject.SetActive(constructing);
+                if (constructing && worldProgressFill)
+                    worldProgressFill.sizeDelta = new Vector2(116f*Mathf.Clamp01(1f-timeLeft/(float)Math.Max(1L,(long)SliceRules.SawmillBuildSeconds)),4f);
                 if(activityTitle!=null)
                     activityTitle.text=constructing?"OBRA EN CURSO":"ACTIVIDADES";
                 if(activityProgress!=null)
@@ -699,9 +725,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var baseRect=hudCanvas.GetComponent<RectTransform>();
             bool hiddenByPanel=(buildingSheet!=null&&buildingSheet.activeSelf)||
                                (statusSheet!=null&&statusSheet.gameObject.activeSelf);
-            PlaceBuildingNameplate(bastionTag,baseRect,world.BastionRenderer,true,hiddenByPanel);
+            PlaceBuildingNameplate(bastionTag,baseRect,world.BastionRenderer,true,hiddenByPanel || districtClockBuilding==world.BastionRenderer);
             PlaceBuildingNameplate(sawmillTag,baseRect,world.SawmillRenderer,true,
-                hiddenByPanel||cachedSawmillPhase==ParcelBuildingState.UNDER_CONSTRUCTION);
+                hiddenByPanel || districtClockBuilding==world.SawmillRenderer);
+            if (districtClock && districtClockBuilding)
+            {
+                if (districtClockBuilding.gameObject.activeInHierarchy)
+                    PlaceBuildingNameplate(districtClock,baseRect,districtClockBuilding,true,hiddenByPanel);
+                else
+                    PlaceWorldNameplate(districtClock,baseRect,districtClockBuilding.transform.position,hiddenByPanel,32f);
+            }
+            else if (districtClock && districtClock.gameObject.activeSelf) districtClock.gameObject.SetActive(false);
         }
 
         private void PlaceBuildingNameplate(RectTransform label,RectTransform canvas,

@@ -27,6 +27,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         static readonly Color32 Glow = C(241, 173, 88);
         static readonly Color32 Mystic = C(115, 93, 145);
         static readonly Dictionary<string, Sprite> Cache = new Dictionary<string, Sprite>();
+        public static void ReleaseCitySprites() => Cache.Clear();
         static Color32 C(byte r, byte g, byte b, byte a = 255) { return new Color32(r,g,b,a); }
         static Vector2 P(float x,float y) { return new Vector2(x,y); }
 
