@@ -38,7 +38,7 @@ jobs:
               f.rename(p)
           shutil.copyfile(src/'index.html',dest/'index.html')
           PY
-          python -m pip install -q playwright==1.56.0
+          python -m pip install -q playwright
           python -m playwright install webkit
           python - <<'PY' &
           from http.server import SimpleHTTPRequestHandler,ThreadingHTTPServer
@@ -54,6 +54,7 @@ jobs:
                   return super().guess_type(p)
           ThreadingHTTPServer(('127.0.0.1',8824),Serve).serve_forever()
           PY
+          curl --retry 5 --retry-connrefused --noproxy "*" -fsS http://127.0.0.1:8824/index.html -o /dev/null
           python -u tools/valoria-modular25d/first-travel-webkit.py
       - if: always()
         uses: actions/upload-artifact@v4

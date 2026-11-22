@@ -2,6 +2,8 @@
 import asyncio
 import json
 import time
+import gzip
+from urllib.parse import urlparse
 from pathlib import Path
 from playwright.async_api import async_playwright
 
@@ -14,6 +16,21 @@ async def main():
         browser = await pw.webkit.launch()
         context = await browser.new_context(**pw.devices["iPhone 13"])
         page = await context.new_page()
+        # WebKit's local-network privacy prompt is outside Playwright's page.
+        # Serve the release bytes through the test context itself.
+        async def local_file(route):
+            path = Path("mobile") / urlparse(route.request.url).path.lstrip("/")
+            if not path.is_file():
+                await route.fulfill(status=404,body="missing")
+                return
+            body = path.read_bytes()
+            if path.name.endswith((".gz",".unityweb")):
+                body = gzip.decompress(body)
+            mime = ("text/html" if path.suffix==".html" else "application/wasm" if ".wasm." in path.name
+                    else "application/javascript" if ".js." in path.name or path.suffix==".js"
+                    else "application/octet-stream")
+            await route.fulfill(body=body,content_type=mime)
+        await page.route("http://localhost:8824/**",local_file)
         city, region, errors = {}, {}, []
         samples = 0
 
@@ -49,7 +66,7 @@ async def main():
             await page.touchscreen.tap(box["x"]+item["x"]*box["width"], box["y"]+item["y"]*box["height"])
 
         try:
-            await page.goto("http://127.0.0.1:8824/index.html?journey-qa",wait_until="domcontentloaded")
+            await page.goto("http://localhost:8824/index.html?journey-qa",wait_until="commit",timeout=120000)
             await until(lambda:target("Confirm your name"),240)
             await page.keyboard.type("ValoriaQA", delay=100)
             await page.keyboard.press("Enter")
