@@ -161,7 +161,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
   districtGrass=lerp(districtGrass,lerp(grass,slate,.39),upland*.85);
   // Shade glades, forest litter and exposed shelves at the close scale too.
   half litter=canopy*(.38+.23*saturate(dot(meadowRange,half3(.4,.5,.1))*2));
-  districtGrass=lerp(districtGrass,sharedEarth*half3(.69,.75,.66),litter);
+  districtGrass=lerp(districtGrass,lerp(sharedEarth,grass,.48)*half3(.72,.86,.66),litter*.78);
   grass=lerp(grass,districtGrass,.72+.28*mapScale);
   half faultWeight=saturate(mask.b);
   half3 fracturedSlate=slate*lerp(half3(1,1,1),half3(.84,.72,.96),
@@ -173,7 +173,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
   float2 faultUV=(metre-float2(-416,0))/float2(320,288);
   if(all(faultUV>=0) && all(faultUV<=1)){
    half4 fault=SAMPLE_TEXTURE2D(_FaultPigment,sampler_FaultPigment,faultUV);
-   half glow=saturate(min(fault.b-fault.g,fault.r-fault.g)*34);
+   half glow=smoothstep(.021,.43,min(fault.b-fault.g,fault.r-fault.g));
    // Pigment isolates the interior seam. Preserve the illuminated rock lip
    // while violet reflected light reaches the near wall of the opening.
    half violetExcess=max(0,min(fault.b-fault.g,fault.r-fault.g));
@@ -203,8 +203,8 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // The geographic mask and its existing broad mip also describe shallows
   // outside the near survey. Work in display pigment before converting once.
   half shelf=lerp(1-smoothstep(.17,.79,district.r),1-smoothstep(.1,5.1,shore),local);
-  half3 channel=half3(.14,.265,.255)*(.82+pigment*.37);
-  half3 shallows=half3(.36,.40,.30)*(.85+pigment*.32);
+  half3 channel=half3(.145,.31,.32)*(.82+pigment*.37);
+  half3 shallows=half3(.35,.44,.38)*(.85+pigment*.32);
   half3 riverColour=lerp(channel,shallows,shelf*.88);
   half glint=smoothstep(.36,.85,pigment)*lerp(.42,1,close);
   riverColour+=half3(.11,.12,.115)*glint;

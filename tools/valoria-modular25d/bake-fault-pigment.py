@@ -3,12 +3,31 @@ import json
 from pathlib import Path
 import numpy as np
 from PIL import Image
-from scipy.ndimage import map_coordinates
+from scipy.ndimage import gaussian_filter1d, map_coordinates
 
 root = Path(__file__).resolve().parents[2] / "Unity/Assets/Eldoria/World4XCanon/Resources/World4X"
 art = root / "Illustrated"
 faults = json.loads((root / "Blender/production-region.json").read_text())["faults"]
 texture = np.asarray(Image.open(art / "Fault.png").convert("RGBA"), dtype=float) / 255
+# Track the deepest painted contour column by column before warping the
+# original cut through the mapped geology. Baked reflected light therefore
+# bends with the rock faces and remains registered at every camera scale.
+height,width=texture.shape[:2]
+row,column=np.mgrid[:height,:width]
+luma=texture[...,:3] @ np.array([.24,.62,.14])
+inside=(texture[...,3]>.76)&(row>height*.43)&(row<height*.78)
+score=np.where(inside,luma+abs(row/height-.59)*.045,2)
+floor=gaussian_filter1d(np.argmin(score,axis=0).astype(float),3.1)
+depth=row-floor[None,:]
+phase=column[0]/width
+vents=.31+.69*(.5+.5*np.sin(phase*31+1.4*np.sin(phase*13)))**2
+vein=np.exp(-.5*((depth+1.9*np.sin(column*.063))/(2.2+1.8*vents))**2)
+wall=np.exp(-abs(depth)/(10+13*vents))
+# Confine light to the recess. The bright upper lip stays under daylight.
+cavity=np.clip((.31-luma)/.18,0,1)*texture[...,3]
+ends=np.minimum(np.clip(phase/.08,0,1),np.clip((1-phase)/.08,0,1))
+emission=cavity*ends*(vein*(.43+.58*vents)+wall*.37*vents)
+texture[...,:3]=np.clip(texture[...,:3]+emission[...,None]*np.array([.53,.205,.76]),0,1)
 # x[-416,-96], z[0,288]; these boundaries correspond to RegionPaint.shader.
 density = 4
 atlas = np.zeros((288*density, 320*density, 4), dtype=float)
