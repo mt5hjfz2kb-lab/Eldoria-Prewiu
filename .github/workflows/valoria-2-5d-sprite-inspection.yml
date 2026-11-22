@@ -27,12 +27,12 @@ jobs:
           city=Path("Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D")
           for name in ("Quarry.png","Timber.png","Bridge.png","Boar.png","Crag.png","Ridge.png"):
               p=region/name
-              assert p.is_file() and p.read_bytes()[:8]==b"\\x89PNG\\r\\n\\x1a\\n",p
+              assert p.is_file() and p.read_bytes()[:8].hex()=="89504e470d0a1a0a",p
           for name in ("bastion_i_hd.png","sawmill_i_hd.png","Progression/stoneworks.png",
                        "RecoveredProps/ArboledaAntigua.png","RecoveredProps/ArbolAntiguo.png",
                        "RecoveredProps/CarroMadera.png","RecoveredProps/MuroDerruido.png"):
               p=city/name
-              assert p.is_file() and p.read_bytes()[:8]==b"\\x89PNG\\r\\n\\x1a\\n",p
+              assert p.is_file() and p.read_bytes()[:8].hex()=="89504e470d0a1a0a",p
           print("Source sprite pairs byte-verified for visual inspection")
           PY
       - uses: actions/upload-artifact@v4
