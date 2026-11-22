@@ -30,7 +30,9 @@ namespace Eldoria.World4XCanon
    var c=parent.gameObject.AddComponent<RegionOneReferenceNodes>();c.host=host;
    c.nodes=new Material(shader){name="Region1 reference city quarry ruin"};c.nodes.mainTexture=texture;
    c.trees=new Material(shader){name="Region1 real wood node grove"};c.trees.mainTexture=Resources.Load<Texture2D>("World4X/RegionOnePaintedForest");
-   c.canonicalCity=Resources.Load<Texture2D>("ValoriaStrategic/BastionI")&&Resources.Load<Texture2D>("ValoriaStrategic/BastionII");
+   c.canonicalCity=RegionOneModularArt.Enabled ||
+     (Resources.Load<Texture2D>("ValoriaStrategic/BastionI")&&
+      Resources.Load<Texture2D>("ValoriaStrategic/BastionII"));
    c.Build();RegionOneStoneBridge.Install(parent,host);return c;
   }
   Transform Find(string name)=>host.WorldRoot.GetComponentsInChildren<Transform>(true).FirstOrDefault(t=>t.name==name);
@@ -80,12 +82,18 @@ namespace Eldoria.World4XCanon
   {
    if(cell==0&&gate&&canonicalCity){
     string key=gate==host.WorldBastionTwo?"BastionII":"BastionI";
-    var texture=Resources.Load<Texture2D>("ValoriaStrategic/"+key);
-    var anchor=JsonUtility.FromJson<CityAnchor>(Resources.Load<TextAsset>("ValoriaStrategic/"+key+"-anchor").text);
+    Texture2D texture;
+    CityAnchor anchor;
     if(RegionOneModularArt.Enabled){
+     // Do not load the retired ValoriaStrategic painted atlas or its anchor:
+     // the world has no dependency on obsolete city backplates.
      var art=ApprovedValoriaBastion(gate==host.WorldBastionTwo?2:1);
      texture=art.texture;
      anchor=new CityAnchor{u=art.pivot.x/art.rect.width,v=art.pivot.y/art.rect.height};
+    }else{
+     texture=Resources.Load<Texture2D>("ValoriaStrategic/"+key);
+     anchor=JsonUtility.FromJson<CityAnchor>(
+       Resources.Load<TextAsset>("ValoriaStrategic/"+key+"-anchor").text);
     }
     var material=new Material(nodes){name="Valoria approved original "+key,mainTexture=texture};cityMaterials.Add(material);
     width=RegionOneModularArt.Enabled ? 31f : BastionOneVisualWidth;float h=width*texture.height/texture.width;
