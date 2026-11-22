@@ -1,6 +1,6 @@
 Shader "Eldoria/World4X/LocalCanopy"
 {
- Properties { _MainTex("Canopy",2D)="white"{} _Tint("Art tint",Color)=(1,1,1,1) _BillboardScale("World silhouette scale",Float)=1 _BoundaryWeight("Panorama boundary",Range(0,1))=0 _BoundaryColour("Panorama haze",Color)=(.63,.685,.665,1) _SoftEdges("Bastion I painterly alpha",Range(0,1))=0 }
+ Properties { _MainTex("Canopy",2D)="white"{} _Tint("Art tint",Color)=(1,1,1,1) _BillboardScale("World silhouette scale",Float)=1 _BoundaryWeight("Panorama boundary",Range(0,1))=0 _BoundaryColour("Panorama haze",Color)=(.63,.685,.665,1) _SoftEdges("Bastion I painterly alpha",Range(0,1))=0 _CameraFacingDepth("Modular orthographic foreground depth",Float)=0 }
  SubShader
  {
   Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="TransparentCutout" "Queue"="AlphaTest" }
@@ -12,7 +12,7 @@ Shader "Eldoria/World4X/LocalCanopy"
    #pragma fragment frag
    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
    TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
-   CBUFFER_START(UnityPerMaterial) half4 _Tint; half4 _BoundaryColour; float _BillboardScale; float _BoundaryWeight; float _SoftEdges; CBUFFER_END
+   CBUFFER_START(UnityPerMaterial) half4 _Tint; half4 _BoundaryColour; float _BillboardScale; float _BoundaryWeight; float _SoftEdges; float _CameraFacingDepth; CBUFFER_END
    struct Attributes { float3 positionOS:POSITION; float2 uv:TEXCOORD0; float2 offset:TEXCOORD1; };
    struct Varyings { float4 positionCS:SV_POSITION; float2 uv:TEXCOORD0; float2 metre:TEXCOORD1; };
    Varyings vert(Attributes i)
@@ -21,7 +21,15 @@ Shader "Eldoria/World4X/LocalCanopy"
     float3 p=TransformObjectToWorld(i.positionOS);
     float3 right=float3(UNITY_MATRIX_I_V._m00,UNITY_MATRIX_I_V._m10,UNITY_MATRIX_I_V._m20);
     float3 up=float3(UNITY_MATRIX_I_V._m01,UNITY_MATRIX_I_V._m11,UNITY_MATRIX_I_V._m21);
-    o.positionCS=TransformWorldToHClip(p+(right*i.offset.x+up*i.offset.y)*_BillboardScale);
+    // Move ONLY the rasterized camera-facing art toward the camera along the
+    // view-depth axis. This is orthographic depth ordering: all screen-space
+    // positions, authoring feet, world geography, selection, routes and saves
+    // remain unchanged. Without it the elevated geographic relief z-buffers
+    // away the lower castle, tree trunks and resource sites.
+    float3 towardCamera=float3(UNITY_MATRIX_I_V._m02,UNITY_MATRIX_I_V._m12,UNITY_MATRIX_I_V._m22);
+    float3 painted=p+(right*i.offset.x+up*i.offset.y)*_BillboardScale
+                   +towardCamera*_CameraFacingDepth;
+    o.positionCS=TransformWorldToHClip(painted);
     // Batched illustrated vegetation is authored in canonical Region 1
     // metres. Preserve the foot position so the final overview can dissolve
     // crowns into the same peripheral atmosphere as the relief beneath them.
