@@ -1,0 +1,52 @@
+name: Valoria 2.5D source sprite art review
+on:
+  push:
+    branches: [experiment/valoria-ciudad-region-unificada-20261121]
+    paths: [.github/workflows/valoria-2-5d-sprite-inspection.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sprite-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D
+          persist-credentials: false
+      - name: Validate exact source artwork without touching main or Unity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          region=Path("Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated")
+          city=Path("Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D")
+          for name in ("Quarry.png","Timber.png","Bridge.png","Boar.png","Crag.png","Ridge.png"):
+              p=region/name
+              assert p.is_file() and p.read_bytes()[:8]==b"\\x89PNG\\r\\n\\x1a\\n",p
+          for name in ("bastion_i_hd.png","sawmill_i_hd.png","Progression/stoneworks.png",
+                       "RecoveredProps/ArboledaAntigua.png","RecoveredProps/ArbolAntiguo.png",
+                       "RecoveredProps/CarroMadera.png","RecoveredProps/MuroDerruido.png"):
+              p=city/name
+              assert p.is_file() and p.read_bytes()[:8]==b"\\x89PNG\\r\\n\\x1a\\n",p
+          print("Source sprite pairs byte-verified for visual inspection")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-art-source-comparison
+          if-no-files-found: error
+          path: |
+            Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Quarry.png
+            Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Timber.png
+            Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Bridge.png
+            Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Boar.png
+            Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Crag.png
+            Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Ridge.png
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i_hd.png
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i_hd.png
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/Progression/stoneworks.png
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/*.png
