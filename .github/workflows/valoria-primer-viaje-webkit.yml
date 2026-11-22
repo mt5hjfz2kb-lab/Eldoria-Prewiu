@@ -27,7 +27,7 @@ jobs:
           set -euo pipefail
           tag="valoria-review-${SOURCE:0:7}"
           if gh release view "$tag" >/dev/null 2>&1; then
-            test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" --jq .object.sha)" = "$SOURCE"
+            test "$(gh release view "$tag" --json body --jq .body)" = "Unity source $SOURCE · Actions $BUILD_RUN"
             exit 0
           fi
           repo="repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN"
@@ -41,7 +41,7 @@ jobs:
           src=tools/valoria-modular25d
           python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE"
           mapfile -d '' -t assets < <(find mobile/r -type f -print0)
-          gh release create "$tag" --target "$SOURCE" --prerelease --latest=false --title "Valoria · Mundo y obras · ${SOURCE:0:7}" --notes "Reproductor Unity experimental. Capturas del primer viaje disponibles en la ejecución de validación." "${assets[@]}" mobile/assets.json mobile/index.html
+          gh release create "$tag" --target "$GITHUB_SHA" --prerelease --latest=false --title "Valoria · Mundo y obras · ${SOURCE:0:7}" --notes "Unity source $SOURCE · Actions $BUILD_RUN" "${assets[@]}" mobile/assets.json mobile/index.html
   webkit:
     needs: package
     runs-on: macos-15
