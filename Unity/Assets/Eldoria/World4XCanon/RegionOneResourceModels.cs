@@ -157,6 +157,30 @@ namespace Eldoria.World4XCanon
                 (node.LastPickPosition-position).sqrMagnitude<.000001f&&Quaternion.Angle(node.LastPickRotation,rotation)<.001f)return;
             node.LastPickRegional=regional;node.LastPickScale=scale;node.LastPickPosition=position;node.LastPickRotation=rotation;
             if(!regional){
+                if(modularArt){
+                    // Hit volumes follow the actual authored 2.5D worksite
+                    // rather than the gigantic synthetic bounds of hidden GLB
+                    // meshes. Only the existing canonical collider is resized.
+                    bool timber=node.Id=="forest-valoria"||node.Id.StartsWith("region1:wood:",StringComparison.Ordinal);
+                    float width=timber?25f:27.5f;
+                    float height=width*(timber?1.05f:.95f);
+                    var nearBounds=new Bounds(node.Logical.InverseTransformPoint(position),Vector3.zero);
+                    var right=host.WorldCamera.transform.right;
+                    var up=host.WorldCamera.transform.up;
+                    for(int corner=0;corner<4;corner++){
+                        float x=(corner&1)==0?-width*.5f:width*.5f;
+                        float y=(corner&2)==0?-1f:height;
+                        nearBounds.Encapsulate(node.Logical.InverseTransformPoint(position+right*x+up*y));
+                    }
+                    if(node.Hit is BoxCollider paintedBox){
+                        paintedBox.center=nearBounds.center;
+                        paintedBox.size=Vector3.Max(nearBounds.size+Vector3.one*.5f,node.HitSize);
+                    } else if(node.Hit is SphereCollider paintedSphere){
+                        paintedSphere.center=nearBounds.center;
+                        paintedSphere.radius=Mathf.Max(node.HitRadius,nearBounds.extents.magnitude);
+                    }
+                    return;
+                }
                 var nearBounds=new Bounds(node.Logical.InverseTransformPoint(node.Renderers[0].bounds.center),Vector3.zero);
                 foreach(var renderer in node.Renderers){
                     var b=renderer.bounds;
@@ -202,11 +226,33 @@ namespace Eldoria.World4XCanon
             foreach(var copy in authoredContactCopies)if(copy)Destroy(copy);
         }
 
+
+        Node CreatePaintedNode(string id,Transform logical,Transform parent)
+        {
+            var visual=new GameObject("Production resource visual "+id);
+            visual.transform.SetParent(parent,false);
+            // A single independent worksite made from the same 2.5D artwork
+            // as Valoria replaces, not decorates, the GLB model.
+            var workSite=modularArt.WorkSite(id,visual.transform);
+            return new Node {
+                Id=id,Logical=logical,Visual=visual,
+                WorkSite=workSite,
+                Renderers=workSite.GetComponentsInChildren<Renderer>(true),
+                Impostor=MakeImpostor(id,parent)
+            };
+        }
+
         public static void Install(Transform parent,ValoriaIntegratedWorld host)
         {
-            var library=Resources.Load<GameObject>("World4X/Blender/RegionOneResources");
-            if(!library)return;
-            var service=parent.gameObject.AddComponent<RegionOneResourceModels>();service.host=host;service.library=library;service.modularArt=parent.GetComponentInChildren<RegionOneModularArt>();service.look=parent.GetComponentInChildren<RegionOneLookDevelopment>();
+            var modular=parent.GetComponentInChildren<RegionOneModularArt>();
+            // The 2.5D world does not even load or instantiate the retired
+            // resource GLB library. Its canonical targets, colliders and saved
+            // positions are independent of those discarded visual meshes.
+            var library=modular?null:Resources.Load<GameObject>("World4X/Blender/RegionOneResources");
+            if(!library&&!modular)return;
+            var service=parent.gameObject.AddComponent<RegionOneResourceModels>();
+            service.host=host;service.library=library;service.modularArt=modular;
+            service.look=parent.GetComponentInChildren<RegionOneLookDevelopment>();
             // Old resource-photo atlas is not even loaded in the new world:
             // all three scales use the same illustrated Timber/Quarry family.
             var atlas=service.modularArt ? null :
@@ -215,6 +261,11 @@ namespace Eldoria.World4XCanon
             foreach(var pair in new[]{("forest-valoria","Resource_Wood_0"),("quarry-valoria","Resource_Stone_0")})
             {
                 var logical=host.FindTarget(pair.Item1);
+                if(modular){
+                    if(!logical)throw new InvalidOperationException("Missing canonical resource target "+pair.Item1);
+                    service.nodes.Add(service.CreatePaintedNode(pair.Item1,logical.transform,parent));
+                    continue;
+                }
                 var source=library.GetComponentsInChildren<Transform>(true).Single(x=>x.name==pair.Item2);
                 if(!logical)throw new InvalidOperationException("Missing canonical resource target "+pair.Item1);
                 var visual=Instantiate(source.gameObject,parent);visual.name="Production resource visual "+pair.Item1;
@@ -234,6 +285,10 @@ namespace Eldoria.World4XCanon
             {
                 if(!item.TargetId.StartsWith("region1:",StringComparison.Ordinal)||item.Generation<=0||nodes.Any(x=>x.Id==item.TargetId))continue;
                 var logical=host.FindTarget(item.TargetId);if(!logical)continue;
+                if(modularArt){
+                    nodes.Add(CreatePaintedNode(item.TargetId,logical.transform,transform));
+                    continue;
+                }
                 string family=item.ResourceKind=="wood"?"Wood":"Stone";
                 var source=library.GetComponentsInChildren<Transform>(true).Single(x=>x.name=="Resource_"+family+"_"+(nodes.Count%3));
                 var visual=Instantiate(source.gameObject,transform);visual.name="Production resource visual "+item.TargetId;
@@ -263,7 +318,10 @@ namespace Eldoria.World4XCanon
                 // resource's modelling pivot. Align their visible footprint
                 // once with the saved hotspot; the mid/far billboard already
                 // uses that same hotspot as its anchor.
-                if(!node.AnchorCached)
+                if(modularArt){
+                    node.Visual.transform.position=p;
+                }
+                else if(!node.AnchorCached)
                 {
                     var bounds=node.Renderers[0].bounds;
                     for(int i=1;i<node.Renderers.Length;i++)bounds.Encapsulate(node.Renderers[i].bounds);
@@ -273,10 +331,12 @@ namespace Eldoria.World4XCanon
                         node.Visual.transform.position.z-bounds.center.z);
                     node.AnchorCached=true;
                 }
-                node.Visual.transform.position=p+node.VisualAnchorOffset;
-                GroundParts(node,p);
+                if(!modularArt){
+                    node.Visual.transform.position=p+node.VisualAnchorOffset;
+                    GroundParts(node,p);
+                }
                 bool alive=LocalGateway.ResourceRemaining(state,node.Id)>0;
-                bool drawMesh=alive&&near&&!node.WorkSite;
+                bool drawMesh=alive&&near&&(!node.WorkSite||modularArt);
                 foreach(var renderer in node.Renderers)if(renderer.enabled!=drawMesh)renderer.enabled=drawMesh;
                 if(node.WorkSite){
                     if(!node.SiteGrounded || (node.SiteFoot-p).sqrMagnitude>.000001f){
