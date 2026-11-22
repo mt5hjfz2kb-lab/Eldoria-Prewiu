@@ -234,6 +234,9 @@ namespace Eldoria.World4XCanon
             // A single independent worksite made from the same 2.5D artwork
             // as Valoria replaces, not decorates, the GLB model.
             var workSite=modularArt.WorkSite(id,visual.transform);
+            // The source art is not visible at world origin while its saved
+            // coordinate and real height are resolved on the first state tick.
+            workSite.SetActive(false);
             return new Node {
                 Id=id,Logical=logical,Visual=visual,
                 WorkSite=workSite,
