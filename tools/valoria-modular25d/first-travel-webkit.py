@@ -23,6 +23,7 @@ async def main():
             if not path.is_file():
                 await route.fulfill(status=404,body="missing")
                 return
+            print("GET",path,flush=True)
             body = path.read_bytes()
             if path.name.endswith((".gz",".unityweb")):
                 body = gzip.decompress(body)
@@ -56,7 +57,7 @@ async def main():
                 if predicate():
                     return
                 await page.wait_for_timeout(120)
-            raise TimeoutError((city, region))
+            raise TimeoutError((city, region, await page.title(), (await page.locator("body").inner_text())[:300]))
 
         def target(name):
             return next((t for t in city.get("taps",[]) if t["name"]==name), None)

@@ -40,21 +40,6 @@ jobs:
           PY
           python -m pip install -q playwright
           python -m playwright install webkit
-          python - <<'PY' &
-          from http.server import SimpleHTTPRequestHandler,ThreadingHTTPServer
-          import os
-          os.chdir('mobile')
-          class Serve(SimpleHTTPRequestHandler):
-              def end_headers(self):
-                  if self.path.endswith(('.unityweb','.gz')): self.send_header('Content-Encoding','gzip')
-                  super().end_headers()
-              def guess_type(self,p):
-                  if '.wasm.' in p: return 'application/wasm'
-                  if '.js.' in p: return 'application/javascript'
-                  return super().guess_type(p)
-          ThreadingHTTPServer(('127.0.0.1',8824),Serve).serve_forever()
-          PY
-          curl --retry 5 --retry-connrefused --noproxy "*" -fsS http://127.0.0.1:8824/index.html -o /dev/null
           python -u tools/valoria-modular25d/first-travel-webkit.py
       - if: always()
         uses: actions/upload-artifact@v4
