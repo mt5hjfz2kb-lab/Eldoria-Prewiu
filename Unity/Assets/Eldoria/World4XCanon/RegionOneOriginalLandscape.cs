@@ -184,10 +184,12 @@ namespace Eldoria.World4XCanon
             // forest look. Use the same approved independent Valoria sprites as
             // the city, at canonical forest coordinates. One shared material
             // per tree family: no city-sized image, no additive forest layer.
-            string[] names={"CityOak","CityGrove","Fir","Crag","Ridge"};
+            string[] names={"CityOak","CityGrove","CityPine0","CityPine1","Crag","Ridge"};
             foreach(string k in names){
                 string source=k=="CityOak"?"ValoriaModular25D/RecoveredProps/ArbolAntiguo"
                     :k=="CityGrove"?"ValoriaModular25D/RecoveredProps/ArboledaAntigua"
+                    :k=="CityPine0"?"ValoriaModular25D/pine_0"
+                    :k=="CityPine1"?"ValoriaModular25D/pine_1"
                     :Art+k;
                 var sourceArt=Resources.Load<Texture2D>(source);
                 if(!sourceArt)throw new InvalidOperationException("REGION1_MODULAR_FOREST_MISSING "+source);
@@ -217,7 +219,7 @@ namespace Eldoria.World4XCanon
                     float px=tree.x,pz=tree.z;
                     var foot=new Vector3(px,Ground(px,pz)+.12f,pz);
                     int pick=Mathf.Abs(Mathf.RoundToInt(px*3.1f+pz*7.7f))%13;
-                    batches[pick<5?"CityGrove":pick<9?"CityOak":"Fir"].Add(foot);
+                    batches[pick<5?"CityGrove":pick<9?"CityOak":pick%2==0?"CityPine0":"CityPine1"].Add(foot);
                     cityTrees[foot]=tree.y;
                 }
                 for(int n=0;n<85;n++){
@@ -228,7 +230,7 @@ namespace Eldoria.World4XCanon
                     bool tree=rng.NextDouble()<forest*.18f || patch>.67f&&rng.NextDouble()<.14f;
                     if(!tree && rng.NextDouble()>(patch>.67f?.095:.012))continue;
                     if(Mathf.Abs(x)<15&&Mathf.Abs(z)<22)continue;
-                    int type=tree?(patch>.67f?1:rng.Next(3)):(patch>.59f?4:3);
+                    int type=tree?(patch>.67f?1:rng.Next(4)):(patch>.59f?5:4);
                     batches[names[type]].Add(new Vector3(x,Ground(x,z)+.16f,z));
                 }
                 foreach(var pair in batches){
