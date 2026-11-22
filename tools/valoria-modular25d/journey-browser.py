@@ -152,6 +152,15 @@ async def main():
                             world_view.get('sample',0)>sample,15)
                 await page.wait_for_timeout(260)
             await until(lambda:sequence>seq,150)
+            # VALORIA_JOURNEY is emitted as soon as the lightweight city host
+            # binds its persisted state.  The previous regional scene can
+            # still publish one final VALORIA_REGION sample while Unity tears
+            # it down behind the opaque travel curtain.  Let the real city
+            # Start/Arrived turn finish, then discard that stale sample before
+            # a depleted node requests another legitimate round trip.
+            await page.wait_for_timeout(1800)
+            world_view.clear()
+            await fresh()
             for key in ['level','sawmill','granary','barracks','stoneworks','lyra','fissure']:
                 assert state[key]==before[key],(key,before,state)
             await page.screenshot(path=OUT/f'regreso-a-valoria-{state["level"]}.png')
