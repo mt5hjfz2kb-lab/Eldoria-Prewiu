@@ -38,7 +38,11 @@ Shader "Eldoria/Region1/Illustrated ground" {
  half3 peripheralMist(float2 metres) {
   // Retain a restrained painted variation while converging on the same
   // neutral panorama haze as the imported regional continuation.
-  return lerp(borderMist(metres),_BoundaryColour.rgb,saturate(_BoundaryWeight*.86));
+  // At the final overview the fog backing must become the exact camera haze.
+  // Retaining even a small amount of the painted variation produces a dark
+  // vertical shelf where the angled camera reveals the backing east of the
+  // raised geographic relief. Regional and close views keep the full paint.
+  return lerp(borderMist(metres),_BoundaryColour.rgb,saturate(_BoundaryWeight));
  }
  half4 frag(Out i):SV_Target {
   float2 metre=(i.uv-.5)*float2(1820,3600);
