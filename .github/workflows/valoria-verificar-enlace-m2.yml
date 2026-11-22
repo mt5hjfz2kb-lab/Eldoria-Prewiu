@@ -7,7 +7,7 @@ permissions: {}
 jobs:
   safari:
     runs-on: macos-15
-    timeout-minutes: 12
+    timeout-minutes: 20
     steps:
       - uses: actions/setup-python@v5
         with:
@@ -17,19 +17,42 @@ jobs:
           python -m playwright install webkit
           python - <<'PY'
           from playwright.sync_api import sync_playwright
+          import json, statistics, time
+          results=[]
           with sync_playwright() as pw, pw.webkit.launch() as browser:
-            page=browser.new_page(**pw.devices["iPhone 13"])
-            errors=[]
-            page.on("pageerror",lambda e: errors.append(str(e)))
-            page.on("response",lambda r: errors.append(str(r.status)+" "+r.url) if r.status>=400 else None)
-            page.goto('https://valoria-revision-53489c4.kbkvc5c45n.chatgpt.site/?arte=1762934',wait_until='commit',timeout=90000)
-            page.locator('#barra').wait_for(state='attached',timeout=60000)
-            page.wait_for_function("getComputedStyle(document.getElementById('carga')).display==='none'",timeout=350000)
-            page.wait_for_timeout(2000)
-            page.screenshot(path='inicio-publicado.png')
-            assert not errors,errors
+            for revision in ["1762934","f10f426"]:
+              ctx=browser.new_context(**pw.devices["iPhone 13"])
+              page=ctx.new_page()
+              errors=[]
+              page.on("pageerror",lambda e: errors.append(str(e)))
+              page.on("response",lambda r: errors.append(str(r.status)+" "+r.url) if r.status>=400 else None)
+              start=time.monotonic()
+              page.goto('https://valoria-revision-53489c4.kbkvc5c45n.chatgpt.site/?arte='+revision,wait_until='commit',timeout=90000)
+              page.locator('#barra').wait_for(state='attached',timeout=60000)
+              page.wait_for_function("getComputedStyle(document.getElementById('carga')).display==='none'",timeout=350000)
+              load_seconds=time.monotonic()-start
+              page.wait_for_timeout(2000)
+              page.screenshot(path='inicio-'+revision+'.png')
+              samples=page.evaluate("""() => new Promise(resolve => {
+                const deltas=[]; let first, previous;
+                function frame(now) {
+                  if (first===undefined) first=now;
+                  if (previous!==undefined) deltas.push(now-previous);
+                  previous=now;
+                  if (now-first<7000) requestAnimationFrame(frame); else resolve(deltas);
+                }
+                requestAnimationFrame(frame);
+              })""")
+              results.append(dict(revision=revision,load_seconds=load_seconds,frames=len(samples),
+                median_ms=statistics.median(samples),p95_ms=sorted(samples)[int(.95*(len(samples)-1))],
+                long_frames_over_50ms=sum(t>50 for t in samples),errors=errors))
+              assert not errors,errors
+              ctx.close()
+          open('tiempos-webkit.json','w').write(json.dumps(results,indent=2))
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: inicio-arte-1762934-webkit
-          path: inicio-publicado.png
+          name: apertura-publica-f10f426-webkit
+          path: |
+            inicio-*.png
+            tiempos-webkit.json
