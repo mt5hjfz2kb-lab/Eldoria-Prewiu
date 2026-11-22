@@ -13,11 +13,13 @@ jobs:
         with:
           python-version: '3.12'
       - run: |
-          python -m pip install --quiet playwright
+          python -m pip install --quiet playwright pillow
           python -m playwright install webkit
           python - <<'PY'
           from playwright.sync_api import sync_playwright
           import json, statistics, time
+          from PIL import Image
+          from io import BytesIO
           results=[]
           with sync_playwright() as pw, pw.webkit.launch() as browser:
             for revision in ["1762934","f10f426"]:
@@ -30,8 +32,15 @@ jobs:
               page.goto('https://valoria-revision-53489c4.kbkvc5c45n.chatgpt.site/?arte='+revision,wait_until='commit',timeout=90000)
               page.locator('#barra').wait_for(state='attached',timeout=60000)
               page.wait_for_function("getComputedStyle(document.getElementById('carga')).display==='none'",timeout=350000)
+              # Unity reports startup before the first scene camera draws.
+              # Wait for the actual name panel instead of timing a flat canvas.
+              deadline=time.monotonic()+120
+              while True:
+                pixels=Image.open(BytesIO(page.screenshot())).convert('RGB').resize((100,180))
+                if len(pixels.getcolors(18000))>350: break
+                assert time.monotonic()<deadline,'Public player has not drawn its first scene'
+                page.wait_for_timeout(650)
               load_seconds=time.monotonic()-start
-              page.wait_for_timeout(2000)
               page.screenshot(path='inicio-'+revision+'.png')
               samples=page.evaluate("""() => new Promise(resolve => {
                 const deltas=[]; let first, previous;
