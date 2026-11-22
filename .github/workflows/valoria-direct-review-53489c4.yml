@@ -1,0 +1,32 @@
+name: Public Valoria review 53489c4
+on:
+  push:
+    branches: [experiment/valoria-ciudad-region-unificada-20261121]
+    paths: ['.github/workflows/valoria-direct-review-53489c4.yml']
+permissions:
+  actions: read
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch verified Unity player
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 45027173950
+          name: valoria-region1-webgl
+          path: player
+      - name: Publish frozen Unity assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '76ac202c4975903a68c2522baf4ec59bdfc0e38edcf9467e358eb0936a0e67f7  player/Build/RegionModular.data.unityweb' | sha256sum -c
+          tag=valoria-review-53489c4
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" --target 53489c447dc73e4ad9adaea4ae0ce6422f726dd4 --prerelease --latest=false --title 'Valoria · prueba jugable 53489c4' --notes 'Compilación experimental de Bastión I–V y Región 1, ejecución 45027173950.' player/Build/* player/StreamingAssets/Eldoria/Aldric/*.glb player/TemplateData/*.png
+          fi
+          gh release view "$tag" --json assets --jq '.assets[] | [.name,.size,.digest] | @tsv'
