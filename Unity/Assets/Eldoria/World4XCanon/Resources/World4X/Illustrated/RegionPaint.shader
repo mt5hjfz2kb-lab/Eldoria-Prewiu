@@ -85,6 +85,15 @@ Shader "Eldoria/Region1/Illustrated ground" {
   riverColour=lerp(riverColour,lerp(water,earth,.38),shelf*local*close*.72);
   colour=lerp(colour,riverColour,mask.r);
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
+  half panorama=smoothstep(880,1700,unity_OrthoParams.y);
+  // SurfaceWeights contains the canonical eastern sea in the same red water
+  // channel as the rivers. At the final overview its fully saturated river
+  // pigment formed a dark, wavy vertical band before the map-edge feather.
+  // Dissolve only that already-authored eastern water progressively into the
+  // peripheral haze. This is presentation-only: masks, terrain, discovery,
+  // routes and every gameplay coordinate remain untouched.
+  half easternSea=smoothstep(500,900,metre.x)*smoothstep(.05,.90,mask.r)*panorama;
+  colour=lerp(colour,peripheralMist(metre),easternSea);
   float edge=min(910-abs(metre.x),1800-abs(metre.y));
   // Height variation already gives the mapped relief a natural silhouette.
   // The former 37 m procedural wobble displaced this blend far enough to expose
@@ -92,7 +101,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // Feather a wider *render-only* band at panorama zoom; geography, fog of war,
   // colliders and discovery bounds remain exactly the canonical Region 1 data.
   edge+=7*sin(metre.x*.014+metre.y*.009)+4*cos(metre.y*.027-metre.x*.012);
-  half mist=smoothstep(880,1700,unity_OrthoParams.y)*(1-smoothstep(72,286,edge));
+  half mist=panorama*(1-smoothstep(72,286,edge));
   half3 haze=mist>.001 ? peripheralMist(metre) : colour;
   return half4(lerp(colour,haze,mist),1);
  }
