@@ -112,6 +112,12 @@ namespace Eldoria.World4XCanon
                 mesh.RecalculateBounds();Draw(mesh,ground);
                 if(ValoriaIntegratedWorld.P0LazyWorldProbe&&slice.ShouldYield()){yield return null;slice.Resume();}
             }
+            // Join the EXISTING relief perimeter to the mist backing. At
+            // panorama the raised eastern shoreline otherwise projects a
+            // detached shelf against a lower background plane. This is a
+            // render-only connection of the same terrain, with zero colliders
+            // and no altered water cells, routes or exploration.
+            Draw(EdgeMistSkirt(fogHeight),fogMaterial);
             // The city landmark meets its approaches across the existing bridge.
             // These fixed physical widths recede naturally at regional zoom.
             CityDetail("RecoveredProps/PozoPiedra",-10,-4,3.8f);
@@ -131,6 +137,43 @@ namespace Eldoria.World4XCanon
                 float angle=Mathf.Atan2(dz,dx)*Mathf.Rad2Deg-27f;
                 Decal("Fault",(f.ax+f.bx)*.5f,(f.az+f.bz)*.5f,len*1.55f,len*.96f,angle,.24f);
             }
+        }
+        Mesh EdgeMistSkirt(float floor)
+        {
+            const int columns=228,rows=450;
+            var verts=new List<Vector3>((columns+rows)*8);
+            var uvs=new List<Vector2>((columns+rows)*8);
+            var tris=new List<int>((columns+rows)*24);
+            void Strip(Vector2 from,Vector2 to,int count)
+            {
+                for(int step=0;step<count;step++)
+                {
+                    Vector2 a=Vector2.Lerp(from,to,step/(float)count);
+                    Vector2 b=Vector2.Lerp(from,to,(step+1)/(float)count);
+                    int n=verts.Count;
+                    foreach(var point in new[]{a,b})
+                    {
+                        verts.Add(new Vector3(point.x,Ground(point.x,point.y),point.y));
+                        verts.Add(new Vector3(point.x,floor,point.y));
+                        var uv=new Vector2(point.x/1820f+.5f,point.y/3600f+.5f);
+                        uvs.Add(uv);uvs.Add(uv);
+                    }
+                    // Both sides face the orthographic camera at each heading.
+                    // One face may be culled; there is no duplicate ground
+                    // surface, only the perimeter between original and mist.
+                    tris.AddRange(new[]{n,n+2,n+1,n+2,n+3,n+1,
+                                         n+1,n+2,n,n+1,n+3,n+2});
+                }
+            }
+            Strip(new Vector2(-910f,-1800f),new Vector2(910f,-1800f),columns);
+            Strip(new Vector2(910f,-1800f),new Vector2(910f,1800f),rows);
+            Strip(new Vector2(910f,1800f),new Vector2(-910f,1800f),columns);
+            Strip(new Vector2(-910f,1800f),new Vector2(-910f,-1800f),rows);
+            var mesh=new Mesh{name="Regional relief-to-mist continuous perimeter"};
+            mesh.indexFormat=IndexFormat.UInt32;
+            mesh.SetVertices(verts);mesh.SetUVs(0,uvs);
+            mesh.SetTriangles(tris,0);mesh.RecalculateBounds();
+            return mesh;
         }
         // Spatial batches keep woodland and rocks visible in the same geography at every scale.
         System.Collections.IEnumerator Plant()
