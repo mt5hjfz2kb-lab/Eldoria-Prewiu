@@ -50,7 +50,13 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // Retaining even a small amount of the painted variation produces a dark
   // vertical shelf where the angled camera reveals the backing east of the
   // raised geographic relief. Regional and close views keep the full paint.
-  return lerp(borderMist(metres),_BoundaryColour.rgb,saturate(_BoundaryWeight));
+  half3 painted=borderMist(metres);
+  // The actual coastline and its skirt still meet the camera haze exactly.
+  // Farther out, low-contrast paint gives the unexplored area atmospheric depth.
+  float outside=max(abs(metres.x)-910,abs(metres.y)-1800);
+  half cloud=smoothstep(24,160,outside)*(1-smoothstep(430,820,outside));
+  half3 overview=lerp(_BoundaryColour.rgb,painted,cloud*.40);
+  return lerp(painted,overview,saturate(_BoundaryWeight));
  }
  half4 frag(Out i):SV_Target {
   float2 metre=(i.uv-.5)*float2(1820,3600);
@@ -138,7 +144,26 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half fringe=landBank*(1-smoothstep(2.4,5.4,-shore));
   grass=lerp(grass,cityMeadow*half3(.81,.91,.76),fringe*.72);
   grass=lerp(grass,lerp(sharedEarth,slate,.58),terrace*.84);
-  half3 colour=lerp(grass,slate,saturate(mask.b)*.87);
+  // At strategic distance, individual tree crowns no longer describe the land.
+  // The existing geographic mask mip spans about 32 metres: water proximity,
+  // woodland and the fault can give adjacent ground a continuous colour family.
+  // Height is relative to the painted mesh origin, including translated worlds.
+  half4 district=SAMPLE_TEXTURE2D_LOD(_Weights,sampler_Weights,i.uv,3);
+  half mapScale=smoothstep(80,410,unity_OrthoParams.y*.5);
+  half valley=smoothstep(.035,.48,district.r)*(1-mask.r);
+  half canopy=smoothstep(.08,.65,district.a);
+  float reliefHeight=i.world.y-GetObjectToWorldMatrix()._m13;
+  half upland=smoothstep(18,76,reliefHeight);
+  half3 openMeadow=grass*half3(1.13,1.025,.87);
+  half3 woodedMeadow=grass*half3(.66,.88,.93);
+  half3 districtGrass=lerp(openMeadow,woodedMeadow,canopy);
+  districtGrass=lerp(districtGrass,grass*half3(.76,1.02,1.11),valley*.82);
+  districtGrass=lerp(districtGrass,lerp(grass,slate,.39),upland*.85);
+  grass=lerp(grass,districtGrass,mapScale);
+  half faultWeight=saturate(mask.b);
+  half3 fracturedSlate=slate*lerp(half3(1,1,1),half3(.84,.72,.96),
+                                  smoothstep(.035,.45,district.b)*mapScale);
+  half3 colour=lerp(grass,fracturedSlate,faultWeight*.87);
   // Use the archival region map only as a subtle broad RELIEF lighting
   // measurement, never as visible full-scene artwork.
   half terrainLight=dot(geographicLight,half3(.2126,.7152,.0722));
