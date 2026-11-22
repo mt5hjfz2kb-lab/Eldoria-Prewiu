@@ -491,7 +491,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 pane.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
                 // Semi-opaque approved parchment admits only a restrained
                 // amount of scene depth; real numbers retain high contrast.
-                var paper=RoyalGoldV41SourceArt.Surface(pane,"blue-panel",14);
+                var paper=MilitarySurface(pane, pane == header ? "top_velvet_ribbon" : "panel_obsidian", "blue-panel");
                 paper.color=new Color(1f,1f,1f,.86f);
                 paneSurfaces[pane]=paper;
                 // Antique rim and candlelight are independent of the texture.
@@ -499,10 +499,10 @@ namespace Eldoria.UI.RoyalGold.V2
                     RoyalGoldV3LayeredFinish.Scene.Panel,1);
             }
             marchHeadingSurface=Rect("March / hero section cartouche",left);
-            RoyalGoldV41SourceArt.Surface(marchHeadingSurface,"blue-panel",14);
+            MilitarySurface(marchHeadingSurface, "wallet_inset", "blue-panel");
             marchHeadingSurface.SetAsFirstSibling();
             marchTroopSurface=Rect("March / live troop order cartouche",left);
-            RoyalGoldV41SourceArt.Surface(marchTroopSurface,"blue-panel",14);
+            MilitarySurface(marchTroopSurface, "wallet_inset", "blue-panel");
             marchTroopSurface.SetAsFirstSibling();
             RoyalGoldV41MarchArt.DressTroopSurface(marchTroopSurface);
             marchTroopChapter=Text("March / reference troop chapter",left,22,Gold,true);
@@ -510,7 +510,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Small opaque cartouches, not a second full-height blue pane:
             // live military text must remain legible against the stone courtyard.
             marchSummaryBacking=Frame("March / statistics title cartouche",right,false);
-            var summaryPaper=RoyalGoldV41SourceArt.Surface(marchSummaryBacking,"blue-panel",14);
+            var summaryPaper=MilitarySurface(marchSummaryBacking, "wallet_inset", "blue-panel");
             summaryPaper.color=new Color(.95f,.94f,.88f,.87f);
             summaryPaper.raycastTarget=false;
             summaryPaper.rectTransform.SetAsFirstSibling();
@@ -518,7 +518,7 @@ namespace Eldoria.UI.RoyalGold.V2
             RoyalGoldV41MarchArt.DressSummary(marchSummaryBacking);
             // This is environment illustration, not a simulated composition,
             // victory prediction, or newly actionable army preview.
-            marchReferenceSummaryPaper=RoyalGoldV41SourceArt.Surface(right,"blue-panel",14);
+            marchReferenceSummaryPaper=MilitarySurface(right, "wallet_inset", "blue-panel");
             marchReferenceSummaryPaper.color=new Color(.85f,.90f,.92f,.88f);
             marchReferenceSummaryPaper.raycastTarget=false;
             marchReferenceSummaryPaper.gameObject.SetActive(false);
@@ -533,7 +533,7 @@ namespace Eldoria.UI.RoyalGold.V2
             marchReferenceCaption.alignment=TextAnchor.MiddleCenter;
             marchReferencePreview.gameObject.SetActive(false);
             marchStatusBacking=Frame("March / status parchment cartouche",right,false);
-            var statusPaper=RoyalGoldV41SourceArt.Surface(marchStatusBacking,"blue-panel",14);
+            var statusPaper=MilitarySurface(marchStatusBacking, "wallet_inset", "blue-panel");
             statusPaper.color=new Color(.95f,.94f,.88f,.86f);
             statusPaper.raycastTarget=false;
             statusPaper.rectTransform.SetAsFirstSibling();
@@ -547,7 +547,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 tileFrame.DecorativeCorners=true;
                 tileFrame.Primary=false;
                 tileFrame.color=new Color(.94f,.79f,.47f,.88f);
-                var surface=RoyalGoldV41SourceArt.Surface(tile,"blue-panel",14);
+                var surface=MilitarySurface(tile, "wallet_inset", "blue-panel");
                 // Small independent metric badges, rather than opaque slabs.
                 surface.color=new Color(.94f,.91f,.82f,.57f);
                 surface.raycastTarget=false;
@@ -575,10 +575,10 @@ namespace Eldoria.UI.RoyalGold.V2
                     (RectTransform)heroSlotButtons[i].transform,
                     heroPortraitViewports[i],heroSlotLabels[i]);
             }
-            var goldAction=RoyalGoldV41SourceArt.Surface((RectTransform)action.transform,"gold-button",14);
+            var goldAction=MilitarySurface((RectTransform)action.transform, "action_arcane", "gold-button");
             action.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
             goldAction.raycastTarget=true;action.targetGraphic=goldAction;
-            actionLabel.color=new Color(.08f,.06f,.025f);
+            actionLabel.color=RoyalGoldV2Hud.UseCoronaArt ? Ivory : new Color(.08f,.06f,.025f);
             root.gameObject.SetActive(false);
         }
 
@@ -1679,6 +1679,21 @@ namespace Eldoria.UI.RoyalGold.V2
             g.transform.SetParent(parent,false);
             return (RectTransform)g.transform;
         }
+        static Image MilitarySurface(RectTransform parent, string coronaAsset, string legacyAsset)
+        {
+            var surface = RoyalGoldV41SourceArt.Surface(parent, legacyAsset, 14);
+            if (RoyalGoldV2Hud.UseCoronaArt)
+            {
+                var sprite = Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/" + coronaAsset);
+                if (sprite)
+                {
+                    surface.sprite = sprite;
+                    surface.type = sprite.border.sqrMagnitude > 0 ? Image.Type.Sliced : Image.Type.Simple;
+                }
+            }
+            return surface;
+        }
+
         static RectTransform Frame(string name,RectTransform parent,bool primary)
         {
             var r=Rect(name,parent);
