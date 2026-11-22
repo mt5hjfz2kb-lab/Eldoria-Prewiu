@@ -20,8 +20,9 @@ namespace Eldoria.World4XCanon
         readonly List<Material> minerals=new List<Material>();
         readonly List<Material> meadows=new List<Material>();
         readonly List<Renderer> fineDetails=new List<Renderer>();
+        readonly List<Renderer> panoramaContinuations=new List<Renderer>();
         readonly List<Light> interiorLights=new List<Light>();bool interiorLighting=true;
-        MaterialPropertyBlock fineProperties;float fineFade=-1f;
+        MaterialPropertyBlock fineProperties;float fineFade=-1f;bool panoramaContinuationsHidden;
         readonly Dictionary<Material,Material> cache=new Dictionary<Material,Material>();
         Shader authoredShader;Vector3 origin;Texture basinPigment;
         public static void Install(GameObject artwork,Camera camera)
@@ -135,6 +136,7 @@ namespace Eldoria.World4XCanon
                     if(node.name=="BLD_ContinentalContinuation"||
                        node.name=="BLD_EasternSeaContinuation"){
                         easternShelf=node.name=="BLD_EasternSeaContinuation";
+                        if(!panoramaContinuations.Contains(renderer))panoramaContinuations.Add(renderer);
                         renderer.receiveShadows=false;
                         renderer.shadowCastingMode=ShadowCastingMode.Off;
                         break;
@@ -190,6 +192,17 @@ namespace Eldoria.World4XCanon
         public void RefreshForZoom()
         {
             if(!worldCamera)return;
+            var navigation=worldCamera.GetComponent<Eldoria.World4XPrototype.ZoneOneStrategicCamera>();
+            float overview=navigation?navigation.globalZoom:2500f;
+            // The imported off-map continuation contains a baked rectangular
+            // eastern shelf. Once the authored relief has reached its fully
+            // feathered overview, let the purpose-built mist backing replace
+            // that scenery. Regional and close views retain it unchanged.
+            bool hideContinuations=worldCamera.orthographicSize>=overview*.97f;
+            if(hideContinuations!=panoramaContinuationsHidden){
+                panoramaContinuationsHidden=hideContinuations;
+                foreach(var renderer in panoramaContinuations)if(renderer)renderer.forceRenderingOff=hideContinuations;
+            }
             float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(75f,170f,worldCamera.orthographicSize));
             if(Mathf.Abs(fade-fineFade)<.0001f)return;fineFade=fade;
             if(fineProperties==null)fineProperties=new MaterialPropertyBlock();
