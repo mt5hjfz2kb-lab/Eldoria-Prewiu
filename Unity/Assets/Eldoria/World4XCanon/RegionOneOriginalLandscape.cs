@@ -51,6 +51,22 @@ namespace Eldoria.World4XCanon
             ground.SetTexture("_NearFeatures",Texture("NearFeatures"));
             ground.SetTexture("_Region",Texture("RegionColour"));ground.SetTexture("_Weights",Texture("SurfaceWeights"));
             foreach(string k in new[]{"Grass","Earth","Slate","Water"})ground.SetTexture("_"+k,Texture(k));
+            // One material on the actual canonical relief. The city paint
+            // replaces the old full-map pigment; nothing is placed over it.
+            var cityMeadow=Resources.Load<Texture2D>("ValoriaModular25D/BastionMeadow");
+            var cityEarth=Resources.Load<Texture2D>("ValoriaModular25D/HaulersEarth");
+            var cityCobble=Resources.Load<Texture2D>("ValoriaModular25D/OrganicCobbleRoad");
+            if(!cityMeadow || !cityEarth || !cityCobble)
+                throw new InvalidOperationException("REGION1_MODULAR_ART_MISSING: approved Bastion I meadow and both road textures are required");
+            foreach(var texture in new[]{cityMeadow,cityEarth,cityCobble}){
+                texture.wrapMode=TextureWrapMode.Repeat;
+                texture.filterMode=FilterMode.Trilinear;
+            }
+            ground.SetTexture("_CityMeadow",cityMeadow);
+            ground.SetTexture("_CityEarth",cityEarth);
+            ground.SetTexture("_CityCobble",cityCobble);
+            ground.SetFloat("_CityFinish",1f);
+            Debug.Log("REGION1_MODULAR_GROUND_REPLACED same_city_meadow=1 same_city_earth=1 same_city_cobble=1");
             // Extend only the painted mist beyond the known region. Keep the
             // backing immediately below the lowest canonical height. The former
             // fixed y=-90 plane was safe, but the inclined panorama projected
