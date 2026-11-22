@@ -25,7 +25,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tag="valoria-review-${SOURCE:0:7}"
+          tag="valoria-review-${SOURCE:0:7}-m1"
           if gh release view "$tag" >/dev/null 2>&1; then
             test "$(gh release view "$tag" --json body --jq .body)" = "Unity source $SOURCE · Actions $BUILD_RUN"
             exit 0
@@ -39,7 +39,9 @@ jobs:
           done
           gh run download "$BUILD_RUN" -n valoria-region1-webgl -D player
           src=tools/valoria-modular25d
-          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE"
+          python3 -m pip install --quiet UnityPy==1.25.4
+          python3 "$src/pack-embedded-region-mips.py" player/Build/RegionModular.data.unityweb
+          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE" 6601ff8-m1
           mapfile -d '' -t assets < <(find mobile/r -type f -print0)
           gh release create "$tag" --target "$GITHUB_SHA" --prerelease --latest=false --title "Valoria · Mundo y obras · ${SOURCE:0:7}" --notes "Unity source $SOURCE · Actions $BUILD_RUN" "${assets[@]}" mobile/assets.json mobile/index.html
   webkit:
@@ -58,7 +60,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -eu
-          gh release download valoria-review-6601ff8 -D flat
+          gh release download valoria-review-6601ff8-m1 -D flat
           python3 - <<'PY'
           import json, pathlib, shutil
           src=pathlib.Path('flat')
@@ -66,7 +68,7 @@ jobs:
           for rel,length in json.loads((src/'assets.json').read_text()).items():
               f=src/pathlib.Path(rel).name
               assert f.stat().st_size==length
-              p=dest/'r/6601ff8'/rel
+              p=dest/'r/6601ff8-m1'/rel
               p.parent.mkdir(parents=True,exist_ok=True)
               f.rename(p)
           shutil.copyfile(src/'index.html',dest/'index.html')

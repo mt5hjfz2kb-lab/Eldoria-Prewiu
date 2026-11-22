@@ -7,7 +7,8 @@ from pathlib import Path
 
 root, out, template = map(Path, sys.argv[1:4])
 revision = sys.argv[4]
-prefix = f'/r/{revision[:7]}/'
+edition = sys.argv[5] if len(sys.argv)>5 else revision[:7]
+prefix = f'/r/{edition}/'
 assets_dir = out / prefix.strip('/')
 assets_dir.mkdir(parents=True,exist_ok=True)
 for path in root.rglob('*'):
