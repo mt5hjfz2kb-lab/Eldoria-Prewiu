@@ -226,7 +226,11 @@ namespace Eldoria.World4XCanon
    instance.contactNormals=null;
    TraceStartupMemory("pigment-ready");
    yield return null;
-   RegionOneProductionLod.Install(instance.artwork);
+   // The original glTF mesh remains the ONLY geographic query donor.
+   // Its obsolete near/far render LODs must not be built behind the modular
+   // painting; preserving both was consuming memory without adding pixels.
+   if(!RegionOneModularArt.Enabled)
+    RegionOneProductionLod.Install(instance.artwork);
    RegionOneLookDevelopment.Install(instance.artwork,host.WorldCamera);
    if(RegionOneModularArt.Enabled){
     var paint=RegionOneModularArt.Install(instance.artwork,host);
