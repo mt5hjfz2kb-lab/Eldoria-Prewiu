@@ -226,10 +226,13 @@ namespace Eldoria.World4XCanon
    instance.contactNormals=null;
    TraceStartupMemory("pigment-ready");
    yield return null;
-   // The original glTF mesh remains the ONLY geographic query donor.
-   // Its obsolete near/far render LODs must not be built behind the modular
-   // painting; preserving both was consuming memory without adding pixels.
-   if(!RegionOneModularArt.Enabled)
+   // The GLB is still authoritative for geographic queries and tree
+   // clearance. The modular scene must match the legacy tree footprint in
+   // the route lattice without instantiating the old visual near/far LODs.
+   // Only the same pre-existing near-crown transform fitting is required.
+   if(RegionOneModularArt.Enabled)
+    RegionOneProductionLod.PreserveClearanceOnly(instance.artwork);
+   else
     RegionOneProductionLod.Install(instance.artwork);
    RegionOneLookDevelopment.Install(instance.artwork,host.WorldCamera);
    if(RegionOneModularArt.Enabled){
