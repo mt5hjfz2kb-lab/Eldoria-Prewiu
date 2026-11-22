@@ -85,7 +85,10 @@ Shader "Eldoria/Region1/Illustrated ground" {
   float pixelMetres=max(length(ddx(metre)),length(ddy(metre)));
   half close=1-smoothstep(.35,4.2,pixelMetres);
   half paintedScale=1-smoothstep(1.4,8.0,pixelMetres);
-  half cityPaint=saturate(_CityFinish)*lerp(.53,.95,paintedScale);
+  // Even at strategic distance, the city-authorized meadow owns the map's
+  // visual palette. Old regional grain is a restrained geographic modifier,
+  // never a competing painted terrain or full-screen backdrop.
+  half cityPaint=saturate(_CityFinish)*lerp(.82,.98,paintedScale);
   half3 grass=lerp(continentalGrass,cityMeadow,cityPaint);
   half3 earth=SAMPLE_TEXTURE2D(_Earth,sampler_Earth,terrainUV*.94).rgb;
   half3 slate=SAMPLE_TEXTURE2D(_Slate,sampler_Slate,terrainUV*.61).rgb;
