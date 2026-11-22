@@ -35,6 +35,7 @@ namespace Eldoria.World4XCanon.Editor
             var libraries=new System.Collections.Generic.Dictionary<string,byte[]>();
             UniversalRenderPipelineAsset urp=null;
             int previousSamples=1;
+            var originalWebTextures = new System.Collections.Generic.Dictionary<string,TextureImporterPlatformSettings>();
             try{
                 Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.PrepareWebPlayer(libraries,false);
                 // PrepareWebPlayer installs the scene's pipeline. Patch the
@@ -55,6 +56,28 @@ namespace Eldoria.World4XCanon.Editor
                     Debug.Log("VALORIA_EXPERIMENT_WEBGL_MSAA samples="+previousSamples+" -> 1");
                 }
                 Debug.Log("VALORIA_WEBGL_PIPELINE asset="+AssetDatabase.GetAssetPath(urp)+" samples="+urp.msaaSampleCount);
+                // The integrated scene still references the old city's 3D materials.
+                // Keep full source art and illustrated region assets, but omit the
+                // highest GPU levels of those legacy surface maps from this player.
+                foreach (string path in AssetDatabase.GetDependencies(scene,true))
+                {
+                    if (path.Contains("World4X") || path.Contains("ValoriaModular25D") || path.Contains("/UI/")) continue;
+                    var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+                    if (!importer || !importer.mipmapEnabled ||
+                        (importer.textureType != TextureImporterType.Default && importer.textureType != TextureImporterType.NormalMap)) continue;
+                    importer.GetSourceTextureWidthAndHeight(out var width,out var height);
+                    if (Mathf.Max(width,height)<=512) continue;
+                    var old = importer.GetPlatformTextureSettings("WebGL");
+                    if (old.overridden && old.maxTextureSize<=512) continue;
+                    originalWebTextures.Add(path,old);
+                    var settings = importer.GetPlatformTextureSettings("WebGL");
+                    settings.name = "WebGL";
+                    settings.overridden = true;
+                    settings.maxTextureSize = Mathf.Min(settings.maxTextureSize,512);
+                    importer.SetPlatformTextureSettings(settings);
+                    importer.SaveAndReimport();
+                }
+                Debug.Log("VALORIA_LEGACY_WEBGL_TEXTURE_BUDGET maps="+originalWebTextures.Count);
                 PlayerSettings.productName="Valoria · Región 1 experimental";
                 var result=BuildPipeline.BuildPlayer(new[]{"Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity",scene},dest,BuildTarget.WebGL,BuildOptions.StrictMode);
                 if(result.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new IOException("World player failed");
@@ -63,6 +86,13 @@ namespace Eldoria.World4XCanon.Editor
                     urp.msaaSampleCount=previousSamples;
                     EditorUtility.SetDirty(urp);
                     AssetDatabase.SaveAssets();
+                }
+                foreach (var item in originalWebTextures)
+                {
+                    var importer = (TextureImporter)AssetImporter.GetAtPath(item.Key);
+                    if (item.Value.overridden) importer.SetPlatformTextureSettings(item.Value);
+                    else importer.ClearPlatformTextureSettings("WebGL");
+                    importer.SaveAndReimport();
                 }
                 foreach(var library in libraries)File.WriteAllBytes(library.Key,library.Value);
             }

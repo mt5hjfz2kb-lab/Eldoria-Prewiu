@@ -11,6 +11,9 @@ namespace Eldoria.ReferenceClean
     public sealed class ValoriaTravelCurtain : MonoBehaviour
     {
         static ValoriaTravelCurtain current;
+#if UNITY_WEBGL && !UNITY_EDITOR
+        static int cityTextureLimit = -1;
+#endif
         Text caption;
         Button back;
         float started;
@@ -97,7 +100,7 @@ namespace Eldoria.ReferenceClean
             yield return new WaitForEndOfFrame();
             if (!UnityEngine.Application.CanStreamedLevelBeLoaded(scene)) { travelling=false; Failed(); yield break; }
             var leaving = SceneManager.GetActiveScene();
-            if (scene == ValoriaTravelSession.RegionScene && leaving.name == ValoriaTravelSession.CityScene)
+            if (leaving.name == ValoriaTravelSession.CityScene || leaving.name == ValoriaTravelSession.RegionScene)
             {
                 // Single-mode loading can retain both large scenes until activation.
                 // Keep only the curtain alive while releasing city-only art.
@@ -110,6 +113,20 @@ namespace Eldoria.ReferenceClean
                 yield return SceneManager.UnloadSceneAsync(leaving);
                 yield return Resources.UnloadUnusedAssets();
                 System.GC.Collect();
+#if UNITY_WEBGL && !UNITY_EDITOR
+                // The integrated region has a different material budget than the
+                // modular city. Change residency only when neither scene is alive.
+                if (scene == ValoriaTravelSession.RegionScene)
+                {
+                    if (cityTextureLimit < 0) cityTextureLimit = QualitySettings.globalTextureMipmapLimit;
+                    QualitySettings.globalTextureMipmapLimit = Mathf.Max(2,cityTextureLimit);
+                }
+                else if (cityTextureLimit >= 0)
+                {
+                    QualitySettings.globalTextureMipmapLimit = cityTextureLimit;
+                    cityTextureLimit = -1;
+                }
+#endif
                 yield return null;
             }
             AsyncOperation operation = null;
