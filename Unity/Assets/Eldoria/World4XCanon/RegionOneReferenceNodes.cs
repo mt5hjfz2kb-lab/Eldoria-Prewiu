@@ -25,11 +25,17 @@ namespace Eldoria.World4XCanon
   readonly List<Renderer> current=new List<Renderer>();readonly List<GameObject> gates=new List<GameObject>();readonly List<Mesh> meshes=new List<Mesh>();
   public static RegionOneReferenceNodes Install(Transform parent,ValoriaIntegratedWorld host)
   {
-   var texture=Resources.Load<Texture2D>("World4X/RegionOneReferenceNodes");var shader=Shader.Find("Eldoria/World4X/LocalCanopy");
-   if(!texture||!shader)return null;
+   bool modular=RegionOneModularArt.Enabled;
+   var texture=modular?null:Resources.Load<Texture2D>("World4X/RegionOneReferenceNodes");
+   var shader=Shader.Find("Eldoria/World4X/LocalCanopy");
+   if((!texture&&!modular)||!shader)return null;
    var c=parent.gameObject.AddComponent<RegionOneReferenceNodes>();c.host=host;
-   c.nodes=new Material(shader){name="Region1 reference city quarry ruin"};c.nodes.mainTexture=texture;
-   c.trees=new Material(shader){name="Region1 real wood node grove"};c.trees.mainTexture=Resources.Load<Texture2D>("World4X/RegionOnePaintedForest");
+   c.nodes=new Material(shader){name=modular?"Region1 modular city art":"Region1 reference city quarry ruin"};
+   if(texture)c.nodes.mainTexture=texture;
+   if(!modular){
+    c.trees=new Material(shader){name="Region1 real wood node grove"};
+    c.trees.mainTexture=Resources.Load<Texture2D>("World4X/RegionOnePaintedForest");
+   }
    c.canonicalCity=RegionOneModularArt.Enabled ||
      (Resources.Load<Texture2D>("ValoriaStrategic/BastionI")&&
       Resources.Load<Texture2D>("ValoriaStrategic/BastionII"));
@@ -59,7 +65,11 @@ namespace Eldoria.World4XCanon
    {var f=ruin.transform.position;f=GroundFoot(f);Sprite("Reference existing neutral watch ruin",f,11,2,null);
     foreach(var name in new[]{"Recovered neutral ruin Arch_Gothic.fbx","Recovered neutral ruin Wall_Broken.fbx","Recovered neutral ruin Column_Round.fbx"}){var t=Find(name);if(t)Hide(t.gameObject);}}
    var timber=Find("Wood resource existing timber stock");var wood=host.FindTarget("forest-valoria");
-   if(timber&&wood){var b=BoundsOf(timber.gameObject);BuildWoodGrove(GroundFoot(wood.transform.position));Hide(timber.gameObject);}
+   if(timber&&wood){
+    if(!RegionOneModularArt.Enabled)BuildWoodGrove(GroundFoot(wood.transform.position));
+    // The resource is represented solely by its modular 2.5D worksite.
+    Hide(timber.gameObject);
+   }
    foreach(var t in host.WorldRoot.GetComponentsInChildren<Transform>(true))
     if(t.name.StartsWith("Existing Holotna mountain",StringComparison.Ordinal))Hide(t.gameObject,true);
    foreach(var id in new[]{"forest-valoria","quarry-valoria"}){var t=host.FindTarget(id);if(t)resourceOrigins[id]=t.transform.position;}
