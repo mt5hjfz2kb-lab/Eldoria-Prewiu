@@ -1,0 +1,97 @@
+name: Validar el primer viaje táctil en WebKit
+on:
+  push:
+    branches: [experiment/valoria-ciudad-region-unificada-20261121]
+    paths: ['.github/workflows/valoria-primer-viaje-webkit.yml']
+permissions:
+  contents: read
+  actions: read
+env:
+  BUILD_RUN: '45040961859'
+  SOURCE: 90e04b8f44740b894aacd79e8635b8502f8efd7f
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - name: Locate the exact native build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          repo="repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN"
+          test "$(gh api "$repo" --jq .head_sha)" = "$SOURCE"
+          for i in $(seq 1 90); do
+            if gh api "$repo/artifacts" --jq '.artifacts[].name' | grep -Fxq valoria-region1-webgl; then break; fi
+            test "$(gh api "$repo" --jq .status)" != completed || exit 1
+            sleep 45
+          done
+          gh run download "$BUILD_RUN" -n valoria-region1-webgl -D player
+      - name: Version mobile resources and publish the pinned preview package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          src=tools/valoria-modular25d
+          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE"
+          tag="valoria-review-${SOURCE:0:7}"
+          mapfile -d '' -t assets < <(find mobile/r -type f -print0)
+          gh release create "$tag" --target "$SOURCE" --prerelease --latest=false --title "Valoria · primer viaje y obras · ${SOURCE:0:7}" --notes "Reproductor Unity experimental. La verificación en WebKit se registra por separado." "${assets[@]}" mobile/assets.json mobile/index.html
+  webkit:
+    needs: package
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          gh release download valoria-review-90e04b8 -D flat
+          python3 - <<'PY'
+          import json, pathlib, shutil
+          src=pathlib.Path('flat')
+          dest=pathlib.Path('mobile')
+          for rel,length in json.loads((src/'assets.json').read_text()).items():
+              f=src/pathlib.Path(rel).name
+              assert f.stat().st_size==length
+              p=dest/'r/90e04b8'/rel
+              p.parent.mkdir(parents=True,exist_ok=True)
+              f.rename(p)
+          shutil.copyfile(src/'index.html',dest/'index.html')
+          PY
+          python -m pip install -q playwright==1.56.0
+          python -m playwright install webkit
+          python - <<'PY' &
+          from http.server import SimpleHTTPRequestHandler,ThreadingHTTPServer
+          import os
+          os.chdir('mobile')
+          class Serve(SimpleHTTPRequestHandler):
+              def end_headers(self):
+                  if self.path.endswith(('.unityweb','.gz')): self.send_header('Content-Encoding','gzip')
+                  super().end_headers()
+              def guess_type(self,p):
+                  if '.wasm.' in p: return 'application/wasm'
+                  if '.js.' in p: return 'application/javascript'
+                  return super().guess_type(p)
+          ThreadingHTTPServer(('127.0.0.1',8824),Serve).serve_forever()
+          PY
+          python -u tools/valoria-modular25d/first-travel-webkit.py
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: primer-viaje-webkit
+          path: evidence-webkit/
