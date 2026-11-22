@@ -180,7 +180,35 @@ namespace Eldoria.UI.RoyalGold.V2
             // Decorative graphic only; the genuine realm button remains sole
             // hit target, and no extra overlay occupies city coordinates.
             var realm = Source.Realm ? Source.Realm.transform as RectTransform : null;
-            if (realm && !FindDirect(realm, "V3 / subdued Valoria livery"))
+            if (UseCoronaArt)
+            {
+                if (realm)
+                {
+                    // Realm.Info already has its own transparent hit graphic.
+                    // Expose the shared ribbon in place of its opaque navy frame.
+                    var frame = realm.GetComponent<RoyalFrameGraphic>();
+                    if (frame) frame.enabled = false;
+                    var crest = realm.Find("Valoria crest") as RectTransform;
+                    ReplaceHeaderIcon(crest, "portrait_ring");
+                    if (crest)
+                        ReplaceHeaderIcon(crest.Find("Bastion emblem") as RectTransform,
+                            "aldric_avatar", "ValoriaModular25D/UI/UmbralII/");
+                }
+                if (Source.Resources)
+                {
+                    var wallet = (RectTransform)Source.Resources.transform;
+                    var frame = wallet.GetComponent<RoyalFrameGraphic>();
+                    if (frame)
+                    {
+                        var replacement = AddCoronaSurface(wallet, frame, "wallet_inset");
+                        if (replacement) replacement.raycastTarget = frame.raycastTarget;
+                    }
+                    ReplaceHeaderIcon(wallet.Find("Madera icon") as RectTransform, "icon_wood");
+                    ReplaceHeaderIcon(wallet.Find("Piedra icon") as RectTransform, "icon_stone");
+                    ReplaceHeaderIcon(wallet.Find("Comida icon") as RectTransform, "icon_food");
+                }
+            }
+            else if (realm && !FindDirect(realm, "V3 / subdued Valoria livery"))
             {
                 var relief = NewRect("V3 / subdued Valoria livery", realm);
                 relief.gameObject.AddComponent<CanvasRenderer>();
@@ -998,8 +1026,14 @@ namespace Eldoria.UI.RoyalGold.V2
                     Top(royalCrest, 3f, 3f, crestSize, crestSize);
                     var bastion = royalCrest.Find("Bastion emblem") as RectTransform;
                     if (bastion)
-                        Top(bastion, crestSize * .22f, crestSize * .16f,
-                            crestSize * .59f, crestSize * .59f);
+                    {
+                        if (UseCoronaArt)
+                            Top(bastion, crestSize * .10f, crestSize * .10f,
+                                crestSize * .80f, crestSize * .80f);
+                        else
+                            Top(bastion, crestSize * .22f, crestSize * .16f,
+                                crestSize * .59f, crestSize * .59f);
+                    }
                 }
                 float titleX = crestSize + 11f;
                 if (Source.Realm.Realm)
@@ -1132,10 +1166,21 @@ namespace Eldoria.UI.RoyalGold.V2
                 buildingCard.anchoredPosition = new Vector2(at.x,safeBottom);
         }
 
-        static void AddCoronaSurface(RectTransform root, Graphic original, string key)
+        static void ReplaceHeaderIcon(RectTransform holder, string key,
+            string directory = "ValoriaModular25D/UI/CoronaBrecha/")
         {
-            var sprite = Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/" + key);
-            if (!sprite) return;
+            if (!holder) return;
+            var old = holder.GetComponent<RoyalIconGraphic>();
+            if (!old) return;
+            var icon = AddCoronaSurface(holder, old, key, directory);
+            if (icon) icon.preserveAspect = true;
+        }
+
+        static Image AddCoronaSurface(RectTransform root, Graphic original, string key,
+            string directory = "ValoriaModular25D/UI/CoronaBrecha/")
+        {
+            var sprite = Resources.Load<Sprite>(directory + key);
+            if (!sprite) return null;
             var painted = new GameObject("Corona de la Brecha", typeof(RectTransform), typeof(Image));
             var rect = (RectTransform)painted.transform;
             rect.SetParent(root, false);
@@ -1153,6 +1198,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 image.type = Image.Type.Sliced;
             image.raycastTarget = false;
             original.enabled = false;
+            return image;
         }
 
         Image CoronaDestination(RectTransform medal, RoyalSection section)
