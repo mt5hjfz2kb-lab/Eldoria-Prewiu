@@ -787,9 +787,28 @@ namespace Eldoria.Tests
             Assert.That(colliders.Length, Is.GreaterThanOrEqualTo(3));
             Assert.That(colliders.Any(x => (string)Member(x, "Id") == "forest-valoria"), Is.True);
             Assert.That(colliders.Any(x => (string)Member(x, "Id") == "quarry-valoria"), Is.True);
-            foreach(var name in new[]{"Reference city Bastion I","Reference existing quarry","Reference existing neutral watch ruin","Reference existing wood grove"})
-                Assert.That(geo.GetComponentsInChildren<MeshFilter>(true).Any(f=>f.name==name),Is.True,"Reference-derived real node art missing: "+name);
-            foreach(var oldResource in geo.GetComponentsInChildren<Renderer>(true).Where(r=>r.name=="Reference existing quarry"||r.name=="Reference existing wood grove")) Assert.That(oldResource.enabled,Is.False,"Replaced resource graphic must stay hidden during capture too");
+            Assert.That(geo.GetComponentsInChildren<MeshFilter>(true)
+                .Any(f=>f.name=="Reference city Bastion I"),Is.True);
+            if(Eldoria.World4XCanon.RegionOneModularArt.Enabled){
+                // The incorrect forest/quarry reference atlases are not
+                // "hidden but loaded": they have been removed from the
+                // experimental rendering graph entirely.
+                foreach(var name in new[]{"Reference existing quarry","Reference existing wood grove"})
+                    Assert.That(geo.GetComponentsInChildren<MeshFilter>(true)
+                        .Any(f=>f.name==name),Is.False,
+                        "Retired atlas renderer must not be rebuilt: "+name);
+                Assert.That(geo.GetComponentsInChildren<MeshRenderer>(true)
+                    .Any(x=>x.name.StartsWith("Valoria art",StringComparison.Ordinal)),Is.True,
+                    "Canonical region needs independent authored city-family sprites");
+            }else{
+                foreach(var name in new[]{"Reference existing quarry","Reference existing neutral watch ruin","Reference existing wood grove"})
+                    Assert.That(geo.GetComponentsInChildren<MeshFilter>(true).Any(f=>f.name==name),
+                        Is.True,"Legacy baseline source missing: "+name);
+                foreach(var oldResource in geo.GetComponentsInChildren<Renderer>(true)
+                    .Where(r=>r.name=="Reference existing quarry"||r.name=="Reference existing wood grove"))
+                    Assert.That(oldResource.enabled,Is.False,
+                        "Replaced reference graphic must stay hidden during capture");
+            }
             foreach(var donor in world.GetComponentsInChildren<Transform>(true).Where(t=>t.name.StartsWith("Quarry Geological Scarp /",StringComparison.Ordinal)||t.name=="Connected graded extraction apron"||t.name.StartsWith("Valoria map / retained ruins",StringComparison.Ordinal)||t.name=="Forest cut timber and sawbuck"))
                 Assert.That(donor.GetComponentsInChildren<Renderer>(true).All(r=>!r.enabled),Is.True,"A replaced legacy node visual reappeared: "+donor.name);
             var directed=geo.GetComponentsInChildren<MonoBehaviour>(true).FirstOrDefault(x=>x&&x.GetType().Name=="RegionOneBlenderLandscape");
