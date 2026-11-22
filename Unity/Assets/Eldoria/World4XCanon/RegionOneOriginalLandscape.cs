@@ -138,9 +138,19 @@ namespace Eldoria.World4XCanon
             var slice=new RegionOneFrameSlice(10);
             var rng=new System.Random(27132);
             var mats=new Dictionary<string,Material>();
-            string[] names={"Fir","Oak","Grove","Crag","Ridge"};
+            // The original regional trees have been retired as the primary
+            // forest look. Use the same approved independent Valoria sprites as
+            // the city, at canonical forest coordinates. One shared material
+            // per tree family: no city-sized image, no additive forest layer.
+            string[] names={"CityOak","CityGrove","Fir","Crag","Ridge"};
             foreach(string k in names){
-                var material=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){mainTexture=Texture(k)};
+                string source=k=="CityOak"?"ValoriaModular25D/RecoveredProps/ArbolAntiguo"
+                    :k=="CityGrove"?"ValoriaModular25D/RecoveredProps/ArboledaAntigua"
+                    :Art+k;
+                var sourceArt=Resources.Load<Texture2D>(source);
+                if(!sourceArt)throw new InvalidOperationException("REGION1_MODULAR_FOREST_MISSING "+source);
+                var material=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){
+                    mainTexture=sourceArt,name="Region 1 modular | "+k};
                 mats.Add(k,material);owned.Add(material);look.RegisterPeripheralMaterial(material);
             }
             var groves=new Dictionary<Vector2Int,List<Vector3>>();
@@ -165,7 +175,7 @@ namespace Eldoria.World4XCanon
                     float px=tree.x,pz=tree.z;
                     var foot=new Vector3(px,Ground(px,pz)+.12f,pz);
                     int pick=Mathf.Abs(Mathf.RoundToInt(px*3.1f+pz*7.7f))%13;
-                    batches[pick<9?"Fir":pick<12?"Oak":"Grove"].Add(foot);
+                    batches[pick<5?"CityGrove":pick<9?"CityOak":"Fir"].Add(foot);
                     cityTrees[foot]=tree.y;
                 }
                 for(int n=0;n<85;n++){
@@ -176,7 +186,7 @@ namespace Eldoria.World4XCanon
                     bool tree=rng.NextDouble()<forest*.18f || patch>.67f&&rng.NextDouble()<.14f;
                     if(!tree && rng.NextDouble()>(patch>.67f?.095:.012))continue;
                     if(Mathf.Abs(x)<15&&Mathf.Abs(z)<22)continue;
-                    int type=tree?(patch>.67f?2:rng.Next(2)):(patch>.59f?4:3);
+                    int type=tree?(patch>.67f?1:rng.Next(3)):(patch>.59f?4:3);
                     batches[names[type]].Add(new Vector3(x,Ground(x,z)+.16f,z));
                 }
                 foreach(var pair in batches){
@@ -184,7 +194,8 @@ namespace Eldoria.World4XCanon
                     var v=new List<Vector3>();var uv=new List<Vector2>();var offsets=new List<Vector2>();var triangles=new List<int>();
                     var tex=mats[pair.Key].mainTexture;
                     foreach(var foot in pair.Value){
-                        float width=(pair.Key=="Ridge"?20f:pair.Key=="Crag"?7f:13f)*(.72f+(float)rng.NextDouble()*.62f);
+                        float width=(pair.Key=="Ridge"?20f:pair.Key=="Crag"?7f:
+                            pair.Key=="CityGrove"?16.5f:13f)*(.72f+(float)rng.NextDouble()*.62f);
                         if(cityTrees.TryGetValue(foot,out float crownWidth))width=crownWidth;
                         float h=width*tex.height/tex.width;int start=v.Count;
                         foreach(var corner in new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up}){
