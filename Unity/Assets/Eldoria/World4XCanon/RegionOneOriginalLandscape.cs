@@ -197,6 +197,7 @@ namespace Eldoria.World4XCanon
                 if(!sourceArt)throw new InvalidOperationException("REGION1_MODULAR_FOREST_MISSING "+source);
                 var material=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){
                     mainTexture=sourceArt,name="Region 1 modular | "+k};
+                material.SetFloat("_SoftEdges",1f);
                 mats.Add(k,material);owned.Add(material);look.RegisterPeripheralMaterial(material);
                 var approved=Resources.Load<Sprite>(source);
                 plantedPivots[k]=approved?approved.pivot.y/approved.rect.height:.035f;
@@ -300,6 +301,7 @@ namespace Eldoria.World4XCanon
             mesh.SetVertices(v);mesh.SetUVs(0,uv);mesh.SetUVs(1,offsets);mesh.SetTriangles(triangles,0);
             var bounds=mesh.bounds;bounds.Expand(16f);mesh.bounds=bounds;
             var material=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){mainTexture=Texture("MarginAtlas")};
+            material.SetFloat("_SoftEdges",1f);
             owned.Add(material);look.RegisterPeripheralMaterial(material);Draw(mesh,material);
         }
         void Draw(Mesh mesh,Material mat)
@@ -314,6 +316,7 @@ namespace Eldoria.World4XCanon
         {
             if(!decals.TryGetValue(name,out var mat)){
                 mat=new Material(Shader.Find("Eldoria/World4X/LocalCanopy"));mat.mainTexture=Texture(name);
+                mat.SetFloat("_SoftEdges",1f);
                 owned.Add(mat);look.RegisterPeripheralMaterial(mat);decals.Add(name,mat);
             }
             const int n=12;
