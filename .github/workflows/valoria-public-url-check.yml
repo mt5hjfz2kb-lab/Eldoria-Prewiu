@@ -18,7 +18,25 @@ jobs:
           curl -fsSL --retry 2 "$ORIGIN/?build=53489c4" -o /tmp/valoria.html
           grep -q 'createUnityInstance' /tmp/valoria.html
           ! grep -q 'type="file"' /tmp/valoria.html
-          curl -fsSL "$ORIGIN/Build/RegionModular.loader.js" | grep -qF 'function createUnityInstance' || grep -q 'RegionModular.loader.js' /tmp/valoria.html
-          curl -fsSL --retry 2 "$ORIGIN/Build/RegionModular.data.unityweb" -o /tmp/data.gz
-          echo '76ac202c4975903a68c2522baf4ec59bdfc0e38edcf9467e358eb0936a0e67f7  /tmp/data.gz' | sha256sum -c
-          gzip -t /tmp/data.gz
+          curl -fsSL --compressed --retry 2 "$ORIGIN/Build/RegionModular.data.unityweb" -o /tmp/unity-data
+          echo 'e9464a0f66e12961d5cd0f109cb6e331c85579e18322861ce24e03d6c9be80f8  /tmp/unity-data' | sha256sum -c
+      - name: Launch live review in mobile Chromium
+        run: |
+          pip -q install playwright
+          python - <<'PY'
+          import shutil
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as pw:
+              browser=pw.chromium.launch(executable_path=shutil.which("google-chrome"), args=["--no-sandbox","--use-gl=angle","--use-angle=swiftshader","--enable-unsafe-swiftshader"])
+              page=browser.new_page(viewport={"width":390,"height":844},is_mobile=True,has_touch=True)
+              page.goto("https://valoria-revision-53489c4.kbkvc5c45n.chatgpt.site/?build=53489c4",wait_until="domcontentloaded")
+              page.wait_for_function("document.querySelector('#unity-canvas') && !document.querySelector('#carga')",timeout=240000)
+              page.wait_for_timeout(3500)
+              page.screenshot(path="/tmp/valoria.png")
+              print("Public Unity instance ready")
+              browser.close()
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-public-start
+          path: /tmp/valoria.png
