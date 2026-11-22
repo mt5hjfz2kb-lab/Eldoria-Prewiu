@@ -231,13 +231,18 @@ namespace Eldoria.World4XCanon
                     batches[pick<5?"CityGrove":pick<9?"CityOak":pick%2==0?"PaintedFir":"PaintedForestGrove"].Add(foot);
                     cityTrees[foot]=tree.y;
                 }
-                for(int n=0;n<85;n++){
+                // A sparse scattering looked like isolated props on a green
+                // plane in the six actual native Region 1 camera frames.
+                // Plant complete pockets of the SAME original sprite families
+                // on already-authored forest masks, without another layer or
+                // any additional gameplay node/collider.
+                for(int n=0;n<140;n++){
                     float x=bx+(float)rng.NextDouble()*182,z=bz+(float)rng.NextDouble()*180;
                     if(RegionOneBlenderLandscape.Water(x,z)>.08f||RegionOneBlenderLandscape.Shore(x,z)<2f||RegionOneBlenderLandscape.Road(x,z)>.22f)continue;
                     float forest=RegionOneBlenderLandscape.Forest(x,z);
                     float patch=Mathf.PerlinNoise(x*.036f+31,z*.036f+90);
-                    bool tree=rng.NextDouble()<forest*.18f || patch>.67f&&rng.NextDouble()<.14f;
-                    if(!tree && rng.NextDouble()>(patch>.67f?.095:.012))continue;
+                    bool tree=rng.NextDouble()<forest*.32f || patch>.67f&&rng.NextDouble()<.14f;
+                    if(!tree && rng.NextDouble()>(patch>.67f?.052:.007))continue;
                     if(Mathf.Abs(x)<15&&Mathf.Abs(z)<22)continue;
                     int type=tree?(patch>.67f?1:rng.Next(4)):(patch>.59f?5:4);
                     batches[names[type]].Add(new Vector3(x,Ground(x,z)+.16f,z));
@@ -248,7 +253,7 @@ namespace Eldoria.World4XCanon
                     var tex=mats[pair.Key].mainTexture;
                     foreach(var foot in pair.Value){
                         float width=(pair.Key=="Ridge"?20f:pair.Key=="Crag"?7f:
-                            pair.Key=="CityGrove"?16.5f:13f)*(.72f+(float)rng.NextDouble()*.62f);
+                            pair.Key=="CityGrove"?20.5f:15.3f)*(.72f+(float)rng.NextDouble()*.62f);
                         if(cityTrees.TryGetValue(foot,out float crownWidth))width=crownWidth;
                         float h=width*tex.height/tex.width;int start=v.Count;
                         foreach(var corner in new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up}){
