@@ -1453,6 +1453,26 @@ namespace Eldoria.Tests
             var quarry=(Component)Call(host,"FindTarget","quarry-valoria");
             Call(nav,"SetZoomLevel",2,true);
             if(Environment.GetEnvironmentVariable("ELDORIA_WORLD_ART_BASELINE")!="1"){
+                // Same live camera, actual spawned targets, fixed position while the idle plays.
+                Call(canon,"RefreshForCapture");
+                yield return new WaitForSecondsRealtime(.35f);
+                foreach(var kind in new[]{"Boar","Spawn"}){
+                    var actor=world.GetComponentsInChildren<MeshRenderer>(true)
+                        .Where(x=>x.name=="Valoria art · "+kind && x.enabled && x.gameObject.activeInHierarchy)
+                        .OrderBy(x=>(x.transform.position-home).sqrMagnitude).FirstOrDefault();
+                    Assert.IsNotNull(actor,"Missing live painted encounter: "+kind);
+                    var foot=actor.transform.position;
+                    Call(nav,"PanTo",foot);Call(canon,"RefreshForCapture");
+                    var folder=Path.Combine(output,"idle-"+kind);
+                    Directory.CreateDirectory(folder);
+                    for(int i=0;i<32;i++){
+                        yield return new WaitForSecondsRealtime(.095f);
+                        SaveRetainedSectorFrame(camera,Path.Combine(folder,i.ToString("D3")),390,844,kind,foot);
+                    }
+                }
+                Call(nav,"PanTo",home+new Vector3(-260,0,150));Call(canon,"RefreshForCapture");
+                yield return null;
+                SaveRetainedSectorFrame(camera,Path.Combine(output,"breach-near"),390,844);
                 var film=Path.Combine(output,"camera");
                 Directory.CreateDirectory(film);
                 for(int frame=0;frame<60;frame++){

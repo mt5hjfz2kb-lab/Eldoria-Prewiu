@@ -26,6 +26,8 @@ namespace Eldoria.UI.RoyalGold.V2
 
         private RectTransform safe, headerPlate, objectiveCard, heraldicBanner, buildingCard, buildingMiniature, scrollContent, scrollViewport;
         public RectTransform HeaderPlate => headerPlate;
+        private Button regionActivities;
+        private bool regionActivitiesOpen;
         private RoyalGoldV3BuildingCartoucheFinish buildingFinish;
         private Image buildingGoldRim, miniatureGoldRim;
         private RoyalText chapterText, objectiveText, progressText, buildingTitle, buildingLevel, buildingBody, primaryLabel;
@@ -983,6 +985,33 @@ namespace Eldoria.UI.RoyalGold.V2
         /// all its buttons work. Reflow ONLY existing, authorized actions.
         /// Do not create dummy buttons or hide usable navigation categories.
         /// </summary>
+        // The same collapsed left standard used in the city opens the existing
+        // objective controls. The mission binding and commands retain ownership.
+        private void LayoutRegionActivities(bool modalOpen)
+        {
+            if (!UseCoronaArt) return;
+            if (!regionActivities)
+            {
+                var tab = NewRect("Valoria activity standard", safe);
+                var art = tab.gameObject.AddComponent<Image>();
+                art.sprite = Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/activity_standard");
+                art.preserveAspect = true;
+                regionActivities = tab.gameObject.AddComponent<Button>();
+                regionActivities.targetGraphic = art;
+                regionActivities.onClick.AddListener(() => regionActivitiesOpen = !regionActivitiesOpen);
+            }
+            float units = Mathf.Min(Screen.width,Screen.height) /
+                (390f*Mathf.Max(.01f,safe.GetComponentInParent<Canvas>().rootCanvas.scaleFactor));
+            var rect = (RectTransform)regionActivities.transform;
+            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0f,.5f);
+            rect.anchoredPosition = new Vector2(0,portrait?0:-5f*units);
+            rect.sizeDelta = new Vector2(44,54)*units;
+            regionActivities.gameObject.SetActive(!modalOpen && !expanded);
+            if (!regionActivitiesOpen || modalOpen || expanded) return;
+            objectiveCard.anchorMin = objectiveCard.anchorMax = objectiveCard.pivot = new Vector2(0,.5f);
+            objectiveCard.anchoredPosition = new Vector2(51*units,0);
+        }
+
         private void LayoutHeaderAlongSafeTop()
         {
             // Original approved Crónica Real: a SINGLE continuous navy/gold
@@ -1386,7 +1415,9 @@ namespace Eldoria.UI.RoyalGold.V2
                         corona ? -buttonHeight * .36f : -buttonHeight * .33f);
                     item.Label.fontSize = Mathf.RoundToInt(Mathf.Clamp(
                         cellWidth * .19f, 18f, 20f));
-                    if (ChronicleFont) item.Label.font = ChronicleFont;
+                    var captionFont = corona ? CoronaBodyFont : ChronicleFont;
+                    if (captionFont) item.Label.font = captionFont;
+                    if (corona) item.Label.fontSize = Mathf.RoundToInt(cellWidth * 11f/78f);
                     item.Label.fontStyle = FontStyle.Normal;
                     item.Label.alignment = TextAnchor.MiddleCenter;
                     item.Label.color = item.Button.interactable ? Ivory : new Color(.54f, .55f, .56f);
@@ -1523,7 +1554,8 @@ namespace Eldoria.UI.RoyalGold.V2
             // a player on the Forest resource after its first expedition.
             // Keep a compact, *genuine* next-objective action available.
             ReflowSelectedObjective(inspectingBuilding);
-            SetVisible(objectiveGroup, !expanded && !modalOpen);
+            LayoutRegionActivities(modalOpen);
+            SetVisible(objectiveGroup, !expanded && !modalOpen && (!UseCoronaArt || regionActivitiesOpen));
             SetVisible(chapterCloseGroup, showExpanded);
 
             RenderBuilding(modalOpen);
