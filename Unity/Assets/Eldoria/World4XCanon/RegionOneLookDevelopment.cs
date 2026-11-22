@@ -11,7 +11,7 @@ namespace Eldoria.World4XCanon
     public sealed class RegionOneLookDevelopment : MonoBehaviour
     {
         Camera worldCamera; Light sun,configuredSun,fill; Quaternion rotation; LightShadows shadows; float strength,distance,depthBias,normalBias;int cascades;
-        UniversalRenderPipelineAsset pipeline; bool scoped; Color background;
+        UniversalRenderPipelineAsset pipeline; bool scoped, modularOnly; Color background;
         readonly List<Material> owned=new List<Material>();
         // RegionOneOriginalLandscape is installed after the imported AG world.
         // Keep its painted relief in the same camera-scoped panorama treatment
@@ -27,6 +27,14 @@ namespace Eldoria.World4XCanon
         public static void Install(GameObject artwork,Camera camera)
         {
             var scope=artwork.AddComponent<RegionOneLookDevelopment>();scope.worldCamera=camera;
+            scope.modularOnly=RegionOneModularArt.Enabled;
+            if(scope.modularOnly){
+                // The retained imported meshes are data/query donors, NEVER art.
+                // Do not allocate old AG material copies, imported lighting,
+                // mineral glow or shadow cascades behind the modular scene.
+                Debug.Log("REGION1_MODULAR_LEGACY_LOOK_RETIRED imported_material_rebuild=0");
+                return;
+            }
             var shader=Resources.Load<Shader>("World4X/RegionOneAuthoredSurface");
             if(!shader||!shader.isSupported)throw new InvalidOperationException("Authored AG surface shader missing");
             scope.authoredShader=shader;scope.origin=artwork.transform.position;scope.ApplyMaterials(artwork);
@@ -163,7 +171,16 @@ namespace Eldoria.World4XCanon
             foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
                 if(renderer.name.StartsWith("BLD_Forest")||renderer.name.StartsWith("Pilot_Pine")||renderer.name.StartsWith("Far_Pilot_Pine"))renderer.SetPropertyBlock(properties);
         }
-        public void SetMeadowFinish(bool enabled){foreach(var material in meadows)material.SetFloat("_MeadowFinish",enabled?(material.name.Contains("Region1 open meadows")?2f:1f):0f);}
+        public void SetMeadowFinish(bool enabled){
+            if(modularOnly){
+                // Art A/B changes the paint of the SAME ground geometry,
+                // never activates an old terrain or an overlaid screenshot.
+                foreach(var material in peripheral)
+                    if(material&&material.HasProperty("_CityFinish"))material.SetFloat("_CityFinish",enabled?1f:0f);
+                return;
+            }
+            foreach(var material in meadows)material.SetFloat("_MeadowFinish",enabled?(material.name.Contains("Region1 open meadows")?2f:1f):0f);
+        }
         public void SetInteriorLighting(bool enabled){interiorLighting=enabled;}
         static bool IsCloseGroundDetail(Renderer renderer)
         {
@@ -189,7 +206,7 @@ namespace Eldoria.World4XCanon
 
         public void RefreshForZoom()
         {
-            if(!worldCamera)return;
+            if(modularOnly || !worldCamera)return;
             float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(75f,170f,worldCamera.orthographicSize));
             if(Mathf.Abs(fade-fineFade)<.0001f)return;fineFade=fade;
             if(fineProperties==null)fineProperties=new MaterialPropertyBlock();
@@ -231,6 +248,7 @@ namespace Eldoria.World4XCanon
             camera.backgroundColor=mist;
             foreach(var material in owned){material.SetFloat("_BoundaryWeight",atmosphere);material.SetVector("_BoundaryColour",new Vector4(fog.r,fog.g,fog.b,1));}
             foreach(var material in peripheral){material.SetFloat("_BoundaryWeight",atmosphere);material.SetVector("_BoundaryColour",new Vector4(fog.r,fog.g,fog.b,1));}
+            if(modularOnly){scoped=true;return;}
             float mineralEmission=Mathf.Lerp(.65f,.85f,Mathf.InverseLerp(36f,280f,camera.orthographicSize));
             if(camera.orthographicSize>280f)mineralEmission=Mathf.Lerp(.85f,1.10f,Mathf.InverseLerp(280f,navigation?navigation.globalZoom:2500f,camera.orthographicSize));
             foreach(var material in minerals)material.SetFloat("_MineralEmission",mineralEmission);
@@ -258,7 +276,7 @@ namespace Eldoria.World4XCanon
             scoped=true;
         }
         void End(ScriptableRenderContext context,Camera camera){if(camera==worldCamera)Restore();}
-        void Restore(){if(!scoped)return;if(fill)fill.enabled=false;foreach(var light in interiorLights)if(light)light.enabled=false;RenderSettings.sun=configuredSun?configuredSun:null;if(sun){sun.transform.rotation=rotation;sun.shadows=shadows;sun.shadowStrength=strength;sun.shadowBias=depthBias;sun.shadowNormalBias=normalBias;}if(pipeline){pipeline.shadowDistance=distance;pipeline.shadowCascadeCount=cascades;}if(worldCamera)worldCamera.backgroundColor=background;scoped=false;}
+        void Restore(){if(!scoped)return;if(modularOnly){if(worldCamera)worldCamera.backgroundColor=background;scoped=false;return;}if(fill)fill.enabled=false;foreach(var light in interiorLights)if(light)light.enabled=false;RenderSettings.sun=configuredSun?configuredSun:null;if(sun){sun.transform.rotation=rotation;sun.shadows=shadows;sun.shadowStrength=strength;sun.shadowBias=depthBias;sun.shadowNormalBias=normalBias;}if(pipeline){pipeline.shadowDistance=distance;pipeline.shadowCascadeCount=cascades;}if(worldCamera)worldCamera.backgroundColor=background;scoped=false;}
         void OnDisable(){RenderPipelineManager.beginCameraRendering-=Begin;RenderPipelineManager.endCameraRendering-=End;Restore();}
         void OnDestroy(){foreach(var material in owned)if(material)Destroy(material);}
     }
