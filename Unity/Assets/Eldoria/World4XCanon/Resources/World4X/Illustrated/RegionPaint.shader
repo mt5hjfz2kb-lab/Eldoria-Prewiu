@@ -76,6 +76,14 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half3 cityMeadow=SAMPLE_TEXTURE2D(_CityMeadow,sampler_CityMeadow,cityUV).rgb;
   half3 cityVariety=SAMPLE_TEXTURE2D(_CityMeadow,sampler_CityMeadow,rotatedUV).rgb;
   cityMeadow=lerp(cityMeadow,cityVariety,.16);
+  // Keep the SAME approved painted meadow legible as 6.5m detail falls
+  // beneath one strategic camera pixel: spatially enlarge its brush texture
+  // instead of returning to an obsolete full-continent image.
+  half3 meadowGlade=SAMPLE_TEXTURE2D(_CityMeadow,sampler_CityMeadow,
+      metre/86+float2(.27,.43)).rgb;
+  half3 meadowRange=SAMPLE_TEXTURE2D(_CityMeadow,sampler_CityMeadow,
+      float2(metre.x*.80-metre.y*.60,metre.x*.60+metre.y*.80)/252
+      +float2(.61,.19)).rgb;
   float2 terrainUV=metre/15;
   half3 continentalGrass=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,terrainUV).rgb;
   half3 continentalVariety=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,
@@ -85,11 +93,13 @@ Shader "Eldoria/Region1/Illustrated ground" {
   float pixelMetres=max(length(ddx(metre)),length(ddy(metre)));
   half close=1-smoothstep(.35,4.2,pixelMetres);
   half paintedScale=1-smoothstep(1.4,8.0,pixelMetres);
-  // Even at strategic distance, the city-authorized meadow owns the map's
-  // visual palette. Old regional grain is a restrained geographic modifier,
-  // never a competing painted terrain or full-screen backdrop.
-  half cityPaint=saturate(_CityFinish)*lerp(.82,.98,paintedScale);
-  half3 grass=lerp(continentalGrass,cityMeadow,cityPaint);
+  half strategicScale=smoothstep(.65,7.2,pixelMetres);
+  half3 farPainting=lerp(meadowGlade,meadowRange,.25);
+  half3 cityAtZoom=lerp(cityMeadow,farPainting,strategicScale*.72);
+  // Paint continuity from Bastion I to the near, regional and panoramic map.
+  // This operates INSIDE the one regional terrain shader, not on new planes.
+  half cityPaint=saturate(_CityFinish)*lerp(.84,.98,paintedScale);
+  half3 grass=lerp(continentalGrass,cityAtZoom,cityPaint);
   half3 earth=SAMPLE_TEXTURE2D(_Earth,sampler_Earth,terrainUV*.94).rgb;
   half3 slate=SAMPLE_TEXTURE2D(_Slate,sampler_Slate,terrainUV*.61).rgb;
   half3 water=SAMPLE_TEXTURE2D(_Water,sampler_Water,terrainUV*.81+float2(0,_Time.y*.012)).rgb;
