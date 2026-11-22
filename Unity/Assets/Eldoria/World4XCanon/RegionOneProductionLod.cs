@@ -6,6 +6,44 @@ namespace Eldoria.World4XCanon
     // Pairs independently exported near/far geometry; no second geography.
     public static class RegionOneProductionLod
     {
+        // The game still derives walkable-cell clearance from imported near
+        // canopy renderer bounds. The legacy LOD installer shrank those
+        // crowns before the grid was sampled. Skipping it when removing the
+        // 3D renderer changed 9,159 walkable cells in an actual native A/B
+        // (45008568637), despite identical underlying geographic heights.
+        //
+        // Preserve ONLY the exact pre-existing near-crown transform fitting,
+        // without building LODGroups, far renderers, materials or extra art.
+        // The original imported trees remain forceRenderingOff in the modular
+        // player; they are route-clearance donors, never displayed scenery.
+        public static void PreserveClearanceOnly(GameObject artwork)
+        {
+            var all=artwork.GetComponentsInChildren<MeshRenderer>(true);
+            var byName=all.GroupBy(x=>x.name).ToDictionary(x=>x.Key,x=>x.Single());
+            int paired=0, fitted=0;
+            foreach(var near in all.Where(x=>x.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)||
+                                           x.name.StartsWith("Pilot_Pine",StringComparison.Ordinal)))
+            {
+                string farName=near.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)
+                    ? near.name.Replace("BLD_ForestMass_","BLD_ForestFar_")
+                    : "Far_"+near.name;
+                if(!byName.ContainsKey(farName))continue;
+                paired++;
+                var closeBounds=near.bounds;
+                float footprint=Mathf.Max(closeBounds.size.x,closeBounds.size.z);
+                float limit=RegionOneReferenceNodes.BastionOneVisualWidth*.38f;
+                if(footprint>limit)
+                {
+                    float baseHeight=closeBounds.min.y;
+                    near.transform.localScale*=limit/footprint;
+                    near.transform.position+=Vector3.up*(baseHeight-near.bounds.min.y);
+                    fitted++;
+                }
+            }
+            Debug.Log("REGION1_MODULAR_CLEARANCE_PRESERVED paired="+paired+
+                " fitted="+fitted+" visual_lod_groups_created=0");
+        }
+
         public static void Install(GameObject artwork)
         {
             var all=artwork.GetComponentsInChildren<MeshRenderer>(true);
