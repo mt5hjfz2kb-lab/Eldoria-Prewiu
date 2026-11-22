@@ -190,20 +190,6 @@ async def main():
             assert state['sawmill']>=2 and state['granary']>=2 and state['barracks']>=2 and state['stoneworks']==1
             await page.wait_for_timeout(1200)
             await page.screenshot(path=OUT/'bastion-5-completo.png')
-            # The final camera tour starts in the persisted city, with the HUD
-            # closed. Pinch inward in world units, then traverse via actual
-            # browser touch gestures, capturing the Unity canvas throughout.
-            await page.screenshot(path=OUT/'bastion-5-panorama.png')
-            await cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':170,'y':360,'id':0},{'x':220,'y':360,'id':1}]})
-            for i in range(1,13):
-                await cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':170-i*3,'y':360,'id':0},{'x':220+i*3,'y':360,'id':1}]})
-                await page.wait_for_timeout(65)
-            await cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
-            await swipe(190,310,188,650)
-            await page.screenshot(path=OUT/'bastion-5-nucleo.png')
-            for n,(x1,y1,x2,y2) in enumerate([(145,530,320,350),(160,560,325,355),(319,540,70,402),(330,525,55,400),(218,560,276,360),(140,540,300,370)]):
-                await swipe(x1,y1,x2,y2)
-                await page.screenshot(path=OUT/f'bastion-5-recorrido-{n}.png')
             if os.environ.get('VALORIA_TEST_REGION')=='1':
                 async def visit_room(name,back,required=True):
                     if name=='mail':
@@ -226,6 +212,9 @@ async def main():
                     await until(lambda:not state.get('room'))
                     log.append({'room_traversed':name,'level':state['level']})
                     return True
+                # Visit the functional rooms while the untouched saved city
+                # camera still frames the Bastion nameplate. The artistic
+                # camera tour below deliberately pans away from it.
                 for name,back in [('training','Return to Valoria'),('heroes','Close heroes'),
                                   ('daily','Close tributes'),('mail','Volver')]:
                     await visit_room(name,back)
@@ -238,6 +227,20 @@ async def main():
                                   ('bag','Issue186 bag close')]:
                     await visit_room(name,back,False)
                 await travel_round_trip()
+            # The final camera tour starts in the persisted city, with the HUD
+            # closed. Pinch inward in world units, then traverse via actual
+            # browser touch gestures, capturing the Unity canvas throughout.
+            await page.screenshot(path=OUT/'bastion-5-panorama.png')
+            await cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':170,'y':360,'id':0},{'x':220,'y':360,'id':1}]})
+            for i in range(1,13):
+                await cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':170-i*3,'y':360,'id':0},{'x':220+i*3,'y':360,'id':1}]})
+                await page.wait_for_timeout(65)
+            await cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
+            await swipe(190,310,188,650)
+            await page.screenshot(path=OUT/'bastion-5-nucleo.png')
+            for n,(x1,y1,x2,y2) in enumerate([(145,530,320,350),(160,560,325,355),(319,540,70,402),(330,525,55,400),(218,560,276,360),(140,540,300,370)]):
+                await swipe(x1,y1,x2,y2)
+                await page.screenshot(path=OUT/f'bastion-5-recorrido-{n}.png')
             print('PASS',browser.version,state,flush=True)
         finally:
             (OUT/'journey.json').write_text(json.dumps({'browser':browser.version,'viewport':[390,844],'clock':'UTC elapsed by test, normal game timers','log':log,'last':state,'errors':errors},indent=2))
