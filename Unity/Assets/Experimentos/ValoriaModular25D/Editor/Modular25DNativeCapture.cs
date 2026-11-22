@@ -280,6 +280,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     float size=level==1?portrait:
                         Modular25DCameraInput.ExpansionSizeForLevel(390f/844f,level);
                     Render(cam,output,report,"stage-"+level+"-fixture-390x844",390,844,framing,size);
+                    AssertProgressionComposition(cam,world,level);
                     Render(cam,output,report,"stage-"+level+"-fixture-1170x2532",1170,2532,framing,size);
                     Render(cam,output,report,"stage-"+level+"-keep-detail",1170,1170,new Vector3(-.4f,3.1f,-30f),3.3f);
                     if(level==5)
@@ -328,6 +329,37 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             {
                 SliceContentProfiles.SetRuntimeProfileOverride(null);
             }
+        }
+
+        // Native Unity geometry gate: level unlocks must be visible on the
+        // 390x844 player camera without reducing every castle to a tiny icon.
+        // This checks REAL authored SpriteRenderer bounds, not painted mockups.
+        static void AssertProgressionComposition(Camera camera,Modular25DWorld world,int level)
+        {
+            if(level<=1)return;
+            float halfWidth=camera.orthographicSize*camera.aspect;
+            float left=camera.transform.position.x-halfWidth;
+            float right=camera.transform.position.x+halfWidth;
+            float bottom=camera.transform.position.y-camera.orthographicSize;
+            float top=camera.transform.position.y+camera.orthographicSize;
+            foreach(var visual in new[]{world.BastionRenderer,world.SawmillRenderer,
+                        world.BarracksRenderer,world.GranaryRenderer,world.StoneworksRenderer})
+            {
+                if(!visual || !visual.gameObject.activeInHierarchy || !visual.sprite)continue;
+                var bounds=visual.bounds;
+                float area=Mathf.Max(.0001f,bounds.size.x*bounds.size.y);
+                float visibleWidth=Mathf.Max(0,Mathf.Min(right,bounds.max.x)-Mathf.Max(left,bounds.min.x));
+                float visibleHeight=Mathf.Max(0,Mathf.Min(top,bounds.max.y)-Mathf.Max(bottom,bounds.min.y));
+                float fraction=visibleWidth*visibleHeight/area;
+                if(fraction<.80f)throw new InvalidOperationException(
+                    "MOD25D_HOME_CROPS_UNLOCKED_DISTRICT level="+level+
+                    " building="+visual.name+" visible_fraction="+fraction.ToString("F3")+
+                    " camera="+camera.transform.position+" ortho="+camera.orthographicSize);
+            }
+            float castleFraction=world.BastionRenderer.bounds.size.x/(halfWidth*2f);
+            if(castleFraction<.14f)throw new InvalidOperationException(
+                "MOD25D_HOME_ARCHITECTURE_TOO_SMALL level="+level+
+                " viewport_fraction="+castleFraction.ToString("F3"));
         }
 
         static void AssertCurrentBuildingArt(Modular25DWorld world)
