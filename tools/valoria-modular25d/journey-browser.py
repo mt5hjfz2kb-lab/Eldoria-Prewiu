@@ -158,7 +158,7 @@ async def main():
             # it down behind the opaque travel curtain.  Let the real city
             # Start/Arrived turn finish, then discard that stale sample before
             # a depleted node requests another legitimate round trip.
-            await page.wait_for_timeout(1800)
+            await page.wait_for_timeout(2000)
             world_view.clear()
             await fresh()
             for key in ['level','sawmill','granary','barracks','stoneworks','lyra','fissure']:
