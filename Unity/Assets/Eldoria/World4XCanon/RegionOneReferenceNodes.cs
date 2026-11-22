@@ -114,7 +114,10 @@ namespace Eldoria.World4XCanon
      material.SetFloat("_CameraFacingDepth",23f);
     }
     cityMaterials.Add(material);
-    width=RegionOneModularArt.Enabled ? 31f : BastionOneVisualWidth;float h=width*texture.height/texture.width;
+    // Real phone capture: the previously 31m approved sprite became a
+    // miniature among larger resource/worksite drawings. Raise its readable
+    // near-world silhouette, retaining the same pivot and saved city hotspot.
+    width=RegionOneModularArt.Enabled ? 40f : BastionOneVisualWidth;float h=width*texture.height/texture.width;
     foot=host.WorldHome+new Vector3(3.3f,0,-7.5f);foot.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(3.3f,-7.5f)+.18f;
     Create(name,new[]{foot,foot,foot,foot},new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up},
      new[]{new Vector2(-width*anchor.u,-h*anchor.v),new Vector2(width*(1-anchor.u),-h*anchor.v),new Vector2(width*(1-anchor.u),h*(1-anchor.v)),new Vector2(-width*anchor.u,h*(1-anchor.v))},new[]{0,1,2,0,2,3},material,gate);return;
@@ -168,7 +171,7 @@ namespace Eldoria.World4XCanon
      if(sprite){
       var pivot=new Vector2(sprite.pivot.x/sprite.rect.width,
                             sprite.pivot.y/sprite.rect.height);
-      float width=31f,height=width*sprite.rect.height/sprite.rect.width;
+      float width=40f,height=width*sprite.rect.height/sprite.rect.width;
       foreach(var renderer in current){
        if(!renderer.name.StartsWith("Reference city Bastion",StringComparison.Ordinal))continue;
        renderer.sharedMaterial.mainTexture=sprite.texture;
