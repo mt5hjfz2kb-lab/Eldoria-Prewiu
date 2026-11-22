@@ -131,42 +131,39 @@ async def main():
             assert not world_view.get('blocker') and world_view.get('canTravel'),world_view
             await page.screenshot(path=OUT/f'ciudad-a-region-{state["level"]}.png')
             seq=sequence
-            # A real tutorial turn may be authored to appear only when the
-            # player asks to return (for example Aldric's march explanation
-            # after the first trained troops). Honour and close those turns,
-            # then press the still-visible Valoria control again. Waiting only
-            # for the city trace here misdiagnoses that legitimate modal as a
-            # stalled world transition.
+            # Confirm the actual Unity scene, not merely the next city log.
+            # The old city can emit a final sample as the loading curtain
+            # opens. That sample is NOT proof that the world-to-city journey
+            # has completed. A second entry at Bastion II exposed this false
+            # positive in the archived mobile evidence.
+            def city_arrived():
+                return (sequence > seq and
+                    state.get('activeScene')=='BastionI_Modular25D' and
+                    not state.get('travelCurtainVisible', True))
             for _ in range(24):
-                if sequence>seq: break
+                if city_arrived(): break
                 blocker=world_view.get('blocker','')
                 if blocker:
                     sample=world_view.get('sample',0)
                     await touch({'x':world_view['blockerX'],'y':world_view['blockerY']})
-                    await until(lambda:world_view.get('sample',0)>sample,15)
-                    await page.wait_for_timeout(260)
+                    await until(lambda:city_arrived() or
+                                world_view.get('sample',0)>sample,30)
                     continue
-                sample=world_view.get('sample',0)
+                if not world_view.get('canTravel'):
+                    sample=world_view.get('sample',0)
+                    await until(lambda:city_arrived() or
+                                world_view.get('sample',0)>sample,30)
+                    continue
+                # Press the real world HUD once. During LoadSceneAsync there
+                # are no world samples. Do not click repeatedly through its
+                # opaque transition canvas.
                 await touch(world_view)
-                await until(lambda:sequence>seq or world_view.get('blocker','') or
-                            world_view.get('sample',0)>sample,15)
-                await page.wait_for_timeout(260)
-            await until(lambda:sequence>seq,150)
-            # VALORIA_JOURNEY is emitted as soon as the lightweight city host
-            # binds its persisted state.  The previous regional scene can
-            # still publish one final VALORIA_REGION sample while Unity tears
-            # it down behind the opaque travel curtain.  Let the real city
-            # Start/Arrived turn finish, then discard that stale sample before
-            # a depleted node requests another legitimate round trip.
-            await page.wait_for_timeout(2000)
+                await until(lambda:city_arrived() or
+                            bool(world_view.get('blocker')),150)
+            await until(city_arrived,150)
+            await page.wait_for_timeout(800)
             world_view.clear()
-            # The canonical city trace is state-based, not a heartbeat.  Once
-            # Arrived has published the persisted city it is allowed to stay
-            # quiet until the next player action, so requiring one more trace
-            # here creates a false timeout.  Validate the real, interactable
-            # city controls that were already published instead.
-            await until(lambda:state and 'taps' in state and
-                        find('Bastion world nameplate') is not None,30)
+            assert state.get('activeScene')=='BastionI_Modular25D' and not state.get('travelCurtainVisible')
             for key in ['level','sawmill','granary','barracks','stoneworks','lyra','fissure']:
                 assert state[key]==before[key],(key,before,state)
             await page.screenshot(path=OUT/f'regreso-a-valoria-{state["level"]}.png')
