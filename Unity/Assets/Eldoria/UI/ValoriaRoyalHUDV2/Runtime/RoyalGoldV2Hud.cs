@@ -249,6 +249,13 @@ namespace Eldoria.UI.RoyalGold.V2
             var paperSkin = manuscript.gameObject.AddComponent<RoyalGoldV3ObjectiveParchmentGraphic>();
             paperSkin.raycastTarget = false;
             Stretch(manuscript, 0f);
+            if (UseCoronaArt)
+            {
+                // Replace the old warm parchment, never paint on top of it.
+                // Mission state and buttons still belong to the canonical HUD.
+                AddCoronaSurface(manuscript, paperSkin, "activity_panel_wide");
+                heraldicBanner.gameObject.SetActive(false);
+            }
             manuscript.SetAsFirstSibling();
             // A decorative repetition of the REAL Valoria shield, not a new
             // faction, invented heraldic symbol, or second gameplay button.
@@ -262,12 +269,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 foreach (var graphic in heraldry.GetComponentsInChildren<Graphic>(true))
                     graphic.raycastTarget = false;
             }
-            var manuscriptInk = new Color(.22f, .155f, .095f, 1f);
+            var manuscriptInk = UseCoronaArt
+                ? new Color(.973f, .931f, .865f, 1f)
+                : new Color(.22f, .155f, .095f, 1f);
             chapterText = Text("Chapter", objectiveCard, 17, manuscriptInk, true);
             chapterText.fontStyle = FontStyle.Bold;
             objectiveText = Text("Current real objective", objectiveCard, 20, manuscriptInk, true);
             progressText = Text("Objective progress", objectiveCard, 16,
-                new Color(.44f, .30f, .15f, 1f));
+                UseCoronaArt ? new Color(.961f, .822f, .595f, 1f)
+                             : new Color(.44f, .30f, .15f, 1f));
             objectiveAction = Button("Go to existing objective", objectiveCard, out objectiveActionLabel, true);
             objectivesButton = Button("Open current chapter", objectiveCard, out objectivesButtonLabel, false);
             objectiveActionLabel.Put("Ir");
@@ -330,6 +340,8 @@ namespace Eldoria.UI.RoyalGold.V2
             material.gameObject.AddComponent<CanvasRenderer>();
             buildingFinish=material.gameObject.AddComponent<RoyalGoldV3BuildingCartoucheFinish>();
             buildingFinish.raycastTarget=false;Stretch(material,0f);
+            if (UseCoronaArt)
+                AddCoronaSurface(material, buildingFinish, "activity_panel_wide");
             var goldRim=NewRect("Building / real nine-slice outline",buildingCard);
             goldRim.gameObject.AddComponent<CanvasRenderer>();
             buildingGoldRim=goldRim.gameObject.AddComponent<Image>();
@@ -338,6 +350,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(buildingGoldRim.sprite){buildingGoldRim.type=Image.Type.Sliced;buildingGoldRim.fillCenter=false;buildingGoldRim.pixelsPerUnitMultiplier=2.2f;}
             else buildingGoldRim.enabled=false;
             buildingGoldRim.color=new Color(.79f,.55f,.28f,.86f);
+            if (UseCoronaArt) buildingGoldRim.enabled = false;
             Stretch(goldRim,3f);
             // The approved Crónica Real has an architectural illustration inside
             // its broad bottom building cartouche. Draw an actual live, authored
@@ -366,10 +379,14 @@ namespace Eldoria.UI.RoyalGold.V2
             Stretch(previewRect, 5f);
             modelPreview = previewRect.gameObject.AddComponent<RoyalGoldV3BuildingPreview>();
             modelPreview.Initialize(previewImage);
-            buildingTitle = Text("Selected building", buildingCard, 30, new Color(.26f,.16f,.085f), true);
-            buildingLevel = Text("Real level", buildingCard, 18, new Color(.48f,.31f,.14f));
-            buildingCost = Text("Building / genuine offer cost", buildingCard, 18, new Color(.29f,.18f,.085f), true);
-            buildingWorkState = Text("Building / live state or countdown",buildingCard,16,new Color(.43f,.26f,.13f),true);
+            buildingTitle = Text("Selected building", buildingCard, 30,
+                UseCoronaArt ? Ivory : new Color(.26f,.16f,.085f), true);
+            buildingLevel = Text("Real level", buildingCard, 18,
+                UseCoronaArt ? Gold : new Color(.48f,.31f,.14f));
+            buildingCost = Text("Building / genuine offer cost", buildingCard, 18,
+                UseCoronaArt ? Ivory : new Color(.29f,.18f,.085f), true);
+            buildingWorkState = Text("Building / live state or countdown",buildingCard,16,
+                UseCoronaArt ? Gold : new Color(.43f,.26f,.13f),true);
             buildingClose = Button("Close selected building", buildingCard, out var closeBuildingText, false);
             closeBuildingText.Put("×");
             closeBuildingText.fontSize = 24;
@@ -389,7 +406,8 @@ namespace Eldoria.UI.RoyalGold.V2
             hitArea.raycastTarget = true;
             scrollViewport.gameObject.AddComponent<RectMask2D>();
             scrollContent = NewRect("Building details content", scrollViewport);
-            buildingBody = Text("Real status costs and requirements", scrollContent, 22, new Color(.33f,.23f,.15f));
+            buildingBody = Text("Real status costs and requirements", scrollContent, 22,
+                UseCoronaArt ? Ivory : new Color(.33f,.23f,.15f));
             buildingBody.alignment = TextAnchor.UpperLeft;
             buildingBody.horizontalOverflow = HorizontalWrapMode.Wrap;
             buildingBody.verticalOverflow = VerticalWrapMode.Overflow;
