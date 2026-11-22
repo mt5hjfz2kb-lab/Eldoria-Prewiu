@@ -7,8 +7,8 @@ permissions:
   contents: read
   actions: read
 env:
-  BUILD_RUN: '45057304587'
-  SOURCE: b25844d1775d2b84a914979bb18126021bf7a556
+  BUILD_RUN: '45060746469'
+  SOURCE: 176293403e55f3270571904e17eb37c6e4dfa339
 jobs:
   package:
     runs-on: ubuntu-latest
@@ -30,6 +30,11 @@ jobs:
             test "$(gh release view "$tag" --json body --jq .body)" = "Unity source $SOURCE · Actions $BUILD_RUN"
             exit 0
           fi
+          # Reserve this review tag while this packaging commit is still the branch head.
+          # Release assets are uploaded only after the referenced Unity run has produced them.
+          if ! gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" >/dev/null 2>&1; then
+            gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$tag" -f sha="$GITHUB_SHA" >/dev/null
+          fi
           repo="repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN"
           test "$(gh api "$repo" --jq .head_sha)" = "$SOURCE"
           for i in $(seq 1 90); do
@@ -42,9 +47,14 @@ jobs:
           python3 -m pip install --quiet UnityPy==1.25.4
           python3 "$src/pack-embedded-region-mips.py" player/Build/RegionModular.data.unityweb
           python3 "$src/bound-webgl-uploads.py" player/Build/RegionModular.framework.js.unityweb
-          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE" b25844d-m2
+          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE" 1762934-m2
           mapfile -d '' -t assets < <(find mobile/r -type f -print0)
-          gh release create "$tag" --target "$GITHUB_SHA" --prerelease --latest=false --title "Valoria · Mundo y obras · ${SOURCE:0:7}" --notes "Unity source $SOURCE · Actions $BUILD_RUN" "${assets[@]}" mobile/assets.json mobile/index.html
+          gh release create "$tag" --verify-tag --prerelease --latest=false --title "Valoria · Mundo y obras · ${SOURCE:0:7}" --notes "Unity source $SOURCE · Actions $BUILD_RUN" "${assets[@]}" mobile/assets.json mobile/index.html
+      - if: failure() && hashFiles('mobile/index.html') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-review-fallback
+          path: mobile/
   webkit:
     needs: package
     runs-on: macos-15
@@ -61,7 +71,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -eu
-          gh release download valoria-review-b25844d-m2 -D flat
+          gh release download valoria-review-1762934-m2 -D flat
           python3 - <<'PY'
           import json, pathlib, shutil
           src=pathlib.Path('flat')
@@ -69,7 +79,7 @@ jobs:
           for rel,length in json.loads((src/'assets.json').read_text()).items():
               f=src/pathlib.Path(rel).name
               assert f.stat().st_size==length
-              p=dest/'r/b25844d-m2'/rel
+              p=dest/'r/1762934-m2'/rel
               p.parent.mkdir(parents=True,exist_ok=True)
               f.rename(p)
           shutil.copyfile(src/'index.html',dest/'index.html')
