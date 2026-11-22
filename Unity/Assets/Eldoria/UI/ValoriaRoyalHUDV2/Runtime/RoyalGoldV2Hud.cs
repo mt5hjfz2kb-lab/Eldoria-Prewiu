@@ -53,9 +53,9 @@ namespace Eldoria.UI.RoyalGold.V2
         private static Font chronicleFont, coronaHeadingFont, coronaBodyFont;
         private static Font ChronicleFont => chronicleFont ? chronicleFont :
             (chronicleFont = Resources.Load<Font>("EldoriaRetention/reference-serif"));
-        private static Font CoronaHeadingFont => coronaHeadingFont ? coronaHeadingFont :
+        internal static Font CoronaHeadingFont => coronaHeadingFont ? coronaHeadingFont :
             (coronaHeadingFont = Resources.Load<Font>("ValoriaModular25D/UI/Fonts/CormorantGaramond-SemiBold"));
-        private static Font CoronaBodyFont => coronaBodyFont ? coronaBodyFont :
+        internal static Font CoronaBodyFont => coronaBodyFont ? coronaBodyFont :
             (coronaBodyFont = Resources.Load<Font>("ValoriaModular25D/UI/Fonts/SourceSans3-Semibold"));
         private static readonly Color Ivory = new Color(.945f, .913f, .852f);
         private static readonly Color Muted = new Color(.775f, .76f, .715f);

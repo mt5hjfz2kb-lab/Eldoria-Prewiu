@@ -1092,7 +1092,7 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 paneSurfaces[pane].enabled=pane==header||pane==right;
                 pane.GetComponent<RoyalGoldV2FrameGraphic>().enabled=
-                    pane==header||pane==right;
+                    pane==right || (pane==header && (!RoyalGoldV2Hud.UseCoronaArt || !paneSurfaces[pane].sprite));
                 foreach(var finish in pane.GetComponentsInChildren<RoyalGoldV3LayeredFinish>(true))
                     finish.gameObject.SetActive(false);
             }
@@ -1169,8 +1169,10 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(subheading.rectTransform,16,56,width*.48f,26);
             if(!wide)
             {
-                Place(heading.rectTransform,16,8,width-32,44);
-                Place(subheading.rectTransform,16,55,width-32,32);
+                float inset=RoyalGoldV2Hud.UseCoronaArt ? 28f : 16f;
+                float titleTop=RoyalGoldV2Hud.UseCoronaArt ? 20f : 8f;
+                Place(heading.rectTransform,inset,titleTop,width-2*inset,40);
+                Place(subheading.rectTransform,inset,59,width-2*inset,32);
                 float n=(width-48)/3;
                 Place(heroesButton.transform as RectTransform,12,99,n,76);
                 Place(switchDestination.transform as RectTransform,24+n,99,n,76);
@@ -1710,7 +1712,10 @@ namespace Eldoria.UI.RoyalGold.V2
             var r=Rect(name,parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var t=r.gameObject.AddComponent<RoyalText>();
-            t.font=RoyalGoldV41SourceArt.Serif;
+            var font = RoyalGoldV2Hud.UseCoronaArt
+                ? (bold ? RoyalGoldV2Hud.CoronaHeadingFont : RoyalGoldV2Hud.CoronaBodyFont)
+                : null;
+            t.font=font ? font : RoyalGoldV41SourceArt.Serif;
             t.fontSize=size;t.fontStyle=bold?FontStyle.Bold:FontStyle.Normal;
             t.color=color;t.raycastTarget=false;
             t.alignment=TextAnchor.UpperLeft;
