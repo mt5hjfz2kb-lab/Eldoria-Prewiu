@@ -19,6 +19,33 @@ permissions:
 # replaces a pending baseline. Always prioritize the latest baseline proof,
 # then queue isolated A/B after baseline completion.
 jobs:
+  # The SHA itself exposes the real Actions run ID via GitHub commit statuses.
+  # This allows evidence review without guessing run numbers or GitHub UI state.
+  announce-run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      statuses: write
+      contents: read
+    steps:
+      - name: Record this source-pinned Unity run as pending
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request
+          repo=os.environ["GITHUB_REPOSITORY"]
+          url="https://github.com/"+repo+"/actions/runs/"+os.environ["GITHUB_RUN_ID"]
+          body=json.dumps({"state":"pending","context":"eldoria/valoria-2-5d-visual-proof",
+                           "target_url":url,
+                           "description":"Waiting for real Unity and WebGL evidence"}).encode()
+          req=urllib.request.Request("https://api.github.com/repos/"+repo+"/statuses/"+os.environ["GITHUB_SHA"],
+              method="POST",data=body,headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
+              "Accept":"application/vnd.github+json","Content-Type":"application/json"})
+          with urllib.request.urlopen(req,timeout=25) as response:
+              print("Eldoria native Actions run",response.status,url)
+          PY
   verify-packaging:
     runs-on: windows-latest
     timeout-minutes: 12
