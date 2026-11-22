@@ -182,16 +182,17 @@ namespace Eldoria.World4XCanon
             var rng=new System.Random(27132);
             var mats=new Dictionary<string,Material>();
             var plantedPivots=new Dictionary<string,float>();
-            // The original regional trees have been retired as the primary
-            // forest look. Use the same approved independent Valoria sprites as
-            // the city, at canonical forest coordinates. One shared material
-            // per tree family: no city-sized image, no additive forest layer.
-            string[] names={"CityOak","CityGrove","CityPine0","CityPine1","Crag","Ridge"};
+            // Quality review of ACTUAL PNGs found pine_0/1 to be low-poly
+            // green clay silhouettes, unlike the illustrated Bastion I canopy.
+            // Replace those images entirely with painterly Fir/Grove sprites,
+            // retaining the city-approved ancient trees and the canonical
+            // forest positions. One mesh/material per family, no additive art.
+            string[] names={"CityOak","CityGrove","PaintedFir","PaintedForestGrove","Crag","Ridge"};
             foreach(string k in names){
                 string source=k=="CityOak"?"ValoriaModular25D/RecoveredProps/ArbolAntiguo"
                     :k=="CityGrove"?"ValoriaModular25D/RecoveredProps/ArboledaAntigua"
-                    :k=="CityPine0"?"ValoriaModular25D/pine_0"
-                    :k=="CityPine1"?"ValoriaModular25D/pine_1"
+                    :k=="PaintedFir"?Art+"Fir"
+                    :k=="PaintedForestGrove"?Art+"Grove"
                     :Art+k;
                 var sourceArt=Resources.Load<Texture2D>(source);
                 if(!sourceArt)throw new InvalidOperationException("REGION1_MODULAR_FOREST_MISSING "+source);
@@ -224,7 +225,7 @@ namespace Eldoria.World4XCanon
                     float px=tree.x,pz=tree.z;
                     var foot=new Vector3(px,Ground(px,pz)+.12f,pz);
                     int pick=Mathf.Abs(Mathf.RoundToInt(px*3.1f+pz*7.7f))%13;
-                    batches[pick<5?"CityGrove":pick<9?"CityOak":pick%2==0?"CityPine0":"CityPine1"].Add(foot);
+                    batches[pick<5?"CityGrove":pick<9?"CityOak":pick%2==0?"PaintedFir":"PaintedForestGrove"].Add(foot);
                     cityTrees[foot]=tree.y;
                 }
                 for(int n=0;n<85;n++){
