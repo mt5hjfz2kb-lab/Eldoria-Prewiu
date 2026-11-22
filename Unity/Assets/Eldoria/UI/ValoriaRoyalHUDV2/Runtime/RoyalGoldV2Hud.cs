@@ -50,9 +50,13 @@ namespace Eldoria.UI.RoyalGold.V2
         private string lastDetails = "";
         private readonly string[] councilKeys = {"production","defense","civil"};
         private readonly string[] councilNames = {"PRODUCCIÓN\n+260 madera\n+180 piedra","DEFENSA\n+220 piedra\n+100 poder","VIDA CIVIL\n+180 madera\n+280 comida"};
-        private static Font chronicleFont;
+        private static Font chronicleFont, coronaHeadingFont, coronaBodyFont;
         private static Font ChronicleFont => chronicleFont ? chronicleFont :
             (chronicleFont = Resources.Load<Font>("EldoriaRetention/reference-serif"));
+        private static Font CoronaHeadingFont => coronaHeadingFont ? coronaHeadingFont :
+            (coronaHeadingFont = Resources.Load<Font>("ValoriaModular25D/UI/Fonts/CormorantGaramond-SemiBold"));
+        private static Font CoronaBodyFont => coronaBodyFont ? coronaBodyFont :
+            (coronaBodyFont = Resources.Load<Font>("ValoriaModular25D/UI/Fonts/SourceSans3-Semibold"));
         private static readonly Color Ivory = new Color(.945f, .913f, .852f);
         private static readonly Color Muted = new Color(.775f, .76f, .715f);
         private static readonly Color Gold = new Color(.886f, .73f, .45f);
@@ -494,7 +498,10 @@ namespace Eldoria.UI.RoyalGold.V2
             var r = NewRect(name, parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var label = r.gameObject.AddComponent<RoyalText>();
-            label.font = ChronicleFont ? ChronicleFont : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            var approved = UseCoronaArt
+                ? (bold ? CoronaHeadingFont : CoronaBodyFont)
+                : ChronicleFont;
+            label.font = approved ? approved : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             label.fontSize = fontSize;
             label.fontStyle = bold ? FontStyle.Bold : FontStyle.Normal;
             label.alignment = TextAnchor.MiddleLeft;
