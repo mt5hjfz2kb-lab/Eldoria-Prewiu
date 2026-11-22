@@ -26,8 +26,9 @@ Shader "Eldoria/Region1/Illustrated ground" {
  TEXTURE2D(_CityCobble); SAMPLER(sampler_CityCobble);
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
  struct In {float3 p:POSITION;float2 uv:TEXCOORD0;};
- struct Out {float4 p:SV_POSITION;float2 uv:TEXCOORD0;};
- Out vert(In v){Out o;o.p=TransformObjectToHClip(v.p);o.uv=v.uv;return o;}
+ struct Out {float4 p:SV_POSITION;float2 uv:TEXCOORD0;float3 world:TEXCOORD1;};
+ Out vert(In v){Out o;o.p=TransformObjectToHClip(v.p);o.uv=v.uv;
+                 o.world=TransformObjectToWorld(v.p);return o;}
  float _BeyondMap; float _BoundaryWeight; float4 _BoundaryColour; float _CityFinish;
  half3 borderMist(float2 metres) {
   float2 cloud=metres/float2(670,450);
@@ -145,6 +146,17 @@ Shader "Eldoria/Region1/Illustrated ground" {
   colour=lerp(colour,lerp(earth,slate,.32),bank*.68);
   riverColour=lerp(riverColour,lerp(water,earth,.38),shelf*local*close*.72);
   colour=lerp(colour,riverColour,mask.r);
+  // The geographic mesh is REAL height-based terrain. Shade that geometry
+  // directly with a restrained painterly key matching Valoria's baked
+  // upper-left light. The previous unlit sampled colour looked like a flat
+  // carpet when the camera tilted or crossed the Breach's hills.
+  // No legacy PBR mesh, light rig, decal or additional art layer is drawn.
+  float3 geometricNormal=cross(ddx(i.world),ddy(i.world));
+  geometricNormal*=rsqrt(max(dot(geometricNormal,geometricNormal),1.e-8));
+  if(geometricNormal.y<0)geometricNormal=-geometricNormal;
+  half geomLight=saturate(dot(geometricNormal,normalize(float3(-.38,.85,.36))));
+  half paintedLight=lerp(.915,1.085,geomLight);
+  colour*=lerp(1,paintedLight,(1-saturate(mask.r))*.82);
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
   half panorama=smoothstep(880,1700,unity_OrthoParams.y);
   // SurfaceWeights contains the canonical eastern sea in the same red water
