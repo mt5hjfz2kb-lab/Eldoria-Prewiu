@@ -174,14 +174,15 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half wear=saturate(.72+dot(sharedEarth-cityMeadow,half3(.30,.47,.23))*.30);
   colour=lerp(colour,pathColour,road*lerp(.96,wear,close));
   colour=lerp(colour,lerp(sharedEarth,slate,.34),features.b*local*.48);
-  half3 riverColour=lerp(half3(.035,.145,.16),water,.37+.40*close);
-  half riverMargin=1-smoothstep(.4,3.5,abs(shore));
-  riverColour=lerp(riverColour,lerp(water,sharedEarth,.18),
-                   riverMargin*local*close*.33);
-  half shelf=1-smoothstep(0,3.8,shore);
-  half bank=(1-smoothstep(.15,2.1,abs(shore)))*local*close;
-  colour=lerp(colour,lerp(earth,slate,.32),bank*.68);
-  riverColour=lerp(riverColour,lerp(water,earth,.38),shelf*local*close*.72);
+  half pigment=dot(water,half3(.24,.56,.20));
+  half3 channel=half3(.055,.245,.34)*(.83+pigment*.50);
+  half3 shallows=half3(.19,.42,.43)*(.80+pigment*.60);
+  half shelf=(1-smoothstep(.35,4.0,shore))*local;
+  half3 riverColour=lerp(channel,shallows,shelf*.83);
+  half glint=smoothstep(.45,.72,pigment)*close;
+  riverColour+=half3(.07,.10,.10)*glint;
+  half bank=(1-smoothstep(.15,1.35,abs(shore)))*local*close;
+  colour=lerp(colour,lerp(earth,slate,.55),bank*.68);
   colour=lerp(colour,riverColour,mask.r);
   // The geographic mesh is REAL height-based terrain. Shade that geometry
   // directly with a restrained painterly key matching Valoria's baked

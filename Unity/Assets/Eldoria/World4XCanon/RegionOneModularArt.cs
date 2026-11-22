@@ -82,6 +82,9 @@ namespace Eldoria.World4XCanon
                 // never their geographic foot or colliders. The near city and
                 // worksites have stronger relief than tiny forest props.
                 material.SetFloat("_CameraFacingDepth",14f);
+                float tempo = key=="Boar" ? 1.65f : key=="Wolf" ? 1.3f :
+                    key=="AshStalker" ? 1.12f : key=="Spawn" ? .94f : 0f;
+                material.SetFloat("_CreatureTempo",tempo);
                 materials.Add(key, material);
             }
             int size = Mathf.Max(1, Mathf.RoundToInt(width*4));

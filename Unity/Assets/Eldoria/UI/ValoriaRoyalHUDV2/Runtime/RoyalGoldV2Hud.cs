@@ -25,6 +25,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity") == 1;
 
         private RectTransform safe, headerPlate, objectiveCard, heraldicBanner, buildingCard, buildingMiniature, scrollContent, scrollViewport;
+        public RectTransform HeaderPlate => headerPlate;
         private RoyalGoldV3BuildingCartoucheFinish buildingFinish;
         private Image buildingGoldRim, miniatureGoldRim;
         private RoyalText chapterText, objectiveText, progressText, buildingTitle, buildingLevel, buildingBody, primaryLabel;
@@ -1068,7 +1069,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
                 settings.anchorMin = settings.anchorMax = new Vector2(1f, 1f);
                 settings.pivot = new Vector2(1f, 1f);
-                settings.anchoredPosition = new Vector2(-3f, 0f);
+                settings.anchoredPosition = new Vector2(-3f, UseCoronaArt ? -headerHeight-8f : 0f);
                 SetWidthAndHeight(settings, settingsSize, settingsSize);
                 var icon = settings.Find("Symbol") as RectTransform;
                 if (icon)

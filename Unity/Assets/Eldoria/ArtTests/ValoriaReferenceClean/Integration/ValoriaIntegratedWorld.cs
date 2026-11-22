@@ -378,6 +378,34 @@ namespace Eldoria.ReferenceClean {
     modalY=narrativeBlocks?1f-blockerPoint.y/Screen.height:0}));
   }
 #endif
+  Eldoria.Experimentos.ValoriaModular25D.Modular25DInterface.PlayerRibbon regionRibbon;
+  RectTransform ribbonRoot;
+  void RefreshRegionRibbon(){
+   if(!InWorld || !RoyalGoldV2Hud.UseCoronaArt || !Hud) return;
+   if(!ribbonRoot){
+    var header=Hud.GetComponent<RoyalGoldV2Hud>()?.HeaderPlate;
+    if(!header)return;
+    var art=header.Find("Corona de la Brecha");
+    if(art)art.gameObject.SetActive(false);
+    // Keep the original realm and wallet controls available to the event system.
+    foreach(var item in new Transform[]{Hud.Realm.transform,Hud.Resources.transform}){
+     var opacity=item.GetComponent<CanvasGroup>()??item.gameObject.AddComponent<CanvasGroup>();
+     opacity.alpha=0;
+    }
+    ribbonRoot=new GameObject("Valoria shared player ribbon",typeof(RectTransform)).GetComponent<RectTransform>();
+    ribbonRoot.SetParent(header,false);
+    ribbonRoot.anchorMin=ribbonRoot.anchorMax=ribbonRoot.pivot=new Vector2(1,1);
+    regionRibbon=new Eldoria.Experimentos.ValoriaModular25D.Modular25DInterface.PlayerRibbon(ribbonRoot);
+   }
+   var canvas=ribbonRoot.GetComponentInParent<Canvas>().rootCanvas;
+   float pixelScale=Mathf.Min(Screen.width,Screen.height)/390f;
+   float relative=pixelScale/Mathf.Max(.01f,canvas.scaleFactor);
+   float width=Mathf.Min(390f,Screen.safeArea.width/Mathf.Max(.01f,pixelScale));
+   ribbonRoot.localScale=Vector3.one*relative;
+   ribbonRoot.sizeDelta=new Vector2(width,48);
+   regionRibbon.Layout(width,0,width,2);
+   regionRibbon.Refresh(city.Gateway.Snapshot());
+  }
   void LateUpdate(){
    if(!Ready)return;
    SmoothCameraDrag();
@@ -387,7 +415,7 @@ namespace Eldoria.ReferenceClean {
    }
    if(!ReferenceEquals(boundGateway,city.Gateway))BindSession();
    RefreshNavigation();if(Time.unscaledTime>=nextVisualSync){
-    nextVisualSync=Time.unscaledTime+.25f;SyncWorldCity();
+    nextVisualSync=Time.unscaledTime+.25f;SyncWorldCity();RefreshRegionRibbon();
 #if UNITY_WEBGL && !UNITY_EDITOR
     ReportTravelView();
 #endif

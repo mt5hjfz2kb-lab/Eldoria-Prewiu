@@ -37,8 +37,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private Modular25DGameplay gateway;
         private GameObject buildingSheet;
         private Canvas hudCanvas;
-        private RectTransform identity, resourceRow, mailboxDock, sheet, statusSheet, objective, noticeRoot;
-        private RectTransform topRibbon, topRibbonHairline, activityHandle, activityDrawer, activityFill, activityTrack;
+        private RectTransform mailboxDock, sheet, statusSheet, objective, noticeRoot;
+        private RectTransform activityHandle, activityDrawer, activityFill, activityTrack;
         private Text activityTitle, activityProgress;
         private bool activityExpanded;
         // World-anchored, tap-enabled nameplates: standard strategy-game
@@ -46,10 +46,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private RectTransform bastionTag, sawmillTag;
         private Text bastionTagText, sawmillTagText;
         private Modular25DWorld world;
-        private RectTransform[] resourceChips;
+        private PlayerRibbon playerRibbon;
         private RectTransform constructionProgressRoot,constructionProgressFill;
         private RectTransform worldProgressTrack,worldProgressFill;
-        private Text title, level, woodValue, stoneValue, foodValue;
+
         private Text stage, cost, remaining, actionLabel, notice, objectiveText, stateSummary;
         private Button action;
         private RectTransform firstBuildGuide, districtClock;
@@ -58,7 +58,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private bool hasConstructionDeadline;
         private RectTransform regionDock;
         private bool worldUnlocked, enteringWorld;
-        private Image woodAccent;
+
         private float nextTick, noticeExpires;
         // Read-only presentation cache of the EXISTING canonical construction
         // phase. Avoid Snapshot() per frame in world-space nameplate tracking.
@@ -91,56 +91,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
             var rootTransform = root.transform;
 
-            // One continuous 46-point ribbon shares player name and wallet.
-            topRibbon=Plate("Shared player and resource ribbon",rootTransform,topVelvetPlate,
-                new Vector2(.5f,1f),new Vector2(.5f,1f),Vector2.zero,
-                new Vector2(378f,46f));
-            topRibbon.GetComponent<Image>().color=Color.white;
-            topRibbon.GetComponent<Image>().preserveAspect=false;
-            topRibbonHairline=Plate("Shared ribbon gold seam",topRibbon,null,
-                new Vector2(.5f,0f),new Vector2(.5f,0f),
-                Vector2.zero,new Vector2(365f,1.2f));
-            topRibbonHairline.GetComponent<Image>().color=new Color32(175,132,72,55);
-            identity = Plate("Valoria identity", rootTransform, null,
-                new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(6f, -6f),
-                new Vector2(102f, 44f));
-            var sigil = Plate("Sir Aldric portrait bezel", identity, portraitPlate,
-                new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(19f,0f),
-                new Vector2(35f,35f));
-            var aldricAvatar=Resources.Load<Sprite>(
-                "ValoriaModular25D/UI/UmbralII/aldric_avatar");
-            if(aldricAvatar==null)
-                throw new InvalidOperationException(
-                    "Umbral II requires Eldoria's authentic Sir Aldric portrait.");
-            var face=Plate("Authentic Sir Aldric character portrait",sigil,aldricAvatar,
-                new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,new Vector2(44f,44f));
-            face.GetComponent<Image>().type=Image.Type.Simple;
-            face.GetComponent<Image>().preserveAspect=true;
-            face.GetComponent<RectTransform>().sizeDelta=new Vector2(28f,28f);
-            // Real PlayerState.PlayerName is the user-selected name. Valoria
-            // remains a fallback only for an older unnamed test save.
-            title = Label("VALORIA", identity, 13, false, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(18f,6f),new Vector2(60f,19f));
-            title.resizeTextForBestFit=true;
-            title.resizeTextMinSize=10;
-            title.resizeTextMaxSize=13;
-            title.horizontalOverflow=HorizontalWrapMode.Wrap;
-            level = Label("Bastión 1", identity, 11, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(18f,-8f),new Vector2(60f,16f));
-            // SourceSans line metrics exceed the 20px legacy plate: Truncate
-            // silently discarded all small-glyph geometry in actual WebGL.
-            // Let ascenders/descenders use the designed clear lower half.
-            level.verticalOverflow = VerticalWrapMode.Overflow;
-
-            resourceRow = Plate("Independent resources", rootTransform, null,
-                new Vector2(1f,1f),new Vector2(1f,1f),Vector2.zero,
-                new Vector2(266f,42f));
-            resourceChips = new RectTransform[3];
-            resourceChips[0] = CreateResource(resourceRow, 0, "MADERA", woodIcon, out woodValue, out woodAccent);
-            Image stoneAccent;
-            resourceChips[1] = CreateResource(resourceRow, 1, "PIEDRA", stoneIcon, out stoneValue, out stoneAccent);
-            Image foodAccent;
-            resourceChips[2] = CreateResource(resourceRow, 2, "COMIDA", foodIcon, out foodValue, out foodAccent);
+            playerRibbon=new PlayerRibbon(rootTransform);
 
             // Each building now communicates its interactive status in world
             // space like a commercial 4X city. These labels MOVE with the
@@ -568,10 +519,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         private void Refresh(PlayerState s)
         {
-            if (woodValue == null) return;
+            if (playerRibbon == null) return;
+            playerRibbon.Refresh(s);
             if (s == null)
             {
-                woodValue.text = stoneValue.text = foodValue.text = "—";
                 if (action != null) action.interactable = false;
                 return;
             }
@@ -587,8 +538,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if(navigationChanged)Layout();
             }
             if(mailboxDock)mailboxDock.gameObject.SetActive(!buildingSheet.activeSelf&&!statusSheet.gameObject.activeSelf);
-            title.text=PlayerDisplayName(s.PlayerName);
-            level.text = "Bastión " + s.BastionLevel;
+
             if(bastionTagText!=null)
                 bastionTagText.text="BASTIÓN · "+s.BastionLevel;
             cachedSawmillPhase=ParcelBuildingStates.For(s,"sawmill");
@@ -651,15 +601,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sawmillTagText.color=building==ParcelBuildingState.UNDER_CONSTRUCTION
                     ? WarmWhite : PaleGold;
             }
-            woodValue.text = CompactResource(s.Resources.Wood);
-            stoneValue.text = CompactResource(s.Resources.Stone);
-            foodValue.text = CompactResource(s.Resources.Food);
-            // Preserve the artist's original full-color logs. Tinting the
-            // *whole* premium illustration with AntiqueBrass destroyed its
-            // wood/rope/material separation. Only numbers convey shortages.
-            woodAccent.color=Color.white;
-            woodValue.color=s.Resources.Wood<SliceRules.SawmillWoodCost
-                ? Red : WarmWhite;
             if(objectiveText!=null)
                 objectiveText.text=s.SawmillLevel>0?"Consejo":"Aserradero";
             if(stateSummary!=null)
@@ -762,10 +703,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var bounds=new Rect((Vector2)screen-size*.5f,size);
             // In compact landscape, a small lateral clearance keeps the keep title
             // beside the ribbon instead of suppressing it at the home camera.
-            if(OverlapsControl(bounds,topRibbon))
+            if(OverlapsControl(bounds,playerRibbon.PlateRect))
             {
                 float ribbonLeft=RectTransformUtility.WorldToScreenPoint(null,
-                    topRibbon.TransformPoint(topRibbon.rect.min)).x;
+                    playerRibbon.PlateRect.TransformPoint(playerRibbon.PlateRect.rect.min)).x;
                 float candidate=ribbonLeft-size.x*.5f-5f*scale;
                 if(Mathf.Abs(candidate-screen.x)<=size.x*.5f &&
                     candidate-size.x*.5f>=safe.xMin)
@@ -776,7 +717,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
             bool visible=!modalOpen && screen.z>0f &&
                 safe.Contains(bounds.min) && safe.Contains(bounds.max) &&
-                !OverlapsControl(bounds,topRibbon) && !OverlapsControl(bounds,activityHandle) &&
+                !OverlapsControl(bounds,playerRibbon.PlateRect) && !OverlapsControl(bounds,activityHandle) &&
                 !OverlapsControl(bounds,mailboxDock) && !OverlapsControl(bounds,regionDock) &&
                 !OverlapsControl(bounds,activityDrawer);
             if(nameplate.gameObject.activeSelf!=visible)
@@ -838,7 +779,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         private void Layout()
         {
-            if(hudCanvas==null||identity==null)return;
+            if(hudCanvas==null||playerRibbon==null)return;
             int w=Screen.width,h=Screen.height;
             if(w<=0||h<=0)return;
             float scale=Mathf.Max(.01f,hudCanvas.scaleFactor);
@@ -852,63 +793,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             float safeWidth=width-left-right;
             bool wide=w>h;
 
-            // Exactly ONE 46pt player economy strip. Its hairline and all
-            // three independently-painted resource plates are aligned to
-            // physical pixels and the entire strip hugs the safe top edge.
-            topRibbon.anchorMin=topRibbon.anchorMax=new Vector2(.5f,1f);
-            topRibbon.pivot=new Vector2(.5f,1f);
-            float stripWidth=Mathf.Min(390f,safeWidth);
-            float stripLeft=left+safeWidth-stripWidth;
-            topRibbon.anchoredPosition=new Vector2(stripLeft+stripWidth*.5f-width*.5f,-top);
-            topRibbon.sizeDelta=new Vector2(stripWidth-6f,46f);
-            topRibbonHairline.sizeDelta=new Vector2(stripWidth-18f,1.2f);
-
-            identity.anchorMin=identity.anchorMax=new Vector2(0f,1f);
-            identity.pivot=new Vector2(0f,1f);
-            identity.anchoredPosition=new Vector2(stripLeft+6f,-top-1f);
-            identity.sizeDelta=new Vector2(102f,44f);
-            resourceRow.anchorMin=resourceRow.anchorMax=new Vector2(1f,1f);
-            resourceRow.pivot=new Vector2(1f,1f);
-            resourceRow.anchoredPosition=new Vector2(stripLeft+stripWidth-width-6f,-top-3f);
-            // The real 1280x720 Unity PlayMode found the old landscape
-            // 335pt resource row stretched 580x260 source capsules by
-            // 27%. Cap all orientations at 270pt. This is SMALLER,
-            // preserves premium artist proportions and liberates map.
-            float economyWidth=Mathf.Min(270f,
-                Mathf.Max(168f,stripWidth-119f));
-            resourceRow.sizeDelta=new Vector2(economyWidth,40f);
-            float chipWidth=(economyWidth-12f)/3f;
-            float sourceAspect=resourcePlate.rect.height/
-                Mathf.Max(1f,resourcePlate.rect.width);
-            for(int i=0;i<resourceChips.Length;i++)
-            {
-                var chip=resourceChips[i];
-                chip.anchorMin=chip.anchorMax=new Vector2(0f,.5f);
-                chip.pivot=new Vector2(0f,.5f);
-                // Exact painted Sprite ratio, no artificial 38pt cap
-                // which created the 27% landscape distortion in actual
-                // source-pinned Unity test 44833570082.
-                chip.sizeDelta=new Vector2(chipWidth,chipWidth*sourceAspect);
-                chip.anchoredPosition=new Vector2(i*(chipWidth+6f),0f);
-                chip.GetComponent<Image>().preserveAspect=true;
-                float d=Mathf.Clamp(chipWidth*.32f,20f,28f);
-                var art=chip.Find((i==0?"MADERA":i==1?"PIEDRA":"COMIDA")+
-                    " original resource art") as RectTransform;
-                if(art!=null)
-                {
-                    art.anchoredPosition=new Vector2(8f,0f);
-                    art.sizeDelta=new Vector2(d,d);
-                }
-                var number=i==0?woodValue:i==1?stoneValue:foodValue;
-                if(number!=null)
-                {
-                    number.rectTransform.anchoredPosition=new Vector2(-12f,0f);
-                    number.rectTransform.sizeDelta=new Vector2(
-                        Mathf.Clamp(chipWidth-d-19f,22f,46f),31f);
-                    number.fontSize=chipWidth<82f?14:16;
-                    number.resizeTextMaxSize=number.fontSize;
-                }
-            }
+            playerRibbon.Layout(width,left,safeWidth,top);
 
             // Match main's live Chronicle navigation exactly: Mailbox and,
             // once the canonical rule unlocks it, World. No district shortcuts.
@@ -985,6 +870,149 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             lastWidth=w;
             lastHeight=h;
             lastSafeArea=safe;
+        }
+
+        public sealed class PlayerRibbon
+        {
+            RectTransform topRibbon, topRibbonHairline, identity, resourceRow;
+            RectTransform[] resourceChips;
+            Text title,level,woodValue,stoneValue,foodValue;
+            Image woodAccent;
+            public RectTransform PlateRect => topRibbon;
+
+            public PlayerRibbon(Transform rootTransform)
+            {
+                InitializeArt();
+                // One continuous 46-point ribbon shares player name and wallet.
+                topRibbon=Plate("Shared player and resource ribbon",rootTransform,topVelvetPlate,
+                    new Vector2(.5f,1f),new Vector2(.5f,1f),Vector2.zero,
+                    new Vector2(378f,46f));
+                topRibbon.GetComponent<Image>().color=Color.white;
+                topRibbon.GetComponent<Image>().preserveAspect=false;
+                topRibbonHairline=Plate("Shared ribbon gold seam",topRibbon,null,
+                    new Vector2(.5f,0f),new Vector2(.5f,0f),
+                    Vector2.zero,new Vector2(365f,1.2f));
+                topRibbonHairline.GetComponent<Image>().color=new Color32(175,132,72,55);
+                identity = Plate("Valoria identity", rootTransform, null,
+                    new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(6f, -6f),
+                    new Vector2(102f, 44f));
+                var sigil = Plate("Sir Aldric portrait bezel", identity, portraitPlate,
+                    new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(19f,0f),
+                    new Vector2(35f,35f));
+                var aldricAvatar=Resources.Load<Sprite>(
+                    "ValoriaModular25D/UI/UmbralII/aldric_avatar");
+                if(aldricAvatar==null)
+                    throw new InvalidOperationException(
+                        "Umbral II requires Eldoria's authentic Sir Aldric portrait.");
+                var face=Plate("Authentic Sir Aldric character portrait",sigil,aldricAvatar,
+                    new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,new Vector2(44f,44f));
+                face.GetComponent<Image>().type=Image.Type.Simple;
+                face.GetComponent<Image>().preserveAspect=true;
+                face.GetComponent<RectTransform>().sizeDelta=new Vector2(28f,28f);
+                // Real PlayerState.PlayerName is the user-selected name. Valoria
+                // remains a fallback only for an older unnamed test save.
+                title = Label("VALORIA", identity, 13, false, WarmWhite, TextAnchor.MiddleLeft,
+                    new Vector2(18f,6f),new Vector2(60f,19f));
+                title.resizeTextForBestFit=true;
+                title.resizeTextMinSize=10;
+                title.resizeTextMaxSize=13;
+                title.horizontalOverflow=HorizontalWrapMode.Wrap;
+                level = Label("Bastión 1", identity, 11, false, PaleGold, TextAnchor.MiddleLeft,
+                    new Vector2(18f,-8f),new Vector2(60f,16f));
+                // SourceSans line metrics exceed the 20px legacy plate: Truncate
+                // silently discarded all small-glyph geometry in actual WebGL.
+                // Let ascenders/descenders use the designed clear lower half.
+                level.verticalOverflow = VerticalWrapMode.Overflow;
+
+                resourceRow = Plate("Independent resources", rootTransform, null,
+                    new Vector2(1f,1f),new Vector2(1f,1f),Vector2.zero,
+                    new Vector2(266f,42f));
+                resourceChips = new RectTransform[3];
+                resourceChips[0] = CreateResource(resourceRow, 0, "MADERA", woodIcon, out woodValue, out woodAccent);
+                Image stoneAccent;
+                resourceChips[1] = CreateResource(resourceRow, 1, "PIEDRA", stoneIcon, out stoneValue, out stoneAccent);
+                Image foodAccent;
+                resourceChips[2] = CreateResource(resourceRow, 2, "COMIDA", foodIcon, out foodValue, out foodAccent);
+
+            }
+
+            public void Layout(float width,float left,float safeWidth,float top)
+            {
+                // Exactly ONE 46pt player economy strip. Its hairline and all
+                // three independently-painted resource plates are aligned to
+                // physical pixels and the entire strip hugs the safe top edge.
+                topRibbon.anchorMin=topRibbon.anchorMax=new Vector2(.5f,1f);
+                topRibbon.pivot=new Vector2(.5f,1f);
+                float stripWidth=Mathf.Min(390f,safeWidth);
+                float stripLeft=left+safeWidth-stripWidth;
+                topRibbon.anchoredPosition=new Vector2(stripLeft+stripWidth*.5f-width*.5f,-top);
+                topRibbon.sizeDelta=new Vector2(stripWidth-6f,46f);
+                topRibbonHairline.sizeDelta=new Vector2(stripWidth-18f,1.2f);
+
+                identity.anchorMin=identity.anchorMax=new Vector2(0f,1f);
+                identity.pivot=new Vector2(0f,1f);
+                identity.anchoredPosition=new Vector2(stripLeft+6f,-top-1f);
+                identity.sizeDelta=new Vector2(102f,44f);
+                resourceRow.anchorMin=resourceRow.anchorMax=new Vector2(1f,1f);
+                resourceRow.pivot=new Vector2(1f,1f);
+                resourceRow.anchoredPosition=new Vector2(stripLeft+stripWidth-width-6f,-top-3f);
+                // The real 1280x720 Unity PlayMode found the old landscape
+                // 335pt resource row stretched 580x260 source capsules by
+                // 27%. Cap all orientations at 270pt. This is SMALLER,
+                // preserves premium artist proportions and liberates map.
+                float economyWidth=Mathf.Min(270f,
+                    Mathf.Max(168f,stripWidth-119f));
+                resourceRow.sizeDelta=new Vector2(economyWidth,40f);
+                float chipWidth=(economyWidth-12f)/3f;
+                float sourceAspect=resourcePlate.rect.height/
+                    Mathf.Max(1f,resourcePlate.rect.width);
+                for(int i=0;i<resourceChips.Length;i++)
+                {
+                    var chip=resourceChips[i];
+                    chip.anchorMin=chip.anchorMax=new Vector2(0f,.5f);
+                    chip.pivot=new Vector2(0f,.5f);
+                    // Exact painted Sprite ratio, no artificial 38pt cap
+                    // which created the 27% landscape distortion in actual
+                    // source-pinned Unity test 44833570082.
+                    chip.sizeDelta=new Vector2(chipWidth,chipWidth*sourceAspect);
+                    chip.anchoredPosition=new Vector2(i*(chipWidth+6f),0f);
+                    chip.GetComponent<Image>().preserveAspect=true;
+                    float d=Mathf.Clamp(chipWidth*.32f,20f,28f);
+                    var art=chip.Find((i==0?"MADERA":i==1?"PIEDRA":"COMIDA")+
+                        " original resource art") as RectTransform;
+                    if(art!=null)
+                    {
+                        art.anchoredPosition=new Vector2(8f,0f);
+                        art.sizeDelta=new Vector2(d,d);
+                    }
+                    var number=i==0?woodValue:i==1?stoneValue:foodValue;
+                    if(number!=null)
+                    {
+                        number.rectTransform.anchoredPosition=new Vector2(-12f,0f);
+                        number.rectTransform.sizeDelta=new Vector2(
+                            Mathf.Clamp(chipWidth-d-19f,22f,46f),31f);
+                        number.fontSize=chipWidth<82f?14:16;
+                        number.resizeTextMaxSize=number.fontSize;
+                    }
+                }
+
+            }
+
+            public void Refresh(PlayerState s)
+            {
+                if(s==null){woodValue.text=stoneValue.text=foodValue.text="—";return;}
+                title.text=PlayerDisplayName(s.PlayerName);
+                level.text = "Bastión " + s.BastionLevel;
+                woodValue.text = CompactResource(s.Resources.Wood);
+                stoneValue.text = CompactResource(s.Resources.Stone);
+                foodValue.text = CompactResource(s.Resources.Food);
+                // Preserve the artist's original full-color logs. Tinting the
+                // *whole* premium illustration with AntiqueBrass destroyed its
+                // wood/rope/material separation. Only numbers convey shortages.
+                woodAccent.color=Color.white;
+                woodValue.color=s.Resources.Wood<SliceRules.SawmillWoodCost
+                    ? Red : WarmWhite;
+            }
         }
 
         private static RectTransform CreateResource(Transform parent,int index,string caption,

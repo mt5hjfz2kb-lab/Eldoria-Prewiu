@@ -132,11 +132,53 @@ namespace Eldoria.World4XCanon
             while(planting.MoveNext())yield return null;
             var layout=JsonUtility.FromJson<Region>(Resources.Load<TextAsset>("World4X/Blender/production-region").text);
             foreach(var b in layout.bridges)Decal("Bridge",b.x,b.z,b.width*1.35f,b.length,0,.7f);
-            foreach(var f in layout.faults){
-                float dx=f.bx-f.ax,dz=f.bz-f.az,len=Mathf.Sqrt(dx*dx+dz*dz);
-                // The long axis of the painted opening angles up from left to right.
-                float angle=Mathf.Atan2(dz,dx)*Mathf.Rad2Deg-27f;
-                Decal("Fault",(f.ax+f.bx)*.5f,(f.az+f.bz)*.5f,len*1.55f,len*.96f,angle,.24f);
+            DrawFaultNetwork(layout.faults);
+        }
+
+        // Paint one continuous opening per connected arm, registered to the
+        // certified fault centreline at every bend.
+        void DrawFaultNetwork(Fault[] faults)
+        {
+            for (int first=0; first<faults.Length;)
+            {
+                int end=first+1;
+                while (end<faults.Length && faults[end].ax==faults[end-1].bx &&
+                       faults[end].az==faults[end-1].bz) end++;
+                var points=new List<Vector2>();
+                var distances=new List<float>();
+                points.Add(new Vector2(faults[first].ax,faults[first].az));
+                distances.Add(0);
+                for (int i=first;i<end;i++)
+                {
+                    Vector2 start=points[points.Count-1], finish=new Vector2(faults[i].bx,faults[i].bz);
+                    float length=Vector2.Distance(start,finish);
+                    int steps=Mathf.Max(1,Mathf.CeilToInt(length/4f));
+                    for (int j=1;j<=steps;j++)
+                    {
+                        points.Add(Vector2.Lerp(start,finish,j/(float)steps));
+                        distances.Add(distances[distances.Count-1]+length/steps);
+                    }
+                }
+                const int across=12;
+                var vertices=new List<Vector3>(); var uv=new List<Vector2>(); var indices=new List<int>();
+                for(int i=0;i<points.Count;i++)
+                {
+                    var tangent=(points[Mathf.Min(i+1,points.Count-1)]-points[Mathf.Max(0,i-1)]).normalized;
+                    var normal=new Vector2(-tangent.y,tangent.x);
+                    for(int j=0;j<=across;j++)
+                    {
+                        float v=j/(float)across;
+                        var pos=points[i]+normal*((v-.5f)*faults[first].radius*(first==0?2.4f:1.35f));
+                        vertices.Add(new Vector3(pos.x,Ground(pos.x,pos.y)+.38f,pos.y));
+                        uv.Add(new Vector2(distances[i]/Mathf.Max(1,distances[distances.Count-1]),v));
+                        int k=vertices.Count-1;
+                        if(i>0 && j>0) indices.AddRange(new[]{k,k-1,k-across-1,k-across-1,k-1,k-across-2});
+                    }
+                }
+                var mesh=new Mesh{name="Painted geological fault arm"};
+                mesh.SetVertices(vertices); mesh.SetUVs(0,uv); mesh.SetTriangles(indices,0);
+                Draw(mesh,DecalMaterial("Fault"));
+                first=end;
             }
         }
         Mesh EdgeMistSkirt(float floor)
@@ -213,6 +255,10 @@ namespace Eldoria.World4XCanon
                 for(int i=0;i<count;i++){
                     var tree=new Vector3(reader.ReadSingle(),0,reader.ReadSingle());
                     tree.y=Mathf.Clamp(reader.ReadSingle()*4.6f,4f,11.5f);
+                    // Preserve recognisable groves and open the approach to water and roads.
+                    float stand=Mathf.PerlinNoise(tree.x*.016f+7,tree.z*.016f+41);
+                    if(stand<.43f || RegionOneBlenderLandscape.Shore(tree.x,tree.z)<4f ||
+                       RegionOneBlenderLandscape.Road(tree.x,tree.z)>.15f) continue;
                     var cell=new Vector2Int(Mathf.FloorToInt((tree.x+910f)/182f),Mathf.FloorToInt((tree.z+1800f)/180f));
                     if(!groves.TryGetValue(cell,out var clump)){clump=new List<Vector3>();groves.Add(cell,clump);}
                     clump.Add(tree);
@@ -231,21 +277,13 @@ namespace Eldoria.World4XCanon
                     batches[pick<5?"CityGrove":pick<9?"CityOak":pick%2==0?"PaintedFir":"PaintedForestGrove"].Add(foot);
                     cityTrees[foot]=tree.y;
                 }
-                // A sparse scattering looked like isolated props on a green
-                // plane in the six actual native Region 1 camera frames.
-                // Plant complete pockets of the SAME original sprite families
-                // on already-authored forest masks, without another layer or
-                // any additional gameplay node/collider.
-                for(int n=0;n<140;n++){
+                // Rock outcrops punctuate clearings. All trees come from the authored stands.
+                for(int n=0;n<40;n++){
                     float x=bx+(float)rng.NextDouble()*182,z=bz+(float)rng.NextDouble()*180;
-                    if(RegionOneBlenderLandscape.Water(x,z)>.08f||RegionOneBlenderLandscape.Shore(x,z)<2f||RegionOneBlenderLandscape.Road(x,z)>.22f)continue;
-                    float forest=RegionOneBlenderLandscape.Forest(x,z);
-                    float patch=Mathf.PerlinNoise(x*.036f+31,z*.036f+90);
-                    bool tree=rng.NextDouble()<forest*.32f || patch>.67f&&rng.NextDouble()<.14f;
-                    if(!tree && rng.NextDouble()>(patch>.67f?.052:.007))continue;
-                    if(Mathf.Abs(x)<15&&Mathf.Abs(z)<22)continue;
-                    int type=tree?(patch>.67f?1:rng.Next(4)):(patch>.59f?5:4);
-                    batches[names[type]].Add(new Vector3(x,Ground(x,z)+.16f,z));
+                    if(RegionOneBlenderLandscape.Shore(x,z)<4f || RegionOneBlenderLandscape.Water(x,z)>.05f ||
+                       RegionOneBlenderLandscape.Road(x,z)>.15f || x*x+z*z<500f) continue;
+                    if(Mathf.PerlinNoise(x*.036f+31,z*.036f+90)<.67f)continue;
+                    batches[rng.Next(6)==0?"Ridge":"Crag"].Add(new Vector3(x,Ground(x,z)+.16f,z));
                 }
                 foreach(var pair in batches){
                     if(pair.Value.Count==0)continue;
@@ -321,13 +359,18 @@ namespace Eldoria.World4XCanon
             renderer.shadowCastingMode=ShadowCastingMode.Off;renderer.receiveShadows=false;owned.Add(mesh);
         }
         readonly Dictionary<string,Material> decals=new Dictionary<string,Material>();
-        void Decal(string name,float x,float z,float width,float depth,float angle,float lift)
+        Material DecalMaterial(string name)
         {
             if(!decals.TryGetValue(name,out var mat)){
                 mat=new Material(Shader.Find("Eldoria/World4X/LocalCanopy"));mat.mainTexture=Texture(name);
                 mat.SetFloat("_SoftEdges",1f);
                 owned.Add(mat);look.RegisterPeripheralMaterial(mat);decals.Add(name,mat);
             }
+            return mat;
+        }
+        void Decal(string name,float x,float z,float width,float depth,float angle,float lift)
+        {
+            var mat=DecalMaterial(name);
             const int n=12;
             var v=new Vector3[(n+1)*(n+1)];var uv=new Vector2[v.Length];var tri=new int[n*n*6];int t=0;
             var rotate=Quaternion.Euler(0,-angle,0);

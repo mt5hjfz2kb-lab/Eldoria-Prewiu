@@ -1,6 +1,6 @@
 Shader "Eldoria/World4X/LocalCanopy"
 {
- Properties { _MainTex("Canopy",2D)="white"{} _Tint("Art tint",Color)=(1,1,1,1) _BillboardScale("World silhouette scale",Float)=1 _BoundaryWeight("Panorama boundary",Range(0,1))=0 _BoundaryColour("Panorama haze",Color)=(.63,.685,.665,1) _SoftEdges("Bastion I painterly alpha",Range(0,1))=0 _CameraFacingDepth("Modular orthographic foreground depth",Float)=0 }
+ Properties { _CreatureTempo("Painted creature idle tempo",Float)=0  _MainTex("Canopy",2D)="white"{} _Tint("Art tint",Color)=(1,1,1,1) _BillboardScale("World silhouette scale",Float)=1 _BoundaryWeight("Panorama boundary",Range(0,1))=0 _BoundaryColour("Panorama haze",Color)=(.63,.685,.665,1) _SoftEdges("Bastion I painterly alpha",Range(0,1))=0 _CameraFacingDepth("Modular orthographic foreground depth",Float)=0 }
  SubShader
  {
   Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="TransparentCutout" "Queue"="AlphaTest" }
@@ -12,7 +12,7 @@ Shader "Eldoria/World4X/LocalCanopy"
    #pragma fragment frag
    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
    TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
-   CBUFFER_START(UnityPerMaterial) half4 _Tint; half4 _BoundaryColour; float _BillboardScale; float _BoundaryWeight; float _SoftEdges; float _CameraFacingDepth; CBUFFER_END
+   CBUFFER_START(UnityPerMaterial) half4 _Tint; half4 _BoundaryColour; float _BillboardScale; float _BoundaryWeight; float _CreatureTempo; float _SoftEdges; float _CameraFacingDepth; CBUFFER_END
    struct Attributes { float3 positionOS:POSITION; float2 uv:TEXCOORD0; float2 offset:TEXCOORD1; };
    struct Varyings { float4 positionCS:SV_POSITION; float2 uv:TEXCOORD0; float2 metre:TEXCOORD1; };
    Varyings vert(Attributes i)
@@ -37,6 +37,18 @@ Shader "Eldoria/World4X/LocalCanopy"
    }
    half4 frag(Varyings i):SV_Target
    {
+    if (_CreatureTempo>0)
+    {
+     float3 anchor=float3(GetObjectToWorldMatrix()._m03,0,GetObjectToWorldMatrix()._m23);
+     float t=_Time.y*_CreatureTempo+dot(anchor.xz,float2(.13,.21));
+     // Inverse sprite warp: snout lowers to sniff, shoulder expands,
+     // paws stay registered. Each encounter has its own resting phase.
+     float body=smoothstep(.12,.54,i.uv.y);
+     float head=(1-smoothstep(.12,.58,i.uv.x))*smoothstep(.10,.31,i.uv.y);
+     float sniff=pow(saturate(.5+.5*sin(t*.71)),4);
+     i.uv.y+=head*.040*sniff-body*.016*sin(t*2.1);
+     i.uv.x+=body*.009*sin(t*1.3);
+    }
     half4 c=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
     float edge=min(910-abs(i.metre.x),1800-abs(i.metre.y));
     if(_SoftEdges>.5 && _BoundaryWeight>0)
