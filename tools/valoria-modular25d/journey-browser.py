@@ -117,43 +117,48 @@ async def main():
             # after Lyra is recruited, her real hero presentation. Traverse
             # the visible action/close controls in order; never click through,
             # disable or silently skip authored progression content.
-            for _ in range(24):
-                blocker=world_view.get('blocker','')
-                if blocker:
+            async def finish_visible_world_prompts():
+                for _ in range(24):
+                    blocker=world_view.get('blocker','')
+                    if blocker:
+                        sample=world_view.get('sample',0)
+                        await touch({'x':world_view['blockerX'],'y':world_view['blockerY']})
+                        await until(lambda:world_view.get('sample',0)>sample,15)
+                        await page.wait_for_timeout(260)
+                        continue
+                    if world_view.get('canTravel'): break
                     sample=world_view.get('sample',0)
-                    await touch({'x':world_view['blockerX'],'y':world_view['blockerY']})
                     await until(lambda:world_view.get('sample',0)>sample,15)
-                    await page.wait_for_timeout(260)
-                    continue
-                if world_view.get('canTravel'): break
-                sample=world_view.get('sample',0)
-                await until(lambda:world_view.get('sample',0)>sample,15)
-            assert not world_view.get('blocker') and world_view.get('canTravel'),world_view
+                assert not world_view.get('blocker') and world_view.get('canTravel'),world_view
+            await finish_visible_world_prompts()
             await page.screenshot(path=OUT/f'ciudad-a-region-{state["level"]}.png')
             if state['level']==5:
                 # Beyond stills, verify that the real Unity world responds to
                 # mobile pan and pinch after gameplay has unlocked every region
                 # system. Do not invoke debug camera setters or create fake
                 # scene states: these are actual two-finger browser events.
-                initial_zoom=world_view['zoom']
-                before_sample=world_view.get('sample',0)
-                await cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[
-                    {'x':153,'y':437,'id':0},{'x':223,'y':437,'id':1}]})
-                for step in range(1,13):
-                    await cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[
-                        {'x':153+step*2,'y':437,'id':0},
-                        {'x':223-step*2,'y':437,'id':1}]})
-                    await page.wait_for_timeout(65)
-                await cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
-                await until(lambda:world_view.get('sample',0)>before_sample,30)
-                await page.wait_for_timeout(700)
-                zoom_after=world_view.get('zoom',initial_zoom)
-                # Fingers converge from 70px to 22px: this is a genuine
-                # zoom-OUT from the close view, not the old pinch-in that
-                # silently clamped to minimum zoom and was declared tested.
-                assert float(zoom_after)>float(initial_zoom)*1.05,(
-                    'real two-finger world zoom did not change the camera',
-                    initial_zoom,zoom_after,world_view)
+                for attempt in range(3):
+                    await finish_visible_world_prompts()
+                    initial_zoom=world_view['zoom']
+                    # Start over open ground, clear of the city entry target.
+                    await cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[
+                        {'x':130,'y':255,'id':0},{'x':250,'y':255,'id':1}]})
+                    for step in range(1,13):
+                        await cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[
+                            {'x':130+step*3,'y':255,'id':0},
+                            {'x':250-step*3,'y':255,'id':1}]})
+                        await page.wait_for_timeout(90)
+                    await cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
+                    released=world_view['sample']
+                    await until(lambda: world_view.get('sample',0)>released and
+                        (world_view.get('blocker') or world_view['zoom']>initial_zoom*1.05),30)
+                    if world_view.get('blocker'):
+                        log.append({'pinch_interrupted_by':world_view['blocker'],'attempt':attempt+1})
+                        continue
+                    zoom_after=world_view['zoom']
+                    break
+                else:
+                    raise AssertionError(('world pinch repeatedly interrupted',world_view))
                 await page.screenshot(path=OUT/'region-1-pinch-real-bastion-5.png')
                 before_sample=world_view.get('sample',0)
                 await cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[
