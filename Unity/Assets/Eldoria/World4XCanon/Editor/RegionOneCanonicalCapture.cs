@@ -5,6 +5,8 @@ using System.Security.Cryptography;
 using Eldoria.ReferenceClean;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace Eldoria.World4XCanon.Editor
 {
@@ -31,12 +33,31 @@ namespace Eldoria.World4XCanon.Editor
             const string scene="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
             var dest=Environment.GetEnvironmentVariable("ELDORIA_WORLD_PLAYER_OUT");
             var libraries=new System.Collections.Generic.Dictionary<string,byte[]>();
+            var urp=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+            int previousSamples=urp?urp.msaaSampleCount:1;
             try{
+                // Unity 6 URP WebGL can request a 2-sample UGUI render pass
+                // against a 1-sample browser attachment when MSAA is active.
+                // This isolated 2.5D WebGL build uses a consistent 1-sample
+                // render target; physical/native iOS settings stay unchanged.
+                // The CI mobile browser records whether the renderpass errors
+                // actually disappear before this workaround can be accepted.
+                if(urp && previousSamples>1){
+                    urp.msaaSampleCount=1;
+                    EditorUtility.SetDirty(urp);
+                    AssetDatabase.SaveAssets();
+                    Debug.Log("VALORIA_EXPERIMENT_WEBGL_MSAA samples="+previousSamples+" -> 1");
+                }
                 Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.PrepareWebPlayer(libraries,false);
                 PlayerSettings.productName="Valoria · Región 1 experimental";
                 var result=BuildPipeline.BuildPlayer(new[]{"Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity",scene},dest,BuildTarget.WebGL,BuildOptions.StrictMode);
                 if(result.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new IOException("World player failed");
             }finally{
+                if(urp && urp.msaaSampleCount!=previousSamples){
+                    urp.msaaSampleCount=previousSamples;
+                    EditorUtility.SetDirty(urp);
+                    AssetDatabase.SaveAssets();
+                }
                 foreach(var library in libraries)File.WriteAllBytes(library.Key,library.Value);
             }
         }
