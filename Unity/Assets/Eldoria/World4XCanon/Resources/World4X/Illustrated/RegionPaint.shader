@@ -95,7 +95,12 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half paintedScale=1-smoothstep(1.4,8.0,pixelMetres);
   half strategicScale=smoothstep(.65,7.2,pixelMetres);
   half3 farPainting=lerp(meadowGlade,meadowRange,.25);
-  half3 cityAtZoom=lerp(cityMeadow,farPainting,strategicScale*.72);
+  // Do not magnify 1m grass blades into 35m billboard-like tufts in panorama.
+  // The enlarged city tile controls only broad tone; the actual fine brush
+  // strokes retain their world-space size and mip naturally with the camera.
+  half luminanceVariation=dot(farPainting-cityMeadow,half3(.25,.64,.11));
+  half macroTint=clamp(1+luminanceVariation*.36,.89,1.11);
+  half3 cityAtZoom=cityMeadow*lerp(1,macroTint,strategicScale*.88);
   // Paint continuity from Bastion I to the near, regional and panoramic map.
   // This operates INSIDE the one regional terrain shader, not on new planes.
   half cityPaint=saturate(_CityFinish)*lerp(.84,.98,paintedScale);
