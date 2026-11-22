@@ -18,7 +18,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             public int level, sawmill, barracks, granary, stoneworks, wood, stone, food, army;
             public long revision;
             public int forestRemaining,quarryRemaining;
-            public string room;
+            public string room, activeScene;
+            public bool travelCurtainVisible;
             public bool journey, lyra, fissure, council, sawmillPanel, drawer, busy;
             public List<Tap> taps = new List<Tap>();
         }
@@ -28,7 +29,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var s = gateway.Snapshot();
             if (s == null) return;
             var view = new JourneyView {
-                room=activeRoom, level=s.BastionLevel, sawmill=s.SawmillLevel, barracks=s.BarracksLevel,
+                room=activeRoom,
+                activeScene=UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,
+                travelCurtainVisible=GameObject.Find("Paso entre Valoria y la Región") != null,
+                level=s.BastionLevel, sawmill=s.SawmillLevel, barracks=s.BarracksLevel,
                 granary=s.ChapterThree.GranaryLevel, stoneworks=s.ChapterThree.StoneworksLevel,
                 wood=s.Resources.Wood, stone=s.Resources.Stone, food=s.Resources.Food,
                 forestRemaining=s.ForestRemaining,quarryRemaining=s.QuarryRemaining,
