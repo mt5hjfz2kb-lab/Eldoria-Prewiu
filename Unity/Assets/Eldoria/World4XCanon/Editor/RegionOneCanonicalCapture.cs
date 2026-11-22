@@ -33,9 +33,15 @@ namespace Eldoria.World4XCanon.Editor
             const string scene="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
             var dest=Environment.GetEnvironmentVariable("ELDORIA_WORLD_PLAYER_OUT");
             var libraries=new System.Collections.Generic.Dictionary<string,byte[]>();
-            var urp=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
-            int previousSamples=urp?urp.msaaSampleCount:1;
+            UniversalRenderPipelineAsset urp=null;
+            int previousSamples=1;
             try{
+                Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.PrepareWebPlayer(libraries,false);
+                // PrepareWebPlayer installs the scene's pipeline. Patch the
+                // actual build asset after that switch, then restore it below.
+                urp=GraphicsSettings.defaultRenderPipeline as UniversalRenderPipelineAsset;
+                if(!urp)throw new InvalidOperationException("Integrated WebGL scene has no URP asset");
+                previousSamples=urp.msaaSampleCount;
                 // Unity 6 URP WebGL can request a 2-sample UGUI render pass
                 // against a 1-sample browser attachment when MSAA is active.
                 // This isolated 2.5D WebGL build uses a consistent 1-sample
@@ -48,7 +54,7 @@ namespace Eldoria.World4XCanon.Editor
                     AssetDatabase.SaveAssets();
                     Debug.Log("VALORIA_EXPERIMENT_WEBGL_MSAA samples="+previousSamples+" -> 1");
                 }
-                Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.PrepareWebPlayer(libraries,false);
+                Debug.Log("VALORIA_WEBGL_PIPELINE asset="+AssetDatabase.GetAssetPath(urp)+" samples="+urp.msaaSampleCount);
                 PlayerSettings.productName="Valoria · Región 1 experimental";
                 var result=BuildPipeline.BuildPlayer(new[]{"Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity",scene},dest,BuildTarget.WebGL,BuildOptions.StrictMode);
                 if(result.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new IOException("World player failed");

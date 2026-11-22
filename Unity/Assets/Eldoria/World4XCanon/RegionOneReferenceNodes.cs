@@ -75,6 +75,10 @@ namespace Eldoria.World4XCanon
    foreach(var id in new[]{"forest-valoria","quarry-valoria"}){var t=host.FindTarget(id);if(t)resourceOrigins[id]=t.transform.position;}
    Debug.Log("REGION1_REFERENCE_NODES visuals="+current.Count+" old_renderers="+old.Count+" new_hotspots=0 new_colliders=0");Refresh();
   }
+  // Normalized gate contact points in the five original city paintings.
+  // A full-texture world quad must register its gate on the north abutment.
+  static readonly float[] gateHeight={.048f,.069556f,.069909f,.070265f,.063712f};
+  static Vector2 GatePivot(int level)=>new Vector2(.5f,gateHeight[Mathf.Clamp(level,1,5)-1]);
   static Sprite ApprovedValoriaBastion(int level)
   {
    // One authored building sprite across city and world; no Keep1-5 substitute.
@@ -97,9 +101,11 @@ namespace Eldoria.World4XCanon
     if(RegionOneModularArt.Enabled){
      // Do not load the retired ValoriaStrategic painted atlas or its anchor:
      // the world has no dependency on obsolete city backplates.
-     var art=ApprovedValoriaBastion(gate==host.WorldBastionTwo?2:1);
+     int level=gate==host.WorldBastionTwo?2:1;
+     var art=ApprovedValoriaBastion(level);
      texture=art.texture;
-     anchor=new CityAnchor{u=art.pivot.x/art.rect.width,v=art.pivot.y/art.rect.height};
+     var pivot=GatePivot(level);
+     anchor=new CityAnchor{u=pivot.x,v=pivot.y};
     }else{
      texture=Resources.Load<Texture2D>("ValoriaStrategic/"+key);
      anchor=JsonUtility.FromJson<CityAnchor>(
@@ -169,8 +175,9 @@ namespace Eldoria.World4XCanon
      if(!citySprites[level])citySprites[level]=ApprovedValoriaBastion(level);
      var sprite=citySprites[level];
      if(sprite){
-      var pivot=new Vector2(sprite.pivot.x/sprite.rect.width,
-                            sprite.pivot.y/sprite.rect.height);
+      var pivot=GatePivot(level);
+      Debug.Log("REGION1_CITY_GATE level="+level+" authored="+pivot+
+                " imported="+new Vector2(sprite.pivot.x/sprite.rect.width,sprite.pivot.y/sprite.rect.height));
       float width=40f,height=width*sprite.rect.height/sprite.rect.width;
       foreach(var renderer in current){
        if(!renderer.name.StartsWith("Reference city Bastion",StringComparison.Ordinal))continue;
