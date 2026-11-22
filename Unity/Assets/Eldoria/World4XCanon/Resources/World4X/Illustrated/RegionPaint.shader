@@ -6,6 +6,10 @@ Shader "Eldoria/Region1/Illustrated ground" {
   _Region("Geographic colour",2D)="white"{} _NearFeatures("Mapped footpaths and water",2D)="black"{} _Weights("Geographic classes",2D)="black"{}
   _Grass("Meadow",2D)="white"{} _Earth("Soil",2D)="white"{}
   _Water("River",2D)="white"{} _Slate("Broken slate",2D)="white"{}
+  _CityMeadow("Bastion I approved meadow",2D)="white"{}
+  _CityEarth("Bastion I painted earth lanes",2D)="white"{}
+  _CityCobble("Bastion I illustrated paving",2D)="white"{}
+  _CityFinish("Shared modular paint",Range(0,1))=1
  }
  SubShader { Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="Opaque"} Pass {
  Cull Back
@@ -17,11 +21,14 @@ Shader "Eldoria/Region1/Illustrated ground" {
  TEXTURE2D(_Region); SAMPLER(sampler_Region); TEXTURE2D(_Weights); SAMPLER(sampler_Weights);
  TEXTURE2D(_Grass); SAMPLER(sampler_Grass); TEXTURE2D(_Earth); SAMPLER(sampler_Earth);
  TEXTURE2D(_Water); SAMPLER(sampler_Water); TEXTURE2D(_Slate); SAMPLER(sampler_Slate);
+ TEXTURE2D(_CityMeadow); SAMPLER(sampler_CityMeadow);
+ TEXTURE2D(_CityEarth); SAMPLER(sampler_CityEarth);
+ TEXTURE2D(_CityCobble); SAMPLER(sampler_CityCobble);
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
  struct In {float3 p:POSITION;float2 uv:TEXCOORD0;};
  struct Out {float4 p:SV_POSITION;float2 uv:TEXCOORD0;};
  Out vert(In v){Out o;o.p=TransformObjectToHClip(v.p);o.uv=v.uv;return o;}
- float _BeyondMap; float _BoundaryWeight; float4 _BoundaryColour;
+ float _BeyondMap; float _BoundaryWeight; float4 _BoundaryColour; float _CityFinish;
  half3 borderMist(float2 metres) {
   float2 cloud=metres/float2(670,450);
   float veil=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,cloud).g;
@@ -47,7 +54,11 @@ Shader "Eldoria/Region1/Illustrated ground" {
  half4 frag(Out i):SV_Target {
   float2 metre=(i.uv-.5)*float2(1820,3600);
   if (_BeyondMap>.5) return half4(peripheralMist(metre),1);
-  half3 base=SAMPLE_TEXTURE2D(_Region,sampler_Region,i.uv).rgb;
+  // This is the only visible regional ground surface. The old imported
+  // colour-map is NOT drawn as a background image beneath another landscape.
+  // Canonical geography supplies masks and height, while the very same
+  // Valoria paint sources used at Bastion I supply the actual meadow/road.
+  half3 geographicLight=SAMPLE_TEXTURE2D(_Region,sampler_Region,i.uv).rgb;
   half4 mask=SAMPLE_TEXTURE2D(_Weights,sampler_Weights,i.uv);
   float2 localUV=(metre-float2(-200,-148))/float2(416,512);
   float2 localBorder=min(localUV,1-localUV)*float2(416,512);
@@ -55,38 +66,61 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half4 features=SAMPLE_TEXTURE2D(_NearFeatures,sampler_NearFeatures,saturate(localUV));
   mask.r=lerp(mask.r,features.r,local);
   mask.g=max(mask.g,features.g*local);
-  float2 q=metre/15;
-  half3 grass=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,q).rgb;
-  // A second rotated meadow sample breaks the repeated 15 m texture pattern.
-  float2 meadowUV=float2(.8*q.x-.6*q.y,.6*q.x+.8*q.y)*.37;
-  half3 meadow=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,meadowUV).rgb;
-  grass=lerp(grass,meadow,.32);
-  half3 earth=SAMPLE_TEXTURE2D(_Earth,sampler_Earth,q*.94).rgb;
-  half3 slate=SAMPLE_TEXTURE2D(_Slate,sampler_Slate,q*.61).rgb;
-  half3 water=SAMPLE_TEXTURE2D(_Water,sampler_Water,q*.81+float2(0,_Time.y*.012)).rgb;
+
+  // 6.5 m world-space tile: identical ground UV density to Modular25DGround.
+  // A second rotated sample softens repeats without introducing another
+  // surface or altering any canonical map coordinate.
+  float2 cityUV=metre/6.5;
+  float2 rotatedUV=float2(cityUV.x*.8-cityUV.y*.6,
+                          cityUV.x*.6+cityUV.y*.8)*.59;
+  half3 cityMeadow=SAMPLE_TEXTURE2D(_CityMeadow,sampler_CityMeadow,cityUV).rgb;
+  half3 cityVariety=SAMPLE_TEXTURE2D(_CityMeadow,sampler_CityMeadow,rotatedUV).rgb;
+  cityMeadow=lerp(cityMeadow,cityVariety,.16);
+  float2 terrainUV=metre/15;
+  half3 continentalGrass=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,terrainUV).rgb;
+  half3 continentalVariety=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,
+      float2(.8*terrainUV.x-.6*terrainUV.y,
+             .6*terrainUV.x+.8*terrainUV.y)*.37).rgb;
+  continentalGrass=lerp(continentalGrass,continentalVariety,.29);
+  float pixelMetres=max(length(ddx(metre)),length(ddy(metre)));
+  half close=1-smoothstep(.35,4.2,pixelMetres);
+  half paintedScale=1-smoothstep(1.4,8.0,pixelMetres);
+  half cityPaint=saturate(_CityFinish)*lerp(.53,.95,paintedScale);
+  half3 grass=lerp(continentalGrass,cityMeadow,cityPaint);
+  half3 earth=SAMPLE_TEXTURE2D(_Earth,sampler_Earth,terrainUV*.94).rgb;
+  half3 slate=SAMPLE_TEXTURE2D(_Slate,sampler_Slate,terrainUV*.61).rgb;
+  half3 water=SAMPLE_TEXTURE2D(_Water,sampler_Water,terrainUV*.81+float2(0,_Time.y*.012)).rgb;
+  // City road pigment only replaces the road material already described by
+  // the ORIGINAL mapped path mask. There are no raised photo decals.
+  half4 cityDirt=SAMPLE_TEXTURE2D(_CityEarth,sampler_CityEarth,
+                                   metre/6.5+float2(.17,.09));
+  half4 cityPaving=SAMPLE_TEXTURE2D(_CityCobble,sampler_CityCobble,
+                                     metre/5.7+float2(.12,.24));
+  half3 sharedEarth=lerp(earth,cityDirt.rgb,cityDirt.a*.75*_CityFinish);
+  half cityNear=1-smoothstep(55,138,length(metre));
+  half3 pathColour=lerp(sharedEarth,cityPaving.rgb,
+                         cityNear*cityPaving.a*.65*_CityFinish);
+  // The riverbanks come from the actual signed geographic shoreline.
   float shore=(features.a-.5)*12;
   float aa=clamp(fwidth(shore),.32,1.4);
   half wet=smoothstep(-aa,aa,shore);
   mask.r=lerp(mask.r,wet,local);
-  // Lay a dry shingle terrace and a damp meadow fringe along the existing
-  // signed bank field. Fully dry texels saturate at -6 m; fade before that
-  // limit so the shoreline treatment cannot tint the entire meadow.
   half landBank=(1-wet)*local;
   half terrace=landBank*(1-smoothstep(.35,2.4,-shore));
   half fringe=landBank*(1-smoothstep(2.4,5.4,-shore));
-  half3 bankMeadow=meadow*half3(.81,.91,.76);
-  grass=lerp(grass,bankMeadow,fringe*.72);
-  grass=lerp(grass,lerp(earth,slate,.58),terrace*.84);
-  half3 albedo=lerp(grass,earth,mask.g);
-  albedo=lerp(albedo,slate,mask.b);
-  albedo=lerp(albedo,water,mask.r);
-  float footprint=max(length(ddx(metre)),length(ddy(metre)));
-  half close=1-smoothstep(.35,4.2,footprint);
-  half3 colour=lerp(base,albedo,close*.57);
-  half3 pathColour=lerp(base*half3(1.20,.99,.73),earth,close*.56+.24);
-  half wheelWear=saturate(.67+dot(earth-meadow,half3(.33,.48,.19))*.65);
-  colour=lerp(colour,pathColour,mask.g*(1-mask.r)*lerp(1,wheelWear,close));
-  colour=lerp(colour,lerp(earth,slate,.34),features.b*local*.53);
+  grass=lerp(grass,cityMeadow*half3(.81,.91,.76),fringe*.72);
+  grass=lerp(grass,lerp(sharedEarth,slate,.58),terrace*.84);
+  half3 colour=lerp(grass,slate,saturate(mask.b)*.87);
+  // Use the archival region map only as a subtle broad RELIEF lighting
+  // measurement, never as visible full-scene artwork.
+  half terrainLight=dot(geographicLight,half3(.2126,.7152,.0722));
+  colour*=clamp(.93+(.5-terrainLight)*-.16,.85,1.10);
+  // Roads inherit the same organic masked geometry, but their material
+  // matches Valoria's actual painted soil, not the previous flat ochre.
+  half road=saturate(mask.g*(1-mask.r));
+  half wear=saturate(.72+dot(sharedEarth-cityMeadow,half3(.30,.47,.23))*.30);
+  colour=lerp(colour,pathColour,road*lerp(.96,wear,close));
+  colour=lerp(colour,lerp(sharedEarth,slate,.34),features.b*local*.48);
   half3 riverColour=lerp(half3(.035,.145,.16),water,.37+.40*close);
   half shelf=1-smoothstep(0,3.8,shore);
   half bank=(1-smoothstep(.15,2.1,abs(shore)))*local*close;
