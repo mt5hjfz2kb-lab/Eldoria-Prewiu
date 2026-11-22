@@ -63,6 +63,19 @@ namespace Eldoria.World4XCanon
    foreach(var id in new[]{"forest-valoria","quarry-valoria"}){var t=host.FindTarget(id);if(t)resourceOrigins[id]=t.transform.position;}
    Debug.Log("REGION1_REFERENCE_NODES visuals="+current.Count+" old_renderers="+old.Count+" new_hotspots=0 new_colliders=0");Refresh();
   }
+  static Sprite ApprovedValoriaBastion(int level)
+  {
+   // One authored building sprite across city and world; no Keep1-5 substitute.
+   if(level<=1){
+    var hd=Resources.Load<Sprite>("ValoriaModular25D/bastion_i_hd");
+    if(hd)return hd;
+   }
+   string resource=level<=1?"ValoriaModular25D/bastion_i"
+     :"ValoriaModular25D/Progression/bastion_"+Mathf.Clamp(level,2,5);
+   var original=Resources.Load<Sprite>(resource);
+   if(!original)throw new InvalidOperationException("Missing approved Valoria Bastion "+resource);
+   return original;
+  }
   void Sprite(string name,Vector3 foot,float width,int cell,GameObject gate)
   {
    if(cell==0&&gate&&canonicalCity){
@@ -70,8 +83,9 @@ namespace Eldoria.World4XCanon
     var texture=Resources.Load<Texture2D>("ValoriaStrategic/"+key);
     var anchor=JsonUtility.FromJson<CityAnchor>(Resources.Load<TextAsset>("ValoriaStrategic/"+key+"-anchor").text);
     if(RegionOneModularArt.Enabled){
-     var art=Resources.Load<Sprite>("World4X/Illustrated/"+(gate==host.WorldBastionTwo?"Keep2":"Keep1"));
-     if(art){texture=art.texture;anchor=new CityAnchor{u=.5f,v=.035f};}
+     var art=ApprovedValoriaBastion(gate==host.WorldBastionTwo?2:1);
+     texture=art.texture;
+     anchor=new CityAnchor{u=art.pivot.x/art.rect.width,v=art.pivot.y/art.rect.height};
     }
     var material=new Material(nodes){name="Valoria approved original "+key,mainTexture=texture};cityMaterials.Add(material);
     width=RegionOneModularArt.Enabled ? 31f : BastionOneVisualWidth;float h=width*texture.height/texture.width;
@@ -123,10 +137,11 @@ namespace Eldoria.World4XCanon
    if(RegionOneModularArt.Enabled && canonicalCity){
     int level=Mathf.Clamp(state.BastionLevel,1,5);
     if(shownBastionLevel!=level){
-     if(!citySprites[level])citySprites[level]=Resources.Load<Sprite>("World4X/Illustrated/Keep"+level);
+     if(!citySprites[level])citySprites[level]=ApprovedValoriaBastion(level);
      var sprite=citySprites[level];
      if(sprite){
-      var pivot=new Vector2(.5f,.035f);
+      var pivot=new Vector2(sprite.pivot.x/sprite.rect.width,
+                            sprite.pivot.y/sprite.rect.height);
       float width=31f,height=width*sprite.rect.height/sprite.rect.width;
       foreach(var renderer in current){
        if(!renderer.name.StartsWith("Reference city Bastion",StringComparison.Ordinal))continue;
