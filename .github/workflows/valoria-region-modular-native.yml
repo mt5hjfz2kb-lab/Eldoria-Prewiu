@@ -321,3 +321,40 @@ jobs:
         with:
           name: ciudad-region-recorrido
           path: evidence/
+
+  # Publish the actual run URL on this exact experiment commit so reviewers
+  # can discover native Unity artifacts even when GitHub's plugin only lists
+  # PR-triggered Actions. No source code or gameplay data is written.
+  publish-run-reference:
+    if: always()
+    needs: [verify-packaging, preflight, unity, mobile-journey]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      statuses: write
+      contents: read
+    steps:
+      - name: Attach real native proof URL to this commit
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request
+          jobs=json.loads(os.environ["RESULTS"])
+          states={key:value.get("result","unknown") for key,value in jobs.items()}
+          ok=states.get("unity")=="success" and states.get("mobile-journey")=="success"
+          state="success" if ok else "failure"
+          description=("; ".join(k+"="+v for k,v in sorted(states.items())))[:140]
+          repo=os.environ["GITHUB_REPOSITORY"]
+          sha=os.environ["GITHUB_SHA"]
+          url="https://github.com/"+repo+"/actions/runs/"+os.environ["GITHUB_RUN_ID"]
+          body=json.dumps({"state":state,"context":"eldoria/valoria-2-5d-visual-proof",
+                           "target_url":url,"description":description}).encode("utf-8")
+          req=urllib.request.Request("https://api.github.com/repos/"+repo+"/statuses/"+sha,
+              method="POST",data=body,headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
+              "Accept":"application/vnd.github+json","Content-Type":"application/json"})
+          with urllib.request.urlopen(req,timeout=25) as answer:
+              print("Native proof status published:",answer.status,url,description)
+          PY
