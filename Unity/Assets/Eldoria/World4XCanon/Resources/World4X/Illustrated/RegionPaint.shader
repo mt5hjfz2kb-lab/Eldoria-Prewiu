@@ -155,7 +155,9 @@ Shader "Eldoria/Region1/Illustrated ground" {
   geometricNormal*=rsqrt(max(dot(geometricNormal,geometricNormal),1.e-8));
   if(geometricNormal.y<0)geometricNormal=-geometricNormal;
   half geomLight=saturate(dot(geometricNormal,normalize(float3(-.38,.85,.36))));
-  half paintedLight=lerp(.915,1.085,geomLight);
+  // Horizontal meadow must retain exactly the city paint's apparent value.
+  // Reserve the change for geographic slopes, not a global brightness boost.
+  half paintedLight=clamp(1+(geomLight-.85)*.27,.88,1.04);
   colour*=lerp(1,paintedLight,(1-saturate(mask.r))*.82);
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
   half panorama=smoothstep(880,1700,unity_OrthoParams.y);
