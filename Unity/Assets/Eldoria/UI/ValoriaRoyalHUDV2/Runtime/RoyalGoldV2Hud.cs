@@ -1007,14 +1007,16 @@ namespace Eldoria.UI.RoyalGold.V2
                     Top(Source.Realm.Realm.rectTransform, titleX,
                         5f, realmWidth - titleX - 2f, portrait ? 26f : 36f);
                     Source.Realm.Realm.fontSize = portrait ? 20 : 27;
-                    if (ChronicleFont) Source.Realm.Realm.font = ChronicleFont;
+                    var approvedNameFont = UseCoronaArt ? CoronaBodyFont : ChronicleFont;
+                    if (approvedNameFont) Source.Realm.Realm.font = approvedNameFont;
                 }
                 if (Source.Realm.Power)
                 {
                     Top(Source.Realm.Power.rectTransform, titleX,
                         portrait ? 34f : 46f, realmWidth - titleX - 2f, 23f);
                     Source.Realm.Power.fontSize = portrait ? 15 : 19;
-                    if (ChronicleFont) Source.Realm.Power.font = ChronicleFont;
+                    var approvedPowerFont = UseCoronaArt ? CoronaBodyFont : ChronicleFont;
+                    if (approvedPowerFont) Source.Realm.Power.font = approvedPowerFont;
                     Source.Realm.Power.horizontalOverflow = HorizontalWrapMode.Overflow;
                     while (Source.Realm.Power.fontSize > 10 && Source.Realm.Power.preferredWidth > Source.Realm.Power.rectTransform.rect.width - 2f)
                         Source.Realm.Power.fontSize--;
@@ -1092,6 +1094,8 @@ namespace Eldoria.UI.RoyalGold.V2
             string name, RoyalText value, float x, float chip, bool portrait)
         {
             if (!value) return;
+            // World and city use the same approved numerical lettering.
+            if (UseCoronaArt && CoronaBodyFont) value.font = CoronaBodyFont;
             // In the approved reference numbers have icons but NO extra
             // stacked "Madera/Piedra/Comida" names stealing vertical space.
             var word = parent.Find(name + " name");
