@@ -13,9 +13,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     [DisallowMultipleComponent]
     public sealed class Modular25DLandscape : MonoBehaviour
     {
-        public static readonly Vector2 BarracksFoot = new Vector2(-4.85f,-4.95f);
-        public static readonly Vector2 GranaryFoot = new Vector2(3.85f,-7.65f);
-        public static readonly Vector2 StoneworksFoot = new Vector2(-2.85f,-11.70f);
+        // Recompose only later unlocks inside the portrait-safe footprint.
+        // Bastion I, its hand-authored roads and initial two buildings stay
+        // pixel-identical. The previous wider layout lost both flanking
+        // buildings to the left/right when the approved architecture was
+        // enlarged for phone readability.
+        public static readonly Vector2 BarracksFoot = new Vector2(-3.25f,-4.95f);
+        public static readonly Vector2 GranaryFoot = new Vector2(2.25f,-7.65f);
+        public static readonly Vector2 StoneworksFoot = new Vector2(-1.95f,-11.70f);
         const int RoadW=256, RoadH=512, FootW=512, FootH=320;
         static readonly Vector2 Keep=new Vector2(-.40f,1.45f);
         static readonly Vector2 Sawmill=new Vector2(.96f,-2.07f);
@@ -101,11 +106,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public void ApplyExpansionGround(bool barracks,bool granary,bool stoneworks)
         {
             ExpansionGround("barracks",barracks,BarracksFoot,
-                new[]{new Vector2(-3.88f,-3.76f),new Vector2(-4.2f,-4.65f),BarracksFoot+Vector2.down*.2f});
+                new[]{new Vector2(-3.88f,-3.76f),new Vector2(-3.62f,-4.22f),BarracksFoot+Vector2.up*.2f});
             ExpansionGround("granary",granary,GranaryFoot,
-                new[]{new Vector2(-3.88f,-3.76f),new Vector2(-2.25f,-5.65f),new Vector2(.15f,-6.55f),new Vector2(1.95f,-7.9f),GranaryFoot+Vector2.down*.2f});
+                new[]{new Vector2(-3.88f,-3.76f),new Vector2(-2.25f,-5.65f),new Vector2(.05f,-6.55f),new Vector2(1.15f,-7.70f),GranaryFoot+Vector2.down*.2f});
             ExpansionGround("stoneworks",stoneworks,StoneworksFoot,
-                new[]{new Vector2(-4.85f,-5.3f),new Vector2(-4.00f,-7.65f),new Vector2(-4.40f,-9.6f),new Vector2(-4.35f,-11.65f),StoneworksFoot+Vector2.down*.2f});
+                new[]{new Vector2(-3.25f,-5.3f),new Vector2(-2.70f,-7.65f),new Vector2(-2.80f,-9.6f),new Vector2(-2.40f,-11.65f),StoneworksFoot+Vector2.down*.2f});
         }
 
         void ExpansionGround(string id,bool visible,Vector2 foot,Vector2[] path)
@@ -133,9 +138,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 // as a long triangular tongue. Keep the canonical building and
                 // main route coordinates; only the genuinely detached districts
                 // need a new cart lane.
-                if(!military)
-                    AddRoad("Access | "+id,path,1.13f,
-                        renderedCartLane ? renderedCartLane : expansionRoadMaterial,false);
+                // The garrison is now slightly east of the old imperial
+                // alignment: connect its ACTUAL entrance with a short natural
+                // earth lane. No road changes at all before Bastion II.
+                AddRoad("Access | "+id,path,military?.88f:1.13f,
+                    !military&&renderedCartLane ? renderedCartLane : expansionRoadMaterial,false);
                 Color soil=stone ? new Color(.50f,.46f,.40f) : new Color(.45f,.34f,.22f);
                 Color worn=stone ? new Color(.77f,.73f,.62f) : new Color(.71f,.58f,.39f);
                 PutFoot("Contact | "+id,MakeFootprint(id,soil,worn,stone,false),
