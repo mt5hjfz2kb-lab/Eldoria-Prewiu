@@ -106,7 +106,13 @@ namespace Eldoria.World4XCanon
        Resources.Load<TextAsset>("ValoriaStrategic/"+key+"-anchor").text);
     }
     var material=new Material(nodes){name="Valoria approved original "+key,mainTexture=texture};
-    if(RegionOneModularArt.Enabled)material.SetFloat("_SoftEdges",1f);
+    if(RegionOneModularArt.Enabled){
+     material.SetFloat("_SoftEdges",1f);
+     // Keep the actual Bastion I-V façade fully visible in front of raised
+     // terrain at ALL camera scales, as a city SpriteRenderer would do.
+     // Only shader depth changes; the canon city hotspot remains untouched.
+     material.SetFloat("_CameraFacingDepth",23f);
+    }
     cityMaterials.Add(material);
     width=RegionOneModularArt.Enabled ? 31f : BastionOneVisualWidth;float h=width*texture.height/texture.width;
     foot=host.WorldHome+new Vector3(3.3f,0,-7.5f);foot.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(3.3f,-7.5f)+.18f;
