@@ -164,20 +164,20 @@ namespace Eldoria.World4XCanon
                     bool timber=node.Id=="forest-valoria"||node.Id.StartsWith("region1:wood:",StringComparison.Ordinal);
                     float width=timber?25f:27.5f;
                     float height=width*(timber?1.05f:.95f);
-                    var nearBounds=new Bounds(node.Logical.InverseTransformPoint(position),Vector3.zero);
-                    var right=host.WorldCamera.transform.right;
-                    var up=host.WorldCamera.transform.up;
+                    var paintedBounds=new Bounds(node.Logical.InverseTransformPoint(position),Vector3.zero);
+                    var paintedRight=host.WorldCamera.transform.right;
+                    var paintedUp=host.WorldCamera.transform.up;
                     for(int corner=0;corner<4;corner++){
                         float x=(corner&1)==0?-width*.5f:width*.5f;
                         float y=(corner&2)==0?-1f:height;
-                        nearBounds.Encapsulate(node.Logical.InverseTransformPoint(position+right*x+up*y));
+                        paintedBounds.Encapsulate(node.Logical.InverseTransformPoint(position+paintedRight*x+paintedUp*y));
                     }
                     if(node.Hit is BoxCollider paintedBox){
-                        paintedBox.center=nearBounds.center;
-                        paintedBox.size=Vector3.Max(nearBounds.size+Vector3.one*.5f,node.HitSize);
+                        paintedBox.center=paintedBounds.center;
+                        paintedBox.size=Vector3.Max(paintedBounds.size+Vector3.one*.5f,node.HitSize);
                     } else if(node.Hit is SphereCollider paintedSphere){
-                        paintedSphere.center=nearBounds.center;
-                        paintedSphere.radius=Mathf.Max(node.HitRadius,nearBounds.extents.magnitude);
+                        paintedSphere.center=paintedBounds.center;
+                        paintedSphere.radius=Mathf.Max(node.HitRadius,paintedBounds.extents.magnitude);
                     }
                     return;
                 }
