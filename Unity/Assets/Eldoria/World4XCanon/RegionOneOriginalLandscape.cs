@@ -19,6 +19,7 @@ namespace Eldoria.World4XCanon
         Transform surface;
         RegionOneModularArt kit;
         ValoriaIntegratedWorld host;
+        RegionOneLookDevelopment look;
         readonly List<(Transform target,Renderer art,string id)> campaign=new List<(Transform,Renderer,string)>();
         Renderer villageMill,villageGarrison,villageGranary;
         Renderer CityDetail(string key,float x,float z,float width)
@@ -72,7 +73,7 @@ namespace Eldoria.World4XCanon
             // At panoramic zoom both the relief edge and its backing must meet
             // the exact camera haze used by the imported continuation. Earlier
             // builds left the illustrated backing dark on the eastern coast.
-            var look=transform.GetComponentInChildren<RegionOneLookDevelopment>(true);
+            look=transform.GetComponentInChildren<RegionOneLookDevelopment>(true);
             if(!look)throw new InvalidOperationException("Region 1 look development must exist before illustrated relief");
             look.RegisterPeripheralMaterial(ground);
             look.RegisterPeripheralMaterial(fogMaterial);
@@ -124,7 +125,7 @@ namespace Eldoria.World4XCanon
             string[] names={"Fir","Oak","Grove","Crag","Ridge"};
             foreach(string k in names){
                 var material=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){mainTexture=Texture(k)};
-                mats.Add(k,material);owned.Add(material);
+                mats.Add(k,material);owned.Add(material);look.RegisterPeripheralMaterial(material);
             }
             var groves=new Dictionary<Vector2Int,List<Vector3>>();
             var positions=Resources.Load<TextAsset>(Art+"ForestPositions");
@@ -222,7 +223,7 @@ namespace Eldoria.World4XCanon
             mesh.SetVertices(v);mesh.SetUVs(0,uv);mesh.SetUVs(1,offsets);mesh.SetTriangles(triangles,0);
             var bounds=mesh.bounds;bounds.Expand(16f);mesh.bounds=bounds;
             var material=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){mainTexture=Texture("MarginAtlas")};
-            owned.Add(material);Draw(mesh,material);
+            owned.Add(material);look.RegisterPeripheralMaterial(material);Draw(mesh,material);
         }
         void Draw(Mesh mesh,Material mat)
         {
@@ -236,7 +237,7 @@ namespace Eldoria.World4XCanon
         {
             if(!decals.TryGetValue(name,out var mat)){
                 mat=new Material(Shader.Find("Eldoria/World4X/LocalCanopy"));mat.mainTexture=Texture(name);
-                owned.Add(mat);decals.Add(name,mat);
+                owned.Add(mat);look.RegisterPeripheralMaterial(mat);decals.Add(name,mat);
             }
             const int n=12;
             var v=new Vector3[(n+1)*(n+1)];var uv=new Vector2[v.Length];var tri=new int[n*n*6];int t=0;
