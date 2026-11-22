@@ -25,16 +25,30 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             return Mathf.Clamp(3.05f/Mathf.Max(.42f,aspect),4.90f,7.10f);
         }
 
-        public static Vector3 ExpansionCenter => new Vector3(-.54f,-4.55f,-30f);
-        public static float ExpansionSize(float aspect) => Mathf.Max(9.8f,6.95f/Mathf.Max(.35f,aspect));
+        // Framing is progressive, not an abrupt zoom-out to the entire
+        // Bastion V footprint the moment Bastion II unlocks. This keeps
+        // architecture legible at a 390 x 844 phone viewport while all plots
+        // remain accessible by the existing pan/pinch controls.
+        public static Vector3 ExpansionCenterForLevel(int level) =>
+            level <= 2 ? new Vector3(-1.55f,-2.50f,-30f) :
+            level <= 4 ? new Vector3(-.54f,-3.20f,-30f) :
+                         new Vector3(-.54f,-4.10f,-30f);
+        public static float ExpansionSizeForLevel(float aspect,int level)
+        {
+            float verticalCoverage=level<=2?5.54f:level<=4?6.38f:6.55f;
+            float minimum=level<=2?10.2f:level<=4?10.8f:11.8f;
+            return Mathf.Max(minimum,verticalCoverage/Mathf.Max(.35f,aspect));
+        }
+        // Existing editor tooling can still ask for the complete-city fit.
+        public static Vector3 ExpansionCenter => ExpansionCenterForLevel(5);
+        public static float ExpansionSize(float aspect) => ExpansionSizeForLevel(aspect,5);
 
         void Start()
         {
             world=GetComponent<Modular25DWorld>();
             camera=world.ViewCamera;
             homeSize=HomeSizeForAspect(camera.aspect);
-            camera.orthographicSize=homeSize;
-            camera.transform.position=HomePosition;
+            Home();
         }
 
         bool IsUI(Vector2 screen)
@@ -164,8 +178,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             if(camera==null)return;
             bool expanded=world!=null && world.DisplayedBastionLevel>=2;
-            camera.orthographicSize=expanded?ExpansionSize(camera.aspect):homeSize;
-            camera.transform.position=expanded?ExpansionCenter:HomePosition;
+            int level=world!=null?world.DisplayedBastionLevel:1;
+            camera.orthographicSize=expanded?ExpansionSizeForLevel(camera.aspect,level):homeSize;
+            camera.transform.position=expanded?ExpansionCenterForLevel(level):HomePosition;
         }
 
         void TrySelect(Vector2 screen)
