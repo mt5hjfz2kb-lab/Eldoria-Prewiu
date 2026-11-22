@@ -1,0 +1,46 @@
+name: Recorrido de la entrega móvil publicada
+on:
+  push:
+    branches: [experiment/valoria-ciudad-region-unificada-20261121]
+    paths: ['.github/workflows/valoria-recorrido-entrega-movil.yml']
+permissions:
+  contents: read
+jobs:
+  recorrer:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          for attempt in $(seq 1 32); do
+            if gh release view valoria-review-6601ff8-m2 >/dev/null 2>&1; then break; fi
+            sleep 15
+          done
+          gh release download valoria-review-6601ff8-m2 -D flat
+          python3 - <<'PY'
+          import json, pathlib, shutil
+          src=pathlib.Path('flat')
+          dest=pathlib.Path('mobile')
+          for rel,length in json.loads((src/'assets.json').read_text()).items():
+              f=src/pathlib.Path(rel).name
+              assert f.stat().st_size==length
+              p=dest/'r/6601ff8-m2'/rel
+              p.parent.mkdir(parents=True,exist_ok=True)
+              f.rename(p)
+          shutil.copyfile(src/'index.html',dest/'index.html')
+          PY
+          python -m pip install --quiet playwright==1.56.0
+          python -m playwright install ffmpeg
+          python tools/valoria-modular25d/serve-packaged-mobile.py mobile 8824 &
+          VALORIA_EVIDENCE=evidence VALORIA_TEST_REGION=1 python -u tools/valoria-modular25d/journey-browser.py 'http://127.0.0.1:8824/index.html?journey-qa'
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: recorrido-entrega-m2
+          path: evidence/
