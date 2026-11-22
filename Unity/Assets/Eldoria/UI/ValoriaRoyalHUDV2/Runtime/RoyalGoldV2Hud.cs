@@ -1134,6 +1134,12 @@ namespace Eldoria.UI.RoyalGold.V2
             painted.layer = root.gameObject.layer;
             var image = painted.GetComponent<Image>();
             image.sprite = sprite;
+            // The approved parchment has 112 px import borders and was
+            // authored for nine-slicing, unlike the borderless top ribbon.
+            // Preserve its bevels on every phone aspect instead of stretching
+            // one large illustrated picture across the objective/building card.
+            if (sprite.border.sqrMagnitude > 0f)
+                image.type = Image.Type.Sliced;
             image.raycastTarget = false;
             original.enabled = false;
         }
