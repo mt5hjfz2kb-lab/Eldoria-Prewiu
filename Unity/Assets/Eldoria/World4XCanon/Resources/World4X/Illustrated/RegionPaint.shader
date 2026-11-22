@@ -107,14 +107,17 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // strokes retain their world-space size and mip naturally with the camera.
   half luminanceVariation=dot(farPainting-cityMeadow,half3(.25,.64,.11));
   half macroTint=clamp(1+luminanceVariation*.36,.89,1.11);
-  half3 cityAtZoom=cityMeadow*lerp(1,macroTint,strategicScale*.88);
+  // Let the original painted meadow resolve into broad strokes as its
+  // fine tile falls below one screen pixel. Rotate the larger sampling axes
+  // to avoid rows of repeating speckles on long open stretches.
+  half3 cityAtZoom=lerp(cityMeadow,farPainting,strategicScale*.67)*lerp(1,macroTint,strategicScale*.48);
   // Paint continuity from Bastion I to the near, regional and panoramic map.
   // This operates INSIDE the one regional terrain shader, not on new planes.
   half cityPaint=saturate(_CityFinish)*lerp(.84,.98,paintedScale);
   half3 grass=lerp(continentalGrass,cityAtZoom,cityPaint);
   // Canonical canopy coverage keeps woodland readable between distant crowns.
   half woodland=smoothstep(.12,.82,mask.a);
-  grass*=lerp(half3(1,1,1),half3(.66,.83,.76),woodland*lerp(.60,1,strategicScale));
+  grass*=lerp(half3(1,1,1),half3(.66,.83,.76),woodland*lerp(.60,.54,strategicScale));
   half3 earth=SAMPLE_TEXTURE2D(_Earth,sampler_Earth,terrainUV*.94).rgb;
   half3 slate=SAMPLE_TEXTURE2D(_Slate,sampler_Slate,terrainUV*.61).rgb;
   half3 water=SAMPLE_TEXTURE2D(_Water,sampler_Water,terrainUV*.81+float2(0,_Time.y*.012)).rgb;
@@ -155,7 +158,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
   float reliefHeight=i.world.y-GetObjectToWorldMatrix()._m13;
   half upland=smoothstep(18,76,reliefHeight);
   half3 openMeadow=grass*half3(1.13,1.025,.87);
-  half3 woodedMeadow=grass*half3(.66,.88,.93);
+  half3 woodedMeadow=grass*half3(.83,.94,.88);
   half3 districtGrass=lerp(openMeadow,woodedMeadow,canopy);
   districtGrass=lerp(districtGrass,grass*half3(.76,1.02,1.11),valley*.82);
   districtGrass=lerp(districtGrass,lerp(grass,slate,.39),upland*.85);
@@ -174,13 +177,19 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half wear=saturate(.72+dot(sharedEarth-cityMeadow,half3(.30,.47,.23))*.30);
   colour=lerp(colour,pathColour,road*lerp(.96,wear,close));
   colour=lerp(colour,lerp(sharedEarth,slate,.34),features.b*local*.48);
-  half pigment=dot(water,half3(.24,.56,.20));
-  half3 channel=half3(.055,.245,.34)*(.83+pigment*.50);
+  half3 longCurrent=SAMPLE_TEXTURE2D(_Water,sampler_Water,
+      metre/72.0+float2(_Time.y*.0014,-_Time.y*.002)).rgb;
+  half3 currentPaint=lerp(water,longCurrent,mapScale*.72);
+  #ifndef UNITY_COLORSPACE_GAMMA
+  currentPaint=LinearToSRGB(currentPaint);
+  #endif
+  half pigment=saturate((dot(currentPaint,half3(.24,.56,.20))-.16)*4.0);
+  half3 channel=half3(.055,.245,.34)*(.61+pigment*.88);
   half3 shallows=half3(.19,.42,.43)*(.80+pigment*.60);
   half shelf=(1-smoothstep(.35,4.0,shore))*local;
   half3 riverColour=lerp(channel,shallows,shelf*.83);
-  half glint=smoothstep(.45,.72,pigment)*close;
-  riverColour+=half3(.07,.10,.10)*glint;
+  half glint=smoothstep(.45,.82,pigment)*lerp(.4,1,close);
+  riverColour+=half3(.11,.18,.16)*glint;
   half bank=(1-smoothstep(.15,1.35,abs(shore)))*local*close;
   colour=lerp(colour,lerp(earth,slate,.55),bank*.68);
   colour=lerp(colour,riverColour,mask.r);

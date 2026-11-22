@@ -133,12 +133,15 @@ namespace Eldoria.World4XCanon
                         position.x-host.WorldHome.x,position.z-host.WorldHome.z)+.08f;
                     entity.Painted.transform.position=position;
                     entity.Painted.enabled=visible;
-                    if(Mathf.Abs(scale-entity.PaintScale)>.0001f){
-                        entity.PaintScale=scale;
-                        paintProperties.SetFloat("_BillboardScale",scale);
+                    // At strategic zoom keep the original touch area; the painted
+                    // animal recedes so the fault and city remain landmarks.
+                    float artScale=scale*Mathf.Lerp(1f,.65f,Mathf.InverseLerp(115f,760f,zoom));
+                    if(Mathf.Abs(artScale-entity.PaintScale)>.0001f){
+                        entity.PaintScale=artScale;
+                        paintProperties.SetFloat("_BillboardScale",artScale);
                         entity.Painted.SetPropertyBlock(paintProperties);
                         entity.Painted.localBounds=new Bounds(
-                            Vector3.up*width*scale*.5f,Vector3.one*width*scale*2f);
+                            Vector3.up*width*artScale*.5f,Vector3.one*width*artScale*2f);
                     }
                     continue;
                 }
