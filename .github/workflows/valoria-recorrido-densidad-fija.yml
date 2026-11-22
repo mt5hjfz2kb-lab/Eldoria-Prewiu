@@ -1,0 +1,52 @@
+name: Recorrido de aceptación con densidad fija
+on:
+  push:
+    branches: [experiment/valoria-ciudad-region-unificada-20261121]
+    paths: ['.github/workflows/valoria-recorrido-densidad-fija.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  chromium:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        density: [1, 3]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 9aa2c5fca8ed655642b96d81793b3fcdf35309be
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-region1-webgl
+          path: player
+          run-id: 45075198029
+          github-token: ${{ github.token }}
+      - name: Recorrer la misma compilación desde una partida nueva
+        env:
+          VALORIA_EVIDENCE: evidence
+          VALORIA_TEST_REGION: '1'
+          DENSITY: ${{ matrix.density }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet playwright==1.56.0
+          python3 -m playwright install ffmpeg
+          python3 tools/valoria-modular25d/journey-serve.py player 8824 &
+          python3 - <<'PY'
+          import os,pathlib
+          path=pathlib.Path('tools/valoria-modular25d/journey-browser.py')
+          source=path.read_text()
+          assert source.count('device_scale_factor=1)')==1
+          source=source.replace('device_scale_factor=1)','device_scale_factor='+os.environ['DENSITY']+')')
+          pathlib.Path('/tmp/journey-fixed.py').write_text(source)
+          PY
+          python3 -u /tmp/journey-fixed.py 'http://127.0.0.1:8824/index.html?journey-qa'
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: recorrido-f10f426-dpr-${{ matrix.density }}
+          path: evidence/
