@@ -10,42 +10,7 @@ env:
   BUILD_RUN: '45040961859'
   SOURCE: 90e04b8f44740b894aacd79e8635b8502f8efd7f
 jobs:
-  package:
-    runs-on: ubuntu-latest
-    timeout-minutes: 100
-    permissions:
-      contents: write
-      actions: read
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: tools/valoria-modular25d
-          persist-credentials: false
-      - name: Locate the exact native build
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          repo="repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN"
-          test "$(gh api "$repo" --jq .head_sha)" = "$SOURCE"
-          for i in $(seq 1 90); do
-            if gh api "$repo/artifacts" --jq '.artifacts[].name' | grep -Fxq valoria-region1-webgl; then break; fi
-            test "$(gh api "$repo" --jq .status)" != completed || exit 1
-            sleep 45
-          done
-          gh run download "$BUILD_RUN" -n valoria-region1-webgl -D player
-      - name: Version mobile resources and publish the pinned preview package
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          src=tools/valoria-modular25d
-          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE"
-          tag="valoria-review-${SOURCE:0:7}"
-          mapfile -d '' -t assets < <(find mobile/r -type f -print0)
-          gh release create "$tag" --target "$SOURCE" --prerelease --latest=false --title "Valoria · primer viaje y obras · ${SOURCE:0:7}" --notes "Reproductor Unity experimental. La verificación en WebKit se registra por separado." "${assets[@]}" mobile/assets.json mobile/index.html
   webkit:
-    needs: package
     runs-on: macos-15
     timeout-minutes: 25
     steps:

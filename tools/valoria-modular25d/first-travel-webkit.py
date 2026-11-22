@@ -12,7 +12,7 @@ OUT.mkdir(exist_ok=True)
 async def main():
     async with async_playwright() as pw:
         browser = await pw.webkit.launch()
-        context = await browser.new_context(**pw.devices["iPhone 13"], viewport={"width":390, "height":844})
+        context = await browser.new_context(**pw.devices["iPhone 13"])
         page = await context.new_page()
         city, region, errors = {}, {}, []
         samples = 0
@@ -83,6 +83,8 @@ async def main():
             await page.screenshot(path=OUT/"04-regreso.png")
             print("WEBKIT_B1_ROUNDTRIP_AND_CONSTRUCTION_PASS",flush=True)
         finally:
+            if not page.is_closed():
+                await page.screenshot(path=OUT/"ultimo-estado.png", timeout=8000)
             (OUT/"diagnostico.json").write_text(json.dumps({"city":city,"world":region,"errors":errors}, indent=2))
             await browser.close()
 
