@@ -199,6 +199,9 @@ namespace Eldoria.World4XCanon
                 var material=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){
                     mainTexture=sourceArt,name="Region 1 modular | "+k};
                 material.SetFloat("_SoftEdges",1f);
+                // The foot remains at the certified forest coordinate while
+                // the illustrated crown renders in front of adjacent relief.
+                material.SetFloat("_CameraFacingDepth",9f);
                 mats.Add(k,material);owned.Add(material);look.RegisterPeripheralMaterial(material);
                 var approved=Resources.Load<Sprite>(source);
                 plantedPivots[k]=approved?approved.pivot.y/approved.rect.height:.035f;
