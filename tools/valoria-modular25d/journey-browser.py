@@ -160,7 +160,13 @@ async def main():
             # a depleted node requests another legitimate round trip.
             await page.wait_for_timeout(2000)
             world_view.clear()
-            await fresh()
+            # The canonical city trace is state-based, not a heartbeat.  Once
+            # Arrived has published the persisted city it is allowed to stay
+            # quiet until the next player action, so requiring one more trace
+            # here creates a false timeout.  Validate the real, interactable
+            # city controls that were already published instead.
+            await until(lambda:state and 'taps' in state and
+                        find('Bastion world nameplate') is not None,30)
             for key in ['level','sawmill','granary','barracks','stoneworks','lyra','fissure']:
                 assert state[key]==before[key],(key,before,state)
             await page.screenshot(path=OUT/f'regreso-a-valoria-{state["level"]}.png')
