@@ -12,8 +12,9 @@ with zipfile.ZipFile(src) as z:
         if not (name.startswith('Build/') or name.startswith('TemplateData/')):continue
         p=dst/name;p.parent.mkdir(parents=True,exist_ok=True)
         data=z.read(name)
-        if name.endswith(('.data.gz','.wasm.gz')):
-            logical=name.removesuffix('.gz')
+        compressed=name.endswith(('.data.gz','.wasm.gz','.data.unityweb','.wasm.unityweb'))
+        if compressed:
+            logical=name.removesuffix('.gz').removesuffix('.unityweb')
             record={'parts':[],'size':struct.unpack('<I',data[-4:])[0],'mime':'application/wasm' if '.wasm' in logical else 'application/octet-stream'}
             assert len(gzip.decompress(data))==record['size']
             manifest[logical]=record
@@ -22,11 +23,14 @@ with zipfile.ZipFile(src) as z:
                 dest=assets/(hashlib.sha256(part).hexdigest()+'.bin')
                 dest.write_bytes(part)
                 record['parts'].append('Build/'+dest.name)
-        elif name.endswith('.js.gz'):
-            p.with_suffix('').write_bytes(gzip.decompress(data))
+        elif name.endswith(('.js.gz','.js.unityweb')):
+            logical=name.removesuffix('.gz').removesuffix('.unityweb')
+            target=dst/logical;target.parent.mkdir(parents=True,exist_ok=True)
+            target.write_bytes(gzip.decompress(data))
         else:p.write_bytes(data)
     html=z.read('index.html').decode()
-    for ext in ['.js','.data','.wasm']:html=html.replace(ext+'.gz',ext)
+    for ext in ['.js','.data','.wasm']:
+        html=html.replace(ext+'.gz',ext).replace(ext+'.unityweb',ext)
     html=html.replace('<head>', '<head>\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<script src="player-transport.js"></script>')
     html=html.replace('<title>Unity Web Player | Unity</title>','<title>Valoria · Corona de la Brecha</title>')
     html=html.replace("canvas.style.width = \"960px\";",'canvas.style.width = "100vw";').replace("canvas.style.height = \"600px\";",'canvas.style.height = "100dvh";')
