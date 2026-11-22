@@ -207,7 +207,10 @@ namespace Eldoria.World4XCanon
             var library=Resources.Load<GameObject>("World4X/Blender/RegionOneResources");
             if(!library)return;
             var service=parent.gameObject.AddComponent<RegionOneResourceModels>();service.host=host;service.library=library;service.modularArt=parent.GetComponentInChildren<RegionOneModularArt>();service.look=parent.GetComponentInChildren<RegionOneLookDevelopment>();
-            var atlas=Resources.Load<Texture2D>("World4X/Blender/RegionOneResourceImpostors");
+            // Old resource-photo atlas is not even loaded in the new world:
+            // all three scales use the same illustrated Timber/Quarry family.
+            var atlas=service.modularArt ? null :
+                Resources.Load<Texture2D>("World4X/Blender/RegionOneResourceImpostors");
             if(atlas && !service.modularArt){service.impostorMaterial=new Material(Shader.Find("Eldoria/World4X/LocalCanopy"));service.impostorMaterial.mainTexture=atlas;}
             foreach(var pair in new[]{("forest-valoria","Resource_Wood_0"),("quarry-valoria","Resource_Stone_0")})
             {
