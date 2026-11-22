@@ -1,5 +1,6 @@
 Shader "Eldoria/Region1/Illustrated ground" {
  Properties {
+  _FaultPigment("Painted fault arms registered to the relief",2D)="black"{}
   _BeyondMap("Outside charted terrain",Float)=0
   _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0
   _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1)
@@ -17,6 +18,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
  #pragma vertex vert
  #pragma fragment frag
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+ TEXTURE2D(_FaultPigment); SAMPLER(sampler_FaultPigment);
  TEXTURE2D(_NearFeatures); SAMPLER(sampler_NearFeatures);
  TEXTURE2D(_Region); SAMPLER(sampler_Region); TEXTURE2D(_Weights); SAMPLER(sampler_Weights);
  TEXTURE2D(_Grass); SAMPLER(sampler_Grass); TEXTURE2D(_Earth); SAMPLER(sampler_Earth);
@@ -167,6 +169,16 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half3 fracturedSlate=slate*lerp(half3(1,1,1),half3(.84,.72,.96),
                                   smoothstep(.035,.45,district.b)*mapScale);
   half3 colour=lerp(grass,fracturedSlate,faultWeight*.87);
+  // Sample the geological opening on the terrain triangles themselves.
+  // A separately tessellated patch clipped into the steep fault walls in
+  // near-camera captures even though its regional silhouette looked right.
+  float2 faultUV=(metre-float2(-416,0))/float2(320,288);
+  if(all(faultUV>=0) && all(faultUV<=1)){
+   half4 fault=SAMPLE_TEXTURE2D(_FaultPigment,sampler_FaultPigment,faultUV);
+   half glow=saturate(min(fault.b-fault.g,fault.r-fault.g)*34);
+   fault.rgb+=half3(.24,.047,.43)*glow*(.89+.11*sin(_Time.y*.86+faultUV.x*8));
+   colour=lerp(colour,fault.rgb,fault.a);
+  }
   // Use the archival region map only as a subtle broad RELIEF lighting
   // measurement, never as visible full-scene artwork.
   half terrainLight=dot(geographicLight,half3(.2126,.7152,.0722));

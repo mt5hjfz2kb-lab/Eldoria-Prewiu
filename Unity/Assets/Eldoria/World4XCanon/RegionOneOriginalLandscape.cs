@@ -11,8 +11,7 @@ namespace Eldoria.World4XCanon
     public sealed class RegionOneOriginalLandscape : MonoBehaviour
     {
         [Serializable] sealed class Crossing {public float x,z,width,length;}
-        [Serializable] sealed class Fault {public float ax,az,bx,bz,radius;}
-        [Serializable] sealed class Region {public Crossing[] bridges; public Fault[] faults;}
+        [Serializable] sealed class Region {public Crossing[] bridges;}
         const string Art="World4X/Illustrated/";
         readonly List<UnityEngine.Object> owned=new List<UnityEngine.Object>();
         Vector3 home;
@@ -49,6 +48,7 @@ namespace Eldoria.World4XCanon
             var ground=new Material(Shader.Find("Eldoria/Region1/Illustrated ground"));
             owned.Add(ground);
             ground.SetTexture("_NearFeatures",Texture("NearFeatures"));
+            ground.SetTexture("_FaultPigment",Texture("FaultPigment"));
             ground.SetTexture("_Region",Texture("RegionColour"));ground.SetTexture("_Weights",Texture("SurfaceWeights"));
             foreach(string k in new[]{"Grass","Earth","Slate","Water"})ground.SetTexture("_"+k,Texture(k));
             // One material on the actual canonical relief. The city paint
@@ -132,54 +132,6 @@ namespace Eldoria.World4XCanon
             while(planting.MoveNext())yield return null;
             var layout=JsonUtility.FromJson<Region>(Resources.Load<TextAsset>("World4X/Blender/production-region").text);
             foreach(var b in layout.bridges)Decal("Bridge",b.x,b.z,b.width*1.35f,b.length,0,.7f);
-            DrawFaultNetwork(layout.faults);
-        }
-
-        // Paint one continuous opening per connected arm, registered to the
-        // certified fault centreline at every bend.
-        void DrawFaultNetwork(Fault[] faults)
-        {
-            for (int first=0; first<faults.Length;)
-            {
-                int end=first+1;
-                while (end<faults.Length && faults[end].ax==faults[end-1].bx &&
-                       faults[end].az==faults[end-1].bz) end++;
-                var points=new List<Vector2>();
-                var distances=new List<float>();
-                points.Add(new Vector2(faults[first].ax,faults[first].az));
-                distances.Add(0);
-                for (int i=first;i<end;i++)
-                {
-                    Vector2 start=points[points.Count-1], finish=new Vector2(faults[i].bx,faults[i].bz);
-                    float length=Vector2.Distance(start,finish);
-                    int steps=Mathf.Max(1,Mathf.CeilToInt(length/4f));
-                    for (int j=1;j<=steps;j++)
-                    {
-                        points.Add(Vector2.Lerp(start,finish,j/(float)steps));
-                        distances.Add(distances[distances.Count-1]+length/steps);
-                    }
-                }
-                const int across=12;
-                var vertices=new List<Vector3>(); var uv=new List<Vector2>(); var indices=new List<int>();
-                for(int i=0;i<points.Count;i++)
-                {
-                    var tangent=(points[Mathf.Min(i+1,points.Count-1)]-points[Mathf.Max(0,i-1)]).normalized;
-                    var normal=new Vector2(-tangent.y,tangent.x);
-                    for(int j=0;j<=across;j++)
-                    {
-                        float v=j/(float)across;
-                        var pos=points[i]+normal*((v-.5f)*faults[first].radius*(first==0?2.4f:1.35f));
-                        vertices.Add(new Vector3(pos.x,Ground(pos.x,pos.y)+.38f,pos.y));
-                        uv.Add(new Vector2(distances[i]/Mathf.Max(1,distances[distances.Count-1]),v));
-                        int k=vertices.Count-1;
-                        if(i>0 && j>0) indices.AddRange(new[]{k,k-1,k-across-1,k-across-1,k-1,k-across-2});
-                    }
-                }
-                var mesh=new Mesh{name="Painted geological fault arm"};
-                mesh.SetVertices(vertices); mesh.SetUVs(0,uv); mesh.SetTriangles(indices,0);
-                Draw(mesh,DecalMaterial("Fault"));
-                first=end;
-            }
         }
         Mesh EdgeMistSkirt(float floor)
         {

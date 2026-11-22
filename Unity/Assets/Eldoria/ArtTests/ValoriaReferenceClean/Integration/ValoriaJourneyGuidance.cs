@@ -129,10 +129,30 @@ namespace Eldoria.ReferenceClean {
      label.Bind(Name(id),target.transform,id=="sawmill"||id=="barracks"||id=="granary"?city.PlayerCamera:host.WorldCamera,layer);
      var collider=target.GetComponent<Collider>();label.WorldOffset=Vector3.up*(collider?Mathf.Max(3,collider.bounds.extents.y+1.8f):3);
      label.Label.fontSize=17;label.Label.alignment=TextAnchor.MiddleCenter;
+     if(RoyalGoldV2Hud.UseCoronaArt)UseCityNameplate(label);
      label.Select.onClick.AddListener(()=>host.Select(id));labels.Add(id,label);
     }
    }
    Refresh();
+  }
+  static void UseCityNameplate(BuildingLabel label){
+   var old=label.Select.targetGraphic;
+   if(!old)return;
+   var sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/world_rune");
+   if(!sprite)return;
+   var plate=new GameObject("Valoria nameplate",typeof(RectTransform),typeof(UnityEngine.UI.Image));
+   var rect=(RectTransform)plate.transform;
+   rect.SetParent(old.transform,false);rect.SetAsFirstSibling();
+   rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;
+   rect.offsetMin=rect.offsetMax=Vector2.zero;
+   var image=plate.GetComponent<UnityEngine.UI.Image>();
+   image.sprite=sprite;
+   image.raycastTarget=true;
+   old.enabled=false;
+   label.Select.targetGraphic=image;
+   var font=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/SourceSans3-Semibold");
+   if(font)label.Label.font=font;
+   label.Label.color=new Color32(248,238,220,255);
   }
   public static string Name(string id,bool english=false){
    if(id!=null&&id.StartsWith("region1:wood:",StringComparison.Ordinal))return english?"Wood grove":"Arboleda de madera";

@@ -1371,6 +1371,13 @@ namespace Eldoria.Tests
                     Is.SameAs(Resources.Load<Texture2D>("ValoriaModular25D/HaulersEarth")));
                 Assert.That(mat.GetTexture("_CityCobble"),
                     Is.SameAs(Resources.Load<Texture2D>("ValoriaModular25D/OrganicCobbleRoad")));
+                var faultPaint=Resources.Load<Texture2D>("World4X/Illustrated/FaultPigment");
+                Assert.IsNotNull(faultPaint);
+                Assert.That(mat.GetTexture("_FaultPigment"),Is.SameAs(faultPaint),
+                    "The open fault must be registered to the rendered geographic surface.");
+                Assert.IsFalse(world.GetComponentsInChildren<MeshRenderer>(true)
+                    .Any(x=>x.name=="Painted geological fault arm"),
+                    "A second fault mesh can cross the steep near-camera terrain.");
                 var donor=world.GetComponentsInChildren<Transform>(true)
                     .FirstOrDefault(x=>x.name=="Blender authored geography");
                 Assert.IsNotNull(donor,"Original geometry remains authoritative for geography");
