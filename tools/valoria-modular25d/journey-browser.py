@@ -131,7 +131,26 @@ async def main():
             assert not world_view.get('blocker') and world_view.get('canTravel'),world_view
             await page.screenshot(path=OUT/f'ciudad-a-region-{state["level"]}.png')
             seq=sequence
-            await touch(world_view)
+            # A real tutorial turn may be authored to appear only when the
+            # player asks to return (for example Aldric's march explanation
+            # after the first trained troops). Honour and close those turns,
+            # then press the still-visible Valoria control again. Waiting only
+            # for the city trace here misdiagnoses that legitimate modal as a
+            # stalled world transition.
+            for _ in range(24):
+                if sequence>seq: break
+                blocker=world_view.get('blocker','')
+                if blocker:
+                    sample=world_view.get('sample',0)
+                    await touch({'x':world_view['blockerX'],'y':world_view['blockerY']})
+                    await until(lambda:world_view.get('sample',0)>sample,15)
+                    await page.wait_for_timeout(260)
+                    continue
+                sample=world_view.get('sample',0)
+                await touch(world_view)
+                await until(lambda:sequence>seq or world_view.get('blocker','') or
+                            world_view.get('sample',0)>sample,15)
+                await page.wait_for_timeout(260)
             await until(lambda:sequence>seq,150)
             for key in ['level','sawmill','granary','barracks','stoneworks','lyra','fissure']:
                 assert state[key]==before[key],(key,before,state)
