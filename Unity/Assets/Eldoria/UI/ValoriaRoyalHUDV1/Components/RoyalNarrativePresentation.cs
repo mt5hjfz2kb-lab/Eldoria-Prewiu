@@ -87,9 +87,15 @@ namespace Eldoria.UI.RoyalGold {
    backdrop=modal.GetComponent<Graphic>();
    if(backdrop)oldBackdrop=backdrop.color;
   }
+  // The V1 assembly also runs in builds which do not include the V2 HUD.
+  static bool IsCombinedPlayer =>
+            UnityEngine.SceneManagement.SceneUtility.GetBuildIndexByScenePath(
+                "Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity") == 0 &&
+            UnityEngine.SceneManagement.SceneUtility.GetBuildIndexByScenePath(
+                "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity") == 1;
   void ApplyCoronaNarrativeSkin(){
    if(coronaNarrativeSkin)return;
-   if(V2.RoyalGoldV2Hud.UseCoronaArt){
+   if(IsCombinedPlayer){
     var panel=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/activity_panel_wide");
     var action=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/action_arcane");
     coronaFrame=window.GetComponent<Image>();
