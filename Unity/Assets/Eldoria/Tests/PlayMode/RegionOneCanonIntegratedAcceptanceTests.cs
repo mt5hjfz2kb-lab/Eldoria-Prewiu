@@ -1355,6 +1355,20 @@ namespace Eldoria.Tests
                 Assert.IsNotNull(donor,"Original geometry remains authoritative for geography");
                 Assert.That(donor.GetComponentsInChildren<Renderer>(true)
                     .All(x=>x.forceRenderingOff),Is.True,"Old GLB art reappeared beneath new Valoria paint");
+                Assert.That(world.GetComponentsInChildren<Transform>(true)
+                    .Any(x=>x.name.StartsWith("Original Tripo ",StringComparison.Ordinal)),Is.False,
+                    "Hidden 3D creature LODs are not permitted behind modular actors");
+                foreach(var id in new[]{"forest-valoria","quarry-valoria"}){
+                    var root=world.GetComponentsInChildren<Transform>(true)
+                        .FirstOrDefault(x=>x.name=="Production resource visual "+id);
+                    Assert.IsNotNull(root,"Missing actual modular worksite for "+id);
+                    Assert.That(root.GetComponentsInChildren<MeshRenderer>(true)
+                        .Any(x=>x.name.StartsWith("Valoria art",StringComparison.Ordinal)),Is.True,
+                        "The near node must be one illustrated Valoria sprite, not the 3D donor");
+                    Assert.That(root.GetComponentsInChildren<Transform>(true)
+                        .Any(x=>x.name.StartsWith("Resource_",StringComparison.Ordinal)),Is.False,
+                        "The retired resource GLB hierarchy is still instantiated");
+                }
                 var approvedKeep=Resources.Load<Sprite>("ValoriaModular25D/bastion_i_hd")
                     ?? Resources.Load<Sprite>("ValoriaModular25D/bastion_i");
                 Assert.IsNotNull(approvedKeep);
