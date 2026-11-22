@@ -94,6 +94,10 @@ namespace Eldoria.ReferenceClean
             if (!current || current.destination != scene) return;
             var old = current;
             current = null;
+            // Destroy is deferred until end of frame. Disable the overlay and
+            // raycaster immediately so the newly arrived canonical HUD can
+            // receive its very first touch, including repeated world returns.
+            old.gameObject.SetActive(false);
             Destroy(old.gameObject);
         }
 
