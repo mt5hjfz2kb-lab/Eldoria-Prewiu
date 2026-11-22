@@ -131,17 +131,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                         materials.Add(renderedCartLane);
                     }
                 }
-                // The barracks gate was authored directly on the Imperial Way:
-                // its visual entrance is already at the route waypoint
-                // (-3.88,-3.76). Drawing a second spline to the sprite's lower
-                // pivot made the road continue beneath the building and emerge
-                // as a long triangular tongue. Keep the canonical building and
-                // main route coordinates; only the genuinely detached districts
-                // need a new cart lane.
-                // The garrison is now slightly east of the old imperial
-                // alignment: connect its ACTUAL entrance with a short natural
-                // earth lane. No road changes at all before Bastion II.
-                AddRoad("Access | "+id,path,military?.88f:1.13f,
+                // The garrison has a short, separately authored curved
+                // entrance lane after its Bastion II unlock. Keep the original
+                // imperial avenue and all Bastion I scenery unchanged.
+                AddRoad("Access | "+id,path,military ? 0.88f : 1.13f,
                     !military&&renderedCartLane ? renderedCartLane : expansionRoadMaterial,false);
                 Color soil=stone ? new Color(.50f,.46f,.40f) : new Color(.45f,.34f,.22f);
                 Color worn=stone ? new Color(.77f,.73f,.62f) : new Color(.71f,.58f,.39f);
