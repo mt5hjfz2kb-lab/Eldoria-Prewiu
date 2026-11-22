@@ -1335,6 +1335,36 @@ namespace Eldoria.Tests
             var components=world.GetComponentsInChildren<MonoBehaviour>(true);
             var placement=components.Single(x=>x&&x.GetType().Name=="RegionOneResourcePlacement");
             var canon=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).Single(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
+            // Assert the exact approved city art is RENDERED as the regional
+            // material, not pasted as a second landscape over the imported GLB.
+            // This proof runs in real Unity together with the six camera frames.
+            if(Eldoria.World4XCanon.RegionOneModularArt.Enabled){
+                var painted=world.GetComponentsInChildren<MeshRenderer>(true)
+                    .Where(x=>x.name=="Painted regional relief").ToArray();
+                Assert.That(painted.Length,Is.GreaterThan(50),"Missing the modular canonical relief");
+                var mat=painted[0].sharedMaterial;
+                Assert.That(mat.GetTexture("_CityMeadow"),
+                    Is.SameAs(Resources.Load<Texture2D>("ValoriaModular25D/BastionMeadow")),
+                    "World ground must use the EXACT approved city tile");
+                Assert.That(mat.GetTexture("_CityEarth"),
+                    Is.SameAs(Resources.Load<Texture2D>("ValoriaModular25D/HaulersEarth")));
+                Assert.That(mat.GetTexture("_CityCobble"),
+                    Is.SameAs(Resources.Load<Texture2D>("ValoriaModular25D/OrganicCobbleRoad")));
+                var donor=world.GetComponentsInChildren<Transform>(true)
+                    .FirstOrDefault(x=>x.name=="Blender authored geography");
+                Assert.IsNotNull(donor,"Original geometry remains authoritative for geography");
+                Assert.That(donor.GetComponentsInChildren<Renderer>(true)
+                    .All(x=>x.forceRenderingOff),Is.True,"Old GLB art reappeared beneath new Valoria paint");
+                var approvedKeep=Resources.Load<Sprite>("ValoriaModular25D/bastion_i_hd")
+                    ?? Resources.Load<Sprite>("ValoriaModular25D/bastion_i");
+                Assert.IsNotNull(approvedKeep);
+                var strategicKeep=world.GetComponentsInChildren<MeshRenderer>(true)
+                    .First(x=>x.name=="Reference city Bastion I");
+                Assert.That(strategicKeep.sharedMaterial.mainTexture,
+                    Is.SameAs(approvedKeep.texture),
+                    "Region 1 must use the same Bastion I building as the approved city");
+                Debug.Log("REGION1_APPROVED_ART_PARITY terrain=1 roads=1 castle=1 hidden_donor=1");
+            }
             var home=(Vector3)Member(host,"WorldHome");
             foreach(var view in new[]{("home",2,""),("wood",2,"forest-valoria"),("stone",2,"quarry-valoria"),("region",1,""),("breach",1,""),("panorama",0,"")}){
                 var pos=home;
