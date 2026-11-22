@@ -85,6 +85,9 @@ namespace Eldoria.UI.RoyalGold {
    Position(narratorGlyph.rectTransform,28,-32,70,70);
    backdrop=modal.GetComponent<Graphic>();
    if(backdrop)oldBackdrop=backdrop.color;
+  }
+  void ApplyCoronaNarrativeSkin(){
+   if(coronaNarrativeSkin)return;
    if(V2.RoyalGoldV2Hud.UseCoronaArt){
     var panel=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/activity_panel_wide");
     var action=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/action_arcane");
@@ -111,6 +114,7 @@ namespace Eldoria.UI.RoyalGold {
   public void Begin(Line[] entries,bool isEnglish,Action completed){
    if(entries==null||entries.Length==0)throw new ArgumentException("Narrative has no speaker turns");
    EnsureParts();if(!modal)throw new InvalidOperationException("Narrative must be hosted by the Royal Gold modal");
+   ApplyCoronaNarrativeSkin();
    turns.Clear();turns.AddRange(entries);onComplete=completed;
    if(role)role.gameObject.SetActive(true);
    english=isEnglish;lineIndex=0;pageIndex=0;shown=0;active=true;characterBudget=0;hold=0;entryTime=0;
@@ -180,6 +184,7 @@ namespace Eldoria.UI.RoyalGold {
     if(coronaAction){coronaAction.sprite=oldActionSprite;coronaAction.type=oldActionType;coronaAction.color=oldActionTint;}
     modal.Title.color=oldTitleTint;modal.Body.color=oldBodyTint;
     modal.ExtraLabel.color=oldButtonTextTint;
+    coronaNarrativeSkin=false;
    }
    if(modal.Close)modal.Close.gameObject.SetActive(true);
   }
