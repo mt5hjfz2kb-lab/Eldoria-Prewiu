@@ -130,6 +130,37 @@ async def main():
                 await until(lambda:world_view.get('sample',0)>sample,15)
             assert not world_view.get('blocker') and world_view.get('canTravel'),world_view
             await page.screenshot(path=OUT/f'ciudad-a-region-{state["level"]}.png')
+            if state['level']==5:
+                # Beyond stills, verify that the real Unity world responds to
+                # mobile pan and pinch after gameplay has unlocked every region
+                # system. Do not invoke debug camera setters or create fake
+                # scene states: these are actual two-finger browser events.
+                initial_zoom=world_view['zoom']
+                before_sample=world_view.get('sample',0)
+                await cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[
+                    {'x':153,'y':437,'id':0},{'x':223,'y':437,'id':1}]})
+                for step in range(1,13):
+                    await cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[
+                        {'x':153-step*4,'y':437,'id':0},
+                        {'x':223+step*4,'y':437,'id':1}]})
+                    await page.wait_for_timeout(65)
+                await cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
+                await until(lambda:world_view.get('sample',0)>before_sample,30)
+                await page.wait_for_timeout(700)
+                zoom_after=world_view.get('zoom',initial_zoom)
+                await page.screenshot(path=OUT/'region-1-pinch-real-bastion-5.png')
+                before_sample=world_view.get('sample',0)
+                await cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[
+                    {'x':190,'y':515,'id':0}]})
+                for step in range(1,13):
+                    await cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[
+                        {'x':190+step*7,'y':515-step*9,'id':0}]})
+                    await page.wait_for_timeout(65)
+                await cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
+                await until(lambda:world_view.get('sample',0)>before_sample,30)
+                await page.screenshot(path=OUT/'region-1-pan-real-bastion-5.png')
+                log.append({'world_real_touch_tour':True,'level':5,
+                            'zoom_before':initial_zoom,'zoom_after':zoom_after})
             seq=sequence
             # Confirm the actual Unity scene, not merely the next city log.
             # The old city can emit a final sample as the loading curtain
