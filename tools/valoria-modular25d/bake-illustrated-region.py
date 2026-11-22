@@ -28,4 +28,11 @@ for seg in cfg['faults']:
 land=mix(land,[64,62,69],fault*.94);land=mix(land,[77,53,92],np.power(fault,4)*.85)
 land*=np.clip(1+.035*macro,.92,1.08)[:,:,None]
 p=out/'RegionColour.jpg';Image.fromarray(np.uint8(land.clip(0,255))[::-1]).save(p,quality=94)
-p=out/'SurfaceWeights.png';Image.fromarray(np.uint8(np.stack([wet,mask[:,:,2],fault,mask[:,:,3]],axis=2).clip(0,1)*255)[::-1]).save(p)
+# Smooth the 4 m source grid for the illustrated shoreline. The canonical
+# wet mask above remains the source for geography. Preserve narrow channel cores.
+wet8=np.uint8(np.clip(wet,0,1)*255).astype(float)/255.
+bank=nd.gaussian_filter(wet8,1.35,mode='nearest')
+coverage=np.clip((bank-.20)/.60,0,1)
+coverage=coverage*coverage*(3-2*coverage)
+water=np.maximum(coverage,nd.minimum_filter(wet8,size=3,mode='nearest'))
+p=out/'SurfaceWeights.png';Image.fromarray(np.uint8(np.stack([water,mask[:,:,2],fault,mask[:,:,3]],axis=2).clip(0,1)*255)[::-1]).save(p,optimize=True)
