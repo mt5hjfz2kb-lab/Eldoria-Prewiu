@@ -1,0 +1,60 @@
+name: Valoria public first paint and Unity startup
+on:
+  push:
+    branches: [experiment/valoria-ciudad-region-unificada-20261121]
+    paths: ['.github/workflows/valoria-safari-entry.yml']
+permissions:
+  contents: read
+jobs:
+  public-entry:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-15
+            engine: webkit
+          - os: ubuntu-latest
+            engine: chromium
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 14
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install playwright pillow
+      - run: python -m playwright install --with-deps ${{ matrix.engine }}
+      - env:
+          ENGINE: ${{ matrix.engine }}
+        run: |
+          python -u - <<'PY'
+          import os
+          from playwright.sync_api import sync_playwright
+          from PIL import Image,ImageStat
+          with sync_playwright() as pw:
+              engine=os.environ['ENGINE']; cfg={} if engine=='webkit' else {'args':['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']}
+              with getattr(pw,engine).launch(**cfg) as browser:
+                  page=browser.new_page(viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
+                  page.on('pageerror', lambda e: print('Page error:',e))
+                  page.on('console', lambda m: print(m.type,m.text[:350]) if m.type in ('error','warning') else None)
+                  page.goto('https://valoria-revision-53489c4.kbkvc5c45n.chatgpt.site/?inicio=2',wait_until='domcontentloaded')
+                  assert page.locator('#carga').is_visible()
+                  print('Primer estado:',page.locator('#estado').inner_text())
+                  page.screenshot(path='inicio.png')
+                  for n in range(75):
+                      if not page.locator('#carga').count(): break
+                      msg=page.locator('#estado').inner_text()
+                      if n%4==0:print(msg)
+                      if page.locator('#reinicio').is_visible():raise RuntimeError(msg)
+                      page.wait_for_timeout(4000)
+                  assert not page.locator('#carga').count(), 'Unity no ha terminado'
+                  page.wait_for_timeout(6000)
+                  page.screenshot(path='juego.png')
+                  stat=ImageStat.Stat(Image.open('juego.png').convert('RGB'))
+                  print('Variación de la imagen:',stat.stddev)
+                  assert max(stat.stddev)>10
+          PY
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-${{ matrix.engine }}
+          path: '*.png'
