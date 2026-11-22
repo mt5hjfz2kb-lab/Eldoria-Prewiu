@@ -128,7 +128,10 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // The riverbanks come from the actual signed geographic shoreline.
   float shore=(features.a-.5)*12;
   float aa=clamp(fwidth(shore),.32,1.4);
-  half wet=smoothstep(-aa,aa,shore);
+  // Real near-camera captures showed an abrupt, hard teal cut against the
+  // approved Valoria grass near the canonical bridge. Blend over the EXISTING
+  // signed bank field (in metres), not by adding a river decal on the terrain.
+  half wet=smoothstep(-2.4-aa,2.1+aa,shore);
   mask.r=lerp(mask.r,wet,local);
   half landBank=(1-wet)*local;
   half terrace=landBank*(1-smoothstep(.35,2.4,-shore));
@@ -147,6 +150,9 @@ Shader "Eldoria/Region1/Illustrated ground" {
   colour=lerp(colour,pathColour,road*lerp(.96,wear,close));
   colour=lerp(colour,lerp(sharedEarth,slate,.34),features.b*local*.48);
   half3 riverColour=lerp(half3(.035,.145,.16),water,.37+.40*close);
+  half riverMargin=1-smoothstep(.4,3.5,abs(shore));
+  riverColour=lerp(riverColour,lerp(water,sharedEarth,.18),
+                   riverMargin*local*close*.33);
   half shelf=1-smoothstep(0,3.8,shore);
   half bank=(1-smoothstep(.15,2.1,abs(shore)))*local*close;
   colour=lerp(colour,lerp(earth,slate,.32),bank*.68);
