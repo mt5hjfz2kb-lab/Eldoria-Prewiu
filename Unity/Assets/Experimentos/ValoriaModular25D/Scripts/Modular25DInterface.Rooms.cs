@@ -43,7 +43,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                             var s = gateway.Snapshot();
                             return new[]{ ValoriaIntegratedWorld.ReadCanonicalHero(s,"aldric"),
                                 ValoriaIntegratedWorld.ReadCanonicalHero(s,"lyra") };
-                        });
+                        },Resources.Load<Font>("ValoriaModular25D/UI/Fonts/CormorantGaramond-SemiBold"),
+                            Resources.Load<Font>("ValoriaModular25D/UI/Fonts/SourceSans3-Semibold"));
                         heroes.CanOpenDestination = () => gateway.Snapshot().ChapterThree.LyraRecruited;
                         heroes.CanOpenHero = id => id=="aldric" || id=="lyra" && heroes.CanOpenDestination();
                         var lyra = roomHost.GetComponent<HeroesLyraModel>() ?? roomHost.gameObject.AddComponent<HeroesLyraModel>();

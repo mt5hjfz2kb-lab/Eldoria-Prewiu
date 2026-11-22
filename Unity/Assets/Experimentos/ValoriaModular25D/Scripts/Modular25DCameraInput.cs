@@ -31,7 +31,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         // remain accessible by the existing pan/pinch controls.
         public static Vector3 ExpansionCenterForLevel(int level) =>
             level <= 2 ? new Vector3(-1.10f,-2.35f,-30f) :
-            level <= 4 ? new Vector3(-.30f,-3.00f,-30f) :
+            level == 3 ? new Vector3(-.48f,-2.62f,-30f) :
+            level == 4 ? new Vector3(-.35f,-3.04f,-30f) :
                          new Vector3(-.25f,-4.50f,-30f);
         public static float ExpansionSizeForLevel(float aspect,int level)
         {
@@ -41,7 +42,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // enlarge the genuine architectural footprint in the HOME camera.
             // Portrait fits the unlocked plots; landscape prioritises the
             // centre and lets the player pan to outlying working districts.
-            float verticalCoverage=level<=2?3.82f:level<=4?4.45f:5.10f;
+            float verticalCoverage=level<=2?3.82f:level==3?3.92f:level==4?4.12f:4.78f;
             float minimum=level<=2?6.2f:level<=4?7.0f:8.5f;
             return Mathf.Max(minimum,verticalCoverage/Mathf.Max(.40f,aspect));
         }

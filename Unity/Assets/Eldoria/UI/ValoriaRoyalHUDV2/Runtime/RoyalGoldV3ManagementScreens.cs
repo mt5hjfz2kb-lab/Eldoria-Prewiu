@@ -329,6 +329,8 @@ namespace Eldoria.UI.RoyalGold.V2
             militaryDepth=RoyalGoldV3LayeredFinish.Install(root,
                 RoyalGoldV3LayeredFinish.Scene.Training,2);
             trainingEnvironment=RoyalGoldV41SourceArt.Surface(root,"training-courtyard-layer-v1");
+            if(RoyalGoldV2Hud.UseCoronaArt)
+                trainingEnvironment.color=new Color(.83f,.80f,.85f,1f);
             trainingEnvironment.rectTransform.SetAsLastSibling();
             var courtyardFit=trainingEnvironment.gameObject.AddComponent<AspectRatioFitter>();
             courtyardFit.aspectMode=AspectRatioFitter.AspectMode.EnvelopeParent;
@@ -1433,6 +1435,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // typographic scorecard with no duplicate information surfaces.
             float rw=right.rect.width,rh=right.rect.height;
             bool showInset=!wide && rw>=360f && rh>=165f;
+            // On a portrait handset leave the full manuscript width for six
+            // attribute values. The vignette repeats the selected formation.
+            if(RoyalGoldV2Hud.UseCoronaArt && !wide) showInset=false;
             float insetW=showInset?rw*.30f:0f;
             float statsW=showInset?rw-insetW-12f:rw;
             Place(marchSummaryBacking,5f,3f,statsW-10f,wide?43f:49f);

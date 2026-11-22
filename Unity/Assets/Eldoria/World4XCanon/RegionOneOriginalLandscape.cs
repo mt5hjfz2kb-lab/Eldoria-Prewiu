@@ -226,8 +226,11 @@ namespace Eldoria.World4XCanon
                     float px=tree.x,pz=tree.z;
                     var foot=new Vector3(px,Ground(px,pz)+.12f,pz);
                     int pick=Mathf.Abs(Mathf.RoundToInt(px*3.1f+pz*7.7f))%13;
-                    batches[pick<5?"CityGrove":pick<9?"CityOak":pick%2==0?"PaintedFir":"PaintedForestGrove"].Add(foot);
-                    cityTrees[foot]=tree.y;
+                    float stand=Mathf.PerlinNoise(px*.009f+8,pz*.009f+3);
+                    string family=stand>.55f ? (pick<9?"PaintedFir":"PaintedForestGrove") :
+                        (pick<8?"CityOak":pick<12?"CityGrove":"PaintedForestGrove");
+                    batches[family].Add(foot);
+                    cityTrees[foot]=tree.y*Mathf.Lerp(.82f,1.25f,stand);
                 }
                 // Rock outcrops punctuate clearings. All trees come from the authored stands.
                 for(int n=0;n<40;n++){

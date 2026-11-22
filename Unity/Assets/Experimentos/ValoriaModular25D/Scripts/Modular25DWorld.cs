@@ -144,6 +144,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // independently painted yard with each district footprint.
             grainYard.localPosition=new Vector3(-1.60f,0,0);
             quarryYard.localPosition=new Vector3(.90f,0,0);
+            // Routes follow the painted loading aprons. Yard visibility tracks the
+            // existing district state. Walker depth uses world Y (yards translate in X).
+            CreateVillager(grainYard,"Portadora del granero",new [] {
+                new Vector2(2.85f,-8.12f), new Vector2(3.55f,-8.58f),
+                new Vector2(4.44f,-8.38f), new Vector2(3.55f,-8.58f)
+            },2.3f);
+            CreateVillager(quarryYard,"Transportista de cantera",new [] {
+                new Vector2(-3.28f,-11.65f), new Vector2(-2.87f,-12.24f),
+                new Vector2(-1.65f,-12.45f), new Vector2(-2.87f,-12.24f)
+            },1.35f);
             grainYard.gameObject.SetActive(false);
             quarryYard.gameObject.SetActive(false);
 

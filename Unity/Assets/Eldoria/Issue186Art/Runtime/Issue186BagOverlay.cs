@@ -120,6 +120,9 @@ namespace Eldoria.UI.RoyalGold.V2
             var sharedFont=Resources.Load<Font>(heading?
                 "VigiliaArt/Fonts/CormorantGaramond-SemiBold":
                 "VigiliaArt/Fonts/LibreBaskerville-Regular");
+            if(RoyalGoldV2Hud.UseCoronaArt)
+                sharedFont=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+(heading?
+                    "CormorantGaramond-SemiBold":"SourceSans3-Semibold"));
             label.font=sharedFont?sharedFont:RoyalGoldV41SourceArt.Serif;
             label.fontSize=size;label.color=color;label.alignment=alignment;
             label.horizontalOverflow=HorizontalWrapMode.Wrap;
@@ -134,6 +137,9 @@ namespace Eldoria.UI.RoyalGold.V2
             rect.gameObject.AddComponent<CanvasRenderer>();
             var authored=caption=="USAR"?Resources.Load<Sprite>(
                 "VigiliaArt/PremiumSurfaces/burgundy_action"):null;
+            if(RoyalGoldV2Hud.UseCoronaArt)
+                authored=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/"+
+                    (caption=="USAR"?"action_arcane":"world_rune"));
             Graphic frame;
             if(authored)
             {
@@ -152,6 +158,12 @@ namespace Eldoria.UI.RoyalGold.V2
             button.targetGraphic=frame;
             label=TextAt(name+" caption",rect,16,Ivory,TextAnchor.MiddleCenter);
             label.text=caption;
+            if(RoyalGoldV2Hud.UseCoronaArt){
+                label.resizeTextForBestFit=true;
+                label.resizeTextMinSize=12;
+                label.resizeTextMaxSize=16;
+                label.horizontalOverflow=HorizontalWrapMode.Overflow;
+            }
             label.rectTransform.anchorMin=Vector2.zero;
             label.rectTransform.anchorMax=Vector2.one;
             label.rectTransform.offsetMin=label.rectTransform.offsetMax=Vector2.zero;
@@ -305,6 +317,8 @@ namespace Eldoria.UI.RoyalGold.V2
             count.fontSize=shortWide?14:17;
             float cardsTop=y0+37f,footer=h-b-58f;
             int columns=w>h?(w>=1150f?6:4):3;
+            if(RoyalGoldV2Hud.UseCoronaArt && w<h && viewW/Mathf.Max(1f,Screen.dpi/160f)<500f)
+                columns=2;
             float gap=shortWide?7f:10f;
             float cell=Mathf.Min((width-gap*(columns-1))/columns,
                 Mathf.Max(80f,footer-52f-cardsTop));
@@ -336,7 +350,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 // Novelty is already represented by the original badge.
                 // Keep source state available without duplicating a text line.
                 item.Detail.gameObject.SetActive(false);
-                float useH=Mathf.Max(22f,cell*.20f);
+                float useH=RoyalGoldV2Hud.UseCoronaArt?Mathf.Clamp(cell*.24f,35f,54f):Mathf.Max(22f,cell*.20f);
                 At((RectTransform)item.Use.transform,6f,cell-useH-5f,cell-12f,useH);
                 item.UseText.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.10f,11f,17f));
                 var skin=item.Use.targetGraphic as Image;

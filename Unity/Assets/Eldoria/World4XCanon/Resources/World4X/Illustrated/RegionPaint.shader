@@ -46,18 +46,13 @@ Shader "Eldoria/Region1/Illustrated ground" {
   return mist;
  }
  half3 peripheralMist(float2 metres) {
-  // Retain a restrained painted variation while converging on the same
-  // neutral panorama haze as the imported regional continuation.
-  // At the final overview the fog backing must become the exact camera haze.
-  // Retaining even a small amount of the painted variation produces a dark
-  // vertical shelf where the angled camera reveals the backing east of the
-  // raised geographic relief. Regional and close views keep the full paint.
   half3 painted=borderMist(metres);
-  // The actual coastline and its skirt still meet the camera haze exactly.
-  // Farther out, low-contrast paint gives the unexplored area atmospheric depth.
-  float outside=max(abs(metres.x)-910,abs(metres.y)-1800);
-  half cloud=smoothstep(24,160,outside)*(1-smoothstep(430,820,outside));
-  half3 overview=lerp(_BoundaryColour.rgb,painted,cloud*.40);
+  // Broad banks of mist cross the surveyed edge in world coordinates.
+  // The atmosphere mesh and the terrain evaluate the same field at the join.
+  float wind=sin(metres.x*.0034+sin(metres.y*.0041))*cos(metres.y*.0027);
+  float distanceToMap=max(abs(metres.x)-910,abs(metres.y)-1800);
+  half cloud=(1-smoothstep(360,1250,distanceToMap))*(.32+.17*wind);
+  half3 overview=lerp(_BoundaryColour.rgb,painted,cloud);
   return lerp(painted,overview,saturate(_BoundaryWeight));
  }
  half4 frag(Out i):SV_Target {
@@ -164,7 +159,10 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half3 districtGrass=lerp(openMeadow,woodedMeadow,canopy);
   districtGrass=lerp(districtGrass,grass*half3(.76,1.02,1.11),valley*.82);
   districtGrass=lerp(districtGrass,lerp(grass,slate,.39),upland*.85);
-  grass=lerp(grass,districtGrass,mapScale);
+  // Shade glades, forest litter and exposed shelves at the close scale too.
+  half litter=canopy*(.38+.23*saturate(dot(meadowRange,half3(.4,.5,.1))*2));
+  districtGrass=lerp(districtGrass,sharedEarth*half3(.69,.75,.66),litter);
+  grass=lerp(grass,districtGrass,.72+.28*mapScale);
   half faultWeight=saturate(mask.b);
   half3 fracturedSlate=slate*lerp(half3(1,1,1),half3(.84,.72,.96),
                                   smoothstep(.035,.45,district.b)*mapScale);
@@ -176,7 +174,13 @@ Shader "Eldoria/Region1/Illustrated ground" {
   if(all(faultUV>=0) && all(faultUV<=1)){
    half4 fault=SAMPLE_TEXTURE2D(_FaultPigment,sampler_FaultPigment,faultUV);
    half glow=saturate(min(fault.b-fault.g,fault.r-fault.g)*34);
-   fault.rgb+=half3(.24,.047,.43)*glow*(.89+.11*sin(_Time.y*.86+faultUV.x*8));
+   // Pigment isolates the interior seam. Preserve the illuminated rock lip
+   // while violet reflected light reaches the near wall of the opening.
+   half violetExcess=max(0,min(fault.b-fault.g,fault.r-fault.g));
+   half bounce=smoothstep(.002,.026,violetExcess);
+   half pulse=.88+.12*sin(_Time.y*.71+faultUV.x*11-faultUV.y*5);
+   fault.rgb=fault.rgb*lerp(half3(1,1,1),half3(.86,.81,1.08),bounce)
+          +half3(.34,.069,.53)*glow*pulse+half3(.032,.009,.054)*bounce;
    colour=lerp(colour,fault.rgb,fault.a);
   }
   // Use the archival region map only as a subtle broad RELIEF lighting
@@ -196,12 +200,17 @@ Shader "Eldoria/Region1/Illustrated ground" {
   currentPaint=LinearToSRGB(currentPaint);
   #endif
   half pigment=saturate((dot(currentPaint,half3(.24,.56,.20))-.16)*4.0);
-  half3 channel=half3(.055,.245,.34)*(.61+pigment*.88);
-  half3 shallows=half3(.19,.42,.43)*(.80+pigment*.60);
-  half shelf=(1-smoothstep(.35,4.0,shore))*local;
-  half3 riverColour=lerp(channel,shallows,shelf*.83);
-  half glint=smoothstep(.45,.82,pigment)*lerp(.4,1,close);
-  riverColour+=half3(.11,.18,.16)*glint;
+  // The geographic mask and its existing broad mip also describe shallows
+  // outside the near survey. Work in display pigment before converting once.
+  half shelf=lerp(1-smoothstep(.17,.79,district.r),1-smoothstep(.1,5.1,shore),local);
+  half3 channel=half3(.14,.265,.255)*(.82+pigment*.37);
+  half3 shallows=half3(.36,.40,.30)*(.85+pigment*.32);
+  half3 riverColour=lerp(channel,shallows,shelf*.88);
+  half glint=smoothstep(.36,.85,pigment)*lerp(.42,1,close);
+  riverColour+=half3(.11,.12,.115)*glint;
+  #ifndef UNITY_COLORSPACE_GAMMA
+  riverColour=SRGBToLinear(riverColour);
+  #endif
   half bank=(1-smoothstep(.15,1.35,abs(shore)))*local*close;
   colour=lerp(colour,lerp(earth,slate,.55),bank*.68);
   colour=lerp(colour,riverColour,mask.r);
@@ -228,14 +237,11 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // routes and every gameplay coordinate remain untouched.
   half easternSea=smoothstep(500,900,metre.x)*smoothstep(.05,.90,mask.r)*panorama;
   colour=lerp(colour,peripheralMist(metre),easternSea);
-  float edge=min(910-abs(metre.x),1800-abs(metre.y));
-  // Height variation already gives the mapped relief a natural silhouette.
-  // The former 37 m procedural wobble displaced this blend far enough to expose
-  // a dark, scalloped strip of the baked overview pigment on the eastern side.
-  // Feather a wider *render-only* band at panorama zoom; geography, fog of war,
-  // colliders and discovery bounds remain exactly the canonical Region 1 data.
-  edge+=7*sin(metre.x*.014+metre.y*.009)+4*cos(metre.y*.027-metre.x*.012);
-  half mist=panorama*(1-smoothstep(72,286,edge));
+  float2 chart=abs(metre)/float2(910,1800);
+  float2 squared=chart*chart;
+  float edge=(1-sqrt(sqrt(dot(squared,squared))))*910;
+  edge+=42*sin(metre.y*.005+sin(metre.x*.009))+23*cos(metre.x*.014-metre.y*.009);
+  half mist=panorama*(1-smoothstep(68,330,edge));
   half3 haze=mist>.001 ? peripheralMist(metre) : colour;
   return half4(lerp(colour,haze,mist),1);
  }

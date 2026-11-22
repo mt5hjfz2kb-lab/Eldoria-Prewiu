@@ -48,6 +48,9 @@ Shader "Eldoria/World4X/LocalCanopy"
      float sniff=pow(saturate(.5+.5*sin(t*.71)),4);
      i.uv.y+=head*.040*sniff-body*.016*sin(t*2.1);
      i.uv.x+=body*.009*sin(t*1.3);
+     // A slower, independent shift of the upright enemy's shoulders. Leave
+     // the lower silhouette pinned while the boar keeps its rooting motion.
+     if(_CreatureTempo<1.2) i.uv.x+=body*body*.019*sin(t*.79);
     }
     half4 c=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
     if (_FaultLight>.5)
@@ -59,9 +62,13 @@ Shader "Eldoria/World4X/LocalCanopy"
      c.rgb+=half3(.24,.047,.43)*violet*pulse;
     }
     float edge=min(910-abs(i.metre.x),1800-abs(i.metre.y));
-    if(_SoftEdges>.5 && _BoundaryWeight>0)
-     edge+=7*sin(i.metre.x*.014+i.metre.y*.009)+4*cos(i.metre.y*.027-i.metre.x*.012);
-    half boundary=lerp(1,lerp(smoothstep(-16,150,edge),smoothstep(72,286,edge),_SoftEdges),saturate(_BoundaryWeight));
+    if(_SoftEdges>.5 && _BoundaryWeight>0){
+     float2 chart=abs(i.metre)/float2(910,1800);
+     float2 squared=chart*chart;
+     edge=(1-sqrt(sqrt(dot(squared,squared))))*910;
+     edge+=42*sin(i.metre.y*.005+sin(i.metre.x*.009))+23*cos(i.metre.x*.014-i.metre.y*.009);
+    }
+    half boundary=lerp(1,lerp(smoothstep(-16,150,edge),smoothstep(68,330,edge),_SoftEdges),saturate(_BoundaryWeight));
     // Genuine alpha-blended city sprites have translucent fine edges.
     // In modular mode, keep their anti-aliased painted crowns and roofs
     // without adding another graphics layer or touching geographic data.

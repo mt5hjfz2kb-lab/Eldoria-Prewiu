@@ -468,6 +468,8 @@ namespace Eldoria.UI.RoyalGold.V2
             float available=Mathf.Max(110f,h-contentTop-bottom-navH-7f);
             float rowH=wide?Mathf.Clamp(h*.14f,layoutUnit>1f?88f:71f,124f):
                 Mathf.Clamp(h*.105f,87f,145f);
+            if(RoyalGoldV2Hud.UseCoronaArt && !wide && count>=3)
+                rowH=Mathf.Min(h*.145f,(available-46f)/count);
             rowH=Mathf.Max(48f,
                 Mathf.Min(rowH,(available-46f)/Mathf.Max(1,count)));
             float bodyHeight=selected?available:Mathf.Min(available,

@@ -44,16 +44,18 @@ namespace Eldoria.HeroesUI
         RectTransform root, content;
         HeroesModelSnapshot preview;
         Font font,compactFont;
+        bool coronaTypography;
         float observedWidth, observedHeight;
         readonly Color gold = new Color(.78f,.63f,.37f), ivory = new Color(.96f,.91f,.80f),
             midnight = new Color(.035f,.049f,.069f), panel = new Color(.065f,.079f,.099f);
 
-        public void Initialize(RectTransform safeArea, Func<HeroState[]> readHeroes)
+        public void Initialize(RectTransform safeArea, Func<HeroState[]> readHeroes, Font heading=null, Font body=null)
         {
             if (!safeArea || readHeroes == null) throw new ArgumentNullException();
             ExistingHudSafeArea=safeArea;ReadHeroes=readHeroes;
-            compactFont=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            font=Resources.Load<Font>("EldoriaRetention/reference-serif") ?? compactFont;
+            compactFont=body ?? Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            font=heading ?? Resources.Load<Font>("EldoriaRetention/reference-serif") ?? compactFont;
+            coronaTypography=body!=null;
             if(root)return;
             root=Rect("Heroes / canonical destination",safeArea);
             root.anchorMin=Vector2.zero;root.anchorMax=Vector2.one;
@@ -131,7 +133,7 @@ namespace Eldoria.HeroesUI
         Text Label(string name,Transform parent,string value,float x,float y,float w,float h,int size,TextAnchor align=TextAnchor.MiddleLeft)
         {
             var r=Rect(name,parent);Place(r,x,y,w,h);var t=r.gameObject.AddComponent<Text>();
-            t.font=(CurrentPage!=Page.Salon && content && content.rect.width>content.rect.height && content.rect.height<500f) ? compactFont : font;t.text=value??"";t.fontSize=size;t.color=ivory;t.alignment=align;t.raycastTarget=false;
+            t.font=(coronaTypography && size<=22 || CurrentPage!=Page.Salon && content && content.rect.width>content.rect.height && content.rect.height<500f) ? compactFont : font;t.text=value??"";t.fontSize=size;t.color=ivory;t.alignment=align;t.raycastTarget=false;
             t.horizontalOverflow=HorizontalWrapMode.Wrap;t.verticalOverflow=VerticalWrapMode.Truncate;
             t.resizeTextForBestFit=true;t.resizeTextMinSize=Mathf.Min(12,size);t.resizeTextMaxSize=size;return t;
         }

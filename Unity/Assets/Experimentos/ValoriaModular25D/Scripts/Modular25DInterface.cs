@@ -331,7 +331,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if (hand)
                 {
                     firstBuildGuide = Plate("Guía de la primera obra",sawmillTag,hand,new Vector2(.68f,.18f),
-                        new Vector2(.21f,.86f),Vector2.zero,new Vector2(64f,64f));
+                        new Vector2(.21f,.86f),Vector2.zero,new Vector2(74f,74f));
                     firstBuildGuide.GetComponent<Image>().preserveAspect = true;
                     firstBuildGuide.gameObject.SetActive(false);
                 }
@@ -353,9 +353,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var inner = frame.Find("Inner vellum").GetComponent<Image>();
             inner.sprite = activityPanelPlate;
             inner.color = Color.white;
+            inner.type = Image.Type.Sliced;
             frame.GetComponent<Image>().color = AntiqueBrass;
             foreach (var text in inner.transform.parent.GetComponentsInChildren<Text>(true))
             {
+                text.font=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+(text.name=="Opening question"
+                    ? "CormorantGaramond-SemiBold" : "SourceSans3-Semibold")) ?? text.font;
                 text.color = WarmWhite;
                 if (text.name == "Opening question") text.color = PaleGold;
             }
