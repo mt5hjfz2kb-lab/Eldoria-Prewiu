@@ -105,7 +105,9 @@ namespace Eldoria.World4XCanon
      anchor=JsonUtility.FromJson<CityAnchor>(
        Resources.Load<TextAsset>("ValoriaStrategic/"+key+"-anchor").text);
     }
-    var material=new Material(nodes){name="Valoria approved original "+key,mainTexture=texture};cityMaterials.Add(material);
+    var material=new Material(nodes){name="Valoria approved original "+key,mainTexture=texture};
+    if(RegionOneModularArt.Enabled)material.SetFloat("_SoftEdges",1f);
+    cityMaterials.Add(material);
     width=RegionOneModularArt.Enabled ? 31f : BastionOneVisualWidth;float h=width*texture.height/texture.width;
     foot=host.WorldHome+new Vector3(3.3f,0,-7.5f);foot.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(3.3f,-7.5f)+.18f;
     Create(name,new[]{foot,foot,foot,foot},new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up},
