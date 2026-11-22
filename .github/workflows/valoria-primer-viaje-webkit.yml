@@ -46,6 +46,12 @@ jobs:
           gh release create "$tag" --target "$GITHUB_SHA" --prerelease --latest=false --title "Valoria · Mundo y obras · ${SOURCE:0:7}" --notes "Unity source $SOURCE · Actions $BUILD_RUN" "${assets[@]}" mobile/assets.json mobile/index.html
   webkit:
     needs: package
+    strategy:
+      fail-fast: false
+      matrix:
+        transfer: [bounded, compatible]
+    env:
+      VALORIA_GPU_PROFILE: ${{ matrix.transfer }}
     runs-on: macos-15
     timeout-minutes: 25
     steps:
@@ -75,6 +81,7 @@ jobs:
           PY
           python -m pip install -q playwright
           python -m playwright install webkit
+          python tools/valoria-modular25d/bound-webgl-uploads.py mobile/r/6601ff8-m1/Build/RegionModular.framework.js.unityweb
           python -u tools/valoria-modular25d/first-travel-webkit.py
       - if: failure()
         run: |
@@ -83,5 +90,5 @@ jobs:
       - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: primer-viaje-webkit
+          name: primer-viaje-webkit-${{ matrix.transfer }}
           path: evidence-webkit/

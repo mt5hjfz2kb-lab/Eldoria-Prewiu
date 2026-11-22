@@ -2,6 +2,7 @@
 import asyncio
 import json
 import time
+import os
 import gzip
 from urllib.parse import urlparse
 from pathlib import Path
@@ -36,6 +37,13 @@ async def main():
          }
          document.addEventListener('webglcontextlost',()=>console.error('LAST_GL_OPERATIONS '+JSON.stringify(ring)),true);
         })()""")
+        if os.environ.get("VALORIA_GPU_PROFILE")=="compatible":
+            await context.add_init_script("""(() => {
+             const p=WebGL2RenderingContext.prototype, get=p.getExtension, all=p.getSupportedExtensions;
+             const legacy=name=>/texture_compression_bptc|compressed_texture_s3tc/i.test(name);
+             p.getExtension=function(name){return legacy(name)?null:get.call(this,name);};
+             p.getSupportedExtensions=function(){return all.call(this).filter(x=>!legacy(x));};
+            })()""")
         page = await context.new_page()
         # WebKit's local-network privacy prompt is outside Playwright's page.
         # Serve the release bytes through the test context itself.
