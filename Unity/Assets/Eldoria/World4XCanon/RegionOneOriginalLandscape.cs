@@ -351,12 +351,13 @@ namespace Eldoria.World4XCanon
             material.SetFloat("_SoftEdges",1f);
             owned.Add(material);look.RegisterPeripheralMaterial(material);Draw(mesh,material);
         }
-        void Draw(Mesh mesh,Material mat)
+        MeshRenderer Draw(Mesh mesh,Material mat)
         {
             var go=new GameObject(mesh.name);go.layer=29;go.transform.SetParent(surface,false);
             go.AddComponent<MeshFilter>().sharedMesh=mesh;
             var renderer=go.AddComponent<MeshRenderer>();renderer.sharedMaterial=mat;
             renderer.shadowCastingMode=ShadowCastingMode.Off;renderer.receiveShadows=false;owned.Add(mesh);
+            return renderer;
         }
         readonly Dictionary<string,Material> decals=new Dictionary<string,Material>();
         Material DecalMaterial(string name)
@@ -364,11 +365,12 @@ namespace Eldoria.World4XCanon
             if(!decals.TryGetValue(name,out var mat)){
                 mat=new Material(Shader.Find("Eldoria/World4X/LocalCanopy"));mat.mainTexture=Texture(name);
                 mat.SetFloat("_SoftEdges",1f);
+                if(name=="Fault")mat.SetFloat("_FaultLight",1f);
                 owned.Add(mat);look.RegisterPeripheralMaterial(mat);decals.Add(name,mat);
             }
             return mat;
         }
-        void Decal(string name,float x,float z,float width,float depth,float angle,float lift)
+        MeshRenderer Decal(string name,float x,float z,float width,float depth,float angle,float lift)
         {
             var mat=DecalMaterial(name);
             const int n=12;
@@ -383,7 +385,7 @@ namespace Eldoria.World4XCanon
                 tri[t++]=k;tri[t++]=k+n+1;tri[t++]=k+1;
                 tri[t++]=k+1;tri[t++]=k+n+1;tri[t++]=k+n+2;
             }
-            var mesh=new Mesh{name="Painted "+name,vertices=v,uv=uv,triangles=tri};mesh.RecalculateBounds();Draw(mesh,mat);
+            var mesh=new Mesh{name="Painted "+name,vertices=v,uv=uv,triangles=tri};mesh.RecalculateBounds();return Draw(mesh,mat);
         }
         static readonly string[] ChapterIds={"hunt-wolf","hunt-boar","meat-valoria","ash-stalker-valoria","fissure-valoria"};
         readonly HashSet<string> illustratedChapter=new HashSet<string>();
@@ -394,9 +396,16 @@ namespace Eldoria.World4XCanon
                 var target=host.FindTarget(id);
                 if(!target)continue;
                 foreach(var donor in target.GetComponentsInChildren<Renderer>(true))donor.forceRenderingOff=true;
-                var art=kit.Place(surface,RegionOneModularArt.Illustration(id),id=="fissure-valoria"?12:9,target.transform.position);
-                campaign.Add((target.transform,art,id));
-                if(id=="fissure-valoria")campaign.Add((target.transform,kit.Place(surface,"SealedFault",12,target.transform.position),"closing-scar"));
+                if(id=="fissure-valoria"){
+                    var local=target.transform.position-home;
+                    var open=Decal("Fault",local.x,local.z,18,8,19,.32f);
+                    var sealedScar=Decal("SealedFault",local.x,local.z,16,8,19,.32f);
+                    campaign.Add((target.transform,open,id));
+                    campaign.Add((target.transform,sealedScar,"closing-scar"));
+                }else{
+                    var art=kit.Place(surface,RegionOneModularArt.Illustration(id),9,target.transform.position);
+                    campaign.Add((target.transform,art,id));
+                }
                 illustratedChapter.Add(id);
             }
         }
@@ -416,7 +425,8 @@ namespace Eldoria.World4XCanon
             foreach(var entry in campaign){
                 var pos=entry.target.position;
                 pos.y=home.y+Ground(pos.x-home.x,pos.z-home.z)+.3f;
-                entry.art.transform.position=pos;
+                if(entry.id!="fissure-valoria" && entry.id!="closing-scar")
+                    entry.art.transform.position=pos;
                 bool available=entry.target.gameObject.activeInHierarchy;
                 if(entry.id=="corrupt-scout")available&=!state.ScoutDefeated;
                 if(entry.id=="engendro-valoria")available&=!state.EngendroDefeated;

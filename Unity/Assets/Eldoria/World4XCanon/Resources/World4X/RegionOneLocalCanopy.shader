@@ -1,6 +1,6 @@
 Shader "Eldoria/World4X/LocalCanopy"
 {
- Properties { _CreatureTempo("Painted creature idle tempo",Float)=0  _MainTex("Canopy",2D)="white"{} _Tint("Art tint",Color)=(1,1,1,1) _BillboardScale("World silhouette scale",Float)=1 _BoundaryWeight("Panorama boundary",Range(0,1))=0 _BoundaryColour("Panorama haze",Color)=(.63,.685,.665,1) _SoftEdges("Bastion I painterly alpha",Range(0,1))=0 _CameraFacingDepth("Modular orthographic foreground depth",Float)=0 }
+ Properties { _FaultLight("Open geological seam",Float)=0 _CreatureTempo("Painted creature idle tempo",Float)=0  _MainTex("Canopy",2D)="white"{} _Tint("Art tint",Color)=(1,1,1,1) _BillboardScale("World silhouette scale",Float)=1 _BoundaryWeight("Panorama boundary",Range(0,1))=0 _BoundaryColour("Panorama haze",Color)=(.63,.685,.665,1) _SoftEdges("Bastion I painterly alpha",Range(0,1))=0 _CameraFacingDepth("Modular orthographic foreground depth",Float)=0 }
  SubShader
  {
   Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="TransparentCutout" "Queue"="AlphaTest" }
@@ -12,7 +12,7 @@ Shader "Eldoria/World4X/LocalCanopy"
    #pragma fragment frag
    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
    TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
-   CBUFFER_START(UnityPerMaterial) half4 _Tint; half4 _BoundaryColour; float _BillboardScale; float _BoundaryWeight; float _CreatureTempo; float _SoftEdges; float _CameraFacingDepth; CBUFFER_END
+   CBUFFER_START(UnityPerMaterial) half4 _Tint; half4 _BoundaryColour; float _BillboardScale; float _BoundaryWeight; float _FaultLight; float _CreatureTempo; float _SoftEdges; float _CameraFacingDepth; CBUFFER_END
    struct Attributes { float3 positionOS:POSITION; float2 uv:TEXCOORD0; float2 offset:TEXCOORD1; };
    struct Varyings { float4 positionCS:SV_POSITION; float2 uv:TEXCOORD0; float2 metre:TEXCOORD1; };
    Varyings vert(Attributes i)
@@ -50,6 +50,14 @@ Shader "Eldoria/World4X/LocalCanopy"
      i.uv.x+=body*.009*sin(t*1.3);
     }
     half4 c=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
+    if (_FaultLight>.5)
+    {
+     // Light comes only from the painted violet interior. Rock lips, roots
+     // and translucent earth keep the upper-left illumination of the city.
+     half violet=saturate(min(c.b-c.g,c.r-c.g)*34);
+     half pulse=.89+.11*sin(_Time.y*.86+i.uv.x*8);
+     c.rgb+=half3(.24,.047,.43)*violet*pulse;
+    }
     float edge=min(910-abs(i.metre.x),1800-abs(i.metre.y));
     if(_SoftEdges>.5 && _BoundaryWeight>0)
      edge+=7*sin(i.metre.x*.014+i.metre.y*.009)+4*cos(i.metre.y*.027-i.metre.x*.012);
