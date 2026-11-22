@@ -109,8 +109,10 @@ namespace Eldoria.UI.RoyalGold {
      oldTitleMinSize=modal.Title.resizeTextMinSize;
      oldTitleMaxSize=modal.Title.resizeTextMaxSize;
      oldButtonTextTint=modal.ExtraLabel.color;
-     coronaFrame.sprite=panel;coronaFrame.type=Image.Type.Simple;coronaFrame.color=Color.white;
-     coronaAction.sprite=action;coronaAction.type=Image.Type.Simple;coronaAction.color=Color.white;
+     // Reuse the complete approved nine-slice artwork; stretching these
+     // baked corners created visibly inconsistent dialogue bevels.
+     coronaFrame.sprite=panel;coronaFrame.type=Image.Type.Sliced;coronaFrame.color=Color.white;
+     coronaAction.sprite=action;coronaAction.type=Image.Type.Sliced;coronaAction.color=Color.white;
      modal.Title.color=new Color32(245,213,156,255);
      // Keep the entire canonical lore title on screen at phone resolution.
      modal.Title.resizeTextForBestFit=true;
