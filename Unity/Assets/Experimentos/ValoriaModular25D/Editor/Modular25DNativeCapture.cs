@@ -270,8 +270,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                        world.GranaryRenderer.gameObject.activeSelf!=(level>=3) ||
                        world.StoneworksRenderer.gameObject.activeSelf!=(level>=5))
                         throw new Exception("Progression visual gate mismatch "+level);
-                    var framing=level==1?home:Modular25DCameraInput.ExpansionCenter;
-                    float size=level==1?portrait:Modular25DCameraInput.ExpansionSize(390f/844f);
+                    // The previous art review mistakenly used Bastion V's
+                    // full-region camera for EVERY stage II-V. That made the
+                    // native certification frames look smaller than the live
+                    // progressively framed player. Render each level using
+                    // the exact same Home state as Modular25DCameraInput.
+                    var framing=level==1?home:
+                        Modular25DCameraInput.ExpansionCenterForLevel(level);
+                    float size=level==1?portrait:
+                        Modular25DCameraInput.ExpansionSizeForLevel(390f/844f,level);
                     Render(cam,output,report,"stage-"+level+"-fixture-390x844",390,844,framing,size);
                     Render(cam,output,report,"stage-"+level+"-fixture-1170x2532",1170,2532,framing,size);
                     Render(cam,output,report,"stage-"+level+"-keep-detail",1170,1170,new Vector3(-.4f,3.1f,-30f),3.3f);
