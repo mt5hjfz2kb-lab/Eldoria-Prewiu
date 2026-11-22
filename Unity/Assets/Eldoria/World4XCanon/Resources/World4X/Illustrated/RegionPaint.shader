@@ -106,6 +106,9 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // This operates INSIDE the one regional terrain shader, not on new planes.
   half cityPaint=saturate(_CityFinish)*lerp(.84,.98,paintedScale);
   half3 grass=lerp(continentalGrass,cityAtZoom,cityPaint);
+  // Canonical canopy coverage keeps woodland readable between distant crowns.
+  half woodland=smoothstep(.12,.82,mask.a);
+  grass*=lerp(half3(1,1,1),half3(.66,.83,.76),woodland*lerp(.60,1,strategicScale));
   half3 earth=SAMPLE_TEXTURE2D(_Earth,sampler_Earth,terrainUV*.94).rgb;
   half3 slate=SAMPLE_TEXTURE2D(_Slate,sampler_Slate,terrainUV*.61).rgb;
   half3 water=SAMPLE_TEXTURE2D(_Water,sampler_Water,terrainUV*.81+float2(0,_Time.y*.012)).rgb;
@@ -113,8 +116,11 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // the ORIGINAL mapped path mask. There are no raised photo decals.
   half4 cityDirt=SAMPLE_TEXTURE2D(_CityEarth,sampler_CityEarth,
                                    metre/6.5+float2(.17,.09));
-  half4 cityPaving=SAMPLE_TEXTURE2D(_CityCobble,sampler_CityCobble,
-                                     metre/5.7+float2(.12,.24));
+  // The mapped lane supplies the road edge. Mirror the opaque interior of
+  // the city strip so its two transparent shoulders never cross a lane.
+  float2 pavingUV=metre/float2(5.7,11.4)+float2(.12,.24);
+  pavingUV.x=.22+.56*abs(frac(pavingUV.x*.5)*2-1);
+  half4 cityPaving=SAMPLE_TEXTURE2D(_CityCobble,sampler_CityCobble,pavingUV);
   half3 sharedEarth=lerp(earth,cityDirt.rgb,cityDirt.a*.75*_CityFinish);
   half cityNear=1-smoothstep(55,138,length(metre));
   half3 pathColour=lerp(sharedEarth,cityPaving.rgb,

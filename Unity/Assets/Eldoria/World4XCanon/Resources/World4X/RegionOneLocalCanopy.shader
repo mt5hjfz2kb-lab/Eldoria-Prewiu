@@ -39,7 +39,9 @@ Shader "Eldoria/World4X/LocalCanopy"
    {
     half4 c=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
     float edge=min(910-abs(i.metre.x),1800-abs(i.metre.y));
-    half boundary=lerp(1,smoothstep(-16,150,edge),saturate(_BoundaryWeight));
+    if(_SoftEdges>.5 && _BoundaryWeight>0)
+     edge+=7*sin(i.metre.x*.014+i.metre.y*.009)+4*cos(i.metre.y*.027-i.metre.x*.012);
+    half boundary=lerp(1,lerp(smoothstep(-16,150,edge),smoothstep(72,286,edge),_SoftEdges),saturate(_BoundaryWeight));
     // Genuine alpha-blended city sprites have translucent fine edges.
     // In modular mode, keep their anti-aliased painted crowns and roofs
     // without adding another graphics layer or touching geographic data.
