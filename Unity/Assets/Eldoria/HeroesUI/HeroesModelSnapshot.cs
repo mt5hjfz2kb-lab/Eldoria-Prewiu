@@ -94,7 +94,11 @@ namespace Eldoria.HeroesUI
             camera=cameraObject.AddComponent<Camera>();camera.enabled=false;camera.orthographic=false;
             camera.fieldOfView=32;camera.aspect=2f/3f;camera.cullingMask=1<<renderLayer;
             camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.clear;
-            camera.allowHDR=false;camera.allowMSAA=true;camera.nearClipPlane=.01f;camera.farClipPlane=height*12;
+            // Keep the offscreen portrait and WebGL's single-sample attachment
+            // in agreement. The 1024 x 1536 portrait still downsamples to its card.
+            int samples=UnityEngine.Application.platform==RuntimePlatform.WebGLPlayer ? 1 :
+                (UnityEngine.Application.isMobilePlatform ? 2 : 4);
+            camera.allowHDR=false;camera.allowMSAA=samples>1;camera.nearClipPlane=.01f;camera.farClipPlane=height*12;
             var data=cameraObject.AddComponent<UniversalAdditionalCameraData>();data.renderPostProcessing=false;data.renderShadows=true;
             key=Lamp("Hero / window key",new Color(.96f,.87f,.72f),1.12f);
             key.shadows=LightShadows.Soft;key.shadowStrength=.95f;key.shadowBias=.009f;key.shadowNormalBias=.018f;
@@ -105,9 +109,7 @@ namespace Eldoria.HeroesUI
             // No extra model, importer, save state or physical camera is added.
             texture=new RenderTexture(1024,1536,24,RenderTextureFormat.ARGB32){
                 name="Hero live perspective portrait",filterMode=FilterMode.Bilinear,
-                // Multi-sample the ORIGINAL geometry, not a sharpened sprite.
-                // Mobile uses 2x to limit memory; desktops use 4x.
-                antiAliasing=UnityEngine.Application.isMobilePlatform?2:4};
+                antiAliasing=samples};
             texture.Create();camera.targetTexture=texture;
         }
         Light Lamp(string name,Color color,float intensity){

@@ -36,7 +36,12 @@ async def main():
                 log.append({'region_phase':msg.text[:350],'browser_seconds':round(time.monotonic(),2)})
                 print(log[-1],flush=True)
                 if msg.type=='error': errors.append(msg.text[:600])
-            elif msg.type=='error': errors.append(msg.text[:600])
+            elif msg.type=='error':
+                errors.append(msg.text[:600])
+                log.append({'console_error':msg.text[:200],'scene':state.get('activeScene'),
+                            'room':state.get('room'),'level':state.get('level')})
+        page.on('response', lambda res: log.append({'http_error':res.status,'url':res.url})
+                if res.status>=400 else None)
         page.on('console',console)
         page.on('pageerror',lambda e: errors.append(str(e)))
         cdp=await ctx.new_cdp_session(page)
@@ -318,6 +323,9 @@ async def main():
             for n,(x1,y1,x2,y2) in enumerate([(145,530,320,350),(160,560,325,355),(319,540,70,402),(330,525,55,400),(218,560,276,360),(140,540,300,370)]):
                 await swipe(x1,y1,x2,y2)
                 await page.screenshot(path=OUT/f'bastion-5-recorrido-{n}.png')
+            graphics_errors=[e for e in errors if 'RenderPass:' in e or
+                             'EndRenderPass:' in e or 'VIGILIA_PRODUCTION_CANONICAL_SESSION_NOT_READY' in e]
+            assert not graphics_errors,graphics_errors
             print('PASS',browser.version,state,flush=True)
         finally:
             (OUT/'journey.json').write_text(json.dumps({'browser':browser.version,'viewport':[390,844],'clock':'UTC elapsed by test, normal game timers','log':log,'last':state,'errors':errors},indent=2))

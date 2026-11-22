@@ -19,7 +19,11 @@ namespace Eldoria.BreachWatch
         static void Begin()
         {
 #if !UNITY_EDITOR
-            if(FindFirstObjectByType<BreachWatchHud>())
+            // The modular city and region own the Corona canvas and bind
+            // the same live session themselves. Installing Vigilia here would
+            // start a second presenter that hides the existing HUD each frame.
+            if(Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud.UseCoronaArt ||
+               FindFirstObjectByType<BreachWatchHud>())
                 return;
             var watcher=new GameObject("VIGILIA / production presentation");
             watcher.AddComponent<BreachWatchBetaBootstrap>();
