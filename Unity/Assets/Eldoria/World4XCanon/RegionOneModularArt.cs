@@ -55,6 +55,9 @@ namespace Eldoria.World4XCanon
                 var texture = Resources.Load<Texture2D>(ResourcePath(key));
                 if (!texture) throw new InvalidOperationException("Missing modular world art " + key);
                 material = new Material(Shader.Find("Eldoria/World4X/LocalCanopy")) {mainTexture=texture, name="Valoria · "+key};
+                // City alpha silhouettes must retain the same softly
+                // painted pixels in the world (shader legacy default stays 0).
+                material.SetFloat("_SoftEdges",1f);
                 materials.Add(key, material);
             }
             int size = Mathf.Max(1, Mathf.RoundToInt(width*4));
