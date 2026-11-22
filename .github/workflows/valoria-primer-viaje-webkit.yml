@@ -25,7 +25,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tag="valoria-review-${SOURCE:0:7}-m1"
+          tag="valoria-review-${SOURCE:0:7}-m2"
           if gh release view "$tag" >/dev/null 2>&1; then
             test "$(gh release view "$tag" --json body --jq .body)" = "Unity source $SOURCE · Actions $BUILD_RUN"
             exit 0
@@ -41,17 +41,12 @@ jobs:
           src=tools/valoria-modular25d
           python3 -m pip install --quiet UnityPy==1.25.4
           python3 "$src/pack-embedded-region-mips.py" player/Build/RegionModular.data.unityweb
-          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE" 6601ff8-m1
+          python3 "$src/bound-webgl-uploads.py" player/Build/RegionModular.framework.js.unityweb
+          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE" 6601ff8-m2
           mapfile -d '' -t assets < <(find mobile/r -type f -print0)
           gh release create "$tag" --target "$GITHUB_SHA" --prerelease --latest=false --title "Valoria · Mundo y obras · ${SOURCE:0:7}" --notes "Unity source $SOURCE · Actions $BUILD_RUN" "${assets[@]}" mobile/assets.json mobile/index.html
   webkit:
     needs: package
-    strategy:
-      fail-fast: false
-      matrix:
-        transfer: [bounded, compatible]
-    env:
-      VALORIA_GPU_PROFILE: ${{ matrix.transfer }}
     runs-on: macos-15
     timeout-minutes: 25
     steps:
@@ -66,7 +61,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -eu
-          gh release download valoria-review-6601ff8-m1 -D flat
+          gh release download valoria-review-6601ff8-m2 -D flat
           python3 - <<'PY'
           import json, pathlib, shutil
           src=pathlib.Path('flat')
@@ -74,14 +69,13 @@ jobs:
           for rel,length in json.loads((src/'assets.json').read_text()).items():
               f=src/pathlib.Path(rel).name
               assert f.stat().st_size==length
-              p=dest/'r/6601ff8-m1'/rel
+              p=dest/'r/6601ff8-m2'/rel
               p.parent.mkdir(parents=True,exist_ok=True)
               f.rename(p)
           shutil.copyfile(src/'index.html',dest/'index.html')
           PY
           python -m pip install -q playwright
           python -m playwright install webkit
-          python tools/valoria-modular25d/bound-webgl-uploads.py mobile/r/6601ff8-m1/Build/RegionModular.framework.js.unityweb
           python -u tools/valoria-modular25d/first-travel-webkit.py
       - if: failure()
         run: |
@@ -90,5 +84,5 @@ jobs:
       - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: primer-viaje-webkit-${{ matrix.transfer }}
+          name: primer-viaje-webkit
           path: evidence-webkit/

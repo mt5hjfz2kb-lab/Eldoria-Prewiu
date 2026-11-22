@@ -28,10 +28,21 @@ async function datos(){
  }
  await Promise.all([descargar(),descargar()]);return target;
 }
+function prepararTexturasWebKit(){
+ const ua=navigator.userAgent;
+ if(!/AppleWebKit/.test(ua)||/Chrome|Chromium|Android/.test(ua))return;
+ // Use Unity's existing decoded texture fallback on Apple's WebGL backend.
+ // Legacy compressed reflections in the regional scene can reset its GPU process.
+ const proto=WebGL2RenderingContext.prototype, get=proto.getExtension, all=proto.getSupportedExtensions;
+ const legacy=name=>/texture_compression_bptc|compressed_texture_s3tc/i.test(name);
+ proto.getExtension=function(name){return legacy(name)?null:get.call(this,name)};
+ proto.getSupportedExtensions=function(){const names=all.call(this);return names&&names.filter(name=>!legacy(name))};
+}
 async function iniciar(){
  const canvas=document.getElementById('unity-canvas');
  canvas.addEventListener('webglcontextlost',()=>fallo('Se ha interrumpido la imagen del juego. Vuelve a abrir Valoria para recuperar tu partida.'));
  if(!window.WebGL2RenderingContext)throw Error('Este navegador no ha podido activar WebGL 2. Abre el enlace directamente en Safari.');
+ prepararTexturasWebKit();
  const script=document.createElement('script');script.src='/Build/RegionModular.loader.js?mobile=2';
  await new Promise((ok,fail)=>{script.onload=ok;script.onerror=()=>fail(Error('No se pudo cargar el reproductor.'));document.head.appendChild(script)});
  estado.textContent='Descargando los primeros archivos…';
