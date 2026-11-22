@@ -76,6 +76,10 @@ jobs:
           python -m pip install -q playwright
           python -m playwright install webkit
           python -u tools/valoria-modular25d/first-travel-webkit.py
+      - if: failure()
+        run: |
+          /usr/bin/log show --last 6m --style compact --predicate '(process CONTAINS[c] "WebKit.GPU" OR process == "kernel") AND (eventMessage CONTAINS[c] "GPU" OR eventMessage CONTAINS[c] "memory" OR eventMessage CONTAINS[c] "fault" OR eventMessage CONTAINS[c] "terminate")' | tail -65 || true
+          ls -t ~/Library/Logs/DiagnosticReports | head -15 || true
       - if: always()
         uses: actions/upload-artifact@v4
         with:
