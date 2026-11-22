@@ -789,7 +789,8 @@ namespace Eldoria.Tests
             Assert.That(colliders.Any(x => (string)Member(x, "Id") == "quarry-valoria"), Is.True);
             Assert.That(geo.GetComponentsInChildren<MeshFilter>(true)
                 .Any(f=>f.name=="Reference city Bastion I"),Is.True);
-            if(Eldoria.World4XCanon.RegionOneModularArt.Enabled){
+            if(world.GetComponentsInChildren<MonoBehaviour>(true)
+                .Any(x=>x&&x.GetType().Name=="RegionOneModularArt")){
                 // The incorrect forest/quarry reference atlases are not
                 // "hidden but loaded": they have been removed from the
                 // experimental rendering graph entirely.
@@ -1357,7 +1358,8 @@ namespace Eldoria.Tests
             // Assert the exact approved city art is RENDERED as the regional
             // material, not pasted as a second landscape over the imported GLB.
             // This proof runs in real Unity together with the six camera frames.
-            if(Eldoria.World4XCanon.RegionOneModularArt.Enabled){
+            if(world.GetComponentsInChildren<MonoBehaviour>(true)
+                .Any(x=>x&&x.GetType().Name=="RegionOneModularArt")){
                 var painted=world.GetComponentsInChildren<MeshRenderer>(true)
                     .Where(x=>x.name=="Painted regional relief").ToArray();
                 Assert.That(painted.Length,Is.GreaterThan(50),"Missing the modular canonical relief");
