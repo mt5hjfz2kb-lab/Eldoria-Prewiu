@@ -30,17 +30,21 @@ namespace Eldoria.World4XCanon
         MaterialPropertyBlock paintProperties;
         public static void Install(Transform parent,ValoriaIntegratedWorld host,RegionOneResourcePlacement placement)
         {
-            var boarNear=Resources.Load<GameObject>("World4X/Creatures/RockBoarNear");
-            var boarFar=Resources.Load<GameObject>("World4X/Creatures/RockBoarFar");
-            var spawnNear=Resources.Load<GameObject>("World4X/Creatures/SpawnlingNear");
-            var spawnFar=Resources.Load<GameObject>("World4X/Creatures/SpawnlingFar");
-            if(!boarNear||!boarFar||!spawnNear||!spawnFar)
+            var modular=parent.GetComponentInChildren<RegionOneModularArt>();
+            // An illustrated encounter does not require two hidden Tripo
+            // render LODs, two sets of mesh bounds, or their source prefabs.
+            // Combat, respawn, target ID and collider remain authoritative.
+            var boarNear=modular?null:Resources.Load<GameObject>("World4X/Creatures/RockBoarNear");
+            var boarFar=modular?null:Resources.Load<GameObject>("World4X/Creatures/RockBoarFar");
+            var spawnNear=modular?null:Resources.Load<GameObject>("World4X/Creatures/SpawnlingNear");
+            var spawnFar=modular?null:Resources.Load<GameObject>("World4X/Creatures/SpawnlingFar");
+            if(!modular&&(!boarNear||!boarFar||!spawnNear||!spawnFar))
             {
                 Debug.LogWarning("REGION1_TRIPO_CREATURE_SOURCES_UNAVAILABLE: no fake encounters instantiated");
                 return;
             }
             var service=parent.gameObject.AddComponent<RegionOneCreaturePopulation>();
-            service.modularArt=parent.GetComponentInChildren<RegionOneModularArt>();
+            service.modularArt=modular;
             service.paintProperties=new MaterialPropertyBlock();
             service.host=host;
             service.placement=placement;
@@ -93,21 +97,52 @@ namespace Eldoria.World4XCanon
                     var collider=go.AddComponent<BoxCollider>();
                     collider.isTrigger=true;collider.center=new Vector3(0,5,0);
                     collider.size=new Vector3(12,10,12);
-                    var close=MakeModel(creature.CreatureKind,"near",go.transform,creature.TargetId);
-                    var far=MakeModel(creature.CreatureKind,"far",go.transform,creature.TargetId);
-                    float nearScale=RegionOneResourceModels.FitNearWidth(close,
-                        RegionOneReferenceNodes.BastionOneVisualWidth*(creature.CreatureKind=="boar"?.45f:.55f));
-                    entity=new Encounter{Hotspot=hot,Near=close,Far=far,NearScale=nearScale};
                     if(modularArt){
-                        var width=RegionOneReferenceNodes.BastionOneVisualWidth*(creature.CreatureKind=="boar"?.45f:.55f);
-                        foreach(var donor in new[]{close,far})
-                            foreach(var original in donor.GetComponentsInChildren<Renderer>(true))original.forceRenderingOff=true;
-                        entity.Painted=modularArt.Place(go.transform,creature.CreatureKind=="boar"?"Boar":"Spawn",width,go.transform.position);
+                        float width=RegionOneReferenceNodes.BastionOneVisualWidth*
+                            (creature.CreatureKind=="boar"?.45f:.55f);
+                        entity=new Encounter{Hotspot=hot,NearScale=1f};
+                        entity.Painted=modularArt.Place(go.transform,
+                            creature.CreatureKind=="boar"?"Boar":"Spawn",width,go.transform.position);
+                    }else{
+                        var close=MakeModel(creature.CreatureKind,"near",go.transform,creature.TargetId);
+                        var far=MakeModel(creature.CreatureKind,"far",go.transform,creature.TargetId);
+                        float nearScale=RegionOneResourceModels.FitNearWidth(close,
+                            RegionOneReferenceNodes.BastionOneVisualWidth*(creature.CreatureKind=="boar"?.45f:.55f));
+                        entity=new Encounter{Hotspot=hot,Near=close,Far=far,NearScale=nearScale};
                     }
                     instances.Add(creature.TargetId,entity);
                 }
                 entity.Hotspot.transform.position=new Vector3(creature.X,creature.Y,creature.Z);
-                // Both source LODs use the same continuous scale at their switching distance.
+                if(modularArt){
+                    // Sprite, underlying picking collider and world population
+                    // are ONE canonical encounter; no old 3D actor is spawned.
+                    float width=RegionOneReferenceNodes.BastionOneVisualWidth*
+                        (creature.CreatureKind=="boar"?.45f:.55f);
+                    float scale=zoom<110?1f:
+                        Mathf.Lerp(1f,1.95f,Mathf.InverseLerp(110f,280f,zoom))*
+                        Mathf.Max(1f,zoom/280f)*
+                        Mathf.Lerp(1f,.70f,Mathf.InverseLerp(280f,860f,zoom));
+                    bool visible=creature.Alive&&!panorama;
+                    var click=(BoxCollider)entity.Hotspot.GetComponent<Collider>();
+                    click.enabled=visible;
+                    click.center=new Vector3(0,Mathf.Max(5f,width*scale*.48f),0);
+                    click.size=new Vector3(Mathf.Max(12f,width*scale),
+                        Mathf.Max(10f,width*scale*1.02f),Mathf.Max(12f,width*scale));
+                    var position=entity.Hotspot.transform.position;
+                    position.y=host.WorldHome.y+RegionOneBlenderLandscape.Height(
+                        position.x-host.WorldHome.x,position.z-host.WorldHome.z)+.08f;
+                    entity.Painted.transform.position=position;
+                    entity.Painted.enabled=visible;
+                    if(Mathf.Abs(scale-entity.PaintScale)>.0001f){
+                        entity.PaintScale=scale;
+                        paintProperties.SetFloat("_BillboardScale",scale);
+                        entity.Painted.SetPropertyBlock(paintProperties);
+                        entity.Painted.localBounds=new Bounds(
+                            Vector3.up*width*scale*.5f,Vector3.one*width*scale*2f);
+                    }
+                    continue;
+                }
+                // Only the non-modular legacy baseline creates two 3D LODs.
                 float presence=Mathf.Lerp(2f,3.4f,Mathf.InverseLerp(36f,280f,zoom));
                 // Portrait's regional camera frames the same world with a larger
                 // orthographic size. Preserve a target's share of viewport height
