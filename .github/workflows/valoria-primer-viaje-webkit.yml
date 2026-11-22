@@ -7,10 +7,43 @@ permissions:
   contents: read
   actions: read
 env:
-  BUILD_RUN: '45040961859'
-  SOURCE: 90e04b8f44740b894aacd79e8635b8502f8efd7f
+  BUILD_RUN: '45045923411'
+  SOURCE: 6601ff801a30ea268711381147967f9d2ccbeb15
 jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="valoria-review-${SOURCE:0:7}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" --jq .object.sha)" = "$SOURCE"
+            exit 0
+          fi
+          repo="repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN"
+          test "$(gh api "$repo" --jq .head_sha)" = "$SOURCE"
+          for i in $(seq 1 90); do
+            if gh api "$repo/artifacts" --jq '.artifacts[].name' | grep -Fxq valoria-region1-webgl; then break; fi
+            test "$(gh api "$repo" --jq .status)" != completed || exit 1
+            sleep 45
+          done
+          gh run download "$BUILD_RUN" -n valoria-region1-webgl -D player
+          src=tools/valoria-modular25d
+          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE"
+          mapfile -d '' -t assets < <(find mobile/r -type f -print0)
+          gh release create "$tag" --target "$SOURCE" --prerelease --latest=false --title "Valoria · Mundo y obras · ${SOURCE:0:7}" --notes "Reproductor Unity experimental. Capturas del primer viaje disponibles en la ejecución de validación." "${assets[@]}" mobile/assets.json mobile/index.html
   webkit:
+    needs: package
     runs-on: macos-15
     timeout-minutes: 25
     steps:
@@ -25,7 +58,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -eu
-          gh release download valoria-review-90e04b8 -D flat
+          gh release download valoria-review-6601ff8 -D flat
           python3 - <<'PY'
           import json, pathlib, shutil
           src=pathlib.Path('flat')
@@ -33,7 +66,7 @@ jobs:
           for rel,length in json.loads((src/'assets.json').read_text()).items():
               f=src/pathlib.Path(rel).name
               assert f.stat().st_size==length
-              p=dest/'r/90e04b8'/rel
+              p=dest/'r/6601ff8'/rel
               p.parent.mkdir(parents=True,exist_ok=True)
               f.rename(p)
           shutil.copyfile(src/'index.html',dest/'index.html')

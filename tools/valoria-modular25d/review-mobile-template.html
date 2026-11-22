@@ -2,7 +2,13 @@
 *{box-sizing:border-box}body{margin:0;background:#191719;color:#f8ecd5;font:16px system-ui}canvas{position:fixed;inset:0;width:100%;height:100%;display:block}#carga{position:fixed;inset:0;z-index:2;display:grid;place-content:center;text-align:center;gap:12px;padding:24px;background:#191719}h1{font:normal 36px Georgia;margin:0}progress{width:230px;max-width:85vw;accent-color:#b89555;margin:auto}button{padding:10px;font:inherit}
 </style></head><body><canvas id="unity-canvas" tabindex="-1"></canvas><div id="carga" role="status"><h1>Valoria</h1><progress id="barra" value="0" max="1"></progress><span id="estado">Conectando con Valoria…</span><button hidden id="reinicio" onclick="location.reload()">Volver a intentar</button></div><script>
 const estado=document.getElementById('estado'), barra=document.getElementById('barra');
-function fallo(error){estado.textContent=String(error.message||error);document.getElementById('reinicio').hidden=false}
+function fallo(error){
+ const panel=document.getElementById('carga');
+ panel.style.display='grid';
+ barra.hidden=true;
+ estado.textContent=String(error.message||error);
+ document.getElementById('reinicio').hidden=false;
+}
 async function datos(){
  const total=506818849, size=16777216, target=new Uint8Array(total);let next=0,done=0;
  async function descargar(){
@@ -24,13 +30,14 @@ async function datos(){
 }
 async function iniciar(){
  const canvas=document.getElementById('unity-canvas');
+ canvas.addEventListener('webglcontextlost',()=>fallo('Se ha interrumpido la imagen del juego. Vuelve a abrir Valoria para recuperar tu partida.'));
  if(!window.WebGL2RenderingContext)throw Error('Este navegador no ha podido activar WebGL 2. Abre el enlace directamente en Safari.');
  const script=document.createElement('script');script.src='/Build/RegionModular.loader.js?mobile=2';
  await new Promise((ok,fail)=>{script.onload=ok;script.onerror=()=>fail(Error('No se pudo cargar el reproductor.'));document.head.appendChild(script)});
  estado.textContent='Descargando los primeros archivos…';
  let bytes=await datos();estado.textContent='Preparando la ciudad…';barra.removeAttribute('value');
  await createUnityInstance(canvas,{dataUrl:'Build/RegionModular.data.unityweb',valoriaLoadData:()=>{const result=bytes;bytes=null;return Promise.resolve(result)},codeUrl:'Build/RegionModular.wasm.unityweb',frameworkUrl:'Build/RegionModular.framework.js.unityweb',streamingAssetsUrl:'StreamingAssets',companyName:'Eldoria',productName:'Valoria · Región 1 experimental',productVersion:'1.0',devicePixelRatio:Math.min(devicePixelRatio,1.5)});
- document.getElementById('carga').remove();
+ document.getElementById('carga').style.display='none';
 }
 iniciar().catch(fallo);
 </script></body></html>
