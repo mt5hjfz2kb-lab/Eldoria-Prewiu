@@ -30,9 +30,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         // architecture legible at a 390 x 844 phone viewport while all plots
         // remain accessible by the existing pan/pinch controls.
         public static Vector3 ExpansionCenterForLevel(int level) =>
-            level <= 2 ? new Vector3(-1.30f,-2.35f,-30f) :
-            level <= 4 ? new Vector3(-.50f,-3.00f,-30f) :
-                         new Vector3(-.54f,-4.50f,-30f);
+            level <= 2 ? new Vector3(-1.10f,-2.35f,-30f) :
+            level <= 4 ? new Vector3(-.30f,-3.00f,-30f) :
+                         new Vector3(-.25f,-4.50f,-30f);
         public static float ExpansionSizeForLevel(float aspect,int level)
         {
             // Real Unity captures 45008568637 showed buildings occupying
@@ -41,7 +41,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // enlarge the genuine architectural footprint in the HOME camera.
             // Portrait fits the unlocked plots; landscape prioritises the
             // centre and lets the player pan to outlying working districts.
-            float verticalCoverage=level<=2?3.60f:level<=4?4.15f:5.10f;
+            float verticalCoverage=level<=2?3.82f:level<=4?4.45f:5.10f;
             float minimum=level<=2?6.2f:level<=4?7.0f:8.5f;
             return Mathf.Max(minimum,verticalCoverage/Mathf.Max(.40f,aspect));
         }
