@@ -32,6 +32,7 @@ namespace Eldoria.UI.RoyalGold {
   Sprite oldFrameSprite, oldActionSprite;
   Color oldFrameTint, oldActionTint, oldTitleTint, oldBodyTint, oldButtonTextTint;
   Image.Type oldFrameType, oldActionType;
+  bool oldTitleBestFit; int oldTitleMinSize,oldTitleMaxSize;
   bool coronaNarrativeSkin;
   readonly List<Line> turns=new List<Line>();
   readonly List<string> pages=new List<string>();
@@ -98,10 +99,17 @@ namespace Eldoria.UI.RoyalGold {
      oldFrameSprite=coronaFrame.sprite;oldFrameTint=coronaFrame.color;oldFrameType=coronaFrame.type;
      oldActionSprite=coronaAction.sprite;oldActionTint=coronaAction.color;oldActionType=coronaAction.type;
      oldTitleTint=modal.Title.color;oldBodyTint=modal.Body.color;
+     oldTitleBestFit=modal.Title.resizeTextForBestFit;
+     oldTitleMinSize=modal.Title.resizeTextMinSize;
+     oldTitleMaxSize=modal.Title.resizeTextMaxSize;
      oldButtonTextTint=modal.ExtraLabel.color;
      coronaFrame.sprite=panel;coronaFrame.type=Image.Type.Simple;coronaFrame.color=Color.white;
      coronaAction.sprite=action;coronaAction.type=Image.Type.Simple;coronaAction.color=Color.white;
      modal.Title.color=new Color32(245,213,156,255);
+     // Keep the entire canonical lore title on screen at phone resolution.
+     modal.Title.resizeTextForBestFit=true;
+     modal.Title.resizeTextMinSize=16;
+     modal.Title.resizeTextMaxSize=26;
      modal.Body.color=new Color32(248,238,220,255);
      modal.ExtraLabel.color=new Color32(248,238,220,255);
     }
@@ -183,6 +191,9 @@ namespace Eldoria.UI.RoyalGold {
     if(coronaFrame){coronaFrame.sprite=oldFrameSprite;coronaFrame.type=oldFrameType;coronaFrame.color=oldFrameTint;}
     if(coronaAction){coronaAction.sprite=oldActionSprite;coronaAction.type=oldActionType;coronaAction.color=oldActionTint;}
     modal.Title.color=oldTitleTint;modal.Body.color=oldBodyTint;
+    modal.Title.resizeTextForBestFit=oldTitleBestFit;
+    modal.Title.resizeTextMinSize=oldTitleMinSize;
+    modal.Title.resizeTextMaxSize=oldTitleMaxSize;
     modal.ExtraLabel.color=oldButtonTextTint;
     coronaNarrativeSkin=false;
    }
