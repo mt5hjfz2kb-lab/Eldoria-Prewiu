@@ -1398,15 +1398,15 @@ namespace Eldoria.Tests
                 Assert.That(strategicKeep.sharedMaterial.mainTexture,
                     Is.SameAs(approvedKeep.texture),
                     "Region 1 must use the same Bastion I building as the approved city");
-                foreach(var family in new[]{"CityOak","CityGrove","CityPine0","CityPine1"}){
+                foreach(var family in new[]{"CityOak","CityGrove","PaintedFir","PaintedForestGrove"}){
                     var actual=world.GetComponentsInChildren<MeshRenderer>(true)
                         .Where(x=>x.name=="Illustrated "+family).ToArray();
                     Assert.That(actual.Length,Is.GreaterThan(0),
                         "Region 1 has silently returned to legacy conifer art: "+family);
                     var path=family=="CityOak"?"ValoriaModular25D/RecoveredProps/ArbolAntiguo"
                         :family=="CityGrove"?"ValoriaModular25D/RecoveredProps/ArboledaAntigua"
-                        :family=="CityPine0"?"ValoriaModular25D/pine_0"
-                        :"ValoriaModular25D/pine_1";
+                        :family=="PaintedFir"?"World4X/Illustrated/Fir"
+                        :"World4X/Illustrated/Grove";
                     Assert.That(actual[0].sharedMaterial.mainTexture,
                         Is.SameAs(Resources.Load<Texture2D>(path)),
                         "Illustrated forests must share the same actual Valoria sprite art");
