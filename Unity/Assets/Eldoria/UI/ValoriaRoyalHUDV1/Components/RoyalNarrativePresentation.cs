@@ -26,6 +26,13 @@ namespace Eldoria.UI.RoyalGold {
   RoyalText role, narratorGlyph;
   Graphic backdrop;
   Color oldBackdrop;
+  // Corona skin applies only to the 2.5D experimental player. All original
+  // modal graphics are restored after the final authored narration turn.
+  Image coronaFrame, coronaAction;
+  Sprite oldFrameSprite, oldActionSprite;
+  Color oldFrameTint, oldActionTint, oldTitleTint, oldBodyTint, oldButtonTextTint;
+  Image.Type oldFrameType, oldActionType;
+  bool coronaNarrativeSkin;
   readonly List<Line> turns=new List<Line>();
   readonly List<string> pages=new List<string>();
   Action onComplete;
@@ -78,6 +85,24 @@ namespace Eldoria.UI.RoyalGold {
    Position(narratorGlyph.rectTransform,28,-32,70,70);
    backdrop=modal.GetComponent<Graphic>();
    if(backdrop)oldBackdrop=backdrop.color;
+   if(V2.RoyalGoldV2Hud.UseCoronaArt){
+    var panel=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/activity_panel_wide");
+    var action=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/action_arcane");
+    coronaFrame=window.GetComponent<Image>();
+    coronaAction=modal.Extra.GetComponent<Image>();
+    if(panel&&action&&coronaFrame&&coronaAction){
+     coronaNarrativeSkin=true;
+     oldFrameSprite=coronaFrame.sprite;oldFrameTint=coronaFrame.color;oldFrameType=coronaFrame.type;
+     oldActionSprite=coronaAction.sprite;oldActionTint=coronaAction.color;oldActionType=coronaAction.type;
+     oldTitleTint=modal.Title.color;oldBodyTint=modal.Body.color;
+     oldButtonTextTint=modal.ExtraLabel.color;
+     coronaFrame.sprite=panel;coronaFrame.type=Image.Type.Simple;coronaFrame.color=Color.white;
+     coronaAction.sprite=action;coronaAction.type=Image.Type.Simple;coronaAction.color=Color.white;
+     modal.Title.color=new Color32(245,213,156,255);
+     modal.Body.color=new Color32(248,238,220,255);
+     modal.ExtraLabel.color=new Color32(248,238,220,255);
+    }
+   }
   }
   static void Position(RectTransform r,float x,float y,float w,float h){
    r.anchorMin=r.anchorMax=r.pivot=new Vector2(0,1);
@@ -150,6 +175,12 @@ namespace Eldoria.UI.RoyalGold {
    modal.Body.verticalOverflow=oldVertical;
    if(entrance)entrance.alpha=1;
    if(backdrop)backdrop.color=oldBackdrop;
+   if(coronaNarrativeSkin){
+    if(coronaFrame){coronaFrame.sprite=oldFrameSprite;coronaFrame.type=oldFrameType;coronaFrame.color=oldFrameTint;}
+    if(coronaAction){coronaAction.sprite=oldActionSprite;coronaAction.type=oldActionType;coronaAction.color=oldActionTint;}
+    modal.Title.color=oldTitleTint;modal.Body.color=oldBodyTint;
+    modal.ExtraLabel.color=oldButtonTextTint;
+   }
    if(modal.Close)modal.Close.gameObject.SetActive(true);
   }
   static IEnumerable<string> Paginate(string content,int limit){
