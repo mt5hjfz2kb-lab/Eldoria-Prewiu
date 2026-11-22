@@ -123,7 +123,8 @@ namespace Eldoria.World4XCanon
             CityDetail("RecoveredProps/PozoPiedra",-10,-4,3.8f);
             CityDetail("RecoveredProps/ArboledaAntigua",-20,17,7.3f);
             CityDetail("RecoveredProps/MatojosFlores",13,12,3.2f);
-            villageMill=CityDetail("sawmill_i",-16,7,10.4f);
+            villageMill=CityDetail(Resources.Load<Sprite>("ValoriaModular25D/sawmill_i_hd")
+                ? "sawmill_i_hd" : "sawmill_i",-16,7,10.4f);
             villageGarrison=CityDetail("Progression/barracks",17,16,10.6f);
             villageGranary=CityDetail("Progression/granary",-4,20,9.4f);
             villageMill.enabled=villageGarrison.enabled=villageGranary.enabled=false;
@@ -180,6 +181,7 @@ namespace Eldoria.World4XCanon
             var slice=new RegionOneFrameSlice(10);
             var rng=new System.Random(27132);
             var mats=new Dictionary<string,Material>();
+            var plantedPivots=new Dictionary<string,float>();
             // The original regional trees have been retired as the primary
             // forest look. Use the same approved independent Valoria sprites as
             // the city, at canonical forest coordinates. One shared material
@@ -196,6 +198,8 @@ namespace Eldoria.World4XCanon
                 var material=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){
                     mainTexture=sourceArt,name="Region 1 modular | "+k};
                 mats.Add(k,material);owned.Add(material);look.RegisterPeripheralMaterial(material);
+                var approved=Resources.Load<Sprite>(source);
+                plantedPivots[k]=approved?approved.pivot.y/approved.rect.height:.035f;
             }
             var groves=new Dictionary<Vector2Int,List<Vector3>>();
             var positions=Resources.Load<TextAsset>(Art+"ForestPositions");
@@ -243,7 +247,9 @@ namespace Eldoria.World4XCanon
                         if(cityTrees.TryGetValue(foot,out float crownWidth))width=crownWidth;
                         float h=width*tex.height/tex.width;int start=v.Count;
                         foreach(var corner in new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up}){
-                            v.Add(foot);uv.Add(corner);offsets.Add(new Vector2((corner.x-.5f)*width,(corner.y-.035f)*h));
+                            v.Add(foot);uv.Add(corner);
+                            offsets.Add(new Vector2((corner.x-.5f)*width,
+                                (corner.y-plantedPivots[pair.Key])*h));
                         }
                         triangles.AddRange(new[]{start,start+1,start+2,start,start+2,start+3});
                     }
