@@ -338,7 +338,7 @@ namespace Eldoria.World4XCanon
    // The existing Tripo spawnling remains visible in regional view. No second
    // creature, placeholder camp or gameplay authority is ever instantiated.
    for(int i=0;i<originals.Count;i++)if(originals[i])
-    originals[i].enabled=states[i]&&!panorama&&
+    originals[i].enabled=states[i]&&!panorama&&!RegionOneModularArt.Enabled&&
       originals[i].GetComponentInParent<Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual>()!=null;
    // Change only visibility/picking. Coordinates, persistence and timers stay
    // with the same LocalGateway instance through the entire continuous zoom.
