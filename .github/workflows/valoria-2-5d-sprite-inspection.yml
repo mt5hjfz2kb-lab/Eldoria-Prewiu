@@ -25,10 +25,10 @@ jobs:
           from pathlib import Path
           region=Path("Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated")
           city=Path("Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D")
-          for name in ("Quarry.png","Timber.png","Bridge.png","Boar.png","Crag.png","Ridge.png"):
+          for name in ("Quarry.png","Timber.png","Bridge.png","Boar.png","Crag.png","Ridge.png","Fir.png","Grove.png"):
               p=region/name
               assert p.is_file() and p.read_bytes()[:8].hex()=="89504e470d0a1a0a",p
-          for name in ("bastion_i_hd.png","sawmill_i_hd.png","Progression/stoneworks.png",
+          for name in ("bastion_i_hd.png","sawmill_i_hd.png","pine_0.png","pine_1.png","Progression/stoneworks.png",
                        "RecoveredProps/ArboledaAntigua.png","RecoveredProps/ArbolAntiguo.png",
                        "RecoveredProps/CarroMadera.png","RecoveredProps/MuroDerruido.png"):
               p=city/name
@@ -43,10 +43,14 @@ jobs:
             Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Quarry.png
             Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Timber.png
             Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Bridge.png
+            Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Fir.png
+            Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Grove.png
             Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Boar.png
             Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Crag.png
             Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Ridge.png
             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i_hd.png
             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i_hd.png
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/pine_0.png
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/pine_1.png
             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/Progression/stoneworks.png
             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/*.png
