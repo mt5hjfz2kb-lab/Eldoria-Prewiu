@@ -141,13 +141,19 @@ async def main():
                     {'x':153,'y':437,'id':0},{'x':223,'y':437,'id':1}]})
                 for step in range(1,13):
                     await cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[
-                        {'x':153-step*4,'y':437,'id':0},
-                        {'x':223+step*4,'y':437,'id':1}]})
+                        {'x':153+step*2,'y':437,'id':0},
+                        {'x':223-step*2,'y':437,'id':1}]})
                     await page.wait_for_timeout(65)
                 await cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
                 await until(lambda:world_view.get('sample',0)>before_sample,30)
                 await page.wait_for_timeout(700)
                 zoom_after=world_view.get('zoom',initial_zoom)
+                # Fingers converge from 70px to 22px: this is a genuine
+                # zoom-OUT from the close view, not the old pinch-in that
+                # silently clamped to minimum zoom and was declared tested.
+                assert float(zoom_after)>float(initial_zoom)*1.05,(
+                    'real two-finger world zoom did not change the camera',
+                    initial_zoom,zoom_after,world_view)
                 await page.screenshot(path=OUT/'region-1-pinch-real-bastion-5.png')
                 before_sample=world_view.get('sample',0)
                 await cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[
