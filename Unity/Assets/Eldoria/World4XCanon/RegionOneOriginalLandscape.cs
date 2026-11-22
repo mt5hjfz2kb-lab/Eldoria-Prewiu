@@ -204,7 +204,7 @@ namespace Eldoria.World4XCanon
                 material.SetFloat("_CameraFacingDepth",9f);
                 mats.Add(k,material);owned.Add(material);look.RegisterPeripheralMaterial(material);
                 var approved=Resources.Load<Sprite>(source);
-                plantedPivots[k]=approved?approved.pivot.y/approved.rect.height:.035f;
+                plantedPivots[k]=approved?RegionOneModularArt.WorldPivot(source,approved).y:.035f;
             }
             var groves=new Dictionary<Vector2Int,List<Vector3>>();
             var positions=Resources.Load<TextAsset>(Art+"ForestPositions");

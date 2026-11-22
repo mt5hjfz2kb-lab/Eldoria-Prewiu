@@ -31,6 +31,25 @@ namespace Eldoria.World4XCanon
                 key.StartsWith("ValoriaModular25D/",StringComparison.Ordinal) ? key : Root+key;
         }
 
+        // The approved city scene uses its own registration. When those paintings
+        // are reused on geographic billboards, register their authored ground
+        // contacts without changing the city scene's existing sprite imports.
+        internal static Vector2 WorldPivot(string path, Sprite sprite)
+        {
+            switch(path)
+            {
+                case "ValoriaModular25D/sawmill_i":
+                case "ValoriaModular25D/sawmill_i_hd": return new Vector2(.5f,.07f);
+                case "ValoriaModular25D/Progression/barracks": return new Vector2(.5f,.104863f);
+                case "ValoriaModular25D/Progression/granary": return new Vector2(.5f,.072251f);
+                case "ValoriaModular25D/RecoveredProps/ArbolAntiguo": return new Vector2(.5f,.09f);
+                case "ValoriaModular25D/RecoveredProps/ArboledaAntigua":
+                case "ValoriaModular25D/RecoveredProps/MatojosFlores":
+                case "ValoriaModular25D/RecoveredProps/PozoPiedra": return new Vector2(.5f,.08f);
+                default: return sprite ? sprite.pivot / sprite.rect.size : new Vector2(.5f,.07f);
+            }
+        }
+
         public static string Illustration(string id)
         {
             if(string.IsNullOrEmpty(id))return null;
@@ -76,9 +95,7 @@ namespace Eldoria.World4XCanon
                 float w=size/4f;
                 float h=w*(sprite ? sprite.rect.height/sprite.rect.width
                                   : material.mainTexture.height/(float)material.mainTexture.width);
-                Vector2 pivot=sprite
-                    ?new Vector2(sprite.pivot.x/sprite.rect.width,sprite.pivot.y/sprite.rect.height)
-                    :new Vector2(.5f,.07f);
+                Vector2 pivot=WorldPivot(ResourcePath(key),sprite);
                 var uv = new[]{Vector2.zero, Vector2.right, Vector2.one, Vector2.up};
                 var offsets = new Vector2[4];
                 for(int i=0;i<4;i++) offsets[i]=Vector2.Scale(uv[i]-pivot,new Vector2(w,h));
