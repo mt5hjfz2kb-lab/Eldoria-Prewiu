@@ -170,7 +170,6 @@ namespace Eldoria.World4XCanon
             Strip(new Vector2(910f,1800f),new Vector2(-910f,1800f),columns);
             Strip(new Vector2(-910f,1800f),new Vector2(-910f,-1800f),rows);
             var mesh=new Mesh{name="Regional relief-to-mist continuous perimeter"};
-            mesh.indexFormat=IndexFormat.UInt32;
             mesh.SetVertices(verts);mesh.SetUVs(0,uvs);
             mesh.SetTriangles(tris,0);mesh.RecalculateBounds();
             return mesh;
