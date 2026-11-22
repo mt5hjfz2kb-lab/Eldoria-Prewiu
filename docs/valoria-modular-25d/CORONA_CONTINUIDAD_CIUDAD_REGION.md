@@ -39,3 +39,14 @@ En el jugador combinado, el consejo abre las salas canónicas de entrenamiento, 
 ## Revisión artística del terreno
 
 La vista cercana de referencia mostró el borde del río desnudo y grupos de pinos sin transición al prado. MarginAtlas reúne tres pinturas originales: juncos, estrato de pizarra y sotobosque con tronco caído. BankPositions conserva 136 emplazamientos sobre la orilla seca de la máscara regional de alta resolución y fuera de caminos. El sotobosque se apoya en las posiciones de los árboles existentes. La malla agrupada es exclusivamente visual. La vista panorámica prolonga la bruma pintada más allá del relieve para evitar el corte recto contra el color de fondo. La revisión de aceptación usa las capturas del commit que contenga ambas intervenciones.
+
+
+## Control de calidad real — 22 de noviembre de 2026
+
+**Evidencia previa (Unity nativo, run 44983699089).** Cinco fotogramas 390x844 confirman detalle arquitectónico y edificios funcionalmente distintos. BII–V presenta demasiado suelo vacío por el cambio brusco de cámara. El panorama todavía necesita aprobación visual del borde este.
+
+**Implementado, pendiente de prueba de Unity.** Home cinematográfico progresivo BII, BIII–IV y BV a partir del nivel guardado; se aplica tras recargar o ascender y conserva pan/pinch. El diálogo narrativo usa los recursos aprobados activity_panel_wide y action_arcane, gama Corona y ajuste de títulos; restaura la presentación previa al terminar. No modifica narrativa, economía, combate ni navegación definida en main.
+
+**Incidente funcional real.** La prueba de 44983699089 marcaba retorno a Valoria al observar una muestra antigua, mientras la captura seguía enseñando la cortina 'Abriendo Región 1'. Se añadió al registro la escena Unity activa y presencia de cortina; el test exige BastionI_Modular25D con cortina oculta antes de declarar éxito. La cortina se desactiva inmediatamente al llegar; estas correcciones deben probarse de nuevo en WebGL.
+
+**Puertas de calidad pendientes.** Capturas nativas del mismo commit B1–B5, mundo cercano/regional/panorámico, HUD inicial y ampliado; revisión visual de escala, encuadre, acabados, títulos, accesibilidad táctil y continuidad ciudad–mundo; partida real B1–B5 en Chromium con todas las funciones y guardado intacto. No publicar como versión final ni afirmar iPhone probado hasta demostrarlo. Mantener main sin cambios.
