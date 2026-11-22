@@ -1,0 +1,24 @@
+name: Check public Valoria game URL
+on:
+  push:
+    branches: [experiment/valoria-ciudad-region-unificada-20261121]
+    paths: ['.github/workflows/valoria-public-url-check.yml']
+permissions:
+  contents: read
+jobs:
+  safari-delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check anonymous entry and exact compiled assets
+        env:
+          ORIGIN: https://valoria-revision-53489c4.kbkvc5c45n.chatgpt.site
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 2 "$ORIGIN/?build=53489c4" -o /tmp/valoria.html
+          grep -q 'createUnityInstance' /tmp/valoria.html
+          ! grep -q 'type="file"' /tmp/valoria.html
+          curl -fsSL "$ORIGIN/Build/RegionModular.loader.js" | grep -qF 'function createUnityInstance' || grep -q 'RegionModular.loader.js' /tmp/valoria.html
+          curl -fsSL --retry 2 "$ORIGIN/Build/RegionModular.data.unityweb" -o /tmp/data.gz
+          echo '76ac202c4975903a68c2522baf4ec59bdfc0e38edcf9467e358eb0936a0e67f7  /tmp/data.gz' | sha256sum -c
+          gzip -t /tmp/data.gz
