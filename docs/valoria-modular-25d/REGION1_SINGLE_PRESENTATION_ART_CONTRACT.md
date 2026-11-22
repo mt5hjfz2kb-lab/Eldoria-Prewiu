@@ -40,6 +40,14 @@ Esta coincidencia de fuentes y lenguaje no implica que la estructura interna sea
 4. Se seguían recreando iluminación, materiales, LODs y atlas del antiguo 3D aunque el nuevo render los ocultara; se retiró ese trabajo, **no** las consultas geográficas.
 5. La transición ciudad/mundo tuvo una prueba de regreso con un falso positivo por telemetría de escena antigua; `journey-browser.py` ahora exige escena activa correcta y cortina oculta.
 
+## Diagnóstico y técnica acumulada — 22/11, revisión posterior
+
+- La ejecución nativa [45008568637](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45008568637) compiló y capturó ambos mapas, pero **falló con legitimidad** porque `before/grid.bin` contenía **79.758** celdas y `after/grid.bin` solo **70.599**; hay **9.159** celdas perdidas y ninguna añadida. Las coordenadas/alturas de las **70.599** celdas compartidas son idénticas. `routes.txt` también cambió. Estos números proceden de comparar los ZIP auténticos byte a byte, no de una estimación visual.
+- Causa concreta que estamos probando: `RegionOneTerrainRoutes.BuildGrid` consulta los **límites 3D de los donantes de árboles** incluso cuando `forceRenderingOff=true`; al saltar `RegionOneProductionLod.Install` ya no se reducían sus copas antes de calcular obstáculos. `RegionOneProductionLod.PreserveClearanceOnly` aplica **la misma escala y corrección de la base de la copa** sin crear LODs ni renderizar el arte rechazado. Falta comprobar la igualdad completa en una nueva ejecución.
+- Las capturas nativas I–V mostraron arquitectura pequeña y parcelas cortadas al acercar la cámara. La presentación ahora reduce el ancho horizontal de los distritos desbloqueados, traslada conjuntamente sus piezas originales y conecta los accesos con caminos reales; la vista Bastión I sigue intacta. Se ha añadido `AssertProgressionComposition` a la captura genuina para rechazar recortes importantes y castillos minúsculos.
+- Las capturas del mundo anterior a estos cambios mostraron bosques dispersos y una ribera con transición demasiado abrupta. Se intensificó la siembra **en la misma malla ilustrada, con sprites pintados**, y se graduó la máscara del agua en el único shader del relieve. Los shaders no crean ninguna superficie adicional.
+- **Ninguno de estos cambios queda aprobado por existir en Git:** comprobar nueva compilación, capturas auténticas, coincidencia exacta de rutas y grid, WebGL I–V y revisión humana de estilo comercial antes de publicar.
+
 ## Pendiente de aprobar
 
 1. Compilación, PlayMode, WebGL y capturas auténticas para el **último** commit de esta rama, no de candidatos anteriores.
