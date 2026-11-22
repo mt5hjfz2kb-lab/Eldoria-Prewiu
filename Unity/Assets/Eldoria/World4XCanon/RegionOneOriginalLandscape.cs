@@ -53,10 +53,11 @@ namespace Eldoria.World4XCanon
             // Extend only the painted mist beyond the known region. Keep the
             // backing immediately below the lowest canonical height. The former
             // fixed y=-90 plane was safe, but the inclined panorama projected
-            // that 90 m vertical gap beside the eastern relief as a second,
-            // wavy dark silhouette. GeographicBounds comes from the unchanged
-            // query export; the backing remains non-interactive and below every
-            // playable point.
+            // that 90 m vertical gap beside the relief as a detached second
+            // silhouette. GeographicBounds comes from the unchanged query
+            // export; the backing remains non-interactive and below every
+            // playable point. The separate dark eastern-water band is handled
+            // by the illustrated surface shader, not by moving this geometry.
             var fogMesh=new Mesh{name="Mist beyond the mapped region"};
             const float horizon=6500f;
             float fogHeight=RegionOneBlenderLandscape.GeographicBounds(Vector3.zero).min.y-.5f;
