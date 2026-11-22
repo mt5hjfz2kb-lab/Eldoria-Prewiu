@@ -165,7 +165,7 @@ namespace Eldoria.World4XCanon
             // under the regional orthographic shadow cascade. Near PBR is intact.
             if(lod=="far"){
                 var look=host.WorldRoot.GetComponentInChildren<RegionOneLookDevelopment>(true);
-                if(look)look.ApplyMaterials(go);
+                if(look && !modularArt)look.ApplyMaterials(go);
             }
             var renderers=go.GetComponentsInChildren<Renderer>(true);
             if(renderers.Length>0)
