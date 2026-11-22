@@ -68,6 +68,15 @@ Shader "Eldoria/Region1/Illustrated ground" {
   float aa=clamp(fwidth(shore),.32,1.4);
   half wet=smoothstep(-aa,aa,shore);
   mask.r=lerp(mask.r,wet,local);
+  // Lay a dry shingle terrace and a damp meadow fringe along the existing
+  // signed bank field. Fully dry texels saturate at -6 m; fade before that
+  // limit so the shoreline treatment cannot tint the entire meadow.
+  half landBank=(1-wet)*local;
+  half terrace=landBank*(1-smoothstep(.35,2.4,-shore));
+  half fringe=landBank*(1-smoothstep(2.4,5.4,-shore));
+  half3 bankMeadow=meadow*half3(.81,.91,.76);
+  grass=lerp(grass,bankMeadow,fringe*.72);
+  grass=lerp(grass,lerp(earth,slate,.58),terrace*.84);
   half3 albedo=lerp(grass,earth,mask.g);
   albedo=lerp(albedo,slate,mask.b);
   albedo=lerp(albedo,water,mask.r);
