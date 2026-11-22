@@ -15,6 +15,7 @@ async def main():
     async with async_playwright() as pw:
         browser = await pw.webkit.launch()
         context = await browser.new_context(**pw.devices["iPhone 13"])
+        await context.add_init_script('(() => {\n let bytes=0, seq=0, enabled=false;\n const sizes=new WeakMap(), bound=new Map();\n window.startGpuTrace=()=>{enabled=true; console.log("GPU_TAB_START",Math.round(bytes/1048576),document.querySelector("canvas").width)};\n const p=WebGL2RenderingContext.prototype;\n for(const name of [\'bindTexture\',\'deleteTexture\',\'texStorage2D\',\'texImage2D\',\'compressedTexImage2D\',\'texStorage3D\',\'bufferData\',\'renderbufferStorage\',\'renderbufferStorageMultisample\']){\n   const fn=p[name];\n   p[name]=function(...args){\n     if(name===\'bindTexture\') bound.set(args[0],args[1]);\n     else if(name===\'deleteTexture\'){bytes-=sizes.get(args[0])||0;sizes.delete(args[0]);}\n     else if(name===\'texStorage2D\'||name===\'texImage2D\'||name===\'compressedTexImage2D\'){\n       const t=bound.get(args[0]);\n       if(t&&(name===\'texStorage2D\'||args[1]===0)){\n         const sz=args[3]*args[4]*4;\n         if(Number.isFinite(sz)){bytes+=sz-(sizes.get(t)||0);sizes.set(t,sz);}\n         if(enabled && (sz>4194304 || ++seq%35===1)) console.log(\'GPU_TEX\',name,args.slice(1,5),Math.round(bytes/1048576));\n       }\n     }\n     return fn.apply(this,args);\n   };\n }\n document.addEventListener(\'webglcontextlost\',e=>console.error(\'GPU_LOST \'+JSON.stringify([e.statusMessage,Math.round(bytes/1048576)])),true);\n})();\n')
         page = await context.new_page()
         # WebKit's local-network privacy prompt is outside Playwright's page.
         # Serve the release bytes through the test context itself.
@@ -43,7 +44,9 @@ async def main():
                     if dest is city:
                         samples += 1
                     return
-            if msg.type == 'error' or 'ELDORIA_MEMORY_PHASE' in msg.text:
+            if 'context lost' in msg.text.lower() or 'GPU_LOST' in msg.text:
+                errors.append(msg.text)
+            if msg.type in ('error','warning') or 'GPU_' in msg.text or 'REGION' in msg.text or 'ELDORIA' in msg.text:
                 print(msg.text[:600], flush=True)
         page.on("console", observe)
         page.on("pageerror", lambda exc: errors.append(str(exc)))
@@ -81,6 +84,7 @@ async def main():
             await page.screenshot(path=OUT/"02-obra.png")
             await until(lambda:city.get("sawmill")==1 and target("Visitar Región 1"))
             assert city["level"]==1
+            await page.evaluate("startGpuTrace()")
             await touch(target("Visitar Región 1"))
             await until(lambda:region.get("sample",0)>0,240)
             for _ in range(32):

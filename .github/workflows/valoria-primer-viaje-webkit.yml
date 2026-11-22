@@ -1,4 +1,4 @@
-name: Validar el primer viaje táctil en WebKit
+name: Medir el uso gráfico en el primer viaje de WebKit
 on:
   push:
     branches: [experiment/valoria-ciudad-region-unificada-20261121]
