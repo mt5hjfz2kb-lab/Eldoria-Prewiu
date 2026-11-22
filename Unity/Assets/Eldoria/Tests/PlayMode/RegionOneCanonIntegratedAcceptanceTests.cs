@@ -1363,7 +1363,23 @@ namespace Eldoria.Tests
                 Assert.That(strategicKeep.sharedMaterial.mainTexture,
                     Is.SameAs(approvedKeep.texture),
                     "Region 1 must use the same Bastion I building as the approved city");
-                Debug.Log("REGION1_APPROVED_ART_PARITY terrain=1 roads=1 castle=1 hidden_donor=1");
+                foreach(var family in new[]{"CityOak","CityGrove","CityPine0","CityPine1"}){
+                    var actual=world.GetComponentsInChildren<MeshRenderer>(true)
+                        .Where(x=>x.name=="Illustrated "+family).ToArray();
+                    Assert.That(actual.Length,Is.GreaterThan(0),
+                        "Region 1 has silently returned to legacy conifer art: "+family);
+                    var path=family=="CityOak"?"ValoriaModular25D/RecoveredProps/ArbolAntiguo"
+                        :family=="CityGrove"?"ValoriaModular25D/RecoveredProps/ArboledaAntigua"
+                        :family=="CityPine0"?"ValoriaModular25D/pine_0"
+                        :"ValoriaModular25D/pine_1";
+                    Assert.That(actual[0].sharedMaterial.mainTexture,
+                        Is.SameAs(Resources.Load<Texture2D>(path)),
+                        "Illustrated forests must share the same actual Valoria sprite art");
+                }
+                Assert.That(world.GetComponentsInChildren<MeshRenderer>(true)
+                    .Any(x=>x.name=="Regional relief-to-mist continuous perimeter"),Is.True,
+                    "The panorama relief must meet the painted fog ground, not float above it");
+                Debug.Log("REGION1_APPROVED_ART_PARITY terrain=1 roads=1 castle=1 forest=4 hidden_donor=1 edge=1");
             }
             var home=(Vector3)Member(host,"WorldHome");
             foreach(var view in new[]{("home",2,""),("wood",2,"forest-valoria"),("stone",2,"quarry-valoria"),("region",1,""),("breach",1,""),("panorama",0,"")}){
