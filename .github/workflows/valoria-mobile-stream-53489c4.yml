@@ -1,0 +1,24 @@
+name: Mobile delivery of verified Valoria bytes
+on:
+  push:
+    branches: [experiment/valoria-ciudad-region-unificada-20261121]
+    paths: ['.github/workflows/valoria-mobile-stream-53489c4.yml']
+permissions:
+  contents: write
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag=valoria-review-53489c4
+          gh release download "$tag" -p RegionModular.data.unityweb
+          gzip -dc RegionModular.data.unityweb > player.data
+          echo 'e9464a0f66e12961d5cd0f109cb6e331c85579e18322861ce24e03d6c9be80f8  player.data' | sha256sum -c
+          mkdir parts
+          split --bytes=16M --numeric-suffixes=0 --suffix-length=3 player.data parts/val-data-
+          for f in parts/*; do gzip -n -3 "$f"; done
+          gh release upload "$tag" parts/* --clobber
