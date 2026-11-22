@@ -138,6 +138,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             AddOriginalProp(quarryYard,"ArboledaAntigua",new Vector2(1.62f,-13.93f),.73f);
             AddOriginalProp(grainYard,"VallaLenador",new Vector2(2.24f,-9.41f),.62f);
             AddOriginalProp(grainYard,"HuertosValoria",new Vector2(3.43f,-9.56f),.78f);
+            // Match the actual moved parcels without editing or pasting
+            // their sprite artwork. A single transform repositions the whole
+            // independently painted yard with each district footprint.
+            grainYard.localPosition=new Vector3(-1.60f,0,0);
+            quarryYard.localPosition=new Vector3(.90f,0,0);
             grainYard.gameObject.SetActive(false);
             quarryYard.gameObject.SetActive(false);
 
@@ -425,7 +430,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             bool garrison = BarracksRenderer.gameObject.activeSelf;
             if(westernGrove)
             {
-                var foot = garrison ? new Vector2(-6.48f,-4.23f) : new Vector2(-4.10f,-5.55f);
+                var foot = garrison ? new Vector2(-4.85f,-4.23f) : new Vector2(-4.10f,-5.55f);
                 westernGrove.localPosition = foot;
                 westernGrove.GetComponent<SpriteRenderer>().sortingOrder = FootOrder(foot.y);
             }
