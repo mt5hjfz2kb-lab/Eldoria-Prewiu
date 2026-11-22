@@ -58,6 +58,11 @@ namespace Eldoria.World4XCanon
                 // City alpha silhouettes must retain the same softly
                 // painted pixels in the world (shader legacy default stays 0).
                 material.SetFloat("_SoftEdges",1f);
+                // Illustrations replace GLB geometry, but the canonical relief
+                // still supplies height and z-buffering. Shift only view depth,
+                // never their geographic foot or colliders. The near city and
+                // worksites have stronger relief than tiny forest props.
+                material.SetFloat("_CameraFacingDepth",14f);
                 materials.Add(key, material);
             }
             int size = Mathf.Max(1, Mathf.RoundToInt(width*4));
