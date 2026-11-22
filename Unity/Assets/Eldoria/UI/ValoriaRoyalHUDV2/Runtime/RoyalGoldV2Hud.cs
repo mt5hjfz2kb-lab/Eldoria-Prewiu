@@ -1155,8 +1155,14 @@ namespace Eldoria.UI.RoyalGold.V2
             // extremely narrow devices may require a stacked accessible row;
             // never substitute a sidebar or invent locked destinations.
             bool vertical = safe.rect.height > safe.rect.width;
+            bool corona = UseCoronaArt;
             float availableWidth = Mathf.Max(150f, safe.rect.width - 12f);
-            float columnGap = vertical ? 4f : 9f;
+            // The approved city HUD displays complete artist medallions, not
+            // small glyphs inset inside a second purple toolbar. Match their
+            // physical separation after the integrated HUD's 600-unit phone
+            // scaling so the same World/City and Mail actions do not visibly
+            // shrink when travelling between scenes.
+            float columnGap = corona ? (vertical ? 24f : 18f) : vertical ? 4f : 9f;
             // A 390px portrait must NEVER squeeze five/six actions into
             // 51-unit targets with 10-point labels. Keep one row only while
             // each action retains at least 72 logical units; otherwise use
@@ -1176,7 +1182,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     columnGap * (columns - 1)) / columns, 90f, 240f);
             // Never create a visual button that cannot fit its own safe width.
             cellWidth = Mathf.Clamp(cellWidth,1f,120f);
-            float cellHeight = rows > 1 ? 74f : vertical ? 105f : 106f;
+            float cellHeight = corona && rows == 1 ? 128f :
+                rows > 1 ? 74f : vertical ? 105f : 106f;
             float contentHeight = rows * cellHeight + (rows - 1) * rowGap;
             float totalWidth = cellWidth * columns +
                 columnGap * (columns - 1);
@@ -1210,13 +1217,19 @@ namespace Eldoria.UI.RoyalGold.V2
                     AddCoronaSurface(trim, frame, "top_velvet_ribbon");
                 trim.SetAsFirstSibling();
             }
+            // Corona icons already contain their complete sculpted frames.
+            // The legacy dock remains available for every other scene, but
+            // showing it behind these two full medallions creates the smaller,
+            // double-framed world HUD seen in the previous WebGL capture.
+            trim.gameObject.SetActive(!corona);
             trim.anchorMin = Vector2.zero;
             trim.anchorMax = Vector2.one;
             trim.offsetMin = Vector2.zero;
             trim.offsetMax = Vector2.zero;
 
-            float medalSize = Mathf.Min(rows > 1 ? 46f : vertical ? 68f : 71f,
-                cellWidth - 7f);
+            float medalSize = corona && rows == 1 ? cellWidth :
+                Mathf.Min(rows > 1 ? 46f : vertical ? 68f : 71f,
+                    cellWidth - 7f);
             float buttonHeight = cellHeight;
             int index = 0;
             foreach (var item in nav.Items.OrderBy(
@@ -1247,7 +1260,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     medal.anchorMin = medal.anchorMax = medal.pivot =
                         new Vector2(.5f, .5f);
                     SetWidthAndHeight(medal, medalSize, medalSize);
-                    medal.anchoredPosition = new Vector2(0f, 10f);
+                    medal.anchoredPosition = new Vector2(0f, corona ? 14f : 10f);
                     // Only the two objective shortcuts are round in Option 1.
                     // Bottom destinations are free-standing gold emblems. Keep
                     // the original full-cell raycast surface and button listener.
@@ -1287,8 +1300,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     caption.anchorMin = caption.anchorMax = caption.pivot =
                         new Vector2(.5f, .5f);
                     SetWidthAndHeight(caption, cellWidth - 2f, 32f);
-                    caption.anchoredPosition =
-                        new Vector2(0f, -buttonHeight * .33f);
+                    caption.anchoredPosition = new Vector2(0f,
+                        corona ? -buttonHeight * .36f : -buttonHeight * .33f);
                     item.Label.fontSize = Mathf.RoundToInt(Mathf.Clamp(
                         cellWidth * .19f, 18f, 20f));
                     if (ChronicleFont) item.Label.font = ChronicleFont;
