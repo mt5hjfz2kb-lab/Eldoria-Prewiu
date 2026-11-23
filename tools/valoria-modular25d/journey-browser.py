@@ -235,6 +235,9 @@ async def main():
             await reload();await page.wait_for_timeout(1400);await page.screenshot(path=OUT/f'bastion-{n}.png');await council()
         try:
             await page.goto(URL,wait_until='domcontentloaded');await until(lambda:bool(state),240)
+            display=await page.locator('canvas').evaluate('(c)=>({dpr:devicePixelRatio,width:c.width,height:c.height})')
+            assert display['dpr']==int(os.environ.get('VALORIA_DPR','1')), display
+            log.append({'display_at_launch':display})
             assert state['level']==1 and state['sawmill']==0 and state['wood']==230,state
             if os.environ.get('VALORIA_TEST_REGION')=='1':
                 await until(lambda:find('Confirm your name'))
