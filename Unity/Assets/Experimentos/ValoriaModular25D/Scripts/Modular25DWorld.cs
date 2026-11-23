@@ -33,7 +33,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public Modular25DWorkshopAction WorkshopAction { get; private set; }
         public int SettlementZonesPlaced { get; private set; }
 
-        Transform garrisonYard, westernGrove, grainYard, quarryYard, kitchenGarden;
+        Transform garrisonYard, westernGrove, grainYard, quarryYard, kitchenGarden, grainArcade;
 
         const float GroundSpacingX = 1f;
         const float GroundSpacingY = .5f;
@@ -128,7 +128,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             AddProp(scenery,Modular25DArt.Tuft(1),new Vector2(1.07f,1.05f),.53f);
 
             garrisonYard=NewChildRoot(scenery,"Cuartel | patio de guardia");
-            AddOriginalProp(garrisonYard,"CasasDeOficio",new Vector2(-.92f,-4.88f),.72f);
+            AddOriginalProp(garrisonYard,"CasasDeOficio",new Vector2(-.57f,-4.64f),.65f);
             CreateVillager(garrisonYard,"Relevo de guardia",new [] {
                 new Vector2(-3.38f,-5.16f),new Vector2(-3.62f,-4.22f),
                 new Vector2(-3.88f,-3.76f),new Vector2(-2.70f,-2.50f),
@@ -146,7 +146,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             AddOriginalProp(quarryYard,"CarroMadera",new Vector2(-1.28f,-12.46f),.49f);
             AddOriginalProp(quarryYard,"ArboledaAntigua",new Vector2(1.62f,-13.93f),.73f);
             AddOriginalProp(grainYard,"VallaLenador",new Vector2(2.24f,-9.41f),.62f);
-            AddOriginalProp(grainYard,"CasasDeOficio",new Vector2(.64f,-9.70f),.84f);
+            grainArcade=AddOriginalProp(grainYard,"LonjaGrano",new Vector2(.76f,-9.31f),.86f);
             // Match the actual moved parcels without editing or pasting
             // their sprite artwork. A single transform repositions the whole
             // independently painted yard with each district footprint.
@@ -456,6 +456,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(kitchenGarden) kitchenGarden.gameObject.SetActive(!garrison);
             garrisonYard.gameObject.SetActive(garrison);
             grainYard.gameObject.SetActive(GranaryRenderer.gameObject.activeSelf);
+            grainArcade.gameObject.SetActive(DisplayedBastionLevel>=4);
             quarryYard.gameObject.SetActive(StoneworksRenderer.gameObject.activeSelf);
             var stage=ParcelBuildingStates.For(snapshot,"sawmill");
             // Three independently authored visuals; only the canonical snapshot

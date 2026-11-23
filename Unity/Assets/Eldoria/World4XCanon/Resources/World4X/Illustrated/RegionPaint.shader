@@ -38,7 +38,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
    half4 rock=SAMPLE_TEXTURE2D_LOD(_FaultPigment,sampler_FaultPigment,faultUV,2);
    half core=smoothstep(.002,.045,min(rock.b-rock.g,rock.r-rock.g));
    half shelf=smoothstep(.10,.43,dot(rock.rgb,half3(.24,.56,.20)));
-   v.p.y+=rock.a*(shelf*2.7-core*9.5);
+   v.p.y+=rock.a*(shelf*2.0-core*3.6);
   }
   o.p=TransformObjectToHClip(v.p); o.uv=v.uv;
   o.world=TransformObjectToWorld(v.p);return o;
@@ -77,13 +77,25 @@ Shader "Eldoria/Region1/Illustrated ground" {
  half4 frag(Out i):SV_Target {
   float2 metre=(i.uv-.5)*float2(1820,3600);
   float beyondDistance=max(0,max(abs(metre.x)-910,abs(metre.y)-1800));
-  i.uv=saturate(i.uv);
+  if (_BeyondMap>.5) {
+   // Carry only vegetation and geology through the chart edge. Curving
+   // contours prevent the edge texels from stretching into straight bands.
+   float2 fold=1-abs(frac(i.uv*.5)*2-1);
+   float swing=smoothstep(0,480,beyondDistance);
+   float2 bend=float2(sin(metre.y*.0027+metre.x*.0012),cos(metre.x*.0031+metre.y*.0014));
+   i.uv=saturate(fold+bend*swing*.072);
+  }
   // This is the only visible regional ground surface. The old imported
   // colour-map is NOT drawn as a background image beneath another landscape.
   // Canonical geography supplies masks and height, while the very same
   // Valoria paint sources used at Bastion I supply the actual meadow/road.
   half3 geographicLight=SAMPLE_TEXTURE2D(_Region,sampler_Region,i.uv).rgb;
   half4 mask=SAMPLE_TEXTURE2D(_Weights,sampler_Weights,i.uv);
+  half coast=smoothstep(.70,1.0,mask.r)*smoothstep(545,925,metre.x);
+  if (_BeyondMap>.5) {
+   mask.g*=1-smoothstep(0,48,beyondDistance);
+   mask.r=lerp(mask.r,coast,smoothstep(0,90,beyondDistance));
+  }
   float2 localUV=(metre-float2(-200,-148))/float2(416,512);
   float2 localBorder=min(localUV,1-localUV)*float2(416,512);
   half local=smoothstep(0,8,min(localBorder.x,localBorder.y));
@@ -171,7 +183,9 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half4 district=SAMPLE_TEXTURE2D_LOD(_Weights,sampler_Weights,i.uv,3);
   half mapScale=smoothstep(80,410,unity_OrthoParams.y*.5);
   half valley=smoothstep(.035,.48,district.r)*(1-mask.r);
-  half canopy=smoothstep(.08,.65,district.a);
+  float2 standBend=float2(sin(metre.y*.032+sin(metre.x*.019)),cos(metre.x*.028+metre.y*.011));
+  half forestCover=SAMPLE_TEXTURE2D_LOD(_Weights,sampler_Weights,saturate(i.uv+standBend*float2(.009,.004)),2).a;
+  half canopy=smoothstep(.08,.65,lerp(district.a,forestCover,.62));
   float reliefHeight=i.world.y-GetObjectToWorldMatrix()._m13;
   half upland=smoothstep(18,76,reliefHeight);
   // Sunlit clearings and cooler drainage hollows follow the continuous land cover.
@@ -213,7 +227,8 @@ Shader "Eldoria/Region1/Illustrated ground" {
    half rockValue=dot(fault.rgb,half3(.29,.57,.14));
    half seam=smoothstep(.03,.33,violetExcess);
    fault.rgb*=lerp(.83,1.10,smoothstep(.018,.28,rockValue));
-   fault.rgb+=half3(.065,.012,.12)*seam*pulse;
+   fault.rgb+=half3(.14,.022,.23)*seam*pulse;
+   fault.rgb+=half3(.047,.006,.087)*smoothstep(.004,.045,violetExcess)*bounce;
    colour=lerp(colour,fault.rgb,fault.a);
   }
   // Use the archival region map only as a subtle broad RELIEF lighting
@@ -264,12 +279,11 @@ Shader "Eldoria/Region1/Illustrated ground" {
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
   if (_BeyondMap>.5) {
    half shoulder=saturate((1-geometricNormal.y)*4.7);
-   half grain=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,metre/310).g;
-   half3 heath=lerp(grass*half3(.66,.83,.76),sharedEarth, saturate(.13+grain*.59));
-   half3 ridge=lerp(heath,slate,shoulder*.86)*(.70+.38*geomLight);
-   half coastalWater=smoothstep(.64,.97,mask.r)*smoothstep(600,910,metre.x);
-   ridge=lerp(ridge,riverColour,coastalWater);
-   colour=lerp(colour,ridge,smoothstep(0,185,beyondDistance));
+   half wooded=canopy*(.70+.30*cos(metre.y*.018+sin(metre.x*.013)));
+   half3 heath=lerp(districtGrass,grass*half3(.52,.73,.60),wooded);
+   half3 ridge=lerp(heath,slate,saturate(.12*upland+shoulder*.70))*(.87+.18*geomLight);
+   ridge=lerp(ridge,riverColour,coast);
+   colour=lerp(colour,ridge,smoothstep(0,410,beyondDistance));
    colour=lerp(colour,peripheralMist(metre),smoothstep(320,2700,beyondDistance)*.78);
   }
   return half4(colour,1);

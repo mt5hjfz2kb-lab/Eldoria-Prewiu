@@ -213,7 +213,10 @@ namespace Eldoria.World4XCanon
                         (pick<8?"CityOak":pick<12?"CityGrove":"PaintedForestGrove");
                     batches[family].Add(foot);
                     float core=Mathf.InverseLerp(.36f,.69f,Mathf.PerlinNoise(px*.016f+7,pz*.016f+41));
-                    cityTrees[foot]=tree.y*Mathf.Lerp(.65f,1.33f,core)*Mathf.Lerp(.9f,1.1f,stand);
+                    // Grove art depicts several crowns; sizing it like a single fir
+                    // compressed groups into rows of identical miniature silhouettes.
+                    float breadth=family=="CityGrove" || family=="PaintedForestGrove" ? 1.52f : 1.08f;
+                    cityTrees[foot]=tree.y*breadth*Mathf.Lerp(.68f,1.34f,core)*Mathf.Lerp(.9f,1.1f,stand);
                 }
                 // Rock outcrops punctuate clearings. All trees come from the authored stands.
                 for(int n=0;n<40;n++){
@@ -232,8 +235,9 @@ namespace Eldoria.World4XCanon
                             pair.Key=="CityGrove"?20.5f:15.3f)*(.72f+(float)rng.NextDouble()*.62f);
                         if(cityTrees.TryGetValue(foot,out float crownWidth))width=crownWidth;
                         float h=width*tex.height/tex.width;int start=v.Count;
+                        bool mirror=cityTrees.ContainsKey(foot) && Mathf.Sin(foot.x*.91f+foot.z*.43f)>0;
                         foreach(var corner in new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up}){
-                            v.Add(foot);uv.Add(corner);
+                            v.Add(foot);uv.Add(new Vector2(mirror?1f-corner.x:corner.x,corner.y));
                             offsets.Add(new Vector2((corner.x-.5f)*width,
                                 (corner.y-plantedPivots[pair.Key])*h));
                         }

@@ -87,7 +87,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             {
                 districtMaterial = new Material(Resources.Load<Shader>("ValoriaModular25D/DistrictGround"));
                 districtMaterial.mainTexture = texture;
-                districtMaterial.SetTexture("_Paving", Resources.Load<Texture2D>("ValoriaModular25D/OrganicCobbleRoad"));
+                districtMaterial.SetTexture("_Paving", Resources.Load<Texture2D>("ValoriaModular25D/DistrictPaving"));
                 districtMaterial.SetTexture("_Soil", Resources.Load<Texture2D>("ValoriaModular25D/HaulersEarth"));
                 districtMaterial.SetTexture("_Plan", Resources.Load<Texture2D>("ValoriaModular25D/DistrictStreets"));
             }

@@ -332,9 +332,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // genuine control rather than a second flat background image.
             militaryDepth=RoyalGoldV3LayeredFinish.Install(root,
                 RoyalGoldV3LayeredFinish.Scene.Training,2);
-            trainingEnvironment=RoyalGoldV41SourceArt.Surface(root,TrainingGroundArt);
+            trainingEnvironment=RoyalGoldV41SourceArt.Surface(root,RoyalGoldV2Hud.UseCoronaArt
+                ? "ValoriaModular25D/UI/CoronaBrecha/patio_de_instruccion" : TrainingGroundArt);
             if(RoyalGoldV2Hud.UseCoronaArt)
-                trainingEnvironment.color=new Color(.83f,.80f,.85f,1f);
+                trainingEnvironment.color=Color.white;
             trainingEnvironment.rectTransform.SetAsLastSibling();
             var courtyardFit=trainingEnvironment.gameObject.AddComponent<AspectRatioFitter>();
             courtyardFit.aspectMode=AspectRatioFitter.AspectMode.EnvelopeParent;

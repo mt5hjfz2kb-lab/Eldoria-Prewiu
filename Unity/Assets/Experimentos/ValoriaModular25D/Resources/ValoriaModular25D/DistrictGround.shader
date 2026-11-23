@@ -21,9 +21,10 @@ half4 frag(Varying i):SV_Target {
  half worn=max(max(plan.r,plan.g),plan.b);
  float2 grain=float2(.36*p.x+.13*p.y,.30*p.y-.08*p.x);
  half3 dirt=tex2D(_Soil,float2(.28+.44*frac(grain.x),frac(grain.y))).rgb;
- half3 stone=tex2D(_Paving,float2(.30+.40*frac(grain.x),frac(grain.y))).rgb;
- half3 bed=lerp(dirt*.84,stone*half3(.94,.88,.79),saturate(.17+.62*plan.r+.40*plan.g+.18*plan.b));
- return half4(lerp(ground,bed,worn),1);
+ half3 stone=tex2D(_Paving,float2(.31*p.x+.16*p.y,.40*p.y-.12*p.x)).rgb;
+ half core=smoothstep(.43,.92,worn);
+ half3 bed=lerp(dirt*.84,stone*half3(.94,.88,.79),core*saturate(.38+.65*plan.r+.46*plan.g+.12*plan.b));
+ return half4(lerp(ground,bed,smoothstep(.10,.99,worn)),1);
 }
 ENDCG
 } } }

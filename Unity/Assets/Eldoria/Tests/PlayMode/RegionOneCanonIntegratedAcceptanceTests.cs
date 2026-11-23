@@ -1415,6 +1415,12 @@ namespace Eldoria.Tests
                     Call(nodes,"Refresh");
                     Assert.That(strategicKeep.transform.position.x,Is.EqualTo(playerCity.position.x).Within(.02f));
                     Assert.That(strategicKeep.transform.position.z,Is.EqualTo(playerCity.position.z).Within(.02f));
+                    camera.aspect=390f/844;
+                    Call(nav,"SetZoomLevel",2,true);
+                    Call(nav,"PanTo",playerCity.position);
+                    Call(canon,"RefreshForCapture");
+                    SaveRetainedSectorFrame(camera,Path.Combine(output,"city-at-alternate-position"),
+                        390,844,"valoria-map-city",playerCity.position);
                 }
                 finally{playerCity.position=origin;Call(nodes,"Refresh");}
                 var crossings=world.GetComponentsInChildren<MeshRenderer>(true).Where(x=>x.name=="Painted Bridge").ToArray();
