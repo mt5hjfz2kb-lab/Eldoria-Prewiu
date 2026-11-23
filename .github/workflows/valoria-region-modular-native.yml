@@ -86,8 +86,8 @@ jobs:
           leases=[x for x in state["active"] if "windows-runner-heavy" in x.get("resources",[])]
           branch=gh("git/ref/heads/"+os.environ["GITHUB_REF_NAME"])
           ok=(len(leases)==1 and leases[0]["id"]==ident and
-             leases[0].get("ownership_revision")==7 and leases[0].get("ownership_state")=="claimed" and
-             leases[0].get("owner")=="chatgpt-valoria-umbral-commercial-ui-and-continuation-20261120" and
+             leases[0].get("ownership_revision")==8 and leases[0].get("ownership_state")=="claimed" and
+             leases[0].get("owner")=="chatgpt-valoria-urbanismo-20261123" and
              state.get("resource_rotation",{}).get("current_workstream")==ident and
              branch["object"]["sha"]==os.environ["GITHUB_SHA"])
           with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write("allowed="+str(ok).lower()+"\n")
@@ -118,8 +118,8 @@ jobs:
           $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
           $held=@($reg.active|Where-Object{@($_.resources) -contains 'windows-runner-heavy'})
           $id='eldoria-valoria-modular25d-bastion1-20261119'
-          if($held.Count -ne 1 -or $held[0].id -ne $id -or $held[0].ownership_revision -ne 7 -or
-             $held[0].owner -ne 'chatgpt-valoria-umbral-commercial-ui-and-continuation-20261120' -or
+          if($held.Count -ne 1 -or $held[0].id -ne $id -or $held[0].ownership_revision -ne 8 -or
+             $held[0].owner -ne 'chatgpt-valoria-urbanismo-20261123' -or
              $reg.resource_rotation.current_workstream -ne $id){throw 'Lease not ours'}
           if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
             throw 'Existing Windows native process: refuse interference'}
@@ -151,7 +151,7 @@ jobs:
           if(Test-Path $root){throw 'Refuse to overwrite existing scratch'}
           git init -q $root
           git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
-          $includes=@('/tools/valoria-modular25d/','/tools/bastion-iii/author-frontier.py',
+          $includes=@('/docs/evidence/valoria-layered-construction-20261016/playable-entry-v3/complete-playerstate-before-reset.json','/tools/valoria-modular25d/','/tools/bastion-iii/author-frontier.py',
            '/Unity/Assets/Experimentos/ValoriaModular25D/',
            '/Unity/Assets/Experimentos/ValoriaModular25D.meta','/Unity/Assets/Experimentos.meta',
            '/Unity/Assets/Eldoria/','/Unity/Assets/Eldoria.meta',
@@ -188,6 +188,14 @@ jobs:
           }
           "MOD25D_SOURCE=$root"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
           Write-Host "MOD25D_CHECKOUT_PINNED $env:GITHUB_SHA"
+      - name: Capture the alternative study at the exact candidate revision
+        shell: powershell
+        run: |
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('urban-comparison-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,'-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.ValoriaUrbanComparison.Capture','-logFile',$log)
+          $editor=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($editor.ExitCode){Get-Content $log -Tail 100;throw "Urban A/B capture failed"}
       - name: Render actual Unity camera frames and validate canonical build + file reload
         shell: powershell
         run: |
@@ -212,7 +220,7 @@ jobs:
           if($e.engine -ne 'Unity' -or $e.engineVersion -ne '6000.3.23f1' -or
              $e.sourceSha -ne $env:GITHUB_SHA -or $e.sourceFrames -lt 42 -or
              -not $e.nativeWorldRender -or -not $e.gatewayBuild -or -not $e.savedAndReloaded -or
-             -not $e.noDoublePayment -or -not $e.continuousTerrainPresent -or
+             -not $e.historicSchema1Restored -or -not $e.noDoublePayment -or -not $e.continuousTerrainPresent -or
              -not $e.roadAndFootprintKits -or
              -not $e.paintedGroundSourceLoaded -or
              $e.originalArtResourcesLoaded -lt 14 -or
@@ -232,6 +240,9 @@ jobs:
           name: ciudad-cinco-bastiones-unity
           path: |
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/stage-*.png
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/urban-*
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/district-tour-*.png
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/district-close-*.png
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/evidence.json
       - name: Native integrated scene, identical routes and fixed-camera art A/B
         shell: powershell

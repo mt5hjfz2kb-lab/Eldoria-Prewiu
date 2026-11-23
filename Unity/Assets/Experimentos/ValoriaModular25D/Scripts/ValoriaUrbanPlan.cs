@@ -18,6 +18,48 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
         }
 
+        public static readonly ValoriaUrbanPlan City = new ValoriaUrbanPlan(true);
+        public readonly Rect CameraTravel = Rect.MinMaxRect(-13,-10,13,9);
+        public sealed class Prop
+        {
+            public readonly string Asset;
+            public readonly Vector2 Foot;
+            public readonly float Scale;
+            public readonly int District;
+            public Prop(int district, string asset, Vector2 origin, float x, float y, float scale)
+            {
+                District=district;
+                Asset=asset;
+                Foot=origin+new Vector2(x,y);
+                Scale=scale;
+            }
+        }
+
+        public Vector2[] FreightRoad => new[]{Freight,Vector2.Lerp(Freight,Junction,.5f)+Vector2.left*.6f,Junction};
+        public Vector2[] ReturnWalk(Parcel plot)
+        {
+            var walk=Approach(plot);
+            return new[]{walk[0],walk[1],walk[2],walk[3],walk[2],walk[1]};
+        }
+        public Prop[] Environment => new[]{
+            new Prop(0,"MuroDerruido",Keep.Foot,-2.62f,2.95f,.95f),
+            new Prop(0,"ArbolAntiguo",Keep.Foot,3.55f,2.85f,.88f),
+            new Prop(0,"ArboledaAntigua",Keep.Foot,-3.65f,1.65f,.73f),
+            new Prop(0,"MatojosFlores",Keep.Foot,-2.85f,-.23f,.58f),
+            new Prop(0,"PozoPiedra",Junction,.82f,.81f,.71f),
+            new Prop(0,"MatojosFlores",Junction,1.22f,1.02f,.39f),
+            new Prop(0,"ArboledaAntigua",Mill.Foot,2.9f,1.81f,.9f),
+            new Prop(0,"ArbolAntiguo",Mill.Foot,3.45f,.68f,.71f),
+            new Prop(1,"CarroMadera",Mill.Foot,1.66f,-.68f,.72f),
+            new Prop(1,"VallaLenador",Mill.Foot,2.03f,-1.34f,.65f),
+            new Prop(2,"VallaLenador",Barracks.Foot,-2.05f,-.55f,.52f),
+            new Prop(3,"HuertosValoria",Granary.Foot,-2.35f,.2f,.78f),
+            new Prop(3,"CarroMadera",Granary.Foot,1.86f,-.71f,.62f),
+            new Prop(3,"LonjaGrano",Granary.Foot,-2.4f,-1.9f,.81f),
+            new Prop(4,"MuroDerruido",Quarry.Foot,2.17f,.82f,.58f),
+            new Prop(4,"CarroMadera",Quarry.Foot,-1.7f,-.82f,.60f)
+        };
+
         public readonly Parcel Keep, Mill, Barracks, Granary, Quarry;
         public readonly Vector2 Junction, Freight;
         public readonly Rect[] Growth;

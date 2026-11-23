@@ -35,6 +35,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             public string mode, artApproved="NO", physicalIphone="NOT_TESTED";
             public bool nativeWorldRender, gatewayBuild, savedAndReloaded, noDoublePayment, didNotAlterBeta;
             public bool continuousTerrainPresent, paintedGroundSourceLoaded, roadAndFootprintKits, noLegacyHudInEditorPreview, movingCharactersAreUnityTransforms, workshopActorAnimated, composedSettlementZones;
+            public bool historicSchema1Restored;
             public bool progressionVisualFixturesOnly=true;
             public int progressionStagesCaptured;
             public int movementFrameRate=15, movementFrames=120;
@@ -85,7 +86,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 if(ground==null || ground.ChunkCount!=81)
                     throw new Exception("Ground chunks are not actually present: "+(ground==null?-1:ground.ChunkCount));
                 var landscape=world.GetComponentInChildren<Modular25DLandscape>();
-                if(landscape==null||landscape.RoadCount!=2||landscape.FootprintCount!=2||
+                if(landscape==null||landscape.RoadCount!=6||landscape.FootprintCount!=2||
                    !landscape.OriginalCobbleRoadLoaded)
                     throw new Exception("Actual Unity spatial terrain integration missing: roads="+
                         (landscape==null?-1:landscape.RoadCount)+" footprints="+
@@ -146,6 +147,22 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 if(!report.noLegacyHudInEditorPreview)
                     throw new Exception("Native Editor probe unexpectedly spawned gameplay or legacy HUD");
                 var clock=new Clock(new DateTime(2026,11,19,10,0,0,DateTimeKind.Utc).Ticks);
+                var historicSource=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,
+                    "../../docs/evidence/valoria-layered-construction-20261016/playable-entry-v3/complete-playerstate-before-reset.json"));
+                var historicCopy=Path.Combine(output,"historic-schema1-copy.json");
+                File.Copy(historicSource,historicCopy,false);
+                var oldStore=new FileStateStore(historicCopy);
+                var previous=oldStore.Load();
+                var restored=new LocalGateway(clock,oldStore).Snapshot();
+                if(previous.BastionLevel!=2 || previous.BarracksLevel!=1 || restored.BastionLevel!=previous.BastionLevel ||
+                    restored.BarracksLevel!=previous.BarracksLevel || restored.SawmillLevel!=previous.SawmillLevel ||
+                    restored.PlayerId!=previous.PlayerId)
+                    throw new InvalidDataException("Archived Valoria save did not retain its districts or player");
+                world.Apply(restored);
+                if(!world.BarracksRenderer.gameObject.activeSelf || world.GranaryRenderer.gameObject.activeSelf ||
+                    (Vector2)world.BarracksRenderer.transform.position!=ValoriaUrbanPlan.City.Barracks.Foot)
+                    throw new InvalidDataException("Archived BII must resolve to the current military parcel");
+                report.historicSchema1Restored=true;
                 var savePath=Path.Combine(output,"isolated-localgateway-"+sourceSha+".json");
                 // Run unique source SHA in scratch; never erase another's data.
                 if(File.Exists(savePath))
@@ -169,8 +186,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 Render(cam,output,report,"01-available-390x844",390,844,home,portrait);
                 Render(cam,output,report,"02-available-1170x2532",1170,2532,home,portrait);
                 Render(cam,output,report,"03-landscape-844x390",844,390,home,landscapeOrtho);
-                Render(cam,output,report,"04-bastion-closeup",1170,2532,new Vector3(-.30f,2.30f,-30f),4.5f);
-                Render(cam,output,report,"05-available-sawmill-close",1170,2532,new Vector3(.96f,-1.27f,-30f),4.6f);
+                Render(cam,output,report,"04-bastion-closeup",1170,2532,(Vector3)ValoriaUrbanPlan.City.Keep.Foot+new Vector3(0,1.3f,-30f),4.5f);
+                Render(cam,output,report,"05-available-sawmill-close",1170,2532,(Vector3)ValoriaUrbanPlan.City.Mill.Foot+new Vector3(0,.8f,-30f),4.6f);
 
                 // These are exactly the user's canonical game rules, not
                 // developer-controlled presentation toggles or fake cost values.
@@ -188,7 +205,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 if(world.WorkshopAction.gameObject.activeInHierarchy)
                     throw new Exception("Worker productive before completion of real worksite");
                 Render(cam,output,report,"06-real-building-worksite",390,844,home,portrait);
-                Render(cam,output,report,"07-worksite-closeup",1170,2532,new Vector3(.96f,-1.27f,-30),4.6f);
+                Render(cam,output,report,"07-worksite-closeup",1170,2532,(Vector3)ValoriaUrbanPlan.City.Mill.Foot+new Vector3(0,.8f,-30f),4.6f);
                 report.gatewayBuild=true;
 
                 clock.AdvanceSeconds(SliceRules.SawmillBuildSeconds+1);
@@ -209,19 +226,19 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     throw new Exception("Finished sawmill worker not active after real save reload");
                 Render(cam,output,report,"08-sawmill-built-390x844",390,844,home,portrait);
                 Render(cam,output,report,"09-sawmill-built-1170x2532",1170,2532,home,portrait);
-                Render(cam,output,report,"10-built-sawmill-closeup",1170,2532,new Vector3(.96f,-1.27f,-30f),4.6f);
+                Render(cam,output,report,"10-built-sawmill-closeup",1170,2532,(Vector3)ValoriaUrbanPlan.City.Mill.Foot+new Vector3(0,.8f,-30f),4.6f);
                 // Wider photographic checkpoints are REAL Unity frames of
                 // actual independent objects; no synthesized composite.
                 Render(cam,output,report,"11-city-mobile-hero-390x844",
                     390,844,home,portrait*1.04f);
                 Render(cam,output,report,"12-ruins-backdrop",
-                    390,844,new Vector3(0f,3.10f,-30f),6.2f);
+                    390,844,(Vector3)ValoriaUrbanPlan.City.Keep.Foot+new Vector3(0,2.1f,-30f),6.2f);
                 Render(cam,output,report,"13-tree-occlusion-ground",
                     390,844,new Vector3(-2.42f,-1.35f,-30f),5.2f);
                 Render(cam,output,report,"14-civic-commons-detail",
-                    1170,2532,new Vector3(-.22f,-1.25f,-30f),5.3f);
+                    1170,2532,(Vector3)ValoriaUrbanPlan.City.Junction+new Vector3(0,0,-30f),5.3f);
                 Render(cam,output,report,"15-lumberyard-worker-detail",
-                    1170,2532,new Vector3(1.20f,-3.20f,-30f),4.0f);
+                    1170,2532,(Vector3)ValoriaUrbanPlan.City.Mill.Foot+new Vector3(.8f,-.2f,-30f),4.0f);
 
                 var moneyBeforeRetry=complete.Resources.Wood;
                 var again=gateway.Execute(new GameCommand("mod25d-native-duplicate-attempt-"+sourceSha,
@@ -280,12 +297,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     float size=level==1?portrait:
                         Modular25DCameraInput.ExpansionSizeForLevel(390f/844f,level);
                     Render(cam,output,report,"stage-"+level+"-fixture-390x844",390,844,framing,size);
+                    ValidateUrbanPlan(world,level);
                     AssertProgressionComposition(cam,world,level);
                     Render(cam,output,report,"stage-"+level+"-fixture-1170x2532",1170,2532,framing,size);
-                    Render(cam,output,report,"stage-"+level+"-keep-detail",1170,1170,new Vector3(-.4f,3.1f,-30f),3.3f);
+                    Render(cam,output,report,"stage-"+level+"-keep-detail",1170,1170,(Vector3)ValoriaUrbanPlan.City.Keep.Foot+new Vector3(0,1.65f,-30f),3.3f);
                     if(level==5)
                     {
-                        Render(cam,output,report,"stage-5-district-1170x2532",1170,2532,new Vector3(-.45f,-6.4f,-30f),12.8f);
+                        Render(cam,output,report,"stage-5-district-1170x2532",1170,2532,(Vector3)ValoriaUrbanPlan.City.Freight+new Vector3(0,1,-30f),6.6f);
                         Render(cam,output,report,"stage-5-baseline-camera",1170,2532,new Vector3(-.02f,-1.5f,-30f),9.15f);
                         var stops = new[] { world.BastionRenderer, world.SawmillRenderer,
                             world.BarracksRenderer, world.GranaryRenderer, world.StoneworksRenderer };
@@ -337,29 +355,56 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
         static void AssertProgressionComposition(Camera camera,Modular25DWorld world,int level)
         {
             if(level<=1)return;
-            float halfWidth=camera.orthographicSize*camera.aspect;
-            float left=camera.transform.position.x-halfWidth;
-            float right=camera.transform.position.x+halfWidth;
-            float bottom=camera.transform.position.y-camera.orthographicSize;
-            float top=camera.transform.position.y+camera.orthographicSize;
-            foreach(var visual in new[]{world.BastionRenderer,world.SawmillRenderer,
-                        world.BarracksRenderer,world.GranaryRenderer,world.StoneworksRenderer})
+            var travel=ValoriaUrbanPlan.City.CameraTravel;
+            foreach(var visual in new[]{world.BastionRenderer,world.SawmillRenderer,world.BarracksRenderer,
+                    world.GranaryRenderer,world.StoneworksRenderer})
             {
                 if(!visual || !visual.gameObject.activeInHierarchy || !visual.sprite)continue;
-                var bounds=visual.bounds;
-                float area=Mathf.Max(.0001f,bounds.size.x*bounds.size.y);
-                float visibleWidth=Mathf.Max(0,Mathf.Min(right,bounds.max.x)-Mathf.Max(left,bounds.min.x));
-                float visibleHeight=Mathf.Max(0,Mathf.Min(top,bounds.max.y)-Mathf.Max(bottom,bounds.min.y));
-                float fraction=visibleWidth*visibleHeight/area;
-                if(fraction<.80f)throw new InvalidOperationException(
-                    "MOD25D_HOME_CROPS_UNLOCKED_DISTRICT level="+level+
-                    " building="+visual.name+" visible_fraction="+fraction.ToString("F3")+
-                    " camera="+camera.transform.position+" ortho="+camera.orthographicSize);
+                Vector2 center=visual.bounds.center;
+                if(!travel.Contains(center))throw new InvalidOperationException("District unreachable by pan: "+visual.name);
+                var available=2f*camera.orthographicSize*camera.aspect;
+                if(visual.bounds.size.x>available)throw new InvalidOperationException("District wider than visit camera: "+visual.name);
             }
-            float castleFraction=world.BastionRenderer.bounds.size.x/(halfWidth*2f);
-            if(castleFraction<.14f)throw new InvalidOperationException(
-                "MOD25D_HOME_ARCHITECTURE_TOO_SMALL level="+level+
-                " viewport_fraction="+castleFraction.ToString("F3"));
+            var home=camera.WorldToViewportPoint(world.BastionRenderer.bounds.center);
+            if(home.x<.18f || home.x>.82f || home.y<.25f || home.y>.80f)
+                throw new InvalidOperationException("Bastion outside home composition");
+        }
+
+        static void ValidateUrbanPlan(Modular25DWorld world, int level)
+        {
+            var plan=ValoriaUrbanPlan.City;
+            var plots=new[]{plan.Keep,plan.Mill,plan.Barracks,plan.Granary,plan.Quarry};
+            var buildings=new[]{world.BastionRenderer,world.SawmillRenderer,world.BarracksRenderer,
+                world.GranaryRenderer,world.StoneworksRenderer};
+            var landscape=world.GetComponentInChildren<Modular25DLandscape>();
+            var roads=landscape.GetComponentsInChildren<MeshFilter>(true);
+            if(roads.Length!=6)throw new InvalidDataException("Unexpected legacy or duplicate street mesh");
+            for(int i=0;i<plots.Length;i++)
+            {
+                var plot=plots[i];
+                var b=buildings[i];
+                Vector2 foot=b.transform.position;
+                if(Vector2.Distance(foot,plot.Foot)>.001f)
+                    throw new InvalidDataException(plot.Id+" has a second source of position");
+                var road=System.Array.Find(roads,r=>r.name==plot.Id+" | acceso");
+                if(!road || road.gameObject.activeInHierarchy!=b.gameObject.activeInHierarchy)
+                    throw new InvalidDataException("Street visible state differs from parcel "+plot.Id+" at "+level);
+                var mesh=road.sharedMesh.vertices;
+                var end=(Vector2)road.transform.TransformPoint(mesh[mesh.Length-5]);
+                if(Vector2.Distance(end,plot.Door)>.002f)throw new InvalidDataException("Street misses threshold "+plot.Id);
+                if(!b.gameObject.activeInHierarchy)continue;
+                for(int j=i+1;j<plots.Length;j++)
+                {
+                    if(!buildings[j].gameObject.activeInHierarchy)continue;
+                    if(b.bounds.Intersects(buildings[j].bounds))
+                        throw new InvalidDataException("Architectural silhouettes intersect: "+plot.Id+"/"+plots[j].Id);
+                }
+                var occupied=new Rect(foot-plot.GroundSize*.5f,plot.GroundSize);
+                foreach(var reserve in plan.Growth)
+                    if(reserve.Overlaps(occupied))throw new InvalidDataException("Parcel occupies expansion area: "+plot.Id);
+            }
+            if(!world.HitSawmill(plan.Mill.Foot) || world.HitSawmill(plan.Keep.Foot))
+                throw new InvalidDataException("Sawmill touch target detached from its parcel");
         }
 
         static void AssertCurrentBuildingArt(Modular25DWorld world)
@@ -392,7 +437,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 float right=cam.transform.position.x+halfW-.12f;
                 float bottom=cam.transform.position.y-halfH+.12f;
                 float top=cam.transform.position.y+halfH-.12f;
-                foreach(var buildingName in new[]{"Bastion_I_unique","Aserradero_state"})
+                foreach(var buildingName in new[]{"Bastion_I_unique"})
                 {
                     var building=GameObject.Find(buildingName)?.GetComponent<SpriteRenderer>();
                     if(building==null||building.sprite==null||!building.enabled)

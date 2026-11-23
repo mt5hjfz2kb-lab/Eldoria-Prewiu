@@ -379,6 +379,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         public void OpenSawmill()
         {
+            // The activities shortcut and a map tap converge on the same plot.
+            var camera=world.ViewCamera;
+            Vector3 center=world.SawmillRenderer.bounds.center;
+            camera.transform.position=new Vector3(center.x,center.y,camera.transform.position.z);
             if(buildingSheet==null)return;
             if(activityDrawer!=null)activityDrawer.gameObject.SetActive(false);
             activityExpanded=false;
@@ -448,9 +452,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(firstBuildGuide)
             {
                 bool atSite = cachedSawmillPhase == ParcelBuildingState.AVAILABLE;
-                bool show = atSite && !roomHost && !statusSheet.gameObject.activeSelf && !activityExpanded &&
+                bool show = atSite && !roomHost && !statusSheet.gameObject.activeSelf &&
                     (!buildingSheet.activeSelf || action.interactable);
-                var target = buildingSheet.activeSelf ? (RectTransform)action.transform : sawmillTag;
+                RectTransform target = buildingSheet.activeSelf ? (RectTransform)action.transform :
+                    activityExpanded ? objective : sawmillTag.gameObject.activeInHierarchy ? sawmillTag : activityHandle;
                 if(firstBuildGuide.parent != target) firstBuildGuide.SetParent(target,false);
                 if(firstBuildGuide.gameObject.activeSelf != show) firstBuildGuide.gameObject.SetActive(show);
                 if(show) firstBuildGuide.anchoredPosition = new Vector2(2f,-2f-3f*Mathf.Sin(Time.unscaledTime*3f));

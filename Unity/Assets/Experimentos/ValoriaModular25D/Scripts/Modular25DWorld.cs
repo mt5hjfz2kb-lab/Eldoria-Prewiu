@@ -33,7 +33,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public Modular25DWorkshopAction WorkshopAction { get; private set; }
         public int SettlementZonesPlaced { get; private set; }
 
-        Transform garrisonYard, westernGrove, grainYard, quarryYard, kitchenGarden, grainArcade;
+        Transform millWorkYard, garrisonYard, grainYard, quarryYard, grainArcade;
 
         const float GroundSpacingX = 1f;
         const float GroundSpacingY = .5f;
@@ -59,205 +59,48 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             Transform people = NewRoot("People - actual movement");
             Transform paths = NewRoot("Footprints + organic dirt road meshes");
 
-            // PRODUCTION PIVOT: separate 8x8 m contiguous terrain chunks.
-            // A bounded 21x21 diamond carpet visibly ended in the 390x844
-            // camera; the continuous repeatable material fixes that root cause.
-            // Routes and contact props stay separate and can be reordered.
-            var terrain=ground.gameObject.AddComponent<Modular25DGround>();
+            var plan = ValoriaUrbanPlan.City;
+            var terrain = ground.gameObject.AddComponent<Modular25DGround>();
             terrain.Build();
-
-            var landscape=paths.gameObject.AddComponent<Modular25DLandscape>();
+            var landscape = paths.gameObject.AddComponent<Modular25DLandscape>();
             landscape.Build();
-            BastionRenderer=AddSprite("Bastion_I_unique",Modular25DArt.Bastion(),new Vector2(-.40f,1.45f),
-                FootOrder(1.3f),buildings);
-            SawmillRenderer=AddSprite("Aserradero_state",Modular25DArt.Sawmill(),
-                new Vector2(.96f,-2.07f),FootOrder(-2.2f),buildings);
+
+            BastionRenderer = AddSprite("Bastion_I_unique", Modular25DArt.Bastion(),
+                plan.Keep.Foot, FootOrder(plan.Keep.Foot.y), buildings);
+            SawmillRenderer = AddSprite("Aserradero_state", Modular25DArt.Sawmill(),
+                plan.Mill.Foot, FootOrder(plan.Mill.Foot.y), buildings);
             BastionRenderer.gameObject.AddComponent<Modular25DArchitecturalShadow>();
             SawmillRenderer.gameObject.AddComponent<Modular25DArchitecturalShadow>();
-            AddContact("Bastion_contact",new Vector2(-.40f,1.37f),300,FootOrder(1.3f)-2,buildings);
-            // The finished illustrated sprite already contains ground contact.
-            // Its broad baked exterior shadow is trimmed by Modular25DArt; do
-            // not add another large dark ellipse over the sawdust footprint.
+            AddContact("Bastion_contact", plan.Keep.Foot + Vector2.down*.08f, 300,
+                FootOrder(plan.Keep.Foot.y)-2, buildings);
+            BarracksRenderer = AddExpansionBuilding(buildings,"barracks",plan.Barracks.Foot);
+            GranaryRenderer = AddExpansionBuilding(buildings,"granary",plan.Granary.Foot);
+            StoneworksRenderer = AddExpansionBuilding(buildings,"stoneworks",plan.Quarry.Foot);
 
-            // Future completed architecture stays invisible until canonical level AND completion.
-            BarracksRenderer=AddExpansionBuilding(buildings,"barracks",Modular25DLandscape.BarracksFoot);
-            GranaryRenderer=AddExpansionBuilding(buildings,"granary",Modular25DLandscape.GranaryFoot);
-            StoneworksRenderer=AddExpansionBuilding(buildings,"stoneworks",Modular25DLandscape.StoneworksFoot);
-
-            // BASTION I PRODUCTION COMPOSITION: a deliberate rebuilt hamlet,
-            // not random RPG decorations on an empty lawn. Four readable zones
-            // surround a free western plot. Every object is independent 2.5D
-            // and retains real foot-Y sorting/occlusion and original artist PNG.
-            var ruins=NewChildRoot(scenery,"01 | Imperial ridge — pre-Breach masonry");
-            var grove=NewChildRoot(scenery,"02 | Guarded ancient grove — visual frame");
-            var commons=NewChildRoot(scenery,"03 | Rebuilding commons — well and garden");
-            var lumber=NewChildRoot(scenery,"04 | Working lumberyard — cart and log stock");
-
-            // The old masonry belongs on one ridge behind the Keep, rather
-            // than random low-poly stone fragments beside the lawn.
-            AddOriginalProp(ruins,"MuroDerruido",new Vector2(-1.85f,4.14f),.88f);
-            AddOriginalProp(ruins,"MatojosFlores",new Vector2(-.20f,4.65f),.54f);
-            AddOriginalProp(ruins,"MatojosFlores",new Vector2(-1.53f,3.29f),.63f);
-
-            // Two mature tree groupings frame the keep at different depths.
-            // Their intentional open middle preserves the main gate silhouette.
-            AddOriginalProp(grove,"ArbolAntiguo",new Vector2(3.37f,3.31f),.88f);
-            AddOriginalProp(grove,"ArboledaAntigua",new Vector2(-3.75f,2.45f),.60f);
-            AddOriginalProp(grove,"ArboledaAntigua",new Vector2(-3.15f,-1.4f),.85f);
-            AddOriginalProp(grove,"ArboledaAntigua",new Vector2(3.04f,1.49f),.78f);
-            // The southern foreground is framed only along the extreme left;
-            // the centre stays open for future unbuilt plots.
-            westernGrove=AddOriginalProp(grove,"ArboledaAntigua",new Vector2(-4.10f,-5.55f),.59f);
-
-            // A well and a recognizable cultivated enclosure give the central
-            // yard a social purpose, without introducing any new game mechanic.
-            AddOriginalProp(commons,"PozoPiedra",new Vector2(-.37f,-.92f),.71f);
-            kitchenGarden=AddOriginalProp(commons,"HuertosValoria",new Vector2(-1.98f,-4.74f),.67f);
-            AddOriginalProp(commons,"MatojosFlores",new Vector2(-2.75f,-5.56f),.45f);
-
-            // Timber staging visibly connects sawmill to the haulers' road.
-            // Both props come from the same original painted wood/material kit.
-            AddOriginalProp(lumber,"CarroMadera",new Vector2(2.19f,-3.56f),.74f);
-            AddOriginalProp(lumber,"VallaLenador",new Vector2(1.40f,-4.17f),.75f);
-            AddOriginalProp(lumber,"MatojosFlores",new Vector2(2.83f,-2.09f),.47f);
-            AddOriginalProp(lumber,"MatojosFlores",new Vector2(2.10f,.45f),.53f);
-
-            // Low-detail ground silhouettes stay rare and are never mistaken
-            // for buildings or construction props.
-            AddProp(scenery,Modular25DArt.Tuft(0),new Vector2(-.48f,-3.75f),.46f);
-            AddProp(scenery,Modular25DArt.Tuft(1),new Vector2(1.07f,1.05f),.53f);
-
-            garrisonYard=NewChildRoot(scenery,"Cuartel | patio de guardia");
-            AddOriginalProp(garrisonYard,"CasasDeOficio",new Vector2(-.57f,-4.64f),.65f);
-            CreateVillager(garrisonYard,"Relevo de guardia",new [] {
-                new Vector2(-3.38f,-5.16f),new Vector2(-3.62f,-4.22f),
-                new Vector2(-3.88f,-3.76f),new Vector2(-2.70f,-2.50f),
-                new Vector2(-3.88f,-3.76f),new Vector2(-3.62f,-4.22f)
-            },.8f);
-            garrisonYard.gameObject.SetActive(false);
-            grainYard=NewChildRoot(scenery,"Granero | huertos y carga");
-            AddOriginalProp(grainYard,"HuertosValoria",new Vector2(2.07f,-8.60f),.91f);
-            AddOriginalProp(grainYard,"CarroMadera",new Vector2(4.86f,-8.42f),.62f);
-            AddOriginalProp(grainYard,"MatojosFlores",new Vector2(1.37f,-8.87f),.53f);
-            quarryYard=NewChildRoot(scenery,"Cantera | escombrera y lindero");
-            AddOriginalProp(quarryYard,"ArbolAntiguo",new Vector2(-.37f,-10.07f),.68f);
-            AddOriginalProp(quarryYard,"MatojosFlores",new Vector2(.02f,-10.21f),.55f);
-            AddOriginalProp(quarryYard,"MuroDerruido",new Vector2(-4.84f,-12.18f),.51f);
-            AddOriginalProp(quarryYard,"CarroMadera",new Vector2(-1.28f,-12.46f),.49f);
-            AddOriginalProp(quarryYard,"ArboledaAntigua",new Vector2(1.62f,-13.93f),.73f);
-            AddOriginalProp(grainYard,"VallaLenador",new Vector2(2.24f,-9.41f),.62f);
-            grainArcade=AddOriginalProp(grainYard,"LonjaGrano",new Vector2(.76f,-9.31f),.86f);
-            // Match the actual moved parcels without editing or pasting
-            // their sprite artwork. A single transform repositions the whole
-            // independently painted yard with each district footprint.
-            grainYard.localPosition=new Vector3(-1.60f,0,0);
-            quarryYard.localPosition=new Vector3(.90f,0,0);
-            // Routes follow the painted loading aprons. Yard visibility tracks the
-            // existing district state. Walker depth uses world Y (yards translate in X).
-            CreateVillager(grainYard,"Portadora del granero",new [] {
-                new Vector2(2.85f,-8.12f), new Vector2(3.55f,-8.58f),
-                new Vector2(4.44f,-8.38f), new Vector2(3.55f,-8.58f)
-            },2.3f);
-            CreateVillager(quarryYard,"Transportista de cantera",new [] {
-                new Vector2(-3.28f,-11.65f), new Vector2(-2.87f,-12.24f),
-                new Vector2(-1.65f,-12.45f), new Vector2(-2.87f,-12.24f)
-            },1.35f);
-            grainYard.gameObject.SetActive(false);
-            quarryYard.gameObject.SetActive(false);
-
-            CreateVillager(people,"Valoria citizen A",new [] {
-                // Real keep gate route: a messenger approaches the courtyard
-                // and returns on the curving walkable cobblestone road.
-                new Vector2(-3.9f,-3.6f),new Vector2(-2.70f,-2.5f),
-                new Vector2(-2.28f,-.40f),new Vector2(-1.23f,.10f),
-                new Vector2(-2.28f,-.40f),new Vector2(-2.70f,-2.5f)
-            },0f);
-            CreateVillager(people,"Valoria citizen B",new [] {
-                // A hauler uses the connecting side-road, not a decorative
-                // patrol in an unrelated empty part of the meadow.
-                new Vector2(-.21f,-3.50f),new Vector2(.57f,-3.33f),
-                new Vector2(1.62f,-3.52f),new Vector2(.57f,-3.33f)
-            },1.8f);
-            CreateWorkshopWorker(people,new Vector2(1.11f,-3.88f));
+            millWorkYard = NewChildRoot(scenery,"Aserradero | acopio y carga");
+            garrisonYard = NewChildRoot(scenery,"Cuartel | patio de armas");
+            grainYard = NewChildRoot(scenery,"Granero | mercado y carga");
+            quarryYard = NewChildRoot(scenery,"Cantera | frente de extracción");
+            var yards = new[]{scenery, millWorkYard, garrisonYard, grainYard, quarryYard};
+            foreach (var prop in plan.Environment)
+            {
+                var placed = AddOriginalProp(yards[prop.District],prop.Asset,prop.Foot,prop.Scale);
+                if (prop.Asset=="LonjaGrano") grainArcade=placed;
+            }
+            CreateVillager(people,"Valoria citizen A",plan.ReturnWalk(plan.Keep),0f);
+            CreateVillager(people,"Valoria citizen B",plan.ReturnWalk(plan.Mill),1.8f);
+            CreateVillager(garrisonYard,"Relevo de guardia",plan.ReturnWalk(plan.Barracks),.8f);
+            CreateVillager(grainYard,"Portadora del granero",plan.ReturnWalk(plan.Granary),2.3f);
+            CreateVillager(quarryYard,"Transportista de cantera",plan.ReturnWalk(plan.Quarry),1.35f);
+            CreateWorkshopWorker(people,plan.Mill.Foot+new Vector2(1.02f,-.46f));
+            foreach (var yard in new[]{millWorkYard,garrisonYard,grainYard,quarryYard}) yard.gameObject.SetActive(false);
             SettlementZonesPlaced=4;
-
-            AddNaturalDetail(scenery);
             if(withRuntime)
             {
                 Gameplay=gameObject.AddComponent<Modular25DGameplay>();
                 Hud=gameObject.AddComponent<Modular25DInterface>();
                 gameObject.AddComponent<Modular25DCameraInput>();
             }
-        }
-
-        void AddNaturalDetail(Transform root)
-        {
-            // Ground cover belongs to five ecotone edges, not 29 uniform
-            // random locations. Cues: ruined ridge / grove / lane / workshop
-            // / cultivated terrace. All are reusable original tuft sprites.
-            var random=new System.Random(11813);
-            var names=new[]{ "Ridge", "Forest boundary", "Courtyard verge",
-                "Lumberyard verge", "Southern growing plot" };
-            var centres=new[]{
-                new Vector2(-1.2f,4.50f),new Vector2(-3.36f,-2.35f),
-                new Vector2(.19f,-.08f),new Vector2(2.68f,-4.55f),
-                new Vector2(-2.94f,-5.56f)
-            };
-            var radii=new[]{
-                new Vector2(.95f,.50f),new Vector2(.72f,.82f),
-                new Vector2(.72f,.45f),new Vector2(.66f,.80f),
-                new Vector2(.81f,.56f)
-            };
-            var counts=new[]{4,7,4,6,6};
-            for(int zone=0;zone<centres.Length;zone++)
-            {
-                int placed=0;
-                for(int attempt=0;attempt<80&&placed<counts[zone];attempt++)
-                {
-                    float angle=(float)random.NextDouble()*2f*Mathf.PI;
-                    float radial=Mathf.Sqrt((float)random.NextDouble());
-                    var at=centres[zone]+new Vector2(
-                        Mathf.Cos(angle)*radii[zone].x*radial,
-                        Mathf.Sin(angle)*radii[zone].y*radial);
-                    if(DistanceToRoad(at)<.53f)continue;
-                    // Roads, actual entrances, their independent future plots
-                    // and the working actor's contact point remain accessible.
-                    if(Vector2.Distance(at,new Vector2(-.40f,1.45f))<2.20f||
-                       Vector2.Distance(at,new Vector2(.96f,-2.07f))<1.65f||
-                       Vector2.Distance(at,new Vector2(1.11f,-3.88f))<.42f)
-                        continue;
-                    var art=Modular25DArt.Tuft((zone+placed)%2);
-                    var sr=AddSprite(names[zone]+" | grass transition "+placed,
-                        art,at,FootOrder(at.y),root);
-                    float scale=.28f+(float)random.NextDouble()*.18f;
-                    sr.transform.localScale=Vector3.one*scale;
-                    placed++;
-                }
-            }
-        }
-
-        static float DistanceToRoad(Vector2 point)
-        {
-            var guide=new []{
-                new Vector2(-4.85f,-5.3f),new Vector2(-3.88f,-3.76f),
-                new Vector2(-2.70f,-2.5f),new Vector2(-2.63f,-1.56f),
-                new Vector2(-2.28f,-.40f),new Vector2(-1.75f,.1f),
-                new Vector2(-.40f,1.00f)
-            };
-            var branch=new[]{
-                new Vector2(-2.70f,-2.5f),new Vector2(-1.57f,-3.16f),
-                new Vector2(-.21f,-3.50f),new Vector2(.52f,-3.26f),
-                new Vector2(1.30f,-2.55f)
-            };
-            float best=float.MaxValue;
-            foreach(var route in new []{guide,branch})
-                for(int i=1;i<route.Length;i++)
-                {
-                    Vector2 span=route[i]-route[i-1];
-                    float t=Mathf.Clamp01(Vector2.Dot(point-route[i-1],span)/span.sqrMagnitude);
-                    best=Mathf.Min(best,Vector2.Distance(point,route[i-1]+span*t));
-                }
-            return best;
         }
 
         static Transform NewChildRoot(Transform parent,string name)
@@ -447,13 +290,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             GetComponentInChildren<Modular25DGround>()?.SetDistricts(
                 BarracksRenderer.gameObject.activeSelf,GranaryRenderer.gameObject.activeSelf,StoneworksRenderer.gameObject.activeSelf);
             bool garrison = BarracksRenderer.gameObject.activeSelf;
-            if(westernGrove)
-            {
-                var foot = garrison ? new Vector2(-4.85f,-4.23f) : new Vector2(-4.10f,-5.55f);
-                westernGrove.localPosition = foot;
-                westernGrove.GetComponent<SpriteRenderer>().sortingOrder = FootOrder(foot.y);
-            }
-            if(kitchenGarden) kitchenGarden.gameObject.SetActive(!garrison);
+            GetComponentInChildren<Modular25DLandscape>().SetDistricts(garrison,
+                GranaryRenderer.gameObject.activeSelf,StoneworksRenderer.gameObject.activeSelf);
             garrisonYard.gameObject.SetActive(garrison);
             grainYard.gameObject.SetActive(GranaryRenderer.gameObject.activeSelf);
             grainArcade.gameObject.SetActive(DisplayedBastionLevel>=4);
@@ -461,6 +299,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var stage=ParcelBuildingStates.For(snapshot,"sawmill");
             // Three independently authored visuals; only the canonical snapshot
             // chooses which one is visible. No tinted finished-building ghost.
+            millWorkYard.gameObject.SetActive(stage==ParcelBuildingState.BUILT);
             SawmillRenderer.enabled=true;
             SawmillRenderer.color=Color.white;
             SawmillRenderer.sprite=stage==ParcelBuildingState.BUILT
@@ -484,7 +323,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // World-space footprint, independent of sprite alpha and canvas scaling.
             // Adapt the existing world interaction footprint to the moved
             // building without changing its canonical Build command or save.
-            return world.x>-.88f && world.x<2.88f && world.y>-2.60f && world.y<1.04f;
+            Vector2 local=world-ValoriaUrbanPlan.City.Mill.Foot;
+            return new Rect(-1.84f,-.53f,3.76f,3.64f).Contains(local);
         }
     }
 }

@@ -89,12 +89,21 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 districtMaterial.mainTexture = texture;
                 districtMaterial.SetTexture("_Paving", Resources.Load<Texture2D>("ValoriaModular25D/DistrictPaving"));
                 districtMaterial.SetTexture("_Soil", Resources.Load<Texture2D>("ValoriaModular25D/HaulersEarth"));
-                districtMaterial.SetTexture("_Plan", Resources.Load<Texture2D>("ValoriaModular25D/DistrictStreets"));
+                var plan=ValoriaUrbanPlan.City;
+                SetYard("_MilitaryYard",plan.Barracks,1.30f);
+                SetYard("_MarketYard",plan.Granary,1.16f);
+                SetYard("_StoneFace",plan.Quarry,1.35f);
             }
             districtMaterial.SetVector("_Built", new Vector4(built.x, built.y, built.z, 0));
             foreach (var chunk in GetComponentsInChildren<MeshRenderer>())
                 chunk.sharedMaterial = built == Vector3Int.zero ? material : districtMaterial;
         }
+        void SetYard(string property, ValoriaUrbanPlan.Parcel parcel, float apron)
+        {
+            districtMaterial.SetVector(property,new Vector4(parcel.Foot.x,parcel.Foot.y-.35f,
+                parcel.GroundSize.x*.63f,parcel.GroundSize.y*.5f+apron));
+        }
+
         static float Hash(int x,int y,int p)
         {
             x=(x%p+p)%p;y=(y%p+p)%p;

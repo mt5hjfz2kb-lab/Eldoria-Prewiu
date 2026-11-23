@@ -19,33 +19,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         // Commercial Bastion-I hero composition: both authored buildings occupy
         // more of a phone viewport. Terrain stays continuous and exploration
         // retains unrestricted pan/zoom, only Home framing is changed.
-        public static Vector3 HomePosition => new Vector3(-.02f,-.40f,-30f);
+        public static Vector3 HomePosition => new Vector3(ValoriaUrbanPlan.City.Keep.Foot.x,ValoriaUrbanPlan.City.Keep.Foot.y+.62f,-30f);
         public static float HomeSizeForAspect(float aspect)
         {
             return Mathf.Clamp(3.05f/Mathf.Max(.42f,aspect),4.90f,7.10f);
         }
 
-        // Framing is progressive, not an abrupt zoom-out to the entire
-        // Bastion V footprint the moment Bastion II unlocks. This keeps
-        // architecture legible at a 390 x 844 phone viewport while all plots
-        // remain accessible by the existing pan/pinch controls.
-        public static Vector3 ExpansionCenterForLevel(int level) =>
-            level <= 2 ? new Vector3(-1.10f,-2.35f,-30f) :
-            level == 3 ? new Vector3(-.54f,-2.74f,-30f) :
-            level == 4 ? new Vector3(-.54f,-3.04f,-30f) :
-                         new Vector3(-.25f,-4.50f,-30f);
-        public static float ExpansionSizeForLevel(float aspect,int level)
-        {
-            // Real Unity captures 45008568637 showed buildings occupying
-            // only a small central island at Bastion II-V while empty grass
-            // consumed more than half the viewport. Preserve pan/zoom and
-            // enlarge the genuine architectural footprint in the HOME camera.
-            // Portrait fits the unlocked plots; landscape prioritises the
-            // centre and lets the player pan to outlying working districts.
-            float verticalCoverage=level<=2?3.98f:level<=4?4.55f:4.78f;
-            float minimum=level<=2?6.2f:level<=4?7.0f:8.5f;
-            return Mathf.Max(minimum,verticalCoverage/Mathf.Max(.40f,aspect));
-        }
+        public static Vector3 ExpansionCenterForLevel(int level) => HomePosition;
+        public static float ExpansionSizeForLevel(float aspect,int level) => HomeSizeForAspect(aspect);
         // Existing editor tooling can still ask for the complete-city fit.
         public static Vector3 ExpansionCenter => ExpansionCenterForLevel(5);
         public static float ExpansionSize(float aspect) => ExpansionSizeForLevel(aspect,5);
@@ -170,8 +151,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(pixels.sqrMagnitude<.001f)return;
             Vector3 p=camera.transform.position;
             float scale=2f*camera.orthographicSize/Mathf.Max(1f,Screen.height);
-            p.x=Mathf.Clamp(p.x-pixels.x*scale,-6f,6f);
-            p.y=Mathf.Clamp(p.y-pixels.y*scale,world.DisplayedBastionLevel>=2?-12.5f:-5f,5f);
+            var area=ValoriaUrbanPlan.City.CameraTravel;
+            p.x=Mathf.Clamp(p.x-pixels.x*scale,area.xMin,area.xMax);
+            p.y=Mathf.Clamp(p.y-pixels.y*scale,area.yMin,area.yMax);
             camera.transform.position=p;
         }
 

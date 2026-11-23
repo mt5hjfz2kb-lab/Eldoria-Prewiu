@@ -13,17 +13,20 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     [DisallowMultipleComponent]
     public sealed class Modular25DLandscape : MonoBehaviour
     {
-        // Recompose only later unlocks inside the portrait-safe footprint.
-        // Bastion I, its hand-authored roads and initial two buildings stay
-        // pixel-identical. The previous wider layout lost both flanking
-        // buildings to the left/right when the approved architecture was
-        // enlarged for phone readability.
-        public static readonly Vector2 BarracksFoot = new Vector2(-3.25f,-4.95f);
-        public static readonly Vector2 GranaryFoot = new Vector2(2.25f,-7.65f);
-        public static readonly Vector2 StoneworksFoot = new Vector2(-1.95f,-11.70f);
+        public static Vector2 BarracksFoot => ValoriaUrbanPlan.City.Barracks.Foot;
+        public static Vector2 GranaryFoot => ValoriaUrbanPlan.City.Granary.Foot;
+        public static Vector2 StoneworksFoot => ValoriaUrbanPlan.City.Quarry.Foot;
         const int RoadW=256, RoadH=512, FootW=512, FootH=320;
-        static readonly Vector2 Keep=new Vector2(-.40f,1.45f);
-        static readonly Vector2 Sawmill=new Vector2(.96f,-2.07f);
+        static Vector2 Keep => ValoriaUrbanPlan.City.Keep.Foot;
+        static Vector2 Sawmill => ValoriaUrbanPlan.City.Mill.Foot;
+        readonly Dictionary<string,GameObject> approaches=new Dictionary<string,GameObject>();
+        public void SetDistricts(bool military,bool market,bool quarry)
+        {
+            approaches["barracks"].SetActive(military);
+            approaches["granary"].SetActive(market);
+            approaches["stoneworks"].SetActive(quarry);
+            approaches["freight"].SetActive(market || quarry);
+        }
         readonly List<Mesh> meshes=new List<Mesh>();
         readonly List<Texture2D> textures=new List<Texture2D>();
         readonly List<Material> materials=new List<Material>();
@@ -68,21 +71,34 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             else
                 Debug.LogError("[Modular25D] No source-authored road tile; "+
                     "fallback is not artistic acceptance.",this);
-            // The road is described as spatial segments; bend is interpolated,
-            // not simulated by shifting a static full-scene background.
-            var main=new []{
-                new Vector2(-6.65f,-7.5f),new Vector2(-4.85f,-5.3f),
-                new Vector2(-3.88f,-3.76f),new Vector2(-2.70f,-2.5f),
-                new Vector2(-2.53f,-1.56f),new Vector2(-2.28f,-.40f),
-                new Vector2(-1.23f,.10f),new Vector2(-.40f,1.00f)};
-            var lumber=new[]{
-                new Vector2(-2.70f,-2.5f),new Vector2(-1.57f,-3.16f),
-                new Vector2(-.21f,-3.50f),new Vector2(.52f,-3.26f),
-                new Vector2(.96f,-2.42f)};
-            // Keep both branches legible but reduce their over-wide grey ribbons.
-            // Their spline geometry, world-space UVs and hit-tested entrances stay.
-            AddRoad("Imperial Way — original illustrated paving",main,1.47f,imperialMat,true);
-            AddRoad("Haulers' path — compacted earth and gravel",lumber,1.26f,earthMat,false);
+            var roadShader=Resources.Load<Shader>("ValoriaModular25D/UrbanRoad");
+            var paving=Resources.Load<Texture2D>("ValoriaModular25D/DistrictPaving");
+            if(!roadShader || !paving)throw new InvalidOperationException("Missing authored road surface");
+            earthMat.shader=roadShader;
+            earthMat.mainTexture=earth;
+            earthMat.SetTexture("_Paving",paving);
+            if(OriginalCobbleRoadLoaded)
+            {
+                imperialMat.shader=roadShader;
+                imperialMat.mainTexture=artistPath;
+                imperialMat.SetTexture("_Paving",paving);
+                imperialMat.SetFloat("_Stone",1f);
+            }
+            var plan = ValoriaUrbanPlan.City;
+            foreach (var plot in new[]{plan.Keep,plan.Mill,plan.Barracks,plan.Granary,plan.Quarry})
+            {
+                bool paved = plot == plan.Keep || plot == plan.Barracks;
+                var road=AddRoad(plot.Id+" | acceso",plan.Approach(plot),paved?1.32f:.92f,
+                    paved?imperialMat:earthMat,paved);
+                if (plot==plan.Barracks || plot==plan.Granary || plot==plan.Quarry)
+                {
+                    approaches.Add(plot.Id,road);
+                    road.SetActive(false);
+                }
+            }
+            var freight=AddRoad("Camino de abastos",plan.FreightRoad,1.15f,imperialMat,true);
+            approaches.Add("freight",freight);
+            freight.SetActive(false);
 
             var keep=MakeFootprint("Bastion",new Color(.49f,.41f,.31f,1),
                 new Color(.74f,.69f,.52f,1),true,false);
@@ -97,8 +113,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Different alpha / sorting from the two functional footprints.
             var yard=MakeCommonsSoil();
             PutCommons("Worked stone and soil | civic commons",yard,
-                new Vector2(-.38f,-1.40f),.78f);
-            EdgeProps();
+                plan.Junction,.78f);
         }
 
         static Color32 Mix(Color a,Color b,float t)
@@ -205,7 +220,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             return tex;
         }
 
-        public void AddRoad(string name,Vector2[] control,float width,Material material,bool cobbled)
+        public GameObject AddRoad(string name,Vector2[] control,float width,Material material,bool cobbled)
         {
             const int Steps=8,Across=9;
             int samples=(control.Length-1)*Steps+1;
@@ -259,8 +274,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     float patches=N(p.x*4.1f,p.y*3.2f+u*5.1f,203);
                     float ink=(cobbled ? .71f : .57f)+.19f*erosion+.09f*patches;
                     float alpha=Mathf.Clamp01(feather*ink);
-                    if(cobbled)
-                        alpha*=Sm(.08f,1.62f,along);
+                    // The paved centre runs continuously through a junction and up to each threshold.
                     edgeColor[index]=(Color32)new Color(1f,1f,1f,alpha);
                 }
             }
@@ -282,6 +296,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             renderer.sharedMaterial=material;
             renderer.sortingOrder=-4100;
             RoadCount++;
+            return obj;
         }
 
         Texture2D MakeFootprint(string label,Color soil,Color lit,bool cobbled,bool workshopDust)
@@ -407,41 +422,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             sr.sprite=sprite;
             sr.sortingOrder=-4050;
             FootprintCount++;
-        }
-
-        void EdgeProps()
-        {
-            var rnd=new System.Random(88215);
-            for(int i=0;i<34;i++)
-            {
-                bool nearKeep=i<18;
-                Vector2 centre=nearKeep?Keep:Sawmill;
-                float theta=(i*.61803398875f+rnd.Next(100)*.003f)*Mathf.PI*2f;
-                float rx=nearKeep?2.8f:2.2f;
-                float ry=nearKeep?1.52f:1.3f;
-                float margin=.80f+(float)rnd.NextDouble()*.40f;
-                var at=centre+new Vector2(Mathf.Cos(theta)*rx*margin,
-                    Mathf.Sin(theta)*ry*margin-.18f);
-                // Leave the road and the actual entrance walkable and clean.
-                if(Mathf.Abs(at.x+2.42f)<.64f&&at.y<1.1f)continue;
-                if(!nearKeep&&at.x>.56f&&at.y<-.8f&&at.y>-3.9f)continue;
-                // Ground strokes outnumber stones. Keep big rocks outside the gate.
-                // Tufts break the alpha edge of the footprint without forming
-                // an unnatural bracelet of boulders around the castle.
-                // The earlier geometric boulders and flat shrub discs cut
-                // against the high-detail recovered original prop family.
-                Sprite art=Modular25DArt.Tuft(i%2);
-                var go=new GameObject("Ground contact — local grass/stone "+i);
-                go.transform.SetParent(transform,false);
-                go.transform.localPosition=new Vector3(at.x,at.y,-.02f);
-                float sz=.27f+(float)rnd.NextDouble()*.24f;
-                go.transform.localScale=Vector3.one*sz;
-                var sr=go.AddComponent<SpriteRenderer>();
-                sr.sprite=art;
-                sr.sortingOrder=Modular25DWorld.FootOrder(at.y);
-                sr.color=Color.Lerp(Color.white,new Color(.75f,.82f,.65f,1),
-                    (float)rnd.NextDouble()*.22f);
-            }
         }
 
         void OnDestroy()
