@@ -10083,7 +10083,18 @@
       "last_browser_run": 44713811420,
       "released_at": "2026-11-20T10:24:49.691Z",
       "current_art_goal": "Comparar dos planos en cámara Unity, consolidar la ciudad I–V y después comprobar mundo, interfaz y candidata iPhone.",
-      "last_failed_native_run": 44745994989
+      "last_failed_native_run": 44745994989,
+      "area_handoff_request": {
+        "status": "ready",
+        "completed": true,
+        "area": "Valoria I–V · plano urbano, Región 1 y Corona de la Brecha",
+        "owner": "chatgpt-valoria-urbanismo-20261123",
+        "revision": 8,
+        "branch_head": "bedeb5fad7049ebc6b45f476067ec1820dbc5391",
+        "run_id": 45279167863,
+        "artistic_approval": "pending_owner_review",
+        "note": "277 fotogramas Unity, 14 encuadres A/B, recorridos I–V a 1× y 3× y WebKit con perfil iPhone 13. Partida física y aprobación artística del propietario pendientes. Una incidencia 404 sin URL en la consola de arranque de Chromium, sin bloqueo durante la partida. Código y arte en rama experimental."
+      }
     }
   ],
   "history": [
