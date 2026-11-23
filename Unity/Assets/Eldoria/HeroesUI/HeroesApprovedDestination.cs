@@ -1281,16 +1281,17 @@ namespace Eldoria.HeroesUI
                 ribbon.sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/top_velvet_ribbon");
                 ribbon.raycastTarget=false;
             }
-            Label("Hall / Eldoria heraldry",content,"✦  ELDORIA",titleX,
+            if(!coronaTypography || !portraitLayout)
+                Label("Hall / Eldoria heraldry",content,"✦  ELDORIA",titleX,
                 phoneLandscape?7f:illustratedDesktop?18f:13f,
                 phoneLandscape?170f:245f,phoneLandscape?25f:illustratedDesktop?38f:33f,
                 phoneLandscape?17:illustratedDesktop?27:24).color=gold;
             Label("Heroes hall title",content,"SALÓN DE HÉROES",titleX,
-                phoneLandscape?30f:illustratedDesktop?62f:46f,
+                phoneLandscape?30f:illustratedDesktop?62f:coronaTypography && portraitLayout?25f:46f,
                 phoneLandscape?w*.48f:illustratedDesktop?
                     referenceStageWidth*.88f:w*.66f,
                 phoneLandscape?31f:illustratedDesktop?65f:47f,
-                phoneLandscape?24:illustratedDesktop?46:34).color=ivory;
+                phoneLandscape?24:illustratedDesktop?46:coronaTypography && portraitLayout?38:34).color=ivory;
             if(!phoneLandscape)
                 Label("Heroes hall introduction",content,
                     portraitLayout?"Reclútalos y forja su leyenda.":

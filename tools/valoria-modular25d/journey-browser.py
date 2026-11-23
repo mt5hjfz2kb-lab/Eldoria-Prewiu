@@ -142,7 +142,7 @@ async def main():
             # the visible action/close controls in order; never click through,
             # disable or silently skip authored progression content.
             async def finish_visible_world_prompts():
-                for _ in range(24):
+                for _ in range(64 if before["level"]==5 else 24):
                     blocker=world_view.get('blocker','')
                     if blocker:
                         sample=world_view.get('sample',0)
@@ -150,7 +150,13 @@ async def main():
                         await until(lambda:world_view.get('sample',0)>sample,15)
                         await page.wait_for_timeout(260)
                         continue
-                    if world_view.get('canTravel'): break
+                    if world_view.get('canTravel'):
+                        if before['level']==5:
+                            # The real narrative presenter schedules the following
+                            # introduction 1.5 s after the previous acknowledgement.
+                            await page.wait_for_timeout(2350)
+                            if world_view.get('blocker'): continue
+                        break
                     sample=world_view.get('sample',0)
                     await until(lambda:world_view.get('sample',0)>sample,15)
                 assert not world_view.get('blocker') and world_view.get('canTravel'),world_view
@@ -302,20 +308,11 @@ async def main():
             await page.wait_for_timeout(1200)
             await page.screenshot(path=OUT/'bastion-5-completo.png')
             if os.environ.get('VALORIA_TEST_REGION')=='1':
-                async def visit_room(name,back,required=True):
+                async def visit_room(name,back):
                     if name=='mail':
                         if state['council']: await tap('Close state',False)
                     else: await council()
-                    try:
-                        # The Council can exceed one phone screen at Bastion V;
-                        # tap() scrolls the real masked order list before deciding
-                        # that a progression-gated destination is unavailable.
-                        await tap('OpenSystem/'+name)
-                    except RuntimeError:
-                        if required: raise
-                        log.append({'room_unavailable_at_bastion_v':name})
-                        if state['council']: await tap('Close state',False)
-                        return False
+                    await tap('OpenSystem/'+name)
                     await until(lambda:state.get('room')==name)
                     await page.wait_for_timeout(650)
                     await page.screenshot(path=OUT/('sistema-'+name+'.png'))
@@ -323,6 +320,7 @@ async def main():
                     await until(lambda:not state.get('room'))
                     log.append({'room_traversed':name,'level':state['level']})
                     return True
+                await travel_round_trip()
                 # Visit the functional rooms while the untouched saved city
                 # camera still frames the Bastion nameplate. The artistic
                 # camera tour below deliberately pans away from it.
@@ -336,8 +334,7 @@ async def main():
                                   ('vigilants','Return to actual kingdom'),
                                   ('scouts','Return to actual kingdom'),
                                   ('bag','Issue186 bag close')]:
-                    await visit_room(name,back,False)
-                await travel_round_trip()
+                    await visit_room(name,back)
             # The final camera tour starts in the persisted city, with the HUD
             # closed. Pinch inward in world units, then traverse via actual
             # browser touch gestures, capturing the Unity canvas throughout.

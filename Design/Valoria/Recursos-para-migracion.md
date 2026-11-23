@@ -13,3 +13,15 @@
 Una futura integración debe comenzar por el presentador que realmente activa la escena de ciudad de main y verificar que existe un solo HUD y una sola autoridad visual. Cambiar una referencia del arte no implica cambiar el servicio de guardado, las reglas de construcción ni las localizaciones del mundo compartido.
 
 Las casas del camino, la armería y el puesto de abastos son tres ilustraciones originales creadas para Valoria el 23 de noviembre de 2026 usando como referencia las cinco arquitecturas importadas del proyecto. Cada una tiene su propia textura con transparencia, registro de contacto y escala. La armería requiere un Cuartel terminado y el puesto requiere un Granero terminado en Bastión IV o V.
+
+### Mundo y Corona de la Brecha
+
+| Recurso o presentador | Sustitución en el experimento y punto de integración |
+|---|---|
+| RegionPaint.shader | Actualizar el sombreado del terreno continuo y de la orilla en la misma malla. Conservar el registro geográfico de la falla, el pigmento de la Brecha y las texturas del mundo. |
+| RegionOneLocalCanopy.shader y RegionOneOriginalLandscape | Reutilizar las familias actuales de árboles. La transición de copas hacia el límite, la altitud y la distancia al cauce definen su aspecto. |
+| RegionOneReferenceNodes y RegionOneModularArt | Mantener las ilustraciones del Bastión, nodos y fauna. Ajustar el tamaño dibujado de Valoria en panorámica y el de las siluetas de los encuentros. Conservar los objetos seleccionables y sus coordenadas. |
+| HeroesApprovedDestination | Cabecera del Salón sobre la cinta de Corona con espacio para el título y el cierre. Reutilizar los retratos y contratos de héroes. |
+| RoyalGoldV3ManagementScreens | Reordenar las acciones de Entrenamiento y las áreas de héroes, tropas y resumen de Marchas en orientación vertical. |
+| Issue186BagOverlay | Aplicar margen exterior, dos columnas y texto de confirmación centrado a la Bolsa. Conservar inventario, recibos y comandos. |
+| Buzón, Tesoros, Vigilantes, Exploradores y HUD | Conservar los presentadores de cada destino y las fuentes y marcos de Corona ya enlazados. Las pruebas del jugador comprueban qué acceso existe según el estado real. |

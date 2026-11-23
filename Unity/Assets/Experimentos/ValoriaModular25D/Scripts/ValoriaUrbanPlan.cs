@@ -37,7 +37,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         // Projected stone landing immediately outside the keep's actual threshold.
         public Vector2 CourtCenter => Keep.Door + new Vector2(0,-.46f);
-        public Vector2 CourtRadii => new Vector2(Keep.GroundSize.x*.60f,Keep.GroundSize.y*.46f);
+        public Vector2 CourtRadii => new Vector2(Keep.GroundSize.x*.54f,Keep.GroundSize.y*.39f);
+
+        public Vector2 MillBench => Mill.Foot+new Vector2(1.02f,-.46f);
+        public Rect MillSelection => new Rect(Mill.Foot+new Vector2(-1.84f,-.53f),new Vector2(3.76f,3.64f));
 
         public Vector2[] FreightRoad => new[]{Freight,Vector2.Lerp(Freight,Junction,.5f)+Vector2.left*.6f,Junction};
         public Vector2[] ReturnWalk(Parcel plot)

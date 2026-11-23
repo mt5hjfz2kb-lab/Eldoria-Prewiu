@@ -92,7 +92,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             CreateVillager(garrisonYard,"Relevo de guardia",plan.ReturnWalk(plan.Barracks),.8f);
             CreateVillager(grainYard,"Portadora del granero",plan.ReturnWalk(plan.Granary),2.3f);
             CreateVillager(quarryYard,"Transportista de cantera",plan.ReturnWalk(plan.Quarry),1.35f);
-            CreateWorkshopWorker(people,plan.Mill.Foot+new Vector2(1.02f,-.46f));
+            CreateWorkshopWorker(people,plan.MillBench);
             foreach (var yard in new[]{millWorkYard,garrisonYard,grainYard,quarryYard}) yard.gameObject.SetActive(false);
             SettlementZonesPlaced=4;
             if(withRuntime)
@@ -323,8 +323,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // World-space footprint, independent of sprite alpha and canvas scaling.
             // Adapt the existing world interaction footprint to the moved
             // building without changing its canonical Build command or save.
-            Vector2 local=world-ValoriaUrbanPlan.City.Mill.Foot;
-            return new Rect(-1.84f,-.53f,3.76f,3.64f).Contains(local);
+            return ValoriaUrbanPlan.City.MillSelection.Contains(world);
         }
     }
 }

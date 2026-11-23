@@ -1181,9 +1181,18 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(heading.rectTransform,inset,titleTop,width-2*inset,40);
                 Place(subheading.rectTransform,inset,59,width-2*inset,32);
                 float n=(width-48)/3;
-                Place(heroesButton.transform as RectTransform,12,99,n,76);
-                Place(switchDestination.transform as RectTransform,24+n,99,n,76);
-                Place(chapterAction.transform as RectTransform,36+2*n,99,n,76);
+                if(RoyalGoldV2Hud.UseCoronaArt && !heroesButton.gameObject.activeSelf)
+                {
+                    float pair=(width-3*inset)*.5f;
+                    Place(switchDestination.transform as RectTransform,inset,100f,pair,70f);
+                    Place(chapterAction.transform as RectTransform,2*inset+pair,100f,pair,70f);
+                }
+                else
+                {
+                    Place(heroesButton.transform as RectTransform,12,99,n,76);
+                    Place(switchDestination.transform as RectTransform,24+n,99,n,76);
+                    Place(chapterAction.transform as RectTransform,36+2*n,99,n,76);
+                }
             }
             // The approved composition places a full-height archer on the
             // courtyard floor and the order below the unit identity at right.
@@ -1333,8 +1342,8 @@ namespace Eldoria.UI.RoyalGold.V2
 
             float leftW=wide?(width-gap)*.58f:width;
             float rightW=wide?width-leftW-gap:width;
-            float heroH=wide?bodyH*.53f:bodyH*.34f;
-            float troopH=wide?bodyH-heroH:bodyH*.28f;
+            float heroH=wide?bodyH*.53f:bodyH*(RoyalGoldV2Hud.UseCoronaArt?.30f:.34f);
+            float troopH=wide?bodyH-heroH:bodyH*(RoyalGoldV2Hud.UseCoronaArt?.30f:.28f);
             float summaryH=wide?bodyH:bodyH-heroH-troopH-gap;
             Place(left,x,bodyY,leftW,heroH+troopH);
             Place(right,wide?x+leftW+gap:x,

@@ -17,7 +17,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public static Vector2 GranaryFoot => ValoriaUrbanPlan.City.Granary.Foot;
         public static Vector2 StoneworksFoot => ValoriaUrbanPlan.City.Quarry.Foot;
         const int RoadW=256, RoadH=512, FootW=512, FootH=320;
-        static Vector2 Keep => ValoriaUrbanPlan.City.Keep.Foot;
         static Vector2 Sawmill => ValoriaUrbanPlan.City.Mill.Foot;
         readonly Dictionary<string,GameObject> approaches=new Dictionary<string,GameObject>();
         public void SetDistricts(bool military,bool market,bool quarry)

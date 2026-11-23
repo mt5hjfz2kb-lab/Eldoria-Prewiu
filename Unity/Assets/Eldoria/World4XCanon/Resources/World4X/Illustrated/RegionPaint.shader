@@ -28,8 +28,8 @@ Shader "Eldoria/Region1/Illustrated ground" {
  TEXTURE2D(_CityEarth); SAMPLER(sampler_CityEarth);
  TEXTURE2D(_CityCobble); SAMPLER(sampler_CityCobble);
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
- struct In {float3 p:POSITION;float2 uv:TEXCOORD0;};
- struct Out {float4 p:SV_POSITION;float2 uv:TEXCOORD0;float3 world:TEXCOORD1;};
+ struct In {float3 p:POSITION;float3 normal:NORMAL;float2 uv:TEXCOORD0;};
+ struct Out {float4 p:SV_POSITION;float2 uv:TEXCOORD0;float3 world:TEXCOORD1;half3 slope:TEXCOORD2;};
  Out vert(In v){
   Out o;
   float2 metres=(v.uv-.5)*float2(1820,3600);
@@ -41,6 +41,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
    v.p.y+=rock.a*(shelf*2.0-core*3.6);
   }
   o.p=TransformObjectToHClip(v.p); o.uv=v.uv;
+  o.slope=TransformObjectToWorldNormal(v.normal);
   o.world=TransformObjectToWorld(v.p);return o;
  }
  float _BeyondMap; float _BoundaryWeight; float4 _BoundaryColour; float _CityFinish;
@@ -192,7 +193,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // Sunlit clearings and cooler drainage hollows follow the continuous land cover.
   half glade=(1-canopy)*(1-valley)*(1-upland);
   half field=saturate(.5+.32*sin(metre.x*.014+sin(metre.y*.018))+.18*cos(metre.y*.031-metre.x*.009));
-  half3 openMeadow=grass*lerp(half3(.93,1.11,1.05),half3(1.40,1.14,.73),field*glade);
+  half3 openMeadow=grass*lerp(half3(.93,1.11,1.05),half3(1.28,1.11,.80),field*glade);
   half3 woodedMeadow=grass*half3(.70,.92,.98);
   half3 districtGrass=lerp(openMeadow,woodedMeadow,canopy);
   districtGrass=lerp(districtGrass,grass*half3(.76,1.02,1.11),valley*.82);
@@ -272,7 +273,10 @@ Shader "Eldoria/Region1/Illustrated ground" {
   float3 geometricNormal=cross(ddx(i.world),ddy(i.world));
   geometricNormal*=rsqrt(max(dot(geometricNormal,geometricNormal),1.e-8));
   if(geometricNormal.y<0)geometricNormal=-geometricNormal;
-  half geomLight=saturate(dot(geometricNormal,normalize(float3(-.38,.85,.36))));
+  float3 smoothSlope=normalize(i.slope);
+  if(smoothSlope.y<0)smoothSlope=-smoothSlope;
+  float3 lightNormal=normalize(lerp(smoothSlope,geometricNormal,faultWeight*.65));
+  half geomLight=saturate(dot(lightNormal,normalize(float3(-.38,.85,.36))));
   // Horizontal meadow must retain exactly the city paint's apparent value.
   // Reserve the change for geographic slopes, not a global brightness boost.
   half paintedLight=clamp(1+(geomLight-.85)*.86,.59,1.16);

@@ -318,7 +318,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // One saved object owns one compact square cell. Original item
             // art distinguishes resource families; no inflated full-width rows.
             float safeWidth=w-l-r;
-            float width=Mathf.Min(w>h?1120f:800f,safeWidth);
+            bool portraitCorona=RoyalGoldV2Hud.UseCoronaArt && w<h;
+            float margin=portraitCorona?Mathf.Clamp(safeWidth*.04f,12f,25f):0f;
+            float width=Mathf.Min(w>h?1120f:800f,safeWidth-2f*margin);
             float x0=l+(safeWidth-width)*.5f;
             float backW=Mathf.Clamp(width*.21f,96f,128f);
             At((RectTransform)back.transform,x0,t,backW,46f);
@@ -371,6 +373,11 @@ namespace Eldoria.UI.RoyalGold.V2
                         skin.sprite.rect.height/(useH*Mathf.Max(.01f,skin.pixelsPerUnit)));
             }
             At(feedback.rectTransform,x0,footer-47f,width,43f);
+            if(portraitCorona)
+            {
+                feedback.alignment=TextAnchor.MiddleCenter;
+                feedback.fontSize=16;
+            }
             float navW=Mathf.Clamp(width*.25f,92f,160f);
             At((RectTransform)prev.transform,x0,footer,navW,48f);
             At((RectTransform)next.transform,x0+width-navW,footer,navW,48f);
@@ -384,7 +391,7 @@ namespace Eldoria.UI.RoyalGold.V2
             closeMail?.Invoke();
             panel.gameObject.SetActive(true);panel.SetAsLastSibling();
             page=0;
-            feedback.text="Solo USAR añade recursos. Toca una casilla para marcarla vista.";
+            feedback.text=RoyalGoldV2Hud.UseCoronaArt ? "Toca un paquete para verlo. Pulsa USAR para recibirlo." : "Solo USAR añade recursos. Toca una casilla para marcarla vista.";
             Layout();Refresh();
         }
         public void Close()

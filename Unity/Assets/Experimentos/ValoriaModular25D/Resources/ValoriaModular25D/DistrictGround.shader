@@ -48,10 +48,11 @@ half4 frag(Varying i):SV_Target {
  float edge=abs(court.x)+abs(court.y)*.54;
  float outline=max(edge,abs(court.y));
  half worn=erosion*.075;
- half landing=1-smoothstep(.93,1.04,outline+worn);
+ half landing=1-smoothstep(.87,1.07,outline+worn);
  half margin=(1-smoothstep(.035,.105,abs(outline-.91+worn)))*smoothstep(.25,.51,abs(court.x));
  half front=smoothstep(.1,.9,-court.y);
- half3 flags=lerp(seam,dirt,.16)*half3(1.13,1.08,1.02);
+ half3 laidStone=tex2D(_Paving,float2(.94*p.x+.34*p.y,1.18*p.y-.16*p.x)).rgb;
+ half3 flags=lerp(laidStone,dirt,.30)*half3(1.01,.98,.92);
  flags*=1-margin*(.10+.28*front);
  ground=lerp(ground,flags,landing*.91);
  half3 pad=lerp(dirt*.84,seam*half3(.87,.84,.77),.44);

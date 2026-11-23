@@ -83,7 +83,20 @@ namespace Eldoria.World4XCanon
                     tris[t++]=index;tris[t++]=index+width+1;tris[t++]=index+1;
                     tris[t++]=index+1;tris[t++]=index+width+1;tris[t++]=index+width+2;
                 }
-                var mesh=new Mesh{name="Painted regional relief",vertices=v,uv=uv,triangles=tris};
+                // Share the slope across neighbouring faces, including tile borders.
+                // Only the normal changes. Route, terrain and water queries keep their source.
+                var normals=new Vector3[v.Length];
+                float dx=1820f/columns, dz=3600f/rows;
+                for(int j=0;j<=depth;j++)for(int i=0;i<=width;i++){
+                    int n=j*(width+1)+i;
+                    Vector3 point=v[n];
+                    float west=i>0?v[n-1].y:Ground(Mathf.Max(-910f,point.x-dx),point.z);
+                    float east=i<width?v[n+1].y:Ground(Mathf.Min(910f,point.x+dx),point.z);
+                    float south=j>0?v[n-width-1].y:Ground(point.x,Mathf.Max(-1800f,point.z-dz));
+                    float north=j<depth?v[n+width+1].y:Ground(point.x,Mathf.Min(1800f,point.z+dz));
+                    normals[n]=new Vector3((west-east)/(2*dx),1f,(south-north)/(2*dz)).normalized;
+                }
+                var mesh=new Mesh{name="Painted regional relief",vertices=v,uv=uv,normals=normals,triangles=tris};
                 mesh.RecalculateBounds();Draw(mesh,ground);
                 if(ValoriaIntegratedWorld.P0LazyWorldProbe&&slice.ShouldYield()){yield return null;slice.Resume();}
             }
@@ -142,6 +155,7 @@ namespace Eldoria.World4XCanon
             Bank(new Vector2(-910,1800),new Vector2(-910,-1800),450);
             var mesh = new Mesh { name = "Uncharted regional foothills" };
             mesh.SetVertices(vertices); mesh.SetUVs(0,uv); mesh.SetTriangles(triangles,0);
+            mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             return mesh;
         }
