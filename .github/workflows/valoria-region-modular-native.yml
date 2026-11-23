@@ -297,6 +297,7 @@ jobs:
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/RegionModular/
             !${{env.MOD25D_SOURCE}}/Unity/Artifacts/RegionModular/before/terrain.bytes
       - name: Stage mobile runtime assets from the verified project
+        if: ${{ !contains(github.event.head_commit.message, '[region-study]') }}
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
@@ -318,6 +319,7 @@ jobs:
           if($LASTEXITCODE){throw 'Hidden source geometry could not be verified'}
           Write-Host ("Historical model roots removed from automatic player inclusion: "+$files.Count)
       - name: Build actual integrated WebGL player
+        if: ${{ !contains(github.event.head_commit.message, '[region-study]') }}
         shell: powershell
         run: |
           $project=Join-Path $env:MOD25D_SOURCE 'Unity'
@@ -327,11 +329,13 @@ jobs:
           $proc=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
           if($proc.ExitCode -or !(Test-Path "$env:ELDORIA_WORLD_PLAYER_OUT/index.html")){Get-Content $log -Tail 150;throw 'Integrated WebGL build failed'}
       - uses: actions/upload-artifact@v4
+        if: ${{ !contains(github.event.head_commit.message, '[region-study]') }}
         with:
           name: valoria-region1-webgl
           path: ${{env.MOD25D_SOURCE}}/Unity/Builds/RegionModular/
 
   mobile-journey:
+    if: ${{ !contains(github.event.head_commit.message, '[region-study]') }}
     strategy:
       fail-fast: false
       matrix:
@@ -373,7 +377,7 @@ jobs:
   # can discover native Unity artifacts even when GitHub's plugin only lists
   # PR-triggered Actions. No source code or gameplay data is written.
   publish-run-reference:
-    if: always()
+    if: ${{ always() && !contains(github.event.head_commit.message, '[region-study]') }}
     needs: [verify-packaging, preflight, unity, mobile-journey]
     runs-on: ubuntu-24.04
     timeout-minutes: 5

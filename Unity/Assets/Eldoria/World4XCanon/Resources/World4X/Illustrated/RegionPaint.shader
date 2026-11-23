@@ -172,10 +172,11 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half wet=smoothstep(-2.4-aa,2.1+aa,shore);
   mask.r=lerp(mask.r,wet,local);
   half landBank=(1-wet)*local;
-  half terrace=landBank*(1-smoothstep(.35,2.4,-shore));
+  half sediment=.5+.5*sin(metre.y*.12+sin(metre.x*.23));
+  half terrace=landBank*(1-smoothstep(.35,2.1+sediment,-shore));
   half fringe=landBank*(1-smoothstep(2.4,5.4,-shore));
   grass=lerp(grass,cityMeadow*half3(.81,.91,.76),fringe*.72);
-  grass=lerp(grass,lerp(sharedEarth,slate,.58),terrace*.84);
+  grass=lerp(grass,lerp(sharedEarth,slate,.34+.34*sediment),terrace*.89);
   // At strategic distance, individual tree crowns no longer describe the land.
   // The existing geographic mask mip spans about 32 metres: water proximity,
   // woodland and the fault can give adjacent ground a continuous colour family.
@@ -191,11 +192,11 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // Sunlit clearings and cooler drainage hollows follow the continuous land cover.
   half glade=(1-canopy)*(1-valley)*(1-upland);
   half field=saturate(.5+.32*sin(metre.x*.014+sin(metre.y*.018))+.18*cos(metre.y*.031-metre.x*.009));
-  half3 openMeadow=grass*lerp(half3(.98,1.07,.98),half3(1.20,1.09,.79),field*glade);
-  half3 woodedMeadow=grass*half3(.83,.94,.88);
+  half3 openMeadow=grass*lerp(half3(.93,1.11,1.05),half3(1.40,1.14,.73),field*glade);
+  half3 woodedMeadow=grass*half3(.70,.92,.98);
   half3 districtGrass=lerp(openMeadow,woodedMeadow,canopy);
   districtGrass=lerp(districtGrass,grass*half3(.76,1.02,1.11),valley*.82);
-  districtGrass=lerp(districtGrass,lerp(grass,slate,.56),upland*.88);
+  districtGrass=lerp(districtGrass,lerp(grass,slate,.68),upland*.94);
   // Shade glades, forest litter and exposed shelves at the close scale too.
   half litter=canopy*(.38+.23*saturate(dot(meadowRange,half3(.4,.5,.1))*2));
   districtGrass=lerp(districtGrass,lerp(sharedEarth,grass,.48)*half3(.72,.86,.66),litter*.78);
@@ -214,7 +215,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
    // Grade the neighbouring soil continuously before shading the exposed walls.
    half talus=SAMPLE_TEXTURE2D_LOD(_FaultPigment,sampler_FaultPigment,faultUV,5).a;
    half shattered=smoothstep(.018,.39,talus)*(1-fault.a);
-   half3 weathered=lerp(sharedEarth,slate,.66)*half3(.83,.78,.85);
+   half3 weathered=lerp(sharedEarth,slate,.66)*half3(.74,.67,.85);
    colour=lerp(colour,weathered,shattered*.79);
    half glow=smoothstep(.021,.43,min(fault.b-fault.g,fault.r-fault.g));
    // Pigment isolates the interior seam. Preserve the illuminated rock lip
@@ -274,7 +275,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half geomLight=saturate(dot(geometricNormal,normalize(float3(-.38,.85,.36))));
   // Horizontal meadow must retain exactly the city paint's apparent value.
   // Reserve the change for geographic slopes, not a global brightness boost.
-  half paintedLight=clamp(1+(geomLight-.85)*.54,.72,1.10);
+  half paintedLight=clamp(1+(geomLight-.85)*.86,.59,1.16);
   colour*=lerp(1,paintedLight,(1-saturate(mask.r))*.82);
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
   if (_BeyondMap>.5) {
@@ -284,7 +285,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
    half3 ridge=lerp(heath,slate,saturate(.12*upland+shoulder*.70))*(.87+.18*geomLight);
    ridge=lerp(ridge,riverColour,coast);
    colour=lerp(colour,ridge,smoothstep(0,410,beyondDistance));
-   colour=lerp(colour,peripheralMist(metre),smoothstep(320,2700,beyondDistance)*.78);
+   colour=lerp(colour,peripheralMist(metre),smoothstep(800,3900,beyondDistance)*.56);
   }
   return half4(colour,1);
  }

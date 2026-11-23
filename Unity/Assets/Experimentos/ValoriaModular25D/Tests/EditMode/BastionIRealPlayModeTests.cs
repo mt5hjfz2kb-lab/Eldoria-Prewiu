@@ -147,7 +147,7 @@ namespace Eldoria.Modular25D.Tests
             var land=all.FirstOrDefault(x=>x && x.GetType().Name=="Modular25DLandscape");
             Assert.NotNull(land);
             Assert.That((int)Member(land,"RoadCount"),Is.EqualTo(6));
-            Assert.That((int)Member(land,"FootprintCount"),Is.EqualTo(2));
+            Assert.That((int)Member(land,"FootprintCount"),Is.EqualTo(1));
             Assert.That((int)Member(land,"CivicCourtyardsBuilt"),Is.EqualTo(1),
                 "The civic courtyard is a third independent, soft-alpha ground element, not a building platform");
             var pathMeshes=land.GetComponentsInChildren<MeshFilter>(false);

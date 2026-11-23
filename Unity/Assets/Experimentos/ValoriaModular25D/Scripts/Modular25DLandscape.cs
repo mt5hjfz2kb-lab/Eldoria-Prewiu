@@ -100,12 +100,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             approaches.Add("freight",freight);
             freight.SetActive(false);
 
-            var keep=MakeFootprint("Bastion",new Color(.49f,.41f,.31f,1),
-                new Color(.74f,.69f,.52f,1),true,false);
             var mill=MakeFootprint("Sawmill",new Color(.54f,.44f,.31f,1),
                 new Color(.73f,.59f,.38f,1),false,true);
-            PutFoot("Bastion — no straight borders, stone approach",keep,
-                Keep+new Vector2(0,-.23f),1.19f);
             PutFoot("Sawmill — earth, sawdust, trampled grass",mill,
                 Sawmill+new Vector2(0,-.18f),1.00f);
             // One subdued shared civic clearing binds the well, gate and

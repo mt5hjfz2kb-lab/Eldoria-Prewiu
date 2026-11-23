@@ -209,6 +209,9 @@ namespace Eldoria.World4XCanon
                     var foot=new Vector3(px,Ground(px,pz)+.12f,pz);
                     int pick=Mathf.Abs(Mathf.RoundToInt(px*3.1f+pz*7.7f))%13;
                     float stand=Mathf.PerlinNoise(px*.009f+8,pz*.009f+3);
+                    float valley=Mathf.InverseLerp(15f,4f,RegionOneBlenderLandscape.Shore(px,pz));
+                    float ridge=Mathf.InverseLerp(18f,70f,foot.y);
+                    stand=Mathf.Clamp01(stand+.22f*ridge-.24f*valley);
                     string family=stand>.55f ? (pick<9?"PaintedFir":"PaintedForestGrove") :
                         (pick<8?"CityOak":pick<12?"CityGrove":"PaintedForestGrove");
                     batches[family].Add(foot);
@@ -345,7 +348,8 @@ namespace Eldoria.World4XCanon
                     campaign.Add((target.transform,open,id));
                     campaign.Add((target.transform,sealedScar,"closing-scar"));
                 }else{
-                    var art=kit.Place(surface,RegionOneModularArt.Illustration(id),9,target.transform.position);
+                    float width=id=="hunt-wolf"?6.5f:id=="hunt-boar"?7.5f:9f;
+                    var art=kit.Place(surface,RegionOneModularArt.Illustration(id),width,target.transform.position);
                     campaign.Add((target.transform,art,id));
                 }
                 illustratedChapter.Add(id);

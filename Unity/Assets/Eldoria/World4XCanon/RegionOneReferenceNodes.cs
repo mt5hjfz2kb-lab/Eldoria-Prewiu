@@ -166,7 +166,12 @@ namespace Eldoria.World4XCanon
    // Preserve the close bridge connection, then recover strategic legibility smoothly.
    float canonicalCityScale=cityScale*Mathf.Lerp(1f,1.12f,Mathf.InverseLerp(near,110f,zoom));
    if(RegionOneModularArt.Enabled)canonicalCityScale*=Mathf.Lerp(1f,.82f,Mathf.InverseLerp(110f,700f,zoom));
-   foreach(var material in cityMaterials)material.SetFloat("_BillboardScale",canonicalCityScale);
+   float cityInkScale=canonicalCityScale;
+   if(RegionOneModularArt.Enabled){
+    float wideView=Mathf.InverseLerp(.36f*host.WorldNavigation.globalZoom,host.WorldNavigation.globalZoom,zoom);
+    cityInkScale*=Mathf.SmoothStep(1f,.53f,wideView);
+   }
+   foreach(var material in cityMaterials)material.SetFloat("_BillboardScale",cityInkScale);
    var state=host.City.Gateway.Snapshot();
    var tierFive=host.GetComponent<BastionIVVWorldPresentation>();
    bool meshCity=state.BastionLevel>=5&&tierFive&&tierFive.WorldModel&&tierFive.WorldModel.activeInHierarchy;

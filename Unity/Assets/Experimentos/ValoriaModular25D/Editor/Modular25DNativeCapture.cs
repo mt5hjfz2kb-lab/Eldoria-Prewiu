@@ -86,7 +86,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 if(ground==null || ground.ChunkCount!=81)
                     throw new Exception("Ground chunks are not actually present: "+(ground==null?-1:ground.ChunkCount));
                 var landscape=world.GetComponentInChildren<Modular25DLandscape>();
-                if(landscape==null||landscape.RoadCount!=6||landscape.FootprintCount!=2||
+                if(landscape==null||landscape.RoadCount!=6||landscape.FootprintCount!=1||
                    !landscape.OriginalCobbleRoadLoaded)
                     throw new Exception("Actual Unity spatial terrain integration missing: roads="+
                         (landscape==null?-1:landscape.RoadCount)+" footprints="+
@@ -393,6 +393,19 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 var end=(Vector2)road.transform.TransformPoint(mesh[mesh.Length-5]);
                 if(Vector2.Distance(end,plot.Door)>.002f)throw new InvalidDataException("Street misses threshold "+plot.Id);
                 if(!b.gameObject.activeInHierarchy)continue;
+                // Check the effective GPU sprite registration, not only its transform.
+                // A centred texture can satisfy the road-coordinate check while
+                // drawing the entrance halfway across the approach.
+                var sprite=b.sprite;
+                float support=sprite.pivot.y/sprite.rect.height;
+                if(support>=.25f || support<0f)
+                    throw new InvalidDataException(plot.Id+" imports its centre as its ground contact: "+support);
+                if(i==0){
+                    var gate=b.transform.TransformPoint(new Vector3(0,
+                        (.07f*sprite.rect.height-sprite.pivot.y)/sprite.pixelsPerUnit,0));
+                    if(Vector2.Distance(gate,plot.Door)>.42f)
+                        throw new InvalidDataException("Painted keep gate misses the road at stage "+level);
+                }
                 for(int j=i+1;j<plots.Length;j++)
                 {
                     if(!buildings[j].gameObject.activeInHierarchy)continue;

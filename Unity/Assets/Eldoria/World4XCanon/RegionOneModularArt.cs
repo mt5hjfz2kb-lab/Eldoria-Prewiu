@@ -81,9 +81,9 @@ namespace Eldoria.World4XCanon
                 // still supplies height and z-buffering. Shift only view depth,
                 // never their geographic foot or colliders. The near city and
                 // worksites have stronger relief than tiny forest props.
-                material.SetFloat("_CameraFacingDepth",14f);
                 float tempo = key=="Boar" ? 1.65f : key=="Wolf" ? 1.3f :
                     key=="AshStalker" ? 1.12f : key=="Spawn" ? .94f : 0f;
+                material.SetFloat("_CameraFacingDepth",tempo>0f?6f:14f);
                 material.SetFloat("_CreatureTempo",tempo);
                 materials.Add(key, material);
             }
