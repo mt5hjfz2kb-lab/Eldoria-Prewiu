@@ -205,7 +205,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             return tex;
         }
 
-        void AddRoad(string name,Vector2[] control,float width,Material material,bool cobbled)
+        public void AddRoad(string name,Vector2[] control,float width,Material material,bool cobbled)
         {
             const int Steps=8,Across=9;
             int samples=(control.Length-1)*Steps+1;

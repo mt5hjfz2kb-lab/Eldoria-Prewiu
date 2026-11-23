@@ -372,7 +372,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 throw new Exception("Native camera did not receive high-definition Bastion artwork");
         }
 
-        static void Render(Camera cam,string folder,Evidence report,string name,
+        internal static void Render(Camera cam,string folder,Evidence report,string name,
             int width,int height,Vector3 position,float orthoSize)
         {
             cam.transform.position=position;
