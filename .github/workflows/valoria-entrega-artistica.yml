@@ -1,0 +1,120 @@
+name: Reunir evidencias de la candidata móvil
+on:
+  push:
+    branches: [experiment/valoria-ciudad-region-unificada-20261121]
+    paths: ['.github/workflows/valoria-entrega-artistica.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 100
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      SOURCE: dba348c973003ca1042fc94ea1c20c69b97c2d69
+      NATIVE: '45173674925'
+      MOBILE: '45173852112'
+    steps:
+      - name: Esperar los recorridos y descargar las capturas auténticas
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/$GH_REPO/actions/runs/$NATIVE --jq .head_sha)" = "$SOURCE"
+          for run in "$NATIVE" "$MOBILE"; do
+            for i in $(seq 1 95); do
+              [ "$(gh api repos/$GH_REPO/actions/runs/$run --jq .status)" = completed ] && break
+              sleep 40
+            done
+            test "$(gh api repos/$GH_REPO/actions/runs/$run --jq .conclusion)" = success
+          done
+          mkdir -p entrega/comparacion entrega/videos origen
+          gh run download "$NATIVE" -n ciudad-cinco-bastiones-unity -D entrega/ciudad
+          gh run download "$NATIVE" -n region1-cameras-and-routes -D entrega/mundo
+          gh run download "$NATIVE" -n ciudad-region-recorrido -D entrega/chromium
+          gh run download "$NATIVE" -n ciudad-region-retina -D entrega/retina
+          gh run download "$MOBILE" -n primer-viaje-webkit -D entrega/webkit
+          gh run download 45075198029 -n ciudad-cinco-bastiones-unity -D origen/ciudad
+          gh run download 45075198029 -n region1-cameras-and-routes -D origen/mundo
+      - name: Comparar cámaras, navegación, memoria y guardar vídeo
+        run: |
+          set -euo pipefail
+          sudo apt-get -qq update && sudo apt-get -qq install -y ffmpeg >/dev/null
+          python -m pip install -q Pillow
+          python - <<'PY'
+          from PIL import Image,ImageDraw,ImageFont,ImageChops
+          from pathlib import Path
+          import json,os,shutil
+          out=Path('entrega')
+          report=[]
+          assert json.loads((out/'ciudad/evidence.json').read_text())['sourceSha']==os.environ['SOURCE']
+          for file in ('grid.bin','routes.txt'):
+              path=Path('mundo/after',file)
+              assert (out/path).read_bytes()==(Path('origen')/path).read_bytes()
+              report.append(file+' idéntico a f10f426')
+          font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',16)
+          vistas=['home','region','panorama','breach','breach-near','wood','stone']
+          ciudades=[Path('ciudad',f'stage-{i}-fixture-390x844.png') for i in range(1,6)]
+          regiones=[Path('mundo/after',n+'.png') for n in vistas]
+          for p in ciudades+regiones:
+              a=Image.open(Path('origen')/p).convert('RGB');b=Image.open(out/p).convert('RGB')
+              assert a.size==b.size
+              if p in regiones:
+                  x,y=[json.loads((d/p).with_suffix('.json').read_text()) for d in [Path('origen'),out]]
+                  assert all(x[k]==y[k] for k in ('zoom','width','height','cameraPosition','cameraRotation','worldTarget'))
+              if p==ciudades[0]:
+                  equal=ImageChops.difference(a,b).getbbox() is None
+                  report.append('Bastión I, píxeles idénticos: '+str(equal))
+              w,h=a.size;ab=Image.new('RGB',(2*w,h+32),'#191719')
+              for i,img in enumerate([a,b]):
+                  ab.paste(img,(i*w,32));ImageDraw.Draw(ab).text((i*w+8,7),['f10f426','dba348c'][i],font=font,fill='white')
+              ab.save(out/'comparacion'/p.name)
+          def gallery(items,filename,cols):
+              w,h=210,455;rows=(len(items)+cols-1)//cols
+              im=Image.new('RGB',(cols*(w+12)+12,rows*(h+40)+12),'#171519')
+              for i,(label,p) in enumerate(items):
+                  pic=Image.open(p).convert('RGB');pic.thumbnail((w,h))
+                  x=12+(i%cols)*(w+12);y=10+(i//cols)*(h+40);im.paste(pic,(x,y))
+                  ImageDraw.Draw(im).text((x,y+h+4),label,font=font,fill='#efdfa9')
+              im.save(out/filename,quality=93)
+          gallery([('Bastión '+str(i),out/p) for i,p in enumerate(ciudades,1)],'Ciudad.jpg',5)
+          gallery([(k,out/p) for k,p in zip(['Cercana','Regional','Panorámica','Brecha regional','Brecha cercana','Madera','Cantera'],regiones)],'Region.jpg',4)
+          ui=[]
+          for key,label in [('heroes','Héroes'),('training','Entrenamiento'),('march','Marchas'),('bag','Bolsa'),('mail','Buzón'),('daily','Cofre diario'),('vigilants','Vigilantes'),('scouts','Exploradores')]:
+              choices=[out/d/('sistema-'+key+'.png') for d in ['retina','chromium']]
+              p=next((x for x in choices if x.exists()),None)
+              if p:ui.append((label,p))
+              else:report.append('Sin captura en los dos recorridos: '+label)
+          gallery(ui,'Corona.jpg',4)
+          for d in ['chromium','retina']:
+              j=json.loads((out/d/'journey.json').read_text())
+              report.append(d+' último Bastión '+str(j['last']['level']))
+              mem=[v for v in j['log'] if 'memory_scene' in v]
+              (out/d/'memoria.json').write_text(json.dumps(mem,indent=2))
+              report.append(d+' muestras de memoria '+str(len(mem)))
+          (out/'verificacion.txt').write_text(os.environ['SOURCE']+'\n'+'\n'.join(report)+'\n')
+          print('\n'.join(report))
+          PY
+          for pair in 'camera zoom-y-desplazamiento' 'idle-Boar jabali' 'idle-Spawn engendro'; do
+            read -r dir name <<< "$pair"
+            ffmpeg -loglevel error -framerate 10 -i "entrega/mundo/after/$dir/%03d.png" -c:v libx264 -pix_fmt yuv420p -movflags +faststart "entrega/videos/$name.mp4"
+          done
+          clip=$(find entrega/chromium -name '*.webm' -print -quit)
+          ffmpeg -loglevel error -sseof -20 -i "$clip" -an -c:v libx264 -pix_fmt yuv420p -movflags +faststart entrega/videos/distritos.mp4
+          cat > entrega/Integracion.md <<'EOF'
+          # Inventario para la aceptación de Valoria
+          Revisión jugable dba348c973003ca1042fc94ea1c20c69b97c2d69. Base de trabajo 49220606a723cf734dba703e198f25c8080f7b49. Capturas anteriores de f10f426.
+          
+          | Área | Presentación y dependencias |
+          | --- | --- |
+          | Ciudad | BastionI_Modular25D, Modular25DWorld, Modular25DLandscape, cámara, distritos, personajes, fuentes de pavimento y pivotes importados. Mantener juntos sprites, sombras y archivos meta. |
+          | Mundo | RegionOneReferenceNodes, RegionOneOriginalLandscape, RegionPaint, materiales del terreno, máscaras de agua y Brecha, pivotes de vegetación y recursos, jabalí y engendro animados. Valoria toma la posición del objetivo compartido valoria-map-city. |
+          | Interfaz | Modular25DInterface, RoyalGoldV2Hud, HeroesApprovedDestination, RoyalGoldV3ManagementScreens, RoyalGoldV41MailboxScreen, RoyalGoldV3EarlyRetentionScreens, Issue186BagOverlay, fuentes e imágenes CoronaBrecha y TrainingPigment. Conservar los controles y sus enlaces a la sesión original. |
+          | Móvil | Datos, WASM, framework y plantilla de carga del mismo jugador. Conservar el paquete anterior íntegro. |
+          
+          Antes de una integración autorizada, fijar la revisión de destino y guardar su build y guardados de prueba. Integrar exclusivamente presentación en rama de ensayo. Repetir comparativas, recorrido con partida nueva y guardados anteriores, memoria y viaje en iPhone físico. Para revertir, servir la build anterior y revertir el cambio de integración como unidad, conservando guardados y datos.
+          
+          Las capturas stage/fixture de ciudad son encuadres de Unity por nivel. Las carpetas chromium y retina documentan la progresión real con temporizadores acelerados por el reloj de prueba. Las muestras de memoria miden procesos Chromium de escritorio. WebKit se ejecuta en macOS. La aceptación en un iPhone físico corresponde al propietario.
+          EOF
+          (cd entrega && zip -qr -0 ../Valoria-dba348c.zip .)
+          gh release upload valoria-review-dba348c-m2 Valoria-dba348c.zip entrega/Ciudad.jpg entrega/Region.jpg entrega/Corona.jpg
