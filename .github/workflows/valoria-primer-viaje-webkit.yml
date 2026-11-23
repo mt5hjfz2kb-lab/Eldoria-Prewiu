@@ -7,8 +7,8 @@ permissions:
   contents: read
   actions: read
 env:
-  BUILD_RUN: '45075198029'
-  SOURCE: f10f4263678c24258b0b78778ba121acf8701d73
+  BUILD_RUN: '45170013075'
+  SOURCE: 6f320fd2ed35f80842ca6dc372d50be654cf12c9
 jobs:
   package:
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
           python3 -m pip install --quiet UnityPy==1.25.4
           python3 "$src/pack-embedded-region-mips.py" player/Build/RegionModular.data.unityweb
           python3 "$src/bound-webgl-uploads.py" player/Build/RegionModular.framework.js.unityweb
-          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE" f10f426-m2
+          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE" 6f320fd-m2
           mapfile -d '' -t assets < <(find mobile/r -type f -print0)
           gh release create "$tag" --verify-tag --prerelease --latest=false --title "Valoria · Mundo y obras · ${SOURCE:0:7}" --notes "Unity source $SOURCE · Actions $BUILD_RUN" "${assets[@]}" mobile/assets.json mobile/index.html
       - if: failure() && hashFiles('mobile/index.html') != ''
@@ -71,7 +71,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -eu
-          gh release download valoria-review-f10f426-m2 -D flat
+          gh release download valoria-review-6f320fd-m2 -D flat
           python3 - <<'PY'
           import json, pathlib, shutil
           src=pathlib.Path('flat')
@@ -79,7 +79,7 @@ jobs:
           for rel,length in json.loads((src/'assets.json').read_text()).items():
               f=src/pathlib.Path(rel).name
               assert f.stat().st_size==length
-              p=dest/'r/f10f426-m2'/rel
+              p=dest/'r/6f320fd-m2'/rel
               p.parent.mkdir(parents=True,exist_ok=True)
               f.rename(p)
           shutil.copyfile(src/'index.html',dest/'index.html')
