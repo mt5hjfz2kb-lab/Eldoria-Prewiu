@@ -81,7 +81,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public void SetDistricts(bool barracks, bool granary, bool quarry)
         {
             var built = new Vector3Int(barracks ? 1 : 0, granary ? 1 : 0, quarry ? 1 : 0);
-            if (built == previousDistricts) return;
+            if (districtMaterial && built == previousDistricts) return;
             previousDistricts = built;
             if (!districtMaterial)
             {
@@ -90,13 +90,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 districtMaterial.SetTexture("_Paving", Resources.Load<Texture2D>("ValoriaModular25D/DistrictPaving"));
                 districtMaterial.SetTexture("_Soil", Resources.Load<Texture2D>("ValoriaModular25D/HaulersEarth"));
                 var plan=ValoriaUrbanPlan.City;
+                districtMaterial.SetVector("_CivicAxis",new Vector4(plan.Keep.Foot.x,plan.Keep.Foot.y,plan.Junction.x,plan.Junction.y));
+                districtMaterial.SetVector("_WorkLane",new Vector4(plan.Mill.Foot.x,plan.Mill.Foot.y,plan.Freight.x,plan.Freight.y));
+                districtMaterial.SetTexture("_Slate",Resources.Load<Texture2D>("World4X/Illustrated/Slate"));
                 SetYard("_MilitaryYard",plan.Barracks,1.30f);
                 SetYard("_MarketYard",plan.Granary,1.16f);
                 SetYard("_StoneFace",plan.Quarry,1.35f);
             }
             districtMaterial.SetVector("_Built", new Vector4(built.x, built.y, built.z, 0));
             foreach (var chunk in GetComponentsInChildren<MeshRenderer>())
-                chunk.sharedMaterial = built == Vector3Int.zero ? material : districtMaterial;
+                chunk.sharedMaterial = districtMaterial;
         }
         void SetYard(string property, ValoriaUrbanPlan.Parcel parcel, float apron)
         {

@@ -19,7 +19,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         // Commercial Bastion-I hero composition: both authored buildings occupy
         // more of a phone viewport. Terrain stays continuous and exploration
         // retains unrestricted pan/zoom, only Home framing is changed.
-        public static Vector3 HomePosition => new Vector3(ValoriaUrbanPlan.City.Keep.Foot.x,ValoriaUrbanPlan.City.Keep.Foot.y+.62f,-30f);
+        public static Vector3 HomePosition => new Vector3(ValoriaUrbanPlan.City.Keep.Foot.x,ValoriaUrbanPlan.City.Keep.Foot.y-1.10f,-30f);
         public static float HomeSizeForAspect(float aspect)
         {
             return Mathf.Clamp(3.05f/Mathf.Max(.42f,aspect),4.90f,7.10f);

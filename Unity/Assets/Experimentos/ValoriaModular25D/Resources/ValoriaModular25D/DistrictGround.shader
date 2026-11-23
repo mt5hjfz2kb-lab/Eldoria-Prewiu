@@ -1,14 +1,15 @@
 Shader "Eldoria/Valoria/District ground" {
 Properties {
  _MainTex("Meadow",2D)="white"{} _Paving("Cobble",2D)="white"{}
- _Soil("Earth",2D)="white"{} _Built("Completed districts",Vector)=(0,0,0,0)
+ _Soil("Earth",2D)="white"{} _Slate("Quarry strata",2D)="white"{} _Built("Completed districts",Vector)=(0,0,0,0)
 }
 SubShader { Tags {"RenderType"="Opaque" "Queue"="Geometry"} Pass {
 CGPROGRAM
 #pragma vertex vert
 #pragma fragment frag
 #include "UnityCG.cginc"
-sampler2D _MainTex,_Paving,_Soil;
+sampler2D _MainTex,_Paving,_Soil,_Slate;
+float4 _CivicAxis,_WorkLane;
 float4 _Built, _MilitaryYard, _MarketYard, _StoneFace;
 struct Vertex { float4 vertex:POSITION; float2 uv:TEXCOORD0; };
 struct Varying { float4 position:SV_POSITION; float2 uv:TEXCOORD0; };
@@ -20,6 +21,11 @@ half yard(float2 p, float4 plot, half erosion) {
  float d=pow(pow(abs(q.x),3)+pow(abs(q.y),3),1.0/3.0);
  return 1-smoothstep(.72,1.08,d+erosion*.15);
 }
+float distanceToLane(float2 p,float2 a,float2 b) {
+ float2 axis=b-a;
+ float t=saturate(dot(p-a,axis)/max(.001,dot(axis,axis)));
+ return length(p-a-axis*t);
+}
 half4 frag(Varying i):SV_Target {
  float2 p=i.uv*6.5;
  half3 ground=tex2D(_MainTex,i.uv).rgb;
@@ -29,11 +35,25 @@ half4 frag(Varying i):SV_Target {
  half drill=yard(p,_MilitaryYard,erosion)*_Built.x;
  half market=yard(p,_MarketYard,erosion)*_Built.y;
  half rock=yard(p,_StoneFace,erosion)*_Built.z;
+ float approach=distanceToLane(p,_CivicAxis.xy,_CivicAxis.zw);
+ float alley=distanceToLane(p,_WorkLane.xy,_CivicAxis.zw);
+ float bend=distanceToLane(p,_CivicAxis.zw,_WorkLane.zw);
+ half urban=1-smoothstep(.72,2.05,min(approach,alley)+erosion*.43);
+ half crossing=1-smoothstep(.46,1.48,length((p-_CivicAxis.zw)*float2(.85,1.2))+erosion*.32);
+ ground=lerp(ground,lerp(dirt*.81,seam*.88,.33),urban*.54+crossing*.27);
+ ground=lerp(ground,dirt*.86,(1-smoothstep(.56,1.33,bend+erosion*.42))*max(_Built.y,_Built.z)*.42);
  half3 pad=lerp(dirt*.84,seam*half3(.87,.84,.77),.44);
  ground=lerp(ground,pad,drill*.91);
  ground=lerp(ground,lerp(dirt*.89,pad,.42),market*.92);
- half mineral=dot(seam,half3(.3,.55,.15));
- ground=lerp(ground,lerp(dirt*.77,half3(mineral*.93,mineral*.92,mineral*.87),.72),rock*.97);
+ // The working face continues into a geological outcrop along the northwest edge.
+ float2 q=p-_StoneFace.xy;
+ float along=dot(q,float2(-.88,.47)),across=dot(q,float2(.47,.88));
+ half3 shale=tex2D(_Slate,float2(.27*q.x+.46*q.y,.69*q.y-.19*q.x)).rgb;
+ half trace=abs(across+.24*sin(along*1.35))+.30*erosion;
+ half seamWidth=lerp(1.38,.47,smoothstep(.4,5.2,along));
+ half outcrop=(1-smoothstep(seamWidth*.42,seamWidth+.5,trace))*smoothstep(-2,.3,along)*(1-smoothstep(4,6.0,along));
+ half floorCover=saturate(max(rock*.66,outcrop))*_Built.z;
+ ground=lerp(ground,lerp(dirt*.83,shale*half3(.98,.96,.93),.86),floorCover);
  return half4(ground,1);
 }
 ENDCG

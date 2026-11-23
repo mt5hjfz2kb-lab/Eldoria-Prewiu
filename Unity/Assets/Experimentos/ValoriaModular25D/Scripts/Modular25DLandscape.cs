@@ -241,6 +241,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var uv=new Vector2[vtx.Length];
             var edgeColor=new Color32[vtx.Length];
             var tris=new int[(samples-1)*(Across-1)*6];
+            float totalLength=0;
+            for(int i=1;i<spine.Length;i++)totalLength+=Vector2.Distance(spine[i],spine[i-1]);
             float along=0;
             for(int i=0;i<samples;i++)
             {
@@ -274,7 +276,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     float patches=N(p.x*4.1f,p.y*3.2f+u*5.1f,203);
                     float ink=(cobbled ? .71f : .57f)+.19f*erosion+.09f*patches;
                     float alpha=Mathf.Clamp01(feather*ink);
-                    // The paved centre runs continuously through a junction and up to each threshold.
+                    // The ground at the crossing carries the wear between branches.
+                    // Feather the open cut across the first half metre of each ribbon.
+                    alpha*=Mathf.Lerp(.04f,1f,Sm(0,.63f,along));
+                    alpha*=Mathf.Lerp(.16f,1f,Sm(0,.23f,totalLength-along));
                     edgeColor[index]=(Color32)new Color(1f,1f,1f,alpha);
                 }
             }

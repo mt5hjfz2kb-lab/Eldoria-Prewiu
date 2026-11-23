@@ -161,7 +161,7 @@ namespace Eldoria.Modular25D.Tests
                     "Every original road mesh vertex must carry real alpha");
                 Assert.That(edgeAlpha[0].a,Is.EqualTo(0),
                     "Road must fade fully into grass at outer bank");
-                Assert.That(edgeAlpha[4].a,Is.GreaterThan(110),
+                Assert.That(edgeAlpha[(edgeAlpha.Length/18)*9+4].a,Is.GreaterThan(110),
                     "Paved centre must remain readable and continuous");
                 Assert.That(edgeAlpha[8].a,Is.EqualTo(0),
                     "Opposite bank must fade without a rectangular platform");

@@ -85,7 +85,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             foreach (var prop in plan.Environment)
             {
                 var placed = AddOriginalProp(yards[prop.District],prop.Asset,prop.Foot,prop.Scale);
-                if (prop.Asset=="LonjaGrano") grainArcade=placed;
+                if (prop.Asset=="PuestoDeAbastos") grainArcade=placed;
             }
             CreateVillager(people,"Valoria citizen A",plan.ReturnWalk(plan.Keep),0f);
             CreateVillager(people,"Valoria citizen B",plan.ReturnWalk(plan.Mill),1.8f);
