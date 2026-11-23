@@ -28,7 +28,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         readonly List<Texture2D> textures=new List<Texture2D>();
         readonly List<Material> materials=new List<Material>();
         bool built;
-        Material expansionRoadMaterial, renderedCartLane;
+        Material expansionRoadMaterial, civicRoadMaterial, renderedCartLane;
         public int RoadCount { get; private set; }
         public bool OriginalCobbleRoadLoaded { get; private set; }
         public int FootprintCount { get; private set; }
@@ -72,6 +72,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     "fallback is not artistic acceptance.",this);
             // The road is described as spatial segments; bend is interpolated,
             // not simulated by shifting a static full-scene background.
+            civicRoadMaterial=imperialMat;
             var main=new []{
                 new Vector2(-6.65f,-7.5f),new Vector2(-4.85f,-5.3f),
                 new Vector2(-3.88f,-3.76f),new Vector2(-2.70f,-2.5f),
@@ -110,7 +111,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             ExpansionGround("granary",granary,GranaryFoot,
                 new[]{new Vector2(-3.88f,-3.76f),new Vector2(-2.25f,-5.65f),new Vector2(.05f,-6.55f),new Vector2(1.15f,-7.70f),GranaryFoot+Vector2.down*.2f});
             ExpansionGround("stoneworks",stoneworks,StoneworksFoot,
-                new[]{new Vector2(-3.25f,-5.3f),new Vector2(-2.70f,-7.65f),new Vector2(-2.80f,-9.6f),new Vector2(-2.40f,-11.65f),StoneworksFoot+Vector2.down*.2f});
+                new[]{new Vector2(-2.25f,-5.65f),new Vector2(-2.53f,-7.65f),new Vector2(-2.80f,-9.6f),new Vector2(-2.40f,-11.65f),StoneworksFoot+Vector2.down*.2f});
         }
 
         void ExpansionGround(string id,bool visible,Vector2 foot,Vector2[] path)
@@ -134,8 +135,18 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 // The garrison has a short, separately authored curved
                 // entrance lane after its Bastion II unlock. Keep the original
                 // imperial avenue and all Bastion I scenery unchanged.
-                AddRoad("Access | "+id,path,military ? 0.88f : 1.13f,
-                    !military&&renderedCartLane ? renderedCartLane : expansionRoadMaterial,false);
+                if(military)
+                    AddRoad("Access | "+id,path,1.08f,civicRoadMaterial,true);
+                else if(stone)
+                    AddRoad("Access | "+id,path,1.12f,expansionRoadMaterial,false);
+                else
+                {
+                    AddRoad("Granary market street",path,1.18f,civicRoadMaterial,true);
+                    // The mill yard and grain landing share a delivery lane behind the commons.
+                    AddRoad("Granary service lane",new[]{new Vector2(.52f,-3.26f),
+                        new Vector2(1.48f,-4.32f),new Vector2(2.15f,-5.62f),
+                        new Vector2(1.15f,-7.70f)},.78f,renderedCartLane ? renderedCartLane : expansionRoadMaterial,false);
+                }
                 Color soil=stone ? new Color(.50f,.46f,.40f) : new Color(.45f,.34f,.22f);
                 Color worn=stone ? new Color(.77f,.73f,.62f) : new Color(.71f,.58f,.39f);
                 PutFoot("Contact | "+id,MakeFootprint(id,soil,worn,stone,false),

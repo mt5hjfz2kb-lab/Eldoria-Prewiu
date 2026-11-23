@@ -321,6 +321,14 @@ jobs:
           path: ${{env.MOD25D_SOURCE}}/Unity/Builds/RegionModular/
 
   mobile-journey:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dpr: 1
+            evidence: ciudad-region-recorrido
+          - dpr: 3
+            evidence: ciudad-region-retina
     needs: unity
     runs-on: ubuntu-24.04
     timeout-minutes: 90
@@ -335,6 +343,7 @@ jobs:
           path: player
       - name: Play a fresh city through Bastion V and visit the canonical region
         env:
+          VALORIA_DPR: ${{ matrix.dpr }}
           VALORIA_EVIDENCE: evidence
           VALORIA_TEST_REGION: '1'
         run: |
@@ -346,7 +355,7 @@ jobs:
       - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ciudad-region-recorrido
+          name: ${{ matrix.evidence }}
           path: evidence/
 
   # Publish the actual run URL on this exact experiment commit so reviewers

@@ -260,7 +260,9 @@ namespace Eldoria.UI.RoyalGold.V2
             var r=Rect(id,parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var t=r.gameObject.AddComponent<RoyalText>();
-            t.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            t.font=RoyalGoldV2Hud.UseCoronaArt
+                ? (bold ? RoyalGoldV2Hud.CoronaHeadingFont : RoyalGoldV2Hud.CoronaBodyFont)
+                : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             t.fontSize=size;t.fontStyle=bold?FontStyle.Bold:FontStyle.Normal;
             t.color=tint;t.raycastTarget=false;
             t.alignment=TextAnchor.MiddleLeft;
@@ -286,7 +288,16 @@ namespace Eldoria.UI.RoyalGold.V2
             var r=Rect(name,parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             Graphic surface;
-            if(battleStyle.HasValue)
+            var corona=RoyalGoldV2Hud.UseCoronaArt ? Resources.Load<Sprite>(
+                "ValoriaModular25D/UI/CoronaBrecha/"+(primary || battleStyle==true ? "action_arcane" : "activity_panel_wide")) : null;
+            if(corona)
+            {
+                var image=r.gameObject.AddComponent<Image>();
+                image.sprite=corona;
+                image.type=corona.border==Vector4.zero ? Image.Type.Simple : Image.Type.Sliced;
+                surface=image;
+            }
+            else if(battleStyle.HasValue)
             {
                 var plate=r.gameObject.AddComponent<RoyalGoldV3RetentionActionGraphic>();
                 plate.Battle=battleStyle.Value;

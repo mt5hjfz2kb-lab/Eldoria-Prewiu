@@ -20,12 +20,6 @@ namespace Eldoria.World4XCanon
         ValoriaIntegratedWorld host;
         RegionOneLookDevelopment look;
         readonly List<(Transform target,Renderer art,string id)> campaign=new List<(Transform,Renderer,string)>();
-        Renderer villageMill,villageGarrison,villageGranary;
-        Renderer CityDetail(string key,float x,float z,float width)
-        {
-            var foot=home+new Vector3(x,Ground(x,z)+.16f,z);
-            return kit.Place(surface,"ValoriaModular25D/"+key,width,foot);
-        }
         float Ground(float x,float z)=>RegionOneBlenderLandscape.GeographicHeight(x,z);
         static Texture2D Texture(string name)=>Resources.Load<Texture2D>(Art+name);
         public static System.Collections.IEnumerator Install(Transform parent,ValoriaIntegratedWorld host,RegionOneModularArt kit)
@@ -118,20 +112,16 @@ namespace Eldoria.World4XCanon
             // render-only connection of the same terrain, with zero colliders
             // and no altered water cells, routes or exploration.
             Draw(EdgeMistSkirt(fogHeight),fogMaterial);
-            // The city landmark meets its approaches across the existing bridge.
-            // These fixed physical widths recede naturally at regional zoom.
-            CityDetail("RecoveredProps/PozoPiedra",-10,-4,3.8f);
-            CityDetail("RecoveredProps/ArboledaAntigua",-20,17,7.3f);
-            CityDetail("RecoveredProps/MatojosFlores",13,12,3.2f);
-            villageMill=CityDetail(Resources.Load<Sprite>("ValoriaModular25D/sawmill_i_hd")
-                ? "sawmill_i_hd" : "sawmill_i",-16,7,10.4f);
-            villageGarrison=CityDetail("Progression/barracks",17,16,10.6f);
-            villageGranary=CityDetail("Progression/granary",-4,20,9.4f);
-            villageMill.enabled=villageGarrison.enabled=villageGranary.enabled=false;
             var planting=Plant();
             while(planting.MoveNext())yield return null;
             var layout=JsonUtility.FromJson<Region>(Resources.Load<TextAsset>("World4X/Blender/production-region").text);
-            foreach(var b in layout.bridges)Decal("Bridge",b.x,b.z,b.width*1.35f,b.length,0,.7f);
+            foreach(var b in layout.bridges)
+            {
+                // The short entrance painted for the old fixed capital is purely scenic.
+                // Keep both regional crossings and the complete underlying navigation map.
+                if(Mathf.Abs(b.x-3.3f)<.1f && Mathf.Abs(b.z+18.5f)<.1f)continue;
+                Decal("Bridge",b.x,b.z,b.width*1.35f,b.length,0,.7f);
+            }
         }
         Mesh EdgeMistSkirt(float floor)
         {
@@ -209,7 +199,8 @@ namespace Eldoria.World4XCanon
                     tree.y=Mathf.Clamp(reader.ReadSingle()*4.6f,4f,11.5f);
                     // Preserve recognisable groves and open the approach to water and roads.
                     float stand=Mathf.PerlinNoise(tree.x*.016f+7,tree.z*.016f+41);
-                    if(stand<.43f || RegionOneBlenderLandscape.Shore(tree.x,tree.z)<4f ||
+                    float fringe=Mathf.PerlinNoise(tree.x*.051f+21,tree.z*.046f+9);
+                    if(stand+.23f*(fringe-.5f)<.43f || RegionOneBlenderLandscape.Shore(tree.x,tree.z)<4f ||
                        RegionOneBlenderLandscape.Road(tree.x,tree.z)>.15f) continue;
                     var cell=new Vector2Int(Mathf.FloorToInt((tree.x+910f)/182f),Mathf.FloorToInt((tree.z+1800f)/180f));
                     if(!groves.TryGetValue(cell,out var clump)){clump=new List<Vector3>();groves.Add(cell,clump);}
@@ -230,7 +221,8 @@ namespace Eldoria.World4XCanon
                     string family=stand>.55f ? (pick<9?"PaintedFir":"PaintedForestGrove") :
                         (pick<8?"CityOak":pick<12?"CityGrove":"PaintedForestGrove");
                     batches[family].Add(foot);
-                    cityTrees[foot]=tree.y*Mathf.Lerp(.82f,1.25f,stand);
+                    float core=Mathf.InverseLerp(.36f,.69f,Mathf.PerlinNoise(px*.016f+7,pz*.016f+41));
+                    cityTrees[foot]=tree.y*Mathf.Lerp(.65f,1.33f,core)*Mathf.Lerp(.9f,1.1f,stand);
                 }
                 // Rock outcrops punctuate clearings. All trees come from the authored stands.
                 for(int n=0;n<40;n++){
@@ -371,11 +363,6 @@ namespace Eldoria.World4XCanon
             if(!host||!host.Ready||!host.InWorld||campaign.Count==0)return;
             if(snapshot==null||Time.unscaledTime>=nextRead){snapshot=host.City.Gateway.Snapshot();nextRead=Time.unscaledTime+.25f;if(snapshot.BastionLevel>=3&&illustratedChapter.Count<ChapterIds.Length)BindChapter();}
             var state=snapshot;
-            if(villageMill){
-                villageMill.enabled=state.SawmillLevel>0;
-                villageGarrison.enabled=state.BarracksLevel>0;
-                villageGranary.enabled=(state.ChapterThree?.GranaryLevel??0)>0;
-            }
             bool visible=!RegionOneResourcePlacement.IsPanoramic(host.WorldCamera.orthographicSize,host.WorldNavigation.globalZoom);
             foreach(var entry in campaign){
                 var pos=entry.target.position;

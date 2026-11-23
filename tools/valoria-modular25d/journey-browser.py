@@ -19,7 +19,7 @@ async def main():
     async with async_playwright() as pw:
         browser=await pw.chromium.launch(executable_path=shutil.which('google-chrome') or shutil.which('chromium'),args=['--no-sandbox','--disable-dev-shm-usage','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
         recording = {'record_video_dir':str(OUT/'video'),'record_video_size':{'width':390,'height':844}} if os.environ.get('VALORIA_TEST_REGION')=='1' else {}
-        ctx=await browser.new_context(**recording,viewport={'width':390,'height':844},has_touch=True,is_mobile=True,user_agent="Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36",device_scale_factor=1)
+        ctx=await browser.new_context(**recording,viewport={'width':390,'height':844},has_touch=True,is_mobile=True,user_agent="Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36",device_scale_factor=int(os.environ.get('VALORIA_DPR','1')))
         await ctx.add_init_script(TIME_SHIFT)
         page=await ctx.new_page()
         state={}; log=[]; errors=[]; sequence=0
@@ -45,22 +45,6 @@ async def main():
         page.on('console',console)
         page.on('pageerror',lambda e: errors.append(str(e)))
         cdp=await ctx.new_cdp_session(page)
-        async def retina(name):
-            # Real browser raster. Record the Unity backing store independently
-            # because the player may cap rendering density on memory-limited devices.
-            metrics={'width':390,'height':844,'mobile':True,'deviceScaleFactor':3,
-                     'screenWidth':390,'screenHeight':844}
-            await cdp.send('Emulation.setDeviceMetricsOverride',metrics)
-            try:
-                await page.wait_for_timeout(800)
-                await page.screenshot(path=OUT/(name+'-retina.png'))
-                dimensions=await page.locator('canvas').evaluate(
-                    '(c)=>({width:c.width,height:c.height,dpr:devicePixelRatio})')
-                log.append({'retina_capture':name,'canvas':dimensions})
-            finally:
-                metrics['deviceScaleFactor']=1
-                await cdp.send('Emulation.setDeviceMetricsOverride',metrics)
-                await page.wait_for_timeout(550)
         async def until(test,timeout=35):
             start=time.monotonic()
             while time.monotonic()-start<timeout:
@@ -311,7 +295,6 @@ async def main():
                     await until(lambda:state.get('room')==name)
                     await page.wait_for_timeout(650)
                     await page.screenshot(path=OUT/('sistema-'+name+'.png'))
-                    if name in ('bag','march'): await retina('sistema-'+name)
                     await tap(back,False)
                     await until(lambda:not state.get('room'))
                     log.append({'room_traversed':name,'level':state['level']})

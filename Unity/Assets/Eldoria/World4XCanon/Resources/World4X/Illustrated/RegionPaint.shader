@@ -154,11 +154,14 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half canopy=smoothstep(.08,.65,district.a);
   float reliefHeight=i.world.y-GetObjectToWorldMatrix()._m13;
   half upland=smoothstep(18,76,reliefHeight);
-  half3 openMeadow=grass*half3(1.13,1.025,.87);
+  // Sunlit clearings and cooler drainage hollows follow the continuous land cover.
+  half glade=(1-canopy)*(1-valley)*(1-upland);
+  half field=saturate(.5+.32*sin(metre.x*.014+sin(metre.y*.018))+.18*cos(metre.y*.031-metre.x*.009));
+  half3 openMeadow=grass*lerp(half3(1.05,1.015,.94),half3(1.32,1.10,.74),field*glade);
   half3 woodedMeadow=grass*half3(.83,.94,.88);
   half3 districtGrass=lerp(openMeadow,woodedMeadow,canopy);
   districtGrass=lerp(districtGrass,grass*half3(.76,1.02,1.11),valley*.82);
-  districtGrass=lerp(districtGrass,lerp(grass,slate,.39),upland*.85);
+  districtGrass=lerp(districtGrass,lerp(grass,slate,.56),upland*.88);
   // Shade glades, forest litter and exposed shelves at the close scale too.
   half litter=canopy*(.38+.23*saturate(dot(meadowRange,half3(.4,.5,.1))*2));
   districtGrass=lerp(districtGrass,lerp(sharedEarth,grass,.48)*half3(.72,.86,.66),litter*.78);
@@ -181,6 +184,10 @@ Shader "Eldoria/Region1/Illustrated ground" {
    half pulse=.88+.12*sin(_Time.y*.71+faultUV.x*11-faultUV.y*5);
    fault.rgb=fault.rgb*lerp(half3(1,1,1),half3(.86,.81,1.08),bounce)
           +half3(.34,.069,.53)*glow*pulse+half3(.032,.009,.054)*bounce;
+   half rockValue=dot(fault.rgb,half3(.29,.57,.14));
+   half seam=smoothstep(.03,.33,violetExcess);
+   fault.rgb*=lerp(.83,1.10,smoothstep(.018,.28,rockValue));
+   fault.rgb+=half3(.065,.012,.12)*seam*pulse;
    colour=lerp(colour,fault.rgb,fault.a);
   }
   // Use the archival region map only as a subtle broad RELIEF lighting
@@ -203,8 +210,8 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // The geographic mask and its existing broad mip also describe shallows
   // outside the near survey. Work in display pigment before converting once.
   half shelf=lerp(1-smoothstep(.17,.79,district.r),1-smoothstep(.1,5.1,shore),local);
-  half3 channel=half3(.145,.31,.32)*(.82+pigment*.37);
-  half3 shallows=half3(.35,.44,.38)*(.85+pigment*.32);
+  half3 channel=half3(.167,.276,.266)*(.82+pigment*.37);
+  half3 shallows=half3(.38,.435,.346)*(.85+pigment*.32);
   half3 riverColour=lerp(channel,shallows,shelf*.88);
   half glint=smoothstep(.36,.85,pigment)*lerp(.42,1,close);
   riverColour+=half3(.11,.12,.115)*glint;

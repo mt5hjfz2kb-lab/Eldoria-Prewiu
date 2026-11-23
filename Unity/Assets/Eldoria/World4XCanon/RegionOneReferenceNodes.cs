@@ -124,7 +124,8 @@ namespace Eldoria.World4XCanon
     // miniature among larger resource/worksite drawings. Raise its readable
     // near-world silhouette, retaining the same pivot and saved city hotspot.
     width=RegionOneModularArt.Enabled ? 40f : BastionOneVisualWidth;float h=width*texture.height/texture.width;
-    foot=host.WorldHome+new Vector3(3.3f,0,-7.5f);foot.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(3.3f,-7.5f)+.18f;
+    if(RegionOneModularArt.Enabled)foot=Vector3.zero;
+    else foot=GroundFoot(host.WorldHome+new Vector3(3.3f,0,-7.5f))+Vector3.up*.10f;
     Create(name,new[]{foot,foot,foot,foot},new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up},
      new[]{new Vector2(-width*anchor.u,-h*anchor.v),new Vector2(width*(1-anchor.u),-h*anchor.v),new Vector2(width*(1-anchor.u),h*(1-anchor.v)),new Vector2(-width*anchor.u,h*(1-anchor.v))},new[]{0,1,2,0,2,3},material,gate);return;
    }
@@ -210,6 +211,8 @@ namespace Eldoria.World4XCanon
      (city?(canonicalCity||!panorama):!far)&&available&&(!gates[i]||gates[i].activeInHierarchy||
       (RegionOneModularArt.Enabled&&meshCity&&gates[i]==host.WorldBastionTwo));
     if(city){
+     if(RegionOneModularArt.Enabled && canonicalCity && cityHit)
+      current[i].transform.position=GroundFoot(cityHit.transform.position);
      var mesh=current[i].GetComponent<MeshFilter>().sharedMesh;var foot=mesh.vertices[0];
      float renderedScale=canonicalCity?canonicalCityScale:cityScale;
      mesh.bounds=new Bounds(foot,Vector3.one*65f*renderedScale);
