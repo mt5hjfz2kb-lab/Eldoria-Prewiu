@@ -90,6 +90,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 districtMaterial.SetTexture("_Paving", Resources.Load<Texture2D>("ValoriaModular25D/DistrictPaving"));
                 districtMaterial.SetTexture("_Soil", Resources.Load<Texture2D>("ValoriaModular25D/HaulersEarth"));
                 var plan=ValoriaUrbanPlan.City;
+                districtMaterial.SetVector("_Forecourt",new Vector4(plan.CourtCenter.x,plan.CourtCenter.y,
+                    plan.CourtRadii.x,plan.CourtRadii.y));
                 districtMaterial.SetVector("_CivicAxis",new Vector4(plan.Keep.Foot.x,plan.Keep.Foot.y,plan.Junction.x,plan.Junction.y));
                 districtMaterial.SetVector("_WorkLane",new Vector4(plan.Mill.Foot.x,plan.Mill.Foot.y,plan.Freight.x,plan.Freight.y));
                 districtMaterial.SetTexture("_Slate",Resources.Load<Texture2D>("World4X/Illustrated/Slate"));

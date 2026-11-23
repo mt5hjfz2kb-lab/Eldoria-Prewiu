@@ -9,7 +9,7 @@ CGPROGRAM
 #pragma fragment frag
 #include "UnityCG.cginc"
 sampler2D _MainTex,_Paving,_Soil,_Slate;
-float4 _CivicAxis,_WorkLane;
+float4 _CivicAxis,_WorkLane,_Forecourt;
 float4 _Built, _MilitaryYard, _MarketYard, _StoneFace;
 struct Vertex { float4 vertex:POSITION; float2 uv:TEXCOORD0; };
 struct Varying { float4 position:SV_POSITION; float2 uv:TEXCOORD0; };
@@ -42,6 +42,18 @@ half4 frag(Varying i):SV_Target {
  half crossing=1-smoothstep(.46,1.48,length((p-_CivicAxis.zw)*float2(.85,1.2))+erosion*.32);
  ground=lerp(ground,lerp(dirt*.81,seam*.88,.33),urban*.54+crossing*.27);
  ground=lerp(ground,dirt*.86,(1-smoothstep(.56,1.33,bend+erosion*.42))*max(_Built.y,_Built.z)*.42);
+ // Broad stone landing tapers into the avenue. Its exposed lip stops on either
+ // side of the entrance so the approach stays at the same walking level.
+ float2 court=(p-_Forecourt.xy)/_Forecourt.zw;
+ float edge=abs(court.x)+abs(court.y)*.54;
+ float outline=max(edge,abs(court.y));
+ half worn=erosion*.075;
+ half landing=1-smoothstep(.93,1.04,outline+worn);
+ half margin=(1-smoothstep(.035,.105,abs(outline-.91+worn)))*smoothstep(.25,.51,abs(court.x));
+ half front=smoothstep(.1,.9,-court.y);
+ half3 flags=lerp(seam,dirt,.16)*half3(1.13,1.08,1.02);
+ flags*=1-margin*(.10+.28*front);
+ ground=lerp(ground,flags,landing*.91);
  half3 pad=lerp(dirt*.84,seam*half3(.87,.84,.77),.44);
  ground=lerp(ground,pad,drill*.91);
  ground=lerp(ground,lerp(dirt*.89,pad,.42),market*.92);

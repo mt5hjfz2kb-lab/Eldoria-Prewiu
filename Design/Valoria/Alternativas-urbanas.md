@@ -28,7 +28,7 @@ Las franjas laterales de crecimiento tienen una parcela útil mínima de 5 × 3 
 
 ## Comparación y decisión
 
-Usar la misma escala, iluminación, estado V y relación vertical para ambos trazados. Capturar inicio, cruce, camino de abastecimiento y las cinco puertas. Recorrer en ambos sentidos con el HUD activo. La primera imagen debe mostrar la llegada al Bastión, un cruce y una salida reconocible del encuadre. Las siguientes deben conservar referencias que permitan regresar. Evaluar cuánto tarda en reaparecer una referencia al desplazar en cada dirección, si las cubiertas ocultan el siguiente giro y si los temporizadores tapan accesos. Verificar inicio I con Aserradero sin construir y con la obra en curso; II incorpora Cuartel, III Granero, IV consolida el abastecimiento, V incorpora la Cantera según estado canónico. La selección queda pendiente de observar las dos alternativas en el motor.
+Usar la misma escala, iluminación, estado V y relación vertical para ambos trazados. Capturar inicio, cruce, camino de abastecimiento y las cinco puertas. Recorrer en ambos sentidos con el HUD activo. La primera imagen debe mostrar la llegada al Bastión, un cruce y una salida reconocible del encuadre. Las siguientes deben conservar referencias que permitan regresar. Evaluar cuánto tarda en reaparecer una referencia al desplazar en cada dirección, si las cubiertas ocultan el siguiente giro y si los temporizadores tapan accesos. Verificar inicio I con Aserradero sin construir y con la obra en curso; II incorpora Cuartel, III Granero, IV consolida el abastecimiento, V incorpora la Cantera según estado canónico. La selección se documenta en la sección siguiente.
 
 ## Selección en Unity
 
@@ -51,3 +51,10 @@ El encuadre inicial prioriza la puerta del Bastión. El área de desplazamiento 
 | Evolución | En las capturas se observan mayor continuidad de fachadas y pavimento en ciudades desarrolladas. Son ejemplos de distintas partidas. | Mantener los pies arquitectónicos y sumar densidad local al progresar de I a V. |
 
 Referencias visuales adicionales: https://www.bluestacks.com/pt-br/blog/game-guides/call-of-dragons/cdg-farming-guide-ptbr.html y https://www.dailymotion.com/video/x8n5mdy.
+
+
+## Del cruce a la puerta
+
+La captura de la enfermería de Whiteout muestra tres funciones reconocibles en un único recorte y un talud que separa la calle de la cota superior. La ciudad amurallada de Call of Dragons concentra pavimento dentro de las manzanas y conserva suelo libre fuera del casco urbano. Al volver a mirar la puerta de Valoria en Unity, el camino sí llegaba al umbral, pero el césped seguía directamente bajo los flancos de la fachada. El plano incorpora un antepatio transversal de piedra que se estrecha hacia el acceso central. Su centro y sus semiejes dependen de la puerta y de la huella arquitectónica. La entrada queda abierta entre los bordes de mampostería. La intervención forma parte del material sobre el terreno continuo.
+
+Fuentes visuales: https://medievalfun.com/white-out-survival-how-to-protect-your-city/ y https://mobilematters.gg/guides/gaming/call-of-dragons-city-hall-resource-upgrade-requirements.
