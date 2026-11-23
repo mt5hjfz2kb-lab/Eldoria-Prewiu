@@ -109,6 +109,6 @@ jobs:
               if m.get('bastion')==5: print(m)
           PY
           for name in Region Ciudad Corona; do
-            hash=$(base64 -w0 "$name.jpg" | jq -Rs '{encoding:"base64",content:.}' | gh api -X POST repos/$GH_REPO/git/blobs --input - --jq .sha)
+            hash=$(base64 -w0 "$name.jpg" | jq -Rs '{encoding:"utf-8",content:.}' | gh api -X POST repos/$GH_REPO/git/blobs --input - --jq .sha)
             echo "VALORIA_GALLERY $name $hash"
           done
