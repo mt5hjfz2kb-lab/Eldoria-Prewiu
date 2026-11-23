@@ -76,6 +76,25 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 ChunkCount++;
             }
         }
+        Material districtMaterial;
+        Vector3Int previousDistricts;
+        public void SetDistricts(bool barracks, bool granary, bool quarry)
+        {
+            var built = new Vector3Int(barracks ? 1 : 0, granary ? 1 : 0, quarry ? 1 : 0);
+            if (built == previousDistricts) return;
+            previousDistricts = built;
+            if (!districtMaterial)
+            {
+                districtMaterial = new Material(Resources.Load<Shader>("ValoriaModular25D/DistrictGround"));
+                districtMaterial.mainTexture = texture;
+                districtMaterial.SetTexture("_Paving", Resources.Load<Texture2D>("ValoriaModular25D/OrganicCobbleRoad"));
+                districtMaterial.SetTexture("_Soil", Resources.Load<Texture2D>("ValoriaModular25D/HaulersEarth"));
+                districtMaterial.SetTexture("_Plan", Resources.Load<Texture2D>("ValoriaModular25D/DistrictStreets"));
+            }
+            districtMaterial.SetVector("_Built", new Vector4(built.x, built.y, built.z, 0));
+            foreach (var chunk in GetComponentsInChildren<MeshRenderer>())
+                chunk.sharedMaterial = built == Vector3Int.zero ? material : districtMaterial;
+        }
         static float Hash(int x,int y,int p)
         {
             x=(x%p+p)%p;y=(y%p+p)%p;
@@ -270,6 +289,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if(mesh!=null&&mesh.sharedMesh!=null)Destroy(mesh.sharedMesh);
             }
             if(material!=null)Destroy(material);
+            if(districtMaterial)Destroy(districtMaterial);
             if(generatedAtRuntime&&texture!=null)Destroy(texture);
         }
     }

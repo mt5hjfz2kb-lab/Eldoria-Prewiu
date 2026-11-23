@@ -28,7 +28,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         readonly List<Texture2D> textures=new List<Texture2D>();
         readonly List<Material> materials=new List<Material>();
         bool built;
-        Material expansionRoadMaterial, civicRoadMaterial, renderedCartLane;
         public int RoadCount { get; private set; }
         public bool OriginalCobbleRoadLoaded { get; private set; }
         public int FootprintCount { get; private set; }
@@ -49,7 +48,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var earthMat=new Material(shader){name="Valoria haulers' earth road — original paint system"};
             earthMat.mainTexture=earth;
             materials.Add(earthMat);
-            expansionRoadMaterial=earthMat;
             // The larger Imperial Way gets a REAL illustrated paving material
             // sampled from the user-owned Eldoria terrain, cropped to path
             // pixels only, with soft edges. It remains mapped on the same
@@ -72,7 +70,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     "fallback is not artistic acceptance.",this);
             // The road is described as spatial segments; bend is interpolated,
             // not simulated by shifting a static full-scene background.
-            civicRoadMaterial=imperialMat;
             var main=new []{
                 new Vector2(-6.65f,-7.5f),new Vector2(-4.85f,-5.3f),
                 new Vector2(-3.88f,-3.76f),new Vector2(-2.70f,-2.5f),
@@ -102,58 +99,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             PutCommons("Worked stone and soil | civic commons",yard,
                 new Vector2(-.38f,-1.40f),.78f);
             EdgeProps();
-        }
-
-        public void ApplyExpansionGround(bool barracks,bool granary,bool stoneworks)
-        {
-            ExpansionGround("barracks",barracks,BarracksFoot,
-                new[]{new Vector2(-3.88f,-3.76f),new Vector2(-3.62f,-4.22f),BarracksFoot+Vector2.up*.2f});
-            ExpansionGround("granary",granary,GranaryFoot,
-                new[]{new Vector2(-3.88f,-3.76f),new Vector2(-2.25f,-5.65f),new Vector2(.05f,-6.55f),new Vector2(1.15f,-7.70f),GranaryFoot+Vector2.down*.2f});
-            ExpansionGround("stoneworks",stoneworks,StoneworksFoot,
-                new[]{new Vector2(-2.25f,-5.65f),new Vector2(-2.53f,-7.65f),new Vector2(-2.80f,-9.6f),new Vector2(-2.40f,-11.65f),StoneworksFoot+Vector2.down*.2f});
-        }
-
-        void ExpansionGround(string id,bool visible,Vector2 foot,Vector2[] path)
-        {
-            var root=transform.Find("Unlocked ground | "+id);
-            if(root==null && visible && expansionRoadMaterial!=null)
-            {
-                root=new GameObject("Unlocked ground | "+id).transform;
-                root.SetParent(transform,false);
-                int first=transform.childCount;
-                bool military=id=="barracks", stone=id=="stoneworks";
-                if(!military && renderedCartLane==null)
-                {
-                    var texture=Resources.Load<Texture2D>("ValoriaModular25D/Progression/DistrictCartLane");
-                    if(texture)
-                    {
-                        renderedCartLane=new Material(expansionRoadMaterial){mainTexture=texture};
-                        materials.Add(renderedCartLane);
-                    }
-                }
-                // The garrison has a short, separately authored curved
-                // entrance lane after its Bastion II unlock. Keep the original
-                // imperial avenue and all Bastion I scenery unchanged.
-                if(military)
-                    AddRoad("Access | "+id,path,1.08f,civicRoadMaterial,true);
-                else if(stone)
-                    AddRoad("Access | "+id,path,1.12f,expansionRoadMaterial,false);
-                else
-                {
-                    AddRoad("Granary market street",path,1.18f,civicRoadMaterial,true);
-                    // The mill yard and grain landing share a delivery lane behind the commons.
-                    AddRoad("Granary service lane",new[]{new Vector2(.52f,-3.26f),
-                        new Vector2(1.48f,-4.32f),new Vector2(2.15f,-5.62f),
-                        new Vector2(1.15f,-7.70f)},.78f,renderedCartLane ? renderedCartLane : expansionRoadMaterial,false);
-                }
-                Color soil=stone ? new Color(.50f,.46f,.40f) : new Color(.45f,.34f,.22f);
-                Color worn=stone ? new Color(.77f,.73f,.62f) : new Color(.71f,.58f,.39f);
-                PutFoot("Contact | "+id,MakeFootprint(id,soil,worn,stone,false),
-                    foot+new Vector2(.10f,-.41f),stone ? 1.26f : 1.05f);
-                while(transform.childCount>first)transform.GetChild(first).SetParent(root,true);
-            }
-            if(root!=null)root.gameObject.SetActive(visible);
         }
 
         static Color32 Mix(Color a,Color b,float t)
@@ -281,8 +226,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var uv=new Vector2[vtx.Length];
             var edgeColor=new Color32[vtx.Length];
             var tris=new int[(samples-1)*(Across-1)*6];
-            bool cartLane=renderedCartLane!=null && material==renderedCartLane;
-            bool districtAccess=name.StartsWith("Access |",StringComparison.Ordinal);
             float along=0;
             for(int i=0;i<samples;i++)
             {
@@ -316,23 +259,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     float patches=N(p.x*4.1f,p.y*3.2f+u*5.1f,203);
                     float ink=(cobbled ? .71f : .57f)+.19f*erosion+.09f*patches;
                     float alpha=Mathf.Clamp01(feather*ink);
-                    if(cobbled&&!districtAccess)
+                    if(cobbled)
                         alpha*=Sm(.08f,1.62f,along);
-                    if(cartLane)
-                    {
-                        // Grass persists between wheel tracks and crosses the path
-                        // in irregular patches. Let the road meet each yard softly.
-                        float wheelTrack=1f-Sm(.07f,.27f,Mathf.Abs(bank-.46f));
-                        float packed=Mathf.Lerp(.48f,.80f,wheelTrack);
-                        float groundCover=Mathf.Lerp(.64f,1f,Sm(.24f,.72f,erosion));
-                        float join=Mathf.Min(along,Vector2.Distance(spine[i],spine[samples-1]));
-                        alpha*=packed*groundCover*Mathf.Lerp(.28f,1f,Sm(0f,.72f,join));
-                    }
-                    else if(districtAccess)
-                    {
-                        float join=Mathf.Min(along,Vector2.Distance(spine[i],spine[samples-1]));
-                        alpha*=Mathf.Lerp(.34f,1f,Sm(0f,.82f,join));
-                    }
                     edgeColor[index]=(Color32)new Color(1f,1f,1f,alpha);
                 }
             }

@@ -61,32 +61,13 @@ namespace Eldoria.World4XCanon
             ground.SetTexture("_CityCobble",cityCobble);
             ground.SetFloat("_CityFinish",1f);
             Debug.Log("REGION1_MODULAR_GROUND_REPLACED same_city_meadow=1 same_city_earth=1 same_city_cobble=1");
-            // Extend only the painted mist beyond the known region. Keep the
-            // backing immediately below the lowest canonical height. The former
-            // fixed y=-90 plane was safe, but the inclined panorama projected
-            // that 90 m vertical gap beside the relief as a detached second
-            // silhouette. GeographicBounds comes from the unchanged query
-            // export; the backing remains non-interactive and below every
-            // playable point. The separate dark eastern-water band is handled
-            // by the illustrated surface shader, not by moving this geometry.
-            var fogMesh=new Mesh{name="Mist beyond the mapped region"};
-            const float horizon=6500f;
-            float fogHeight=RegionOneBlenderLandscape.GeographicBounds(Vector3.zero).min.y-.5f;
-            fogMesh.vertices=new[]{new Vector3(-horizon,fogHeight,-horizon),new Vector3(-horizon,fogHeight,horizon),
-                new Vector3(horizon,fogHeight,horizon),new Vector3(horizon,fogHeight,-horizon)};
-            // Keep mist variations aligned with the geographic UVs used by the relief.
-            var fogUv=new Vector2[4];var corners=fogMesh.vertices;
-            for(int i=0;i<corners.Length;i++) fogUv[i]=new Vector2(corners[i].x/1820f+.5f,corners[i].z/3600f+.5f);
-            fogMesh.uv=fogUv;fogMesh.triangles=new[]{0,1,2,0,2,3};fogMesh.RecalculateBounds();
-            var fogMaterial=new Material(ground);fogMaterial.SetFloat("_BeyondMap",1f);
-            owned.Add(fogMaterial);Draw(fogMesh,fogMaterial);
-            // At panoramic zoom both the relief edge and its backing must meet
-            // the exact camera haze used by the imported continuation. Earlier
-            // builds left the illustrated backing dark on the eastern coast.
+            var hinterland = new Material(ground);
+            hinterland.SetFloat("_BeyondMap", 1f);
+            owned.Add(hinterland);
             look=transform.GetComponentInChildren<RegionOneLookDevelopment>(true);
             if(!look)throw new InvalidOperationException("Region 1 look development must exist before illustrated relief");
             look.RegisterPeripheralMaterial(ground);
-            look.RegisterPeripheralMaterial(fogMaterial);
+            look.RegisterPeripheralMaterial(hinterland);
             var slice=new RegionOneFrameSlice(14);
             const int columns=228,rows=450,tile=24;
             for(int z=0;z<rows;z+=tile)for(int x=0;x<columns;x+=tile){
@@ -106,12 +87,7 @@ namespace Eldoria.World4XCanon
                 mesh.RecalculateBounds();Draw(mesh,ground);
                 if(ValoriaIntegratedWorld.P0LazyWorldProbe&&slice.ShouldYield()){yield return null;slice.Resume();}
             }
-            // Join the EXISTING relief perimeter to the mist backing. At
-            // panorama the raised eastern shoreline otherwise projects a
-            // detached shelf against a lower background plane. This is a
-            // render-only connection of the same terrain, with zero colliders
-            // and no altered water cells, routes or exploration.
-            Draw(EdgeMistSkirt(fogHeight),fogMaterial);
+            Draw(BuildHinterland(), hinterland);
             var planting=Plant();
             while(planting.MoveNext())yield return null;
             var layout=JsonUtility.FromJson<Region>(Resources.Load<TextAsset>("World4X/Blender/production-region").text);
@@ -123,40 +99,50 @@ namespace Eldoria.World4XCanon
                 Decal("Bridge",b.x,b.z,b.width*1.35f,b.length,0,.7f);
             }
         }
-        Mesh EdgeMistSkirt(float floor)
+        // A single, open-centred strip continues the surveyed relief. The inner
+        // samples coincide with the outermost tile vertices on all four sides.
+        Mesh BuildHinterland()
         {
-            const int columns=228,rows=450;
-            var verts=new List<Vector3>((columns+rows)*8);
-            var uvs=new List<Vector2>((columns+rows)*8);
-            var tris=new List<int>((columns+rows)*24);
-            void Strip(Vector2 from,Vector2 to,int count)
+            float[] distances = { 0, 20, 50, 95, 155, 240, 360, 540, 800, 1200, 1850, 2900, 4500, 6800 };
+            var vertices = new List<Vector3>();
+            var uv = new List<Vector2>();
+            var triangles = new List<int>();
+            void Bank(Vector2 start, Vector2 end, int steps)
             {
-                for(int step=0;step<count;step++)
+                int first = vertices.Count;
+                foreach (float distance in distances)
                 {
-                    Vector2 a=Vector2.Lerp(from,to,step/(float)count);
-                    Vector2 b=Vector2.Lerp(from,to,(step+1)/(float)count);
-                    int n=verts.Count;
-                    foreach(var point in new[]{a,b})
+                    for (int j = 0; j <= steps; j++)
                     {
-                        verts.Add(new Vector3(point.x,Ground(point.x,point.y),point.y));
-                        verts.Add(new Vector3(point.x,floor,point.y));
-                        var uv=new Vector2(point.x/1820f+.5f,point.y/3600f+.5f);
-                        uvs.Add(uv);uvs.Add(uv);
+                        Vector2 shore = Vector2.Lerp(start, end, j / (float)steps);
+                        float x = shore.x * (1 + distance / 910f);
+                        float z = shore.y * (1 + distance / 1800f);
+                        float basin = Mathf.PerlinNoise(x * .0014f + 32, z * .0018f + 19);
+                        float fold = 1 - Mathf.Abs(2 * Mathf.PerlinNoise(x * .0024f + z * .0007f, z * .0031f + 46) - 1);
+                        float hills = 12 + basin * basin * 145 + fold * fold * 83;
+                        float coast = Mathf.SmoothStep(0, 1, Mathf.Clamp01((shore.x - 600) / 310));
+                        float height = Mathf.Lerp(Ground(shore.x, shore.y), hills * (1 - coast),
+                            1 - Mathf.Exp(-distance / 265));
+                        vertices.Add(new Vector3(x, height, z));
+                        uv.Add(new Vector2(x / 1820 + .5f, z / 3600 + .5f));
                     }
-                    // Both sides face the orthographic camera at each heading.
-                    // One face may be culled; there is no duplicate ground
-                    // surface, only the perimeter between original and mist.
-                    tris.AddRange(new[]{n,n+2,n+1,n+2,n+3,n+1,
-                                         n+1,n+2,n,n+1,n+3,n+2});
+                }
+                int stride = steps + 1;
+                for (int k = 1; k < distances.Length; k++)
+                for (int j = 0; j < steps; j++)
+                {
+                    int n = first + k * stride + j;
+                    triangles.Add(n); triangles.Add(n - stride); triangles.Add(n + 1);
+                    triangles.Add(n + 1); triangles.Add(n - stride); triangles.Add(n - stride + 1);
                 }
             }
-            Strip(new Vector2(-910f,-1800f),new Vector2(910f,-1800f),columns);
-            Strip(new Vector2(910f,-1800f),new Vector2(910f,1800f),rows);
-            Strip(new Vector2(910f,1800f),new Vector2(-910f,1800f),columns);
-            Strip(new Vector2(-910f,1800f),new Vector2(-910f,-1800f),rows);
-            var mesh=new Mesh{name="Regional relief-to-mist continuous perimeter"};
-            mesh.SetVertices(verts);mesh.SetUVs(0,uvs);
-            mesh.SetTriangles(tris,0);mesh.RecalculateBounds();
+            Bank(new Vector2(-910,-1800),new Vector2(910,-1800),228);
+            Bank(new Vector2(910,-1800),new Vector2(910,1800),450);
+            Bank(new Vector2(910,1800),new Vector2(-910,1800),228);
+            Bank(new Vector2(-910,1800),new Vector2(-910,-1800),450);
+            var mesh = new Mesh { name = "Uncharted regional foothills" };
+            mesh.SetVertices(vertices); mesh.SetUVs(0,uv); mesh.SetTriangles(triangles,0);
+            mesh.RecalculateBounds();
             return mesh;
         }
         // Spatial batches keep woodland and rocks visible in the same geography at every scale.
@@ -198,9 +184,14 @@ namespace Eldoria.World4XCanon
                     var tree=new Vector3(reader.ReadSingle(),0,reader.ReadSingle());
                     tree.y=Mathf.Clamp(reader.ReadSingle()*4.6f,4f,11.5f);
                     // Preserve recognisable groves and open the approach to water and roads.
+                    // Disrupt repeated planting rows inside each existing forest stand.
+                    float gap = Mathf.PerlinNoise(tree.x*.041f+11,tree.z*.032f+5);
+                    float drift = Mathf.PerlinNoise(tree.z*.026f+17,tree.x*.037f+3);
+                    tree.x=Mathf.Clamp(tree.x+(gap-.5f)*9,-909.9f,909.9f);
+                    tree.z=Mathf.Clamp(tree.z+(drift-.5f)*8,-1799.9f,1799.9f);
                     float stand=Mathf.PerlinNoise(tree.x*.016f+7,tree.z*.016f+41);
                     float fringe=Mathf.PerlinNoise(tree.x*.051f+21,tree.z*.046f+9);
-                    if(stand+.23f*(fringe-.5f)<.43f || RegionOneBlenderLandscape.Shore(tree.x,tree.z)<4f ||
+                    if(stand+.34f*(fringe-.5f)<.43f || RegionOneBlenderLandscape.Shore(tree.x,tree.z)<4f ||
                        RegionOneBlenderLandscape.Road(tree.x,tree.z)>.15f) continue;
                     var cell=new Vector2Int(Mathf.FloorToInt((tree.x+910f)/182f),Mathf.FloorToInt((tree.z+1800f)/180f));
                     if(!groves.TryGetValue(cell,out var clump)){clump=new List<Vector3>();groves.Add(cell,clump);}

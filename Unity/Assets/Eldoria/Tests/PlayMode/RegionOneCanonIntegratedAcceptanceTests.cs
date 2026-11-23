@@ -1434,9 +1434,11 @@ namespace Eldoria.Tests
                         Is.SameAs(Resources.Load<Texture2D>(path)),
                         "Illustrated forests must share the same actual Valoria sprite art");
                 }
-                Assert.That(world.GetComponentsInChildren<MeshRenderer>(true)
-                    .Any(x=>x.name=="Regional relief-to-mist continuous perimeter"),Is.True,
-                    "The panorama relief must meet the painted fog ground, not float above it");
+                var horizon = world.GetComponentsInChildren<MeshFilter>(true)
+                    .Single(m=>m.name=="Uncharted regional foothills");
+                Assert.IsNull(horizon.GetComponent<Collider>());
+                Assert.That(horizon.sharedMesh.bounds.size.x, Is.GreaterThan(9000f));
+                Assert.IsTrue(horizon.sharedMesh.vertices.All(v=>Mathf.Abs(v.x)>=909.99f || Mathf.Abs(v.z)>=1799.99f));
                 Debug.Log("REGION1_APPROVED_ART_PARITY terrain=1 roads=1 castle=1 forest=4 hidden_donor=1 edge=1");
             }
             var home=(Vector3)Member(host,"WorldHome");

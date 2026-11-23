@@ -329,7 +329,7 @@ namespace Eldoria.UI.RoyalGold.V2
             count.fontSize=shortWide?14:17;
             float cardsTop=y0+37f,footer=h-b-58f;
             int columns=w>h?(w>=1150f?6:4):3;
-            if(RoyalGoldV2Hud.UseCoronaArt && w<h && viewW/Mathf.Max(1f,Screen.dpi/160f)<500f)
+            if(RoyalGoldV2Hud.UseCoronaArt && w<h)
                 columns=2;
             float gap=shortWide?7f:10f;
             float cell=Mathf.Min((width-gap*(columns-1))/columns,

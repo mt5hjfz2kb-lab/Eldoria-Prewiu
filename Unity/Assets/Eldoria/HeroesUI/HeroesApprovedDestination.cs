@@ -111,6 +111,14 @@ namespace Eldoria.HeroesUI
         RectTransform Frame(string name,Transform parent,float x,float y,float w,float h)
         {
             var r=Surface(name,parent,x,y,w,h,Color.clear);
+            if(coronaTypography)
+            {
+                var image=r.GetComponent<Image>();
+                image.sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/wallet_inset");
+                image.type=Image.Type.Sliced;
+                image.color=Color.white;
+                return r;
+            }
             // Native 41198120660 proves the custom panel mesh was invisible
             // while ordinary Images rendered correctly on the same Canvas.
             // Use the proven uGUI path for actual readable cards and controls.
@@ -126,6 +134,7 @@ namespace Eldoria.HeroesUI
         }
         void TintFrame(RectTransform frame,Color tint)
         {
+            if(coronaTypography) { frame.GetComponent<Image>().color=tint; return; }
             foreach(Transform child in frame)
                 if(child.name.StartsWith("Royal Gold /")&&child.name.EndsWith("rim"))
                     child.GetComponent<Image>().color=tint;
@@ -435,6 +444,13 @@ namespace Eldoria.HeroesUI
                 (asset=="gold-button" || asset=="tab-active" ? "action_arcane" : "world_rune"))
                 : Resources.Load<Texture2D>("EldoriaV41/"+asset);
             if(!source)return;
+            if(coronaTypography && parent.TryGetComponent<Image>(out var baseImage))
+            {
+                baseImage.sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/"+
+                    (asset=="gold-button" || asset=="tab-active" ? "action_arcane" : "world_rune"));
+                baseImage.type=Image.Type.Sliced;
+                return;
+            }
             var layer=Rect("Hall / authored control material "+asset,parent);
             Place(layer,0,0,w,h);
             var visual=layer.gameObject.AddComponent<RawImage>();

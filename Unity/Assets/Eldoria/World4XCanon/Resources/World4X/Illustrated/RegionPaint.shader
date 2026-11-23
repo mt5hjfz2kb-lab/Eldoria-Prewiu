@@ -15,6 +15,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
  SubShader { Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="Opaque"} Pass {
  Cull Back
  HLSLPROGRAM
+ #pragma target 3.0
  #pragma vertex vert
  #pragma fragment frag
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -29,8 +30,19 @@ Shader "Eldoria/Region1/Illustrated ground" {
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
  struct In {float3 p:POSITION;float2 uv:TEXCOORD0;};
  struct Out {float4 p:SV_POSITION;float2 uv:TEXCOORD0;float3 world:TEXCOORD1;};
- Out vert(In v){Out o;o.p=TransformObjectToHClip(v.p);o.uv=v.uv;
-                 o.world=TransformObjectToWorld(v.p);return o;}
+ Out vert(In v){
+  Out o;
+  float2 metres=(v.uv-.5)*float2(1820,3600);
+  float2 faultUV=(metres-float2(-416,0))/float2(320,288);
+  if(all(faultUV>0) && all(faultUV<1)){
+   half4 rock=SAMPLE_TEXTURE2D_LOD(_FaultPigment,sampler_FaultPigment,faultUV,2);
+   half core=smoothstep(.002,.045,min(rock.b-rock.g,rock.r-rock.g));
+   half shelf=smoothstep(.10,.43,dot(rock.rgb,half3(.24,.56,.20)));
+   v.p.y+=rock.a*(shelf*2.7-core*9.5);
+  }
+  o.p=TransformObjectToHClip(v.p); o.uv=v.uv;
+  o.world=TransformObjectToWorld(v.p);return o;
+ }
  float _BeyondMap; float _BoundaryWeight; float4 _BoundaryColour; float _CityFinish;
  half3 borderMist(float2 metres) {
   float2 cloud=metres/float2(670,450);
@@ -64,7 +76,8 @@ Shader "Eldoria/Region1/Illustrated ground" {
  }
  half4 frag(Out i):SV_Target {
   float2 metre=(i.uv-.5)*float2(1820,3600);
-  if (_BeyondMap>.5) return half4(peripheralMist(metre),1);
+  float beyondDistance=max(0,max(abs(metre.x)-910,abs(metre.y)-1800));
+  i.uv=saturate(i.uv);
   // This is the only visible regional ground surface. The old imported
   // colour-map is NOT drawn as a background image beneath another landscape.
   // Canonical geography supplies masks and height, while the very same
@@ -222,8 +235,9 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half pigment=saturate((dot(currentPaint,half3(.24,.56,.20))-.16)*4.0);
   // The geographic mask and its existing broad mip also describe shallows
   // outside the near survey. Work in display pigment before converting once.
-  half shelf=lerp(1-smoothstep(.17,.79,district.r),1-smoothstep(.1,5.1,shore),local);
-  half3 channel=half3(.167,.276,.266)*(.82+pigment*.37);
+  half shoal=saturate(.5+.32*sin(metre.x*.085+metre.y*.062)+.18*(pigment-.5));
+  half shelf=lerp(1-smoothstep(.17,.79,district.r),1-smoothstep(.1,3.8+shoal*2.4,shore),local);
+  half3 channel=half3(.167,.276,.266)*(.77+pigment*.30+shoal*.15);
   half3 shallows=half3(.38,.435,.346)*(.85+pigment*.32);
   half3 riverColour=lerp(channel,shallows,shelf*.88);
   half glint=smoothstep(.36,.85,pigment)*lerp(.42,1,close);
@@ -245,25 +259,20 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half geomLight=saturate(dot(geometricNormal,normalize(float3(-.38,.85,.36))));
   // Horizontal meadow must retain exactly the city paint's apparent value.
   // Reserve the change for geographic slopes, not a global brightness boost.
-  half paintedLight=clamp(1+(geomLight-.85)*.27,.88,1.04);
+  half paintedLight=clamp(1+(geomLight-.85)*.54,.72,1.10);
   colour*=lerp(1,paintedLight,(1-saturate(mask.r))*.82);
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
-  half panorama=smoothstep(880,1700,unity_OrthoParams.y);
-  // SurfaceWeights contains the canonical eastern sea in the same red water
-  // channel as the rivers. At the final overview its fully saturated river
-  // pigment formed a dark, wavy vertical band before the map-edge feather.
-  // Dissolve only that already-authored eastern water progressively into the
-  // peripheral haze. This is presentation-only: masks, terrain, discovery,
-  // routes and every gameplay coordinate remain untouched.
-  half easternSea=smoothstep(500,900,metre.x)*smoothstep(.05,.90,mask.r)*panorama;
-  colour=lerp(colour,peripheralMist(metre),easternSea);
-  float2 chart=abs(metre)/float2(910,1800);
-  float2 squared=chart*chart;
-  float edge=(1-sqrt(sqrt(dot(squared,squared))))*910;
-  edge+=42*sin(metre.y*.005+sin(metre.x*.009))+23*cos(metre.x*.014-metre.y*.009);
-  half mist=panorama*(1-smoothstep(68,330,edge));
-  half3 haze=mist>.001 ? peripheralMist(metre) : colour;
-  return half4(lerp(colour,haze,mist),1);
+  if (_BeyondMap>.5) {
+   half shoulder=saturate((1-geometricNormal.y)*4.7);
+   half grain=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,metre/310).g;
+   half3 heath=lerp(grass*half3(.66,.83,.76),sharedEarth, saturate(.13+grain*.59));
+   half3 ridge=lerp(heath,slate,shoulder*.86)*(.70+.38*geomLight);
+   half coastalWater=smoothstep(.64,.97,mask.r)*smoothstep(600,910,metre.x);
+   ridge=lerp(ridge,riverColour,coastalWater);
+   colour=lerp(colour,ridge,smoothstep(0,185,beyondDistance));
+   colour=lerp(colour,peripheralMist(metre),smoothstep(320,2700,beyondDistance)*.78);
+  }
+  return half4(colour,1);
  }
  ENDHLSL
  } }

@@ -29,7 +29,10 @@ namespace Eldoria.UI.RoyalGold.V2
         public int SelectedTier => selectedTier;
         ICommandGateway gateway;
         RoyalGoldV41MailboxScreen mailbox;
-        Material trainingPigment;
+        static string ArcherArt => RoyalGoldV2Hud.UseCoronaArt ?
+            "ValoriaModular25D/UI/CoronaBrecha/arquera" : "training-archer-isolated-v1";
+        static string TrainingGroundArt => RoyalGoldV2Hud.UseCoronaArt ?
+            "ValoriaModular25D/UI/CoronaBrecha/wallet_inset" : "training-courtyard-layer-v1";
         Image approvedArcher,approvedTroopRow,trainingEnvironment,marchEnvironment;
         RectTransform marchHeadingSurface,marchTroopSurface,marchSummaryBacking,marchStatusBacking;
         RectTransform marchReferencePreview;
@@ -167,7 +170,6 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         void OnDestroy()
         {
-            if(trainingPigment)Destroy(trainingPigment);
             if(trainingCardPortrait)Destroy(trainingCardPortrait);
             if(Hud != null)
             {
@@ -330,19 +332,14 @@ namespace Eldoria.UI.RoyalGold.V2
             // genuine control rather than a second flat background image.
             militaryDepth=RoyalGoldV3LayeredFinish.Install(root,
                 RoyalGoldV3LayeredFinish.Scene.Training,2);
-            trainingEnvironment=RoyalGoldV41SourceArt.Surface(root,"training-courtyard-layer-v1");
+            trainingEnvironment=RoyalGoldV41SourceArt.Surface(root,TrainingGroundArt);
             if(RoyalGoldV2Hud.UseCoronaArt)
                 trainingEnvironment.color=new Color(.83f,.80f,.85f,1f);
             trainingEnvironment.rectTransform.SetAsLastSibling();
             var courtyardFit=trainingEnvironment.gameObject.AddComponent<AspectRatioFitter>();
             courtyardFit.aspectMode=AspectRatioFitter.AspectMode.EnvelopeParent;
             courtyardFit.aspectRatio=1.5f;
-            marchEnvironment=RoyalGoldV41SourceArt.Surface(root,"training-courtyard-layer-v1");
-            if(RoyalGoldV2Hud.UseCoronaArt)
-            {
-                var leather=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/wallet_inset");
-                if(leather)marchEnvironment.sprite=leather;
-            }
+            marchEnvironment=RoyalGoldV41SourceArt.Surface(root,TrainingGroundArt);
             marchEnvironment.rectTransform.SetAsLastSibling();
             var marchFit=marchEnvironment.gameObject.AddComponent<AspectRatioFitter>();
             marchFit.aspectMode=AspectRatioFitter.AspectMode.EnvelopeParent;
@@ -387,7 +384,7 @@ namespace Eldoria.UI.RoyalGold.V2
             unitDetail = Text("Unit profile and composition",left,18,Muted);
             // The troop thumbnails must come from genuine isolated alpha art,
             // not the old archer-row screenshot with baked courtyard pixels.
-            var rosterSource=RoyalGoldV41SourceArt.Get("training-archer-isolated-v1");
+            var rosterSource=RoyalGoldV41SourceArt.Get(ArcherArt);
             if(rosterSource)
             {
                 var area=rosterSource.rect;
@@ -406,7 +403,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     selectedTier=tier;Refresh();
                 },false,out trainingTierLabels[i]);
                 trainingTierPortraits[i]=RoyalGoldV41SourceArt.Surface(
-                    (RectTransform)trainingTierChoices[i].transform,"training-archer-isolated-v1");
+                    (RectTransform)trainingTierChoices[i].transform,ArcherArt);
                 trainingTierPortraits[i].sprite=trainingCardPortrait;
                 trainingTierPortraits[i].preserveAspect=true;
                 trainingTierChoices[i].GetComponent<RoyalGoldV2FrameGraphic>().color=new Color(1f,1f,1f,.07f);
@@ -533,7 +530,7 @@ namespace Eldoria.UI.RoyalGold.V2
             marchReferenceSummaryPaper.gameObject.SetActive(false);
             marchReferencePreview=Frame("March / reference scene inset",right,false);
             marchReferenceScene=RoyalGoldV41SourceArt.Surface(
-                marchReferencePreview,"training-courtyard-layer-v1");
+                marchReferencePreview,TrainingGroundArt);
             marchReferenceScene.preserveAspect=true;
             marchReferenceScene.raycastTarget=false;
             marchReferenceCaption=Text("March / scene illustration disclosure",
@@ -570,16 +567,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 label.alignment=TextAnchor.MiddleCenter;
                 marchMetricValues[i]=label;
             }
-            approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer-isolated-v1");
-            if(RoyalGoldV2Hud.UseCoronaArt)
-            {
-                var shader=Resources.Load<Shader>("ValoriaModular25D/UI/CoronaBrecha/TrainingPigment");
-                if(shader)
-                {
-                    trainingPigment=new Material(shader);
-                    approvedArcher.material=trainingEnvironment.material=trainingPigment;
-                }
-            }
+            approvedArcher=RoyalGoldV41SourceArt.Surface(left,ArcherArt);
             approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
             approvedTroopRow=RoyalGoldV41SourceArt.Surface(left,"archer-row");
             approvedTroopRow.preserveAspect=true;approvedTroopRow.rectTransform.SetAsLastSibling();

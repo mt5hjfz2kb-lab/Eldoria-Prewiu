@@ -45,7 +45,7 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             string key=id+":"+border;
             if(sprites.TryGetValue(key,out var cached))return cached;
-            var texture=Resources.Load<Texture2D>("EldoriaV41/"+id);
+            var texture=Resources.Load<Texture2D>(id.StartsWith("ValoriaModular25D/",System.StringComparison.Ordinal) ? id : "EldoriaV41/"+id);
             if(texture==null)return null;
             var sprite=Sprite.Create(texture,new Rect(0,0,texture.width,texture.height),
                 new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect,

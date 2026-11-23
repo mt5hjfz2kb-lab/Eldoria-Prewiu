@@ -128,7 +128,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             AddProp(scenery,Modular25DArt.Tuft(1),new Vector2(1.07f,1.05f),.53f);
 
             garrisonYard=NewChildRoot(scenery,"Cuartel | patio de guardia");
-            AddOriginalProp(garrisonYard,"VallaLenador",new Vector2(-4.22f,-5.70f),.54f);
+            AddOriginalProp(garrisonYard,"CasasDeOficio",new Vector2(-.92f,-4.88f),.72f);
             CreateVillager(garrisonYard,"Relevo de guardia",new [] {
                 new Vector2(-3.38f,-5.16f),new Vector2(-3.62f,-4.22f),
                 new Vector2(-3.88f,-3.76f),new Vector2(-2.70f,-2.50f),
@@ -146,7 +146,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             AddOriginalProp(quarryYard,"CarroMadera",new Vector2(-1.28f,-12.46f),.49f);
             AddOriginalProp(quarryYard,"ArboledaAntigua",new Vector2(1.62f,-13.93f),.73f);
             AddOriginalProp(grainYard,"VallaLenador",new Vector2(2.24f,-9.41f),.62f);
-            AddOriginalProp(grainYard,"HuertosValoria",new Vector2(3.43f,-9.56f),.78f);
+            AddOriginalProp(grainYard,"CasasDeOficio",new Vector2(.64f,-9.70f),.84f);
             // Match the actual moved parcels without editing or pasting
             // their sprite artwork. A single transform repositions the whole
             // independently painted yard with each district footprint.
@@ -444,7 +444,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             SetCompletedBuilding(BarracksRenderer,snapshot.BastionLevel>=2 && snapshot.BarracksLevel>0);
             SetCompletedBuilding(GranaryRenderer,snapshot.BastionLevel>=3 && (snapshot.ChapterThree?.GranaryLevel??0)>0);
             SetCompletedBuilding(StoneworksRenderer,snapshot.BastionLevel>=5 && (snapshot.ChapterThree?.StoneworksLevel??0)>0);
-            GetComponentInChildren<Modular25DLandscape>()?.ApplyExpansionGround(
+            GetComponentInChildren<Modular25DGround>()?.SetDistricts(
                 BarracksRenderer.gameObject.activeSelf,GranaryRenderer.gameObject.activeSelf,StoneworksRenderer.gameObject.activeSelf);
             bool garrison = BarracksRenderer.gameObject.activeSelf;
             if(westernGrove)
