@@ -14,15 +14,17 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      SOURCE: 4a42fa0ac5e8cc6cf752de78b3f4ceec6bbf79d0
-      NATIVE: '45201067191'
-      MOBILE: '45201377544'
+      SOURCE: bc4a2a433dd1f66ff7ca464da84fb9116254a134
+      NATIVE: '45206467235'
+      MOBILE_SHA: '5034c0aaa43c5367cda2bcd296a1bcc69b5e1f6e'
     steps:
       - name: Esperar los recorridos y descargar las capturas auténticas
         run: |
           set -euo pipefail
           gh api -X POST repos/$GH_REPO/statuses/$GITHUB_SHA -f state=pending -f context=valoria/evidencias -f target_url="$GITHUB_SERVER_URL/$GH_REPO/actions/runs/$GITHUB_RUN_ID" >/dev/null
           test "$(gh api repos/$GH_REPO/actions/runs/$NATIVE --jq .head_sha)" = "$SOURCE"
+          MOBILE=$(gh api "repos/$GH_REPO/actions/workflows/valoria-primer-viaje-webkit.yml/runs?head_sha=$MOBILE_SHA" --jq '.workflow_runs[0].id')
+          test -n "$MOBILE" && test "$MOBILE" != null
           for run in "$NATIVE" "$MOBILE"; do
             for i in $(seq 1 95); do
               [ "$(gh api repos/$GH_REPO/actions/runs/$run --jq .status)" = completed ] && break
@@ -71,7 +73,7 @@ jobs:
                   report.append('Bastión I, píxeles idénticos: '+str(equal))
               w,h=a.size;ab=Image.new('RGB',(2*w,h+32),'#191719')
               for i,img in enumerate([a,b]):
-                  ab.paste(img,(i*w,32));ImageDraw.Draw(ab).text((i*w+8,7),['dba348c','4a42fa0'][i],font=font,fill='white')
+                  ab.paste(img,(i*w,32));ImageDraw.Draw(ab).text((i*w+8,7),['dba348c','bc4a2a4'][i],font=font,fill='white')
               ab.save(out/'comparacion'/p.name)
           def gallery(items,filename,cols):
               w,h=210,455;rows=(len(items)+cols-1)//cols
@@ -96,9 +98,9 @@ jobs:
                       w,h=left.size;pair=Image.new('RGB',(w*2,h+32),'#191719')
                       for i,img in enumerate([left,right]):
                           pair.paste(img,(i*w,32))
-                          ImageDraw.Draw(pair).text((i*w+8,7),['dba348c','4a42fa0'][i],font=font,fill='white')
+                          ImageDraw.Draw(pair).text((i*w+8,7),['dba348c','bc4a2a4'][i],font=font,fill='white')
                       pair.save(out/'comparacion'/p.name)
-              else:report.append('Sin captura en los dos recorridos: '+label)
+              else:raise RuntimeError('Falta captura requerida: '+label)
           gallery(ui,'Corona.jpg',4)
           for d in ['chromium','retina']:
               j=json.loads((out/d/'journey.json').read_text(encoding='utf-8-sig'))
@@ -106,8 +108,9 @@ jobs:
               mem=[v for v in j['log'] if 'memory_scene' in v]
               old=json.loads((Path('origen')/d/'journey.json').read_text(encoding='utf-8-sig'))
               previous=[v for v in old['log'] if 'memory_scene' in v]
-              (out/d/'memoria.json').write_text(json.dumps({'dba348c':previous,'4a42fa0':mem},indent=2))
+              (out/d/'memoria.json').write_text(json.dumps({'dba348c':previous,'bc4a2a4':mem},indent=2))
               report.append(d+' muestras de memoria '+str(len(mem)))
+          assert (out/'mundo/after/city-at-alternate-position.png').is_file()
           (out/'verificacion.txt').write_text(os.environ['SOURCE']+'\n'+'\n'.join(report)+'\n')
           print('\n'.join(report))
           PY
@@ -118,19 +121,19 @@ jobs:
           ffmpeg -loglevel error -framerate 15 -i entrega/ciudad/district-tour-%03d.png -c:v libx264 -pix_fmt yuv420p -movflags +faststart entrega/videos/distritos.mp4
           cat > entrega/Integracion.md <<'EOF'
           # Inventario para la aceptación de Valoria
-          Revisión jugable 4a42fa0ac5e8cc6cf752de78b3f4ceec6bbf79d0. Base de trabajo a43bece28b2a92681046e13cbc9ad2eaed6d4cb3. Capturas anteriores de dba348c.
+          Revisión jugable bc4a2a433dd1f66ff7ca464da84fb9116254a134. Base de trabajo a43bece28b2a92681046e13cbc9ad2eaed6d4cb3. Capturas anteriores de dba348c.
           
           | Área | Presentación y dependencias |
           | --- | --- |
-          | Ciudad | DistrictGround y DistrictStreets sobre los chunks originales. BastionMeadow, HaulersEarth y OrganicCobbleRoad aportan el pigmento. Modular25DGround recibe las terminaciones de Modular25DWorld. Se retiran tres huellas independientes y las mallas de acceso tardías de Modular25DLandscape. CasasDeOficio sustituye la valla de la guarnición y el segundo huerto del granero. Mantener el GUID y el pivote del sprite. |
+          | Ciudad | DistrictGround y DistrictStreets sobre los chunks originales. BastionMeadow, HaulersEarth y DistrictPaving aportan el pigmento. El acceso original al Bastión conserva OrganicCobbleRoad. Modular25DGround recibe las terminaciones de Modular25DWorld. Se retiran tres huellas independientes y las mallas de acceso tardías de Modular25DLandscape. CasasDeOficio sustituye la valla de la guarnición. LonjaGrano sustituye el segundo huerto desde Bastión IV. Progression/stoneworks.png conserva el GUID y el pivote del edificio original y cambia su ilustración por un frente de extracción. Mantener el GUID y el pivote del sprite. |
           | Mundo | RegionOneOriginalLandscape retira el plano de niebla y el faldón vertical. La prolongación usa los vértices del límite, sin colisionadores. RegionPaint usa FaultPigment para desplazar el relieve dibujado, SurfaceWeights para el agua y las familias de copa existentes para el bosque. El marcador conserva el anclaje en valoria-map-city. El cruce decorativo de la ciudad sigue excluido. |
-          | Interfaz | RoyalGoldV3ManagementScreens utiliza arquera.png y la superficie de Corona en los controles de instrucción. Se retiran el patio fotográfico y el filtro TrainingPigment de esa presentación. HeroesApprovedDestination utiliza superficies de Corona en los controles y evita sus cuatro bordes anteriores. Issue186BagOverlay calcula dos columnas en vertical también en Retina. |
+          | Interfaz | RoyalGoldV3ManagementScreens utiliza arquera.png y patio_de_instruccion.jpg en el escenario de instrucción. Se retiran el patio fotográfico y el filtro TrainingPigment de esa presentación. HeroesApprovedDestination utiliza superficies de Corona en los controles y evita sus cuatro bordes anteriores. Issue186BagOverlay calcula dos columnas en vertical también en Retina. |
           | Móvil | Datos, WASM, framework y plantilla de carga del mismo jugador. Conservar el paquete anterior íntegro. |
           
           Antes de una integración autorizada, fijar la revisión de destino y guardar su build y guardados de prueba. Integrar exclusivamente presentación en rama de ensayo. Repetir comparativas, recorrido con partida nueva y guardados anteriores, memoria y viaje en iPhone físico. Para revertir, servir la build anterior y revertir el cambio de integración como unidad, conservando guardados y datos.
           
           Las capturas stage/fixture de ciudad son encuadres de Unity por nivel. Las carpetas chromium y retina documentan la progresión real con temporizadores acelerados por el reloj de prueba. Las muestras de memoria miden procesos Chromium de escritorio. WebKit se ejecuta en macOS. La aceptación en un iPhone físico corresponde al propietario.
           EOF
-          (cd entrega && zip -qr -0 ../Valoria-4a42fa0.zip .)
-          gh release upload valoria-review-4a42fa0-m2 Valoria-4a42fa0.zip entrega/Ciudad.jpg entrega/Region.jpg entrega/Corona.jpg entrega/videos/*.mp4
+          (cd entrega && zip -qr -0 ../Valoria-bc4a2a4.zip .)
+          gh release upload valoria-review-bc4a2a4-m2 Valoria-bc4a2a4.zip entrega/Ciudad.jpg entrega/Region.jpg entrega/Corona.jpg entrega/videos/*.mp4
           gh api -X POST repos/$GH_REPO/statuses/$GITHUB_SHA -f state=success -f context=valoria/evidencias -f target_url="$GITHUB_SERVER_URL/$GH_REPO/actions/runs/$GITHUB_RUN_ID" >/dev/null
