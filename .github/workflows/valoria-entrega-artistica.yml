@@ -6,6 +6,7 @@ on:
 permissions:
   contents: write
   actions: read
+  statuses: write
 jobs:
   evidence:
     runs-on: ubuntu-24.04
@@ -20,6 +21,7 @@ jobs:
       - name: Esperar los recorridos y descargar las capturas auténticas
         run: |
           set -euo pipefail
+          gh api -X POST repos/$GH_REPO/statuses/$GITHUB_SHA -f state=pending -f context=valoria/evidencias -f target_url="$GITHUB_SERVER_URL/$GH_REPO/actions/runs/$GITHUB_RUN_ID" >/dev/null
           test "$(gh api repos/$GH_REPO/actions/runs/$NATIVE --jq .head_sha)" = "$SOURCE"
           for run in "$NATIVE" "$MOBILE"; do
             for i in $(seq 1 95); do
@@ -47,7 +49,7 @@ jobs:
           import json,os,shutil
           out=Path('entrega')
           report=[]
-          assert json.loads((out/'ciudad/evidence.json').read_text())['sourceSha']==os.environ['SOURCE']
+          assert json.loads((out/'ciudad/evidence.json').read_text(encoding='utf-8-sig'))['sourceSha']==os.environ['SOURCE']
           for file in ('grid.bin','routes.txt'):
               path=Path('mundo/after',file)
               assert (out/path).read_bytes()==(Path('origen')/path).read_bytes()
@@ -60,7 +62,7 @@ jobs:
               a=Image.open(Path('origen')/p).convert('RGB');b=Image.open(out/p).convert('RGB')
               assert a.size==b.size
               if p in regiones:
-                  x,y=[json.loads((d/p).with_suffix('.json').read_text()) for d in [Path('origen'),out]]
+                  x,y=[json.loads((d/p).with_suffix('.json').read_text(encoding='utf-8-sig')) for d in [Path('origen'),out]]
                   assert all(x[k]==y[k] for k in ('zoom','width','height','cameraPosition','cameraRotation','worldTarget'))
               if p==ciudades[0]:
                   equal=ImageChops.difference(a,b).getbbox() is None
@@ -87,7 +89,7 @@ jobs:
               else:report.append('Sin captura en los dos recorridos: '+label)
           gallery(ui,'Corona.jpg',4)
           for d in ['chromium','retina']:
-              j=json.loads((out/d/'journey.json').read_text())
+              j=json.loads((out/d/'journey.json').read_text(encoding='utf-8-sig'))
               report.append(d+' último Bastión '+str(j['last']['level']))
               mem=[v for v in j['log'] if 'memory_scene' in v]
               (out/d/'memoria.json').write_text(json.dumps(mem,indent=2))
@@ -117,4 +119,5 @@ jobs:
           Las capturas stage/fixture de ciudad son encuadres de Unity por nivel. Las carpetas chromium y retina documentan la progresión real con temporizadores acelerados por el reloj de prueba. Las muestras de memoria miden procesos Chromium de escritorio. WebKit se ejecuta en macOS. La aceptación en un iPhone físico corresponde al propietario.
           EOF
           (cd entrega && zip -qr -0 ../Valoria-dba348c.zip .)
-          gh release upload valoria-review-dba348c-m2 Valoria-dba348c.zip entrega/Ciudad.jpg entrega/Region.jpg entrega/Corona.jpg
+          gh release upload valoria-review-dba348c-m2 Valoria-dba348c.zip entrega/Ciudad.jpg entrega/Region.jpg entrega/Corona.jpg entrega/videos/*.mp4
+          gh api -X POST repos/$GH_REPO/statuses/$GITHUB_SHA -f state=success -f context=valoria/evidencias -f target_url="$GITHUB_SERVER_URL/$GH_REPO/actions/runs/$GITHUB_RUN_ID" >/dev/null
