@@ -431,7 +431,9 @@ namespace Eldoria.HeroesUI
         // screenshot into a live control.
         void HallControlArt(Transform parent,string asset,float w,float h,bool button=false)
         {
-            var source=Resources.Load<Texture2D>("EldoriaV41/"+asset);
+            var source=coronaTypography ? Resources.Load<Texture2D>("ValoriaModular25D/UI/CoronaBrecha/"+
+                (asset=="gold-button" || asset=="tab-active" ? "action_arcane" : "world_rune"))
+                : Resources.Load<Texture2D>("EldoriaV41/"+asset);
             if(!source)return;
             var layer=Rect("Hall / authored control material "+asset,parent);
             Place(layer,0,0,w,h);
@@ -1254,6 +1256,15 @@ namespace Eldoria.HeroesUI
             float referenceStageLeft=(w-referenceStageWidth)*.5f;
             float titleX=phoneLandscape?18f:illustratedDesktop?
                 referenceStageLeft+referenceStageWidth*.105f:42f;
+            if(coronaTypography && portraitLayout)
+            {
+                var banner=Surface("Corona / cabecera del salón",content,8f,6f,w-16f,91f,Color.white);
+                var close=content.Find("Close heroes");
+                if(close)banner.SetSiblingIndex(close.GetSiblingIndex());
+                var ribbon=banner.GetComponent<Image>();
+                ribbon.sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/top_velvet_ribbon");
+                ribbon.raycastTarget=false;
+            }
             Label("Hall / Eldoria heraldry",content,"✦  ELDORIA",titleX,
                 phoneLandscape?7f:illustratedDesktop?18f:13f,
                 phoneLandscape?170f:245f,phoneLandscape?25f:illustratedDesktop?38f:33f,
@@ -1555,7 +1566,7 @@ namespace Eldoria.HeroesUI
             // The selected gold plate is luminous: use dark ink rather than
             // pale yellow-on-gold, which was illegible on small devices.
             foreach(var t in selected.GetComponentsInChildren<Text>())
-                t.color=new Color(.064f,.048f,.026f);
+                t.color=coronaTypography?ivory:new Color(.064f,.048f,.026f);
             var navMarches=Button("Hall / nav marches","MARCHAS",
                 navLeft+(navCell+navGap)*2f,navY,navCell,navHeight,()=>{
                     var management=GetComponent<RoyalGoldV3ManagementScreens>();

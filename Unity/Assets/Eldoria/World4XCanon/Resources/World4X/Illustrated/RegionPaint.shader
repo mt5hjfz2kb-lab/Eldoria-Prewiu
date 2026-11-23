@@ -52,7 +52,14 @@ Shader "Eldoria/Region1/Illustrated ground" {
   float wind=sin(metres.x*.0034+sin(metres.y*.0041))*cos(metres.y*.0027);
   float distanceToMap=max(abs(metres.x)-910,abs(metres.y)-1800);
   half cloud=(1-smoothstep(360,1250,distanceToMap))*(.32+.17*wind);
-  half3 overview=lerp(_BoundaryColour.rgb,painted,cloud);
+  // Let the existing pigments recede into mist along elongated ridgelines.
+  // Both the edge mesh and its backing sample the same world coordinates.
+  float2 ridgeUV=float2(metres.x*.00088+metres.y*.00032,metres.y*.00145);
+  half strata=SAMPLE_TEXTURE2D(_Slate,sampler_Slate,ridgeUV).g;
+  half shoulder=smoothstep(.15,.83,.49+wind*.27+.20*sin(metres.y*.005+strata*5));
+  half veil=(1-smoothstep(160,1050,distanceToMap))*shoulder;
+  half3 ridge=lerp(painted,painted*half3(.60,.82,.74),.78);
+  half3 overview=lerp(lerp(_BoundaryColour.rgb,painted,cloud),ridge,veil*.56);
   return lerp(painted,overview,saturate(_BoundaryWeight));
  }
  half4 frag(Out i):SV_Target {
@@ -157,7 +164,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // Sunlit clearings and cooler drainage hollows follow the continuous land cover.
   half glade=(1-canopy)*(1-valley)*(1-upland);
   half field=saturate(.5+.32*sin(metre.x*.014+sin(metre.y*.018))+.18*cos(metre.y*.031-metre.x*.009));
-  half3 openMeadow=grass*lerp(half3(1.05,1.015,.94),half3(1.32,1.10,.74),field*glade);
+  half3 openMeadow=grass*lerp(half3(.98,1.07,.98),half3(1.20,1.09,.79),field*glade);
   half3 woodedMeadow=grass*half3(.83,.94,.88);
   half3 districtGrass=lerp(openMeadow,woodedMeadow,canopy);
   districtGrass=lerp(districtGrass,grass*half3(.76,1.02,1.11),valley*.82);
@@ -176,6 +183,12 @@ Shader "Eldoria/Region1/Illustrated ground" {
   float2 faultUV=(metre-float2(-416,0))/float2(320,288);
   if(all(faultUV>=0) && all(faultUV<=1)){
    half4 fault=SAMPLE_TEXTURE2D(_FaultPigment,sampler_FaultPigment,faultUV);
+   // Coarse pigment coverage describes the apron around each actual rock arm.
+   // Grade the neighbouring soil continuously before shading the exposed walls.
+   half talus=SAMPLE_TEXTURE2D_LOD(_FaultPigment,sampler_FaultPigment,faultUV,5).a;
+   half shattered=smoothstep(.018,.39,talus)*(1-fault.a);
+   half3 weathered=lerp(sharedEarth,slate,.66)*half3(.83,.78,.85);
+   colour=lerp(colour,weathered,shattered*.79);
    half glow=smoothstep(.021,.43,min(fault.b-fault.g,fault.r-fault.g));
    // Pigment isolates the interior seam. Preserve the illuminated rock lip
    // while violet reflected light reaches the near wall of the opening.

@@ -33,7 +33,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public Modular25DWorkshopAction WorkshopAction { get; private set; }
         public int SettlementZonesPlaced { get; private set; }
 
-        Transform westernGrove, grainYard, quarryYard, kitchenGarden;
+        Transform garrisonYard, westernGrove, grainYard, quarryYard, kitchenGarden;
 
         const float GroundSpacingX = 1f;
         const float GroundSpacingY = .5f;
@@ -127,6 +127,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             AddProp(scenery,Modular25DArt.Tuft(0),new Vector2(-.48f,-3.75f),.46f);
             AddProp(scenery,Modular25DArt.Tuft(1),new Vector2(1.07f,1.05f),.53f);
 
+            garrisonYard=NewChildRoot(scenery,"Cuartel | patio de guardia");
+            AddOriginalProp(garrisonYard,"VallaLenador",new Vector2(-4.22f,-5.70f),.54f);
+            CreateVillager(garrisonYard,"Relevo de guardia",new [] {
+                new Vector2(-3.38f,-5.16f),new Vector2(-3.62f,-4.22f),
+                new Vector2(-3.88f,-3.76f),new Vector2(-2.70f,-2.50f),
+                new Vector2(-3.88f,-3.76f),new Vector2(-3.62f,-4.22f)
+            },.8f);
+            garrisonYard.gameObject.SetActive(false);
             grainYard=NewChildRoot(scenery,"Granero | huertos y carga");
             AddOriginalProp(grainYard,"HuertosValoria",new Vector2(2.07f,-8.60f),.91f);
             AddOriginalProp(grainYard,"CarroMadera",new Vector2(4.86f,-8.42f),.62f);
@@ -446,6 +454,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 westernGrove.GetComponent<SpriteRenderer>().sortingOrder = FootOrder(foot.y);
             }
             if(kitchenGarden) kitchenGarden.gameObject.SetActive(!garrison);
+            garrisonYard.gameObject.SetActive(garrison);
             grainYard.gameObject.SetActive(GranaryRenderer.gameObject.activeSelf);
             quarryYard.gameObject.SetActive(StoneworksRenderer.gameObject.activeSelf);
             var stage=ParcelBuildingStates.For(snapshot,"sawmill");

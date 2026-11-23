@@ -29,6 +29,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public int SelectedTier => selectedTier;
         ICommandGateway gateway;
         RoyalGoldV41MailboxScreen mailbox;
+        Material trainingPigment;
         Image approvedArcher,approvedTroopRow,trainingEnvironment,marchEnvironment;
         RectTransform marchHeadingSurface,marchTroopSurface,marchSummaryBacking,marchStatusBacking;
         RectTransform marchReferencePreview;
@@ -166,6 +167,7 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         void OnDestroy()
         {
+            if(trainingPigment)Destroy(trainingPigment);
             if(trainingCardPortrait)Destroy(trainingCardPortrait);
             if(Hud != null)
             {
@@ -336,6 +338,11 @@ namespace Eldoria.UI.RoyalGold.V2
             courtyardFit.aspectMode=AspectRatioFitter.AspectMode.EnvelopeParent;
             courtyardFit.aspectRatio=1.5f;
             marchEnvironment=RoyalGoldV41SourceArt.Surface(root,"training-courtyard-layer-v1");
+            if(RoyalGoldV2Hud.UseCoronaArt)
+            {
+                var leather=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/wallet_inset");
+                if(leather)marchEnvironment.sprite=leather;
+            }
             marchEnvironment.rectTransform.SetAsLastSibling();
             var marchFit=marchEnvironment.gameObject.AddComponent<AspectRatioFitter>();
             marchFit.aspectMode=AspectRatioFitter.AspectMode.EnvelopeParent;
@@ -564,6 +571,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 marchMetricValues[i]=label;
             }
             approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer-isolated-v1");
+            if(RoyalGoldV2Hud.UseCoronaArt)
+            {
+                var shader=Resources.Load<Shader>("ValoriaModular25D/UI/CoronaBrecha/TrainingPigment");
+                if(shader)
+                {
+                    trainingPigment=new Material(shader);
+                    approvedArcher.material=trainingEnvironment.material=trainingPigment;
+                }
+            }
             approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
             approvedTroopRow=RoyalGoldV41SourceArt.Surface(left,"archer-row");
             approvedTroopRow.preserveAspect=true;approvedTroopRow.rectTransform.SetAsLastSibling();

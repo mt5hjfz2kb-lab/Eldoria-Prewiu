@@ -24,7 +24,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public Func<bool> CanShowEntry { get; set; }
         RoyalHUD hud;ICommandGateway gateway;
         Issue186BagOverlay resourceBag;
-        RectTransform window,entry;
+        RectTransform window,entry,coronaHeader;
         RoyalText entryLabel,title,detail,navLabel,resources;
         RectTransform detailSheet;
         sealed class RewardAttachment
@@ -172,7 +172,8 @@ namespace Eldoria.UI.RoyalGold.V2
             var r=Node(name,parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var t=r.gameObject.AddComponent<RoyalText>();
-            t.font=RoyalGoldV41SourceArt.Serif;
+            t.font=RoyalGoldV2Hud.UseCoronaArt ? (strong ? RoyalGoldV2Hud.CoronaHeadingFont : RoyalGoldV2Hud.CoronaBodyFont)
+                : RoyalGoldV41SourceArt.Serif;
             t.fontSize=fontSize;t.fontStyle=strong?FontStyle.Bold:FontStyle.Normal;
             t.color=Ivory;t.alignment=TextAnchor.MiddleLeft;
             t.horizontalOverflow=HorizontalWrapMode.Wrap;
@@ -240,6 +241,13 @@ namespace Eldoria.UI.RoyalGold.V2
             emptyState.alignment=TextAnchor.MiddleCenter;
             listSummary=Label("Mailbox / real collection summary",w,16);
             listSummary.color=new Color(.83f,.76f,.61f);
+            if(RoyalGoldV2Hud.UseCoronaArt)
+            {
+                coronaHeader=Node("Corona / cabecera del buzón",w);
+                var ribbon=coronaHeader.gameObject.AddComponent<Image>();
+                ribbon.sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/top_velvet_ribbon");
+                ribbon.raycastTarget=false;
+            }
             title=Label("Buzón heading",w,29,true);title.Put("BUZÓN");
             resources=Label("Recursos actuales",w,16);
             resources.gameObject.SetActive(false); // Retain real backing data only.
@@ -404,6 +412,7 @@ namespace Eldoria.UI.RoyalGold.V2
             Position(entry,w-right-entryWidth,h-bottom-(wide?112f:150f)-52f,entryWidth,44f);
 
             float headerH=wide?Mathf.Clamp(h*.085f,48f,79f):Mathf.Clamp(h*.072f,60f,100f);
+            if(coronaHeader)Position(coronaHeader,left-4f,top,usable+8f,headerH);
             Position(title.rectTransform,left+Mathf.Max(53f,headerH*.67f),
                 top,usable*.40f,headerH);
             title.fontSize=Pixels(wide?Mathf.Clamp(Mathf.RoundToInt(w*.023f),25,38):
@@ -1002,7 +1011,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 string key=t.transform.parent.name.Replace("Buzón ","");
                 t.color=key==category?Gold:Ivory;
                 var surface=t.transform.parent.GetComponentInChildren<Image>();
-                if(surface!=null){surface.sprite=RoyalGoldV41SourceArt.Get(key==category?"tab-active":"tab-idle",18);surface.color=Color.white;}
+                if(surface!=null){surface.sprite=RoyalGoldV2Hud.UseCoronaArt ? Resources.Load<Sprite>(
+                    "ValoriaModular25D/UI/CoronaBrecha/"+(key==category?"action_arcane":"world_rune")) :
+                    RoyalGoldV41SourceArt.Get(key==category?"tab-active":"tab-idle",18);surface.color=Color.white;}
                 int unread=mail?.Unread(key)??0,index=Array.IndexOf(categories,key);
                 tabBadges[index].transform.parent.gameObject.SetActive(unread>0);
                 tabBadges[index].Put(unread.ToString());

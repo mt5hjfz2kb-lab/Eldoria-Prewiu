@@ -104,6 +104,24 @@ async def main():
             for _ in range(4):
                 if not state['busy']: break
                 await elapse(16)
+        process_session=await browser.new_browser_cdp_session()
+        async def record_memory(scene):
+            # Fresh Chromium instance per DPR. RSS may include shared pages.
+            processes=(await process_session.send('SystemInfo.getProcessInfo'))['processInfo']
+            resident_kib={}
+            for process in processes:
+                try:
+                    status=Path('/proc',str(process['id']),'status').read_text()
+                except (FileNotFoundError,PermissionError):
+                    continue
+                for line in status.splitlines():
+                    if line.startswith('VmRSS:'):
+                        kind=process['type']
+                        resident_kib[kind]=resident_kib.get(kind,0)+int(line.split()[1])
+                        break
+            heap=await cdp.send('Runtime.getHeapUsage')
+            log.append({'memory_scene':scene,'bastion':state.get('level'),
+                        'chromium_process_group_rss_KiB':resident_kib,'v8_bytes':heap})
         async def travel_round_trip():
             if state['council']:
                 await tap('Close state',False)
@@ -113,6 +131,7 @@ async def main():
             box=await page.locator('canvas').bounding_box()
             async def touch(control):
                 await page.touchscreen.tap(box['x']+control['x']*box['width'],box['y']+control['y']*box['height'])
+            await record_memory('ciudad-antes-del-viaje')
             before=state.copy()
             await touch(control)
             await until(lambda:bool(world_view),200)
@@ -136,6 +155,7 @@ async def main():
                     await until(lambda:world_view.get('sample',0)>sample,15)
                 assert not world_view.get('blocker') and world_view.get('canTravel'),world_view
             await finish_visible_world_prompts()
+            await record_memory('region')
             await page.screenshot(path=OUT/f'ciudad-a-region-{state["level"]}.png')
             if state['level']==5:
                 # Beyond stills, verify that the real Unity world responds to
@@ -213,6 +233,7 @@ async def main():
             assert state.get('activeScene')=='BastionI_Modular25D' and not state.get('travelCurtainVisible')
             for key in ['level','sawmill','granary','barracks','stoneworks','lyra','fissure']:
                 assert state[key]==before[key],(key,before,state)
+            await record_memory('ciudad-tras-regresar')
             await page.screenshot(path=OUT/f'regreso-a-valoria-{state["level"]}.png')
             log.append({'world_round_trip':True,'level':state['level']})
         async def funds(wood,stone):

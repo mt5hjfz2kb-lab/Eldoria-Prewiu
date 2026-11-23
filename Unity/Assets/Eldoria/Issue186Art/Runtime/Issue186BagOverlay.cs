@@ -194,12 +194,19 @@ namespace Eldoria.UI.RoyalGold.V2
             panel=Rect("Issue186 saved resource bag",hud.transform);
             panel.anchorMin=Vector2.zero;panel.anchorMax=Vector2.one;
             panel.offsetMin=panel.offsetMax=Vector2.zero;
-            var sharedStone=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill");
+            bool corona=RoyalGoldV2Hud.UseCoronaArt;
+            var sharedStone=Resources.Load<Sprite>(corona ? "ValoriaModular25D/UI/CoronaBrecha/wallet_inset" :
+                "VigiliaArt/PremiumSurfaces/panel_fill");
             sharedTheme=sharedStone;
             var paper=Art(panel,sharedTheme?Color.white:Slate,true);
             if(sharedTheme){paper.sprite=sharedStone;paper.type=Image.Type.Simple;paper.preserveAspect=false;}
             header=Rect("Issue186 burgundy title panel",panel);
-            Art(header,sharedTheme?Color.clear:Wine);
+            var headArt=Art(header,sharedTheme?Color.clear:Wine);
+            if(corona)
+            {
+                headArt.sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/top_velvet_ribbon");
+                headArt.color=Color.white;
+            }
             rim=Rect("Issue186 antique outer trim",panel);
             rim.gameObject.AddComponent<CanvasRenderer>();
             var frame=rim.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
@@ -217,7 +224,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 Art(r.Root,sharedTheme?new Color(.18f,.085f,.076f,.16f):
                     new Color(.105f,.066f,.070f,.98f));
                 r.Frame=Rect("Issue186 aged metal",r.Root);
-                if(sharedTheme)
+                if(corona)
+                {
+                    var pocket=Art(r.Frame,Color.white);
+                    pocket.sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/panel_obsidian");
+                }
+                else if(sharedTheme)
                     Art(r.Frame,new Color(.52f,.38f,.22f,.40f));
                 else
                 {
@@ -240,7 +252,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 r.Name=TextAt("Issue186 saved kind",r.Root,20,Ivory);
                 r.Amount=TextAt("Issue186 readable saved amount",r.Root,22,Gold);
                 var amountFace=Resources.Load<Font>("VigiliaArt/Fonts/LibreBaskerville-Bold");
-                if(amountFace)r.Amount.font=amountFace;
+                if(!corona && amountFace)r.Amount.font=amountFace;
                 r.Detail=TextAt("Issue186 nonconsuming state",r.Root,13,Gold);
                 r.New=Art(Rect("Issue186 authentic novelty badge",r.Root),Color.white);
                 r.Use=Action("Issue186 saved packet USE "+i,r.Root,"USAR",

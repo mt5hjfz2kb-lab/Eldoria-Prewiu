@@ -1405,6 +1405,22 @@ namespace Eldoria.Tests
                 Assert.That(strategicKeep.sharedMaterial.mainTexture,
                     Is.SameAs(approvedKeep.texture),
                     "Region 1 must use the same Bastion I building as the approved city");
+                var nodes=components.Single(x=>x && x.GetType().Name=="RegionOneReferenceNodes");
+                var playerCity=((Component)Call(host,"FindTarget","valoria-map-city")).transform;
+                var origin=playerCity.position;
+                try
+                {
+                    // A presentation fixture, restored synchronously before any route or save command.
+                    playerCity.position=origin+new Vector3(91f,0f,62f);
+                    Call(nodes,"Refresh");
+                    Assert.That(strategicKeep.transform.position.x,Is.EqualTo(playerCity.position.x).Within(.02f));
+                    Assert.That(strategicKeep.transform.position.z,Is.EqualTo(playerCity.position.z).Within(.02f));
+                }
+                finally{playerCity.position=origin;Call(nodes,"Refresh");}
+                var crossings=world.GetComponentsInChildren<MeshRenderer>(true).Where(x=>x.name=="Painted Bridge").ToArray();
+                Assert.That(crossings.Length,Is.EqualTo(2),"Both geographical crossings must retain their art");
+                Assert.That(crossings.All(x=>Mathf.Abs(x.bounds.center.x-origin.x)>100f),Is.True,
+                    "The city-entry decal must not return to the shared map");
                 foreach(var family in new[]{"CityOak","CityGrove","PaintedFir","PaintedForestGrove"}){
                     var actual=world.GetComponentsInChildren<MeshRenderer>(true)
                         .Where(x=>x.name=="Illustrated "+family).ToArray();
