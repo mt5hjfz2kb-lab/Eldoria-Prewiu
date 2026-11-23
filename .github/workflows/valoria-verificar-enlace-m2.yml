@@ -8,7 +8,21 @@ permissions:
   contents: read
   actions: read
 jobs:
+  mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 115
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          for i in $(seq 1 144); do
+            if gh release view valoria-review-bc4a2a4-m2 --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' 2>/dev/null | grep -Fxq index.html; then exit 0; fi
+            sleep 45
+          done
+          exit 1
   safari:
+    needs: mobile
     runs-on: macos-15
     timeout-minutes: 20
     steps:
@@ -18,7 +32,7 @@ jobs:
         run: |
           set -eu
           gh api -X POST repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA -f state=pending -f context=valoria/revision-publica -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >/dev/null
-          gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=39a79f8c44563b574ecfbafd990cb9aacc89f60d" --jq '.workflow_runs[] | [.id,.name,.status]'
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=191935a1beed2c5dc02f4d8f242443ce40200b2b" --jq '.workflow_runs[] | [.id,.name,.status]'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -32,7 +46,7 @@ jobs:
           from io import BytesIO
           results=[]
           with sync_playwright() as pw, pw.webkit.launch() as browser:
-            for revision in ["f10f426","dba348c"]:
+            for revision in ["dba348c","bc4a2a4"]:
               ctx=browser.new_context(**pw.devices["iPhone 13"])
               page=ctx.new_page()
               errors=[]
@@ -71,7 +85,7 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: apertura-publica-dba348c-webkit
+          name: apertura-publica-bc4a2a4-webkit
           path: |
             inicio-*.png
             tiempos-webkit.json
@@ -83,32 +97,3 @@ jobs:
           state=failure
           if [ "$RESULT" = success ]; then state=success; fi
           gh api -X POST repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA -f state="$state" -f context=valoria/revision-publica -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >/dev/null
-  gallery:
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    permissions:
-      contents: write
-      actions: read
-    env:
-      GH_TOKEN: ${{ github.token }}
-      GH_REPO: ${{ github.repository }}
-    steps:
-      - name: Leer las láminas de la entrega y los resultados de memoria
-        run: |
-          set -eu
-          for i in $(seq 1 110); do
-            if gh release view valoria-review-dba348c-m2 --json assets --jq '.assets[].name' | grep -Fxq 'Valoria-dba348c.zip'; then break; fi
-            sleep 35
-          done
-          gh release download valoria-review-dba348c-m2 -p 'Valoria-dba348c.zip' -p '*.jpg'
-          unzip -p Valoria-dba348c.zip verificacion.txt
-          unzip -p Valoria-dba348c.zip retina/memoria.json > retina.json
-          python - <<'PY'
-          import json
-          for m in json.load(open('retina.json')):
-              if m.get('bastion')==5: print(m)
-          PY
-          for name in Region Ciudad Corona; do
-            hash=$(base64 -w0 "$name.jpg" | jq -Rs '{encoding:"utf-8",content:.}' | gh api -X POST repos/$GH_REPO/git/blobs --input - --jq .sha)
-            echo "VALORIA_GALLERY $name $hash"
-          done
