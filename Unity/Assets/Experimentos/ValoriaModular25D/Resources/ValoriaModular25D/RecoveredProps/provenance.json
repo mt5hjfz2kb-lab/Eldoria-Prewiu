@@ -112,6 +112,34 @@
       "sourceBranch": "art/ciudad-2d-hitos-1-5-20261116",
       "artApproved": false,
       "unityPlayModeVerified": false
+    },
+    {
+      "name": "CalleDelPostigo",
+      "sha256": "9f4dd7e16ac0b1321f7bc7bd2dddc21df2ebf9f003c76e7f3ddb9471ca192a1a",
+      "guid": "56998ba99af845d99e05380d80dfae7c",
+      "source": "Original Eldoria commissioned sprite sheet; separate orthographic architecture, painted against approved modular Bastion I; 2026-11-24",
+      "artApproved": false
+    },
+    {
+      "name": "ViviendaDelPostigo",
+      "sha256": "36bb48272647e1d8e4bf3d035a0d629f249361de72f857078493370cf92cc0c8",
+      "guid": "dbfd9ecd708347798723f717474137f4",
+      "source": "Original Eldoria commissioned sprite sheet; separate orthographic architecture, painted against approved modular Bastion I; 2026-11-24",
+      "artApproved": false
+    },
+    {
+      "name": "ToneleriaDelPostigo",
+      "sha256": "cb5df151646f7bc64f1352fab71a7f056124145c76c0a6aab4b80a6bf3d038c5",
+      "guid": "5043be80281e4ef49941885ddf018465",
+      "source": "Original Eldoria commissioned sprite sheet; separate orthographic architecture, painted against approved modular Bastion I; 2026-11-24",
+      "artApproved": false
+    },
+    {
+      "name": "CasasDelPeso",
+      "sha256": "13154c9e44f2bffca4c33c8ee2d205b13286bf9b51b8371a04efd785b65a691d",
+      "guid": "b0879d4e5e594345a21821ac2d6e61bd",
+      "source": "Original Eldoria commissioned sprite sheet; separate orthographic architecture, painted against approved modular Bastion I; 2026-11-24",
+      "artApproved": false
     }
   ]
 }

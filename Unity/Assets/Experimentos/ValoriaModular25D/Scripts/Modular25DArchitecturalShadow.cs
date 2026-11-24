@@ -17,8 +17,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             {"CasaDelGremio",new[]{.39f,.25f,.07f,.15f,.39f}},
             {"ManzanaDelAdarve",new[]{.36f,.25f,.05f,.04f,.24f}},
             {"PortalesDeOficios",new[]{.12f,.10f,.085f,.07f,.16f}},
-            {"CalleDelPostigo",new[]{.03f,.03f,.025f,.02f,.02f}},
-            {"CasasDelPeso",new[]{.03f,.03f,.025f,.03f,.03f}}
+            {"CalleDelPostigo",new[]{.15f,.13f,.085f,.045f,.18f}},
+            {"ViviendaDelPostigo",new[]{.14f,.055f,.028f,.11f,.22f}},
+            {"ToneleriaDelPostigo",new[]{.125f,.025f,.073f,.103f,.23f}},
+            {"CasasDelPeso",new[]{.127f,.099f,.074f,.031f,.17f}}
         };
 
         public static void AttachToUnshadowedFrontage(SpriteRenderer building)
@@ -41,7 +43,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             source=GetComponent<SpriteRenderer>();
             if (source.sprite != null)
             {
-                if (source.sprite.name == "CalleDelPostigo") streetAxis = ValoriaUrbanPlan.PostigoAxis;
                 if (source.sprite.name == "PortalesDeOficios") streetAxis = ValoriaUrbanPlan.PortalesAxis;
                 if (streetAxis != Vector2.right)
                 {

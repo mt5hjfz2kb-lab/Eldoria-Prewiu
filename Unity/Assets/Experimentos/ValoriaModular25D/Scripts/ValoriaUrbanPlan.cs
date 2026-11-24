@@ -55,6 +55,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var walk=Approach(plot);
             return new[]{walk[0],walk[1],walk[2],walk[3],walk[2],walk[1]};
         }
+        // The existing castle courier can now use the mature postern passage.
+        public Vector2[] PosternWalk()
+        {
+            var walk=Approach(Keep);
+            var lane=PostigoLane(2.24f);
+            var entry=PostigoLane(0f);
+            var tunnel=UpperRow+new Vector2(-.10f,.88f);
+            var exit=BoroughStreets[5][3];
+            return new[]{walk[0],walk[1],walk[2],walk[3],CourtCenter,lane,entry,
+                UpperRow,tunnel,exit,tunnel,UpperRow,entry,lane,CourtCenter,walk[2],walk[1]};
+        }
         public Vector2 UpperRow => Keep.Foot + new Vector2(-4.38f,.76f);
         public Vector2 UpperCourt => Keep.Foot + new Vector2(-2.87f,3.98f);
         public Vector2 OrchardBoundary => new Vector2((UpperCourt.x+Growth[1].center.x)*.5f, Growth[1].yMax+1.93f);
@@ -108,7 +119,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             new Prop(0,"ManzanaDelAdarve",UpperCourt,0f,0f,.88f,5),
             new Prop(2,"CasasDeOficio",Keep.Foot,3.62f,2.44f,.87f,5),
             new Prop(2,"FrenteTejedores",Keep.Foot,4.03f,.79f,.84f,5),
+            new Prop(0,"ViviendaDelPostigo",UpperRow,-1.57f,.54f,1f,5),
             new Prop(0,"CalleDelPostigo",UpperRow,0,0,1f,5),
+            new Prop(0,"ToneleriaDelPostigo",UpperRow,1.79f,-.27f,1f,5),
             new Prop(3,"PortalesDeOficios",WorkshopRow,0,0,1f,5),
             new Prop(3,"CasasDelPeso",MarketRow,0,0,1f,5),
             new Prop(3,"LonjaGrano",Freight,1.76f,.63f,.66f,3),

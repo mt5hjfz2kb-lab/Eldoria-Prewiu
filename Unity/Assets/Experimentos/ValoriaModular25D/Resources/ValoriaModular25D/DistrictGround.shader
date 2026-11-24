@@ -80,10 +80,14 @@ half4 frag(Varying i):SV_Target {
  half3 gravel=lerp(dirt*.81,seam*half3(.90,.90,.86),.56);
  // Shared thresholds and service courts take the shape of the occupied
  // block. Beyond the last house the original meadow takes over.
- half upper=yard(p,float4(_UpperBlock.xy+float2(0,-.28),3.03,1.06),erosion);
+ // Three staggered thresholds share the postern lane. Leave meadow behind the row.
+ float2 postern=p-_UpperBlock.xy;
+ half upper=max(yard(postern,float4(-1.57,.36,.89,.51),erosion),
+                yard(postern,float4(1.79,-.42,1.12,.48),erosion));
+ upper=max(upper,yard(postern,float4(0,-.08,1.05,.48),erosion));
  half rear=yard(p,float4(_UpperBlock.zw+float2(.18,-.21),2.02,1.08),erosion);
  half looms=yard(p,float4(_LowerBlock.xy+float2(0,-.27),2.59,.66),erosion);
- half scales=yard(p,float4(_LowerBlock.zw+float2(0,-.28),2.82,.77),erosion);
+ half scales=yard(p,float4(_LowerBlock.zw+float2(-.06,-.24),2.03,.62),erosion);
  half apron=max(max(upper,rear),max(looms,scales)*_Built.y)*_Boroughs;
  float sillDistance=min(distanceToLane(p,_WestSills.xy,_WestSills.zw),
                         distanceToLane(p,_EastSills.xy,_EastSills.zw));

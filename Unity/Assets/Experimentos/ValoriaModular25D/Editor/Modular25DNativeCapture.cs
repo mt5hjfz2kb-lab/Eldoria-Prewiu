@@ -36,6 +36,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             public bool nativeWorldRender, gatewayBuild, savedAndReloaded, noDoublePayment, didNotAlterBeta;
             public bool continuousTerrainPresent, paintedGroundSourceLoaded, roadAndFootprintKits, noLegacyHudInEditorPreview, movingCharactersAreUnityTransforms, workshopActorAnimated, composedSettlementZones;
             public bool historicSchema1Restored;
+            public List<string> frontageMemory=new List<string>();
             public bool progressionVisualFixturesOnly=true;
             public int progressionStagesCaptured;
             public int movementFrameRate=15, movementFrames=120;
@@ -306,15 +307,28 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     if(level==5)
                     {
                         foreach(var name in new[]{"AceraZapateros","CasaDelGremio","ManzanaDelAdarve",
-                            "PortalesDeOficios","CasasDelPeso","CalleDelPostigo"})
+                            "PortalesDeOficios","CasasDelPeso","CalleDelPostigo","ViviendaDelPostigo","ToneleriaDelPostigo"})
                         {
                             var front=GameObject.Find("Original Eldoria art | "+name);
                             var projection=front ? front.GetComponent<Modular25DArchitecturalShadow>() : null;
                             var surface=projection ? projection.GetComponentInChildren<MeshRenderer>() : null;
                             var painted=front ? front.GetComponent<SpriteRenderer>() : null;
+                            if(painted)
+                            {
+                                var tex=painted.sprite.texture;
+                                report.frontageMemory.Add(name+" "+tex.width+"x"+tex.height+" "+tex.format+
+                                    " mips="+tex.mipmapCount+" bytes="+UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(tex));
+                            }
                             if(!surface || !painted || surface.sharedMaterial.GetTexture("_ShadowTex")!=painted.sprite.texture)
                                 throw new InvalidDataException("Missing architectural ground projection: "+name);
                         }
+                        var cityPlan=ValoriaUrbanPlan.City;
+                        var reviewFeet=new[]{cityPlan.UpperRow,cityPlan.WorkshopRow,cityPlan.MarketRow,
+                            cityPlan.UpperCourt,cityPlan.WestFront,cityPlan.EastFront};
+                        var reviewNames=new[]{"postigo","oficios","peso","adarve","zapateros","gremio"};
+                        for(int n=0;n<reviewFeet.Length;n++)
+                            Render(cam,output,report,"stage-5-cerca-"+reviewNames[n],1170,1170,
+                                (Vector3)reviewFeet[n]+new Vector3(0,.82f,-30),3.3f);
                         RecordPlan(output,sourceSha);
                         Render(cam,output,report,"stage-5-district-1170x2532",1170,2532,(Vector3)ValoriaUrbanPlan.City.Freight+new Vector3(0,1,-30f),6.6f);
                         Render(cam,output,report,"stage-5-baseline-camera",1170,2532,new Vector3(-.02f,-1.5f,-30f),9.15f);
@@ -346,6 +360,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                             city.Granary.Foot,city.Quarry.Foot,city.Growth[0].center,city.Mill.Foot,
                             city.WorkshopRow,city.CourtCenter};
                         const int framesPerLeg=24, fps=12;
+                        // Ease through the playable zoom neighbourhood and back to a wide view.
+                        var stopsZoom=new[]{size,6.60f,4.60f,4.60f,8.45f,6.60f,5.35f,4.60f,
+                            5.60f,7.40f,8.45f,6.60f,4.60f,6.60f};
                         int lastFrame=(tour.Length-1)*framesPerLeg;
                         for(int frame=0;frame<=lastFrame;frame++)
                         {
@@ -354,10 +371,27 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                             float eased=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.16f,.86f,progress));
                             var center=Vector3.Lerp(tour[leg],tour[leg+1],eased);
                             center.z=-30f;
-                            float zoom=leg==0 ? Mathf.Lerp(size,6.600513f,eased) : 6.600513f;
+                            float zoom=Mathf.Lerp(stopsZoom[leg],stopsZoom[leg+1],eased);
                             foreach(var walker in walkers) walker.StepForNativeCapture(1f/fps);
                             workshop[0].StepForNativeCapture(1f/fps);
                             Render(cam,output,report,"district-tour-"+frame.ToString("D3"),390,844,center,zoom);
+                        }
+                    }
+                    if(level==5)
+                    {
+                        var courier=GameObject.Find("Valoria citizen A").GetComponent<Modular25DWalker>();
+                        var gate=ValoriaUrbanPlan.City.UpperRow;
+                        var entry=ValoriaUrbanPlan.City.PostigoLane(0);
+                        for(int tick=0;Vector2.Distance(courier.transform.position,entry)>.11f;tick++)
+                        {
+                            if(tick>=2400)throw new InvalidDataException("Postern footpath unreachable");
+                            courier.StepForNativeCapture(1f/24f);
+                        }
+                        for(int frame=0;frame<64;frame++)
+                        {
+                            foreach(var walker in walkers)walker.StepForNativeCapture(1f/12f);
+                            Render(cam,output,report,"stage-5-paso-"+frame.ToString("D3"),540,720,
+                                (Vector3)gate+new Vector3(0,.85f,-30),2.70f);
                         }
                     }
                     report.progressionStagesCaptured++;
@@ -490,7 +524,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             foreach(var prop in plan.Environment)
             {
                 if(level<prop.FirstLevel || level>prop.LastLevel)continue;
-                if(prop.Asset!="AceraZapateros" && prop.Asset!="CasaDelGremio" && prop.Asset!="ManzanaDelAdarve" && prop.Asset!="CalleDelPostigo" && prop.Asset!="PortalesDeOficios" && prop.Asset!="CasasDelPeso" && prop.Asset!="CasasDelCamino" && prop.Asset!="CasasDeOficio" && prop.Asset!="ArmeriaDelPatio" &&
+                if(prop.Asset!="ViviendaDelPostigo" && prop.Asset!="ToneleriaDelPostigo" && prop.Asset!="AceraZapateros" && prop.Asset!="CasaDelGremio" && prop.Asset!="ManzanaDelAdarve" && prop.Asset!="CalleDelPostigo" && prop.Asset!="PortalesDeOficios" && prop.Asset!="CasasDelPeso" && prop.Asset!="CasasDelCamino" && prop.Asset!="CasasDeOficio" && prop.Asset!="ArmeriaDelPatio" &&
                    prop.Asset!="PuestoDeAbastos" && prop.Asset!="FrenteTejedores" && prop.Asset!="LonjaGrano")continue;
                 var sprite=Resources.Load<Sprite>("ValoriaModular25D/RecoveredProps/"+prop.Asset);
                 if(!sprite)throw new InvalidDataException("Missing street frontage: "+prop.Asset);

@@ -22,9 +22,9 @@ TextureImporter:
   textureType: 8
   spriteMode: 1
   spriteMeshType: 0
-  spritePixelsToUnits: 122.0339
+  spritePixelsToUnits: 180.15873
   alignment: 9
-  spritePivot: {x: 0.500000, y: 0.058000}
+  spritePivot: {x: 0.490, y: 0.075}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   platformSettings:
   - serializedVersion: 4

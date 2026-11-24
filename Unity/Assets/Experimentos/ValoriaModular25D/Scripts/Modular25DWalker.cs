@@ -4,7 +4,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 {
     public sealed class Modular25DWalker : MonoBehaviour
     {
-        Vector2[] route;
+        Vector2[] route, nextLoop;
+
+        public void SetNextLoop(Vector2[] points)
+        {
+            nextLoop=points;
+        }
         SpriteRenderer body,shadow;
         int step;
         float clock;
@@ -51,6 +56,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if((next-goal).sqrMagnitude<.005f)
             {
                 step=(step+1)%route.Length;
+                if(step==0 && nextLoop!=null)
+                {
+                    route=nextLoop;
+                    nextLoop=null;
+                }
                 dwell=.45f; // purposeful pause at junctions, gates and log rack
             }
             int sort=Modular25DWorld.FootOrder(next.y);

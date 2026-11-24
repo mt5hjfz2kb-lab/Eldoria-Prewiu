@@ -39,6 +39,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         const float GroundSpacingX = 1f;
         const float GroundSpacingY = .5f;
+        Modular25DWalker keepCourier;
+        bool posternOpen;
+
         public static int FootOrder(float y) { return Mathf.RoundToInt(1000f-y*100f); }
 
         void Awake() => BuildWorld(true);
@@ -90,7 +93,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if (placed && (prop.FirstLevel>1 || prop.LastLevel<5))
                     stagedFrontages.Add((placed,prop.FirstLevel,prop.LastLevel));
             }
-            CreateVillager(people,"Valoria citizen A",plan.ReturnWalk(plan.Keep),0f);
+            keepCourier=CreateVillager(people,"Valoria citizen A",plan.ReturnWalk(plan.Keep),0f);
             CreateVillager(people,"Valoria citizen B",plan.ReturnWalk(plan.Mill),1.8f);
             CreateVillager(garrisonYard,"Relevo de guardia",plan.ReturnWalk(plan.Barracks),.8f);
             CreateVillager(grainYard,"Portadora del granero",plan.ReturnWalk(plan.Granary),2.3f);
@@ -217,7 +220,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             prop.transform.localScale=Vector3.one*scale;
         }
 
-        void CreateVillager(Transform parent,string name,Vector2[] route,float delay)
+        Modular25DWalker CreateVillager(Transform parent,string name,Vector2[] route,float delay)
         {
             var actor=new GameObject(name);
             actor.transform.SetParent(parent,false);
@@ -233,6 +236,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             shadow.transform.localScale=Vector3.one*.54f;
             var mover=actor.AddComponent<Modular25DWalker>();
             mover.Configure(route,delay,body,shadow);
+            return mover;
         }
 
         void CreateWorkshopWorker(Transform parent,Vector2 foot)
@@ -282,6 +286,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             if(snapshot==null||SawmillRenderer==null)return;
             DisplayedBastionLevel=Mathf.Clamp(snapshot.BastionLevel,1,5);
+            if(posternOpen!=(DisplayedBastionLevel>=5))
+            {
+                posternOpen=DisplayedBastionLevel>=5;
+                var plan=ValoriaUrbanPlan.City;
+                keepCourier.SetNextLoop(posternOpen ? plan.PosternWalk() : plan.ReturnWalk(plan.Keep));
+            }
             BastionRenderer.sprite=Modular25DArt.BastionForLevel(DisplayedBastionLevel);
             BastionRenderer.GetComponent<Modular25DArchitecturalShadow>()?.Refresh();
             SetCompletedBuilding(BarracksRenderer,snapshot.BastionLevel>=2 && snapshot.BarracksLevel>0);

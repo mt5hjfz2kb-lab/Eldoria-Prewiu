@@ -358,16 +358,32 @@ async def main():
             # closed. Pinch inward in world units, then traverse via actual
             # browser touch gestures, capturing the Unity canvas throughout.
             await page.screenshot(path=OUT/'bastion-5-panorama.png')
-            await cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':170,'y':360,'id':0},{'x':220,'y':360,'id':1}]})
-            for i in range(1,13):
-                await cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':170-i*3,'y':360,'id':0},{'x':220+i*3,'y':360,'id':1}]})
-                await page.wait_for_timeout(65)
-            await cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
+            await pinch_city(52,85)
+            await page.evaluate("""() => {
+                const stats=window.valoriaFrameProbe={intervals:[],running:true};
+                let previous=0;
+                function sample(t) {
+                    if (!stats.running) return;
+                    if (previous) stats.intervals.push(t-previous);
+                    previous=t;
+                    requestAnimationFrame(sample);
+                }
+                requestAnimationFrame(sample);
+            }""")
             await swipe(190,310,188,650)
             await page.screenshot(path=OUT/'bastion-5-nucleo.png')
             for n,(x1,y1,x2,y2) in enumerate([(145,530,320,350),(160,560,325,355),(319,540,70,402),(330,525,55,400),(218,560,276,360),(140,540,300,370)]):
                 await swipe(x1,y1,x2,y2)
                 await page.screenshot(path=OUT/f'bastion-5-recorrido-{n}.png')
+            frame_stats=await page.evaluate("""() => {
+                const data=window.valoriaFrameProbe;
+                data.running=false;
+                const v=data.intervals.sort((a,b)=>a-b);
+                return {frames:v.length,medianMs:v[Math.floor(v.length/2)],p95Ms:v[Math.floor(v.length*.95)],
+                        dpr:devicePixelRatio,canvasWidth:document.querySelector('canvas').width,
+                        canvasHeight:document.querySelector('canvas').height};
+            }""")
+            log.append({'chromium_camera_frame_intervals':frame_stats})
             graphics_errors=[e for e in errors if 'RenderPass:' in e or
                              'EndRenderPass:' in e or 'VIGILIA_PRODUCTION_CANONICAL_SESSION_NOT_READY' in e]
             assert not graphics_errors,graphics_errors
