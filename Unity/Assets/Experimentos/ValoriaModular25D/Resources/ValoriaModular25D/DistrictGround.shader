@@ -10,6 +10,8 @@ CGPROGRAM
 #include "UnityCG.cginc"
 sampler2D _MainTex,_Paving,_Soil,_Slate;
 float4 _CivicAxis,_WorkLane,_Forecourt;
+float4 _UpperBlock,_LowerBlock;
+float _Boroughs;
 float4 _Built, _MilitaryYard, _MarketYard, _StoneFace;
 struct Vertex { float4 vertex:POSITION; float2 uv:TEXCOORD0; };
 struct Varying { float4 position:SV_POSITION; float2 uv:TEXCOORD0; };
@@ -58,6 +60,14 @@ half4 frag(Varying i):SV_Target {
  half kerb=(1-smoothstep(.035,.12,abs(abs(side)-.79)+.025*erosion))
            *smoothstep(.26,.65,alongStreet)*(1-smoothstep(axisLength-.57,axisLength,alongStreet));
  half3 gravel=lerp(dirt*.81,seam*half3(.90,.90,.86),.56);
+ // Shared thresholds and service courts take the shape of the occupied
+ // block. Beyond the last house the original meadow takes over.
+ half upper=yard(p,float4(_UpperBlock.xy+float2(0,-.28),3.03,1.06),erosion);
+ half rear=yard(p,float4(_UpperBlock.zw+float2(.18,-.21),2.02,1.08),erosion);
+ half looms=yard(p,float4(_LowerBlock.xy+float2(0,-.27),2.63,1.05),erosion);
+ half scales=yard(p,float4(_LowerBlock.zw+float2(0,-.28),2.85,1.18),erosion);
+ half apron=max(max(upper,rear),max(looms,scales)*_Built.y)*_Boroughs;
+ ground=lerp(ground,lerp(dirt*.94,seam*.93,.42),apron*.88);
  ground=lerp(ground,gravel,street*.89);
  ground=lerp(ground,seam*1.12,street*kerb*.64);
  half crossing=1-smoothstep(.46,1.48,length((p-_CivicAxis.zw)*float2(.85,1.2))+erosion*.32);

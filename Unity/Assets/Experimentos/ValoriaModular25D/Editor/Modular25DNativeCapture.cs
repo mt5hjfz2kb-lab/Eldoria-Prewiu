@@ -330,18 +330,23 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                         for(int i=0;i<sites.Length;i++)
                             Render(cam,output,report,"stage-5-"+names[i],780,1040,
                                 (Vector3)sites[i]+new Vector3(0,.75f,-30),4.8f);
-                        var tour=new[]{(Vector2)framing,city.UpperRow,city.CourtCenter,city.Mill.Foot,city.WorkshopRow,
-                            city.Junction,city.Barracks.Foot,city.Granary.Foot,city.MarketRow,city.Quarry.Foot,city.Growth[0].center,city.UpperRow,city.Growth[1].center};
-                        for (int frame=0; frame<120; frame++)
+                        var tour=new[]{(Vector2)framing,city.CourtCenter,city.UpperRow,city.UpperCourt,
+                            city.Growth[1].center,city.Barracks.Foot,city.Junction,city.MarketRow,
+                            city.Granary.Foot,city.Quarry.Foot,city.Growth[0].center,city.Mill.Foot,
+                            city.WorkshopRow,city.CourtCenter};
+                        const int framesPerLeg=24, fps=12;
+                        int lastFrame=(tour.Length-1)*framesPerLeg;
+                        for(int frame=0;frame<=lastFrame;frame++)
                         {
-                            float t=frame*(tour.Length-1)/119f;
-                            int start=Mathf.Min(Mathf.FloorToInt(t),tour.Length-2);
-                            var center=Vector3.Lerp(tour[start],tour[start+1],
-                                Mathf.SmoothStep(0f,1f,t-start));
+                            int leg=Mathf.Min(frame/framesPerLeg,tour.Length-2);
+                            float progress=(frame-leg*framesPerLeg)/(float)framesPerLeg;
+                            float eased=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.16f,.86f,progress));
+                            var center=Vector3.Lerp(tour[leg],tour[leg+1],eased);
                             center.z=-30f;
-                            foreach(var walker in walkers) walker.StepForNativeCapture(1f/15f);
-                            workshop[0].StepForNativeCapture(1f/15f);
-                            Render(cam,output,report,"district-tour-"+frame.ToString("D3"),390,844,center,6.600513f);
+                            float zoom=leg==0 ? Mathf.Lerp(size,6.600513f,eased) : 6.600513f;
+                            foreach(var walker in walkers) walker.StepForNativeCapture(1f/fps);
+                            workshop[0].StepForNativeCapture(1f/fps);
+                            Render(cam,output,report,"district-tour-"+frame.ToString("D3"),390,844,center,zoom);
                         }
                     }
                     report.progressionStagesCaptured++;
@@ -474,7 +479,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             foreach(var prop in plan.Environment)
             {
                 if(level<prop.FirstLevel || level>prop.LastLevel)continue;
-                if(prop.Asset!="CalleDelPostigo" && prop.Asset!="PortalesDeOficios" && prop.Asset!="CasasDelPeso" && prop.Asset!="CasasDelCamino" && prop.Asset!="CasasDeOficio" && prop.Asset!="ArmeriaDelPatio" &&
+                if(prop.Asset!="ManzanaDelAdarve" && prop.Asset!="CalleDelPostigo" && prop.Asset!="PortalesDeOficios" && prop.Asset!="CasasDelPeso" && prop.Asset!="CasasDelCamino" && prop.Asset!="CasasDeOficio" && prop.Asset!="ArmeriaDelPatio" &&
                    prop.Asset!="PuestoDeAbastos" && prop.Asset!="FrenteTejedores" && prop.Asset!="LonjaGrano")continue;
                 var sprite=Resources.Load<Sprite>("ValoriaModular25D/RecoveredProps/"+prop.Asset);
                 if(!sprite)throw new InvalidDataException("Missing street frontage: "+prop.Asset);

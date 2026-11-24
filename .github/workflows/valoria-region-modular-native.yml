@@ -533,7 +533,7 @@ jobs:
           data=json.loads(pathlib.Path('city/evidence.json').read_text(encoding='utf-8-sig'))
           assert data['sourceSha']==os.environ['GITHUB_SHA'] and data['historicSchema1Restored'] and data['savedAndReloaded']
           PY
-          ffmpeg -loglevel error -framerate 10 -i city/district-tour-%03d.png -c:v libx264 -pix_fmt yuv420p -movflags +faststart entrega/Recorrido-Bastion-V.mp4
+          ffmpeg -loglevel error -framerate 12 -i city/district-tour-%03d.png -c:v libx264 -pix_fmt yuv420p -movflags +faststart entrega/Recorrido-Bastion-V.mp4
           cp -r Design/Valoria entrega/plano
           cp Unity/Assets/Experimentos/ValoriaModular25D/Scripts/ValoriaUrbanPlan.cs entrega/plano/
           cp city/plano-urbano.json entrega/plano/

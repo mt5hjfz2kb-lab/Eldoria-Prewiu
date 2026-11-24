@@ -81,10 +81,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public bool HasCivicCourt => districtMaterial && districtMaterial.GetVector("_Forecourt").z>0 &&
             districtMaterial.GetTexture("_Paving") && districtMaterial.GetTexture("_Soil");
         Vector4 previousDistricts;
+        bool previousBoroughs;
         public void SetDistricts(bool barracks, bool granary, bool quarry, int level)
         {
             var built = new Vector4(barracks ? 1 : 0, granary ? 1 : 0, quarry ? 1 : 0, granary && level>=4 ? 1 : 0);
-            if (districtMaterial && built == previousDistricts) return;
+            bool boroughs = level >= 5;
+            if (districtMaterial && built == previousDistricts && boroughs == previousBoroughs) return;
+            previousBoroughs = boroughs;
             previousDistricts = built;
             if (!districtMaterial)
             {
@@ -98,11 +101,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 districtMaterial.SetVector("_CivicAxis",new Vector4(plan.Keep.Door.x,plan.Keep.Door.y,plan.Junction.x,plan.Junction.y));
                 districtMaterial.SetVector("_WorkLane",new Vector4(plan.Mill.Foot.x,plan.Mill.Foot.y,plan.Freight.x,plan.Freight.y));
                 districtMaterial.SetTexture("_Slate",Resources.Load<Texture2D>("World4X/Illustrated/Slate"));
+                districtMaterial.SetVector("_UpperBlock",new Vector4(plan.UpperRow.x,plan.UpperRow.y,plan.UpperCourt.x,plan.UpperCourt.y));
+                districtMaterial.SetVector("_LowerBlock",new Vector4(plan.WorkshopRow.x,plan.WorkshopRow.y,plan.MarketRow.x,plan.MarketRow.y));
                 SetYard("_MilitaryYard",plan.Barracks,1.72f);
                 SetYard("_MarketYard",plan.Granary,1.16f);
                 SetYard("_StoneFace",plan.Quarry,1.35f);
             }
             districtMaterial.SetVector("_Built", built);
+            districtMaterial.SetFloat("_Boroughs", boroughs ? 1f : 0f);
             foreach (var chunk in GetComponentsInChildren<MeshRenderer>())
                 chunk.sharedMaterial = districtMaterial;
         }

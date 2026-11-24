@@ -56,7 +56,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             return new[]{walk[0],walk[1],walk[2],walk[3],walk[2],walk[1]};
         }
         public Vector2 UpperRow => Keep.Foot + new Vector2(-4.38f,.76f);
-        public Vector2 WorkshopRow => Junction + new Vector2(-3.35f,-.79f);
+        public Vector2 UpperCourt => Keep.Foot + new Vector2(-2.87f,3.98f);
+        public Vector2 WorkshopRow => Junction + new Vector2(-3.50f,-1.34f);
         public Vector2 MarketRow => Freight + new Vector2(4.02f,2.38f);
 
         public Vector2[][] BoroughStreets => new[]{
@@ -70,7 +71,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             new[]{Junction,MarketRow+new Vector2(-2.93f,-.21f),MarketRow+new Vector2(-1.45f,-.55f),
                 MarketRow+new Vector2(1.62f,-.61f),Granary.Door+new Vector2(1.86f,-.68f),Granary.Door},
             new[]{CourtCenter,Keep.Foot+new Vector2(2.42f,-.69f),Keep.Foot+new Vector2(3.83f,.22f),
-                Keep.Foot+new Vector2(5.78f,.24f),Barracks.Door+new Vector2(1.82f,.16f),Barracks.Door}
+                Keep.Foot+new Vector2(5.78f,.24f),Barracks.Door+new Vector2(1.82f,.16f),Barracks.Door},
+            // Rise from the postern, follow the stepped thresholds and turn down
+            // the east flank. The short northern return stays behind the keep.
+            new[]{UpperRow+new Vector2(-2.02f,-.5f),UpperRow+new Vector2(-3.03f,.42f),
+                UpperCourt+new Vector2(-2.03f,.03f),UpperCourt+new Vector2(.48f,-.48f),
+                Keep.Foot+new Vector2(2.42f,3.05f),Keep.Foot+new Vector2(5.42f,1.91f),
+                Keep.Foot+new Vector2(5.78f,.24f)}
         };
 
         public Prop[] Environment => new[]{
@@ -82,7 +89,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             new Prop(0,"CasasDelCamino",Keep.Door,-1.62f,-2.55f,.86f),
             new Prop(2,"CasasDeOficio",Keep.Door,2.38f,-2.72f,.87f,2),
             new Prop(3,"FrenteTejedores",Junction,-2.15f,-1.57f,.96f,4,4),
-            new Prop(0,"CasasDelCamino",UpperRow,-.48f,1.66f,.81f,5),
+            new Prop(0,"ManzanaDelAdarve",UpperCourt,0f,0f,.88f,5),
             new Prop(2,"CasasDeOficio",Keep.Foot,3.62f,2.44f,.87f,5),
             new Prop(2,"FrenteTejedores",Keep.Foot,4.03f,.79f,.84f,5),
             new Prop(0,"CalleDelPostigo",UpperRow,0,0,1f,5),
