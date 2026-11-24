@@ -168,9 +168,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var visual=AddSprite("Original Eldoria art | "+name,sprite,
                 foot,FootOrder(foot.y),parent);
             visual.transform.localScale=Vector3.one*scale;
-            // The original sprites include hand-painted ground contact and
-            // light/shadow from a consistent isometric direction. A second
-            // baked shadow sprite would produce doubled dark blobs.
+            Modular25DArchitecturalShadow.AttachToUnshadowedFrontage(visual);
             RecoveredPropsPlaced++;
             return visual.transform;
         }

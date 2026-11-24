@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Eldoria.Experimentos.ValoriaModular25D
@@ -8,6 +9,24 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     [RequireComponent(typeof(SpriteRenderer))]
     public sealed class Modular25DArchitecturalShadow : MonoBehaviour
     {
+        // Normalized height of the masonry at five stations across each image.
+        // Interpolate the ground plane through arch openings so the passage
+        // casts shade behind the arch without a false sill across the road.
+        static readonly Dictionary<string,float[]> frontageSills = new Dictionary<string,float[]> {
+            {"AceraZapateros",new[]{.01f,.01f,.05f,.25f,.53f}},
+            {"CasaDelGremio",new[]{.39f,.25f,.07f,.15f,.39f}},
+            {"ManzanaDelAdarve",new[]{.36f,.25f,.05f,.04f,.24f}},
+            {"PortalesDeOficios",new[]{.12f,.10f,.085f,.07f,.16f}},
+            {"CalleDelPostigo",new[]{.03f,.03f,.025f,.02f,.02f}},
+            {"CasasDelPeso",new[]{.03f,.03f,.025f,.03f,.03f}}
+        };
+
+        public static void AttachToUnshadowedFrontage(SpriteRenderer building)
+        {
+            if(frontageSills.ContainsKey(building.sprite.name))
+                building.gameObject.AddComponent<Modular25DArchitecturalShadow>();
+        }
+
         SpriteRenderer source;
         Sprite previous;
         GameObject shadow;
@@ -40,6 +59,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             float left=bounds.min.x;
             float right=bounds.max.x;
             mesh.Clear();
+            if(frontageSills.TryGetValue(previous.name,out var sills))
+            {
+                BuildStreetProjection(bounds,sills);
+                material.SetTexture("_ShadowTex",previous.texture);
+                return;
+            }
             mesh.vertices=new[] {
                 new Vector3(left,floor,0),new Vector3(right,floor,0),
                 new Vector3(right+height*.32f,floor-height*.18f,0),
@@ -59,6 +84,37 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             mesh.triangles=new[]{0,1,2,0,2,3};
             mesh.RecalculateBounds();
             material.SetTexture("_ShadowTex",previous.texture);
+        }
+
+        void BuildStreetProjection(Bounds bounds, float[] sills)
+        {
+            Rect uv=previous.textureRect;
+            float w=previous.texture.width,h=previous.texture.height;
+            int count=sills.Length;
+            var vertices=new Vector3[count*2];
+            var texCoords=new Vector2[count*2];
+            var colors=new Color[count*2];
+            var triangles=new int[(count-1)*6];
+            for(int i=0;i<count;i++)
+            {
+                float t=i/(float)(count-1);
+                float x=Mathf.Lerp(bounds.min.x,bounds.max.x,t);
+                float contactY=bounds.min.y+sills[i]*bounds.size.y;
+                for(int row=0;row<2;row++)
+                {
+                    float lift=(row-sills[i])*bounds.size.y;
+                    int n=2*i+row;
+                    vertices[n]=new Vector3(x+.32f*lift,contactY-.18f*lift,0f);
+                    texCoords[n]=new Vector2((uv.xMin+t*uv.width)/w,(uv.yMin+row*uv.height)/h);
+                    colors[n]=new Color(.10f,.13f,.19f,row==0 ? .22f : .03f);
+                }
+                if(i==count-1)continue;
+                int v=2*i,q=6*i;
+                triangles[q]=v;triangles[q+1]=v+2;triangles[q+2]=v+3;
+                triangles[q+3]=v;triangles[q+4]=v+3;triangles[q+5]=v+1;
+            }
+            mesh.vertices=vertices;mesh.uv=texCoords;mesh.colors=colors;
+            mesh.triangles=triangles;mesh.RecalculateBounds();
         }
 
         void OnDisable()

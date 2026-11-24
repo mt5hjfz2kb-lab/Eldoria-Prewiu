@@ -305,6 +305,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     Render(cam,output,report,"stage-"+level+"-keep-detail",1170,1170,(Vector3)ValoriaUrbanPlan.City.Keep.Foot+new Vector3(0,1.65f,-30f),3.3f);
                     if(level==5)
                     {
+                        foreach(var name in new[]{"AceraZapateros","CasaDelGremio","ManzanaDelAdarve",
+                            "PortalesDeOficios","CasasDelPeso","CalleDelPostigo"})
+                        {
+                            var front=GameObject.Find("Original Eldoria art | "+name);
+                            var projection=front ? front.GetComponent<Modular25DArchitecturalShadow>() : null;
+                            var surface=projection ? projection.GetComponentInChildren<MeshRenderer>() : null;
+                            var painted=front ? front.GetComponent<SpriteRenderer>() : null;
+                            if(!surface || !painted || surface.sharedMaterial.GetTexture("_ShadowTex")!=painted.sprite.texture)
+                                throw new InvalidDataException("Missing architectural ground projection: "+name);
+                        }
                         RecordPlan(output,sourceSha);
                         Render(cam,output,report,"stage-5-district-1170x2532",1170,2532,(Vector3)ValoriaUrbanPlan.City.Freight+new Vector3(0,1,-30f),6.6f);
                         Render(cam,output,report,"stage-5-baseline-camera",1170,2532,new Vector3(-.02f,-1.5f,-30f),9.15f);
