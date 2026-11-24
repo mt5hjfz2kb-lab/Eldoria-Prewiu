@@ -1,29 +1,27 @@
-# Plano maestro de Valoria
+# Valoria · capital en formación
 
-La planta activa es B, el camino escalonado por terrazas. El cruce del pozo enlaza el recinto del Bastión, el cargadero del Aserradero y el patio militar. La calle de abastos desciende hasta el cruce de mercancías, donde se separan el acceso al Granero y el acarreo de la Cantera. Los dos cruces sirven para orientarse al desplazar la cámara.
+La puerta del Bastión da a la calle del pozo. La fachada del camino ocupa su lado occidental desde I. Al construir el Cuartel se edifica la acera opuesta. En III, la lonja ocupa la entrada al Granero. En IV, con el Granero construido, aparece el frente de tejedores y panaderos donde la calle cívica pasa a ser calle de abastos. En V se prolonga el acarreo hasta el corte de roca. Las viviendas carecen de selección y de comandos.
 
-## Parcelas
+| Parcela | Pie XY | Umbral XY | Huella en unidades |
+|---|---|---|---|
+| Bastión | 0, 3 | 0, 2.75 | 5 × 2.4 |
+| Aserradero | −4.65, 0.05 | −5.10, −0.15 | 3.8 × 1.7 |
+| Cuartel | 5.85, 1.28 | 5.50, 1.08 | 3.8 × 1.9 |
+| Granero | 3.95, −5.65 | 4.30, −5.85 | 3.8 × 2 |
+| Cantera | −7.35, −7.75 | −6.80, −7.95 | 4 × 2.1 |
 
-Unidades de la escena en el plano XY proyectado. Cada puerta figura en coordenadas absolutas para permitir comprobaciones de obra. El código la obtiene por desplazamiento desde el pie de su parcela.
+El cruce del pozo está en (0.64, −1.72). El de acarreo, en (−0.65, −5.90). El encuadre inicial permanece en (0, 1.90) para comparar el cambio de composición con bedeb5f. El centro de cámara puede explorar X −13…13 e Y −10…9. El ancho de la vía monumental y de la vía militar es 1.32. La calle de acarreo mide 1.15 y los accesos de faena 0.92.
 
-| Distrito e identificador | Pie de la ilustración | Puerta o cargadero | Huella arquitectónica | Ocupación |
-|---|---|---|---|---|
-| Monumental · bastion | (0; 3) | (0; 2,75) | 5 × 2,4 | I–V, con el mismo umbral |
-| Productivo · sawmill | (−4; −1) | (−4,45; −1,20) | 3,8 × 1,7 | I, parcela disponible, obra o edificio terminado |
-| Militar · barracks | (6; 1) | (5,65; 0,80) | 3,8 × 1,9 | II y Cuartel construido |
-| Abastecimiento · granary | (3; −5) | (3,35; −5,20) | 3,8 × 2 | III y Granero construido. Puesto de venta desde IV |
-| Extractivo · stoneworks | (−7; −7) | (−6,45; −7,20) | 4 × 2,1 | V y Cantera construida |
+## Crecimiento posterior
 
-El pie registra la imagen en el suelo y determina el orden de profundidad. La huella reserva el espacio físico por debajo de aleros y cubiertas. La selección comprueba los límites del dibujo activo, salvo en el Aserradero, donde la parcela conserva el mismo blanco táctil durante sus tres estados. El identificador enlaza con la construcción, los plazos y la partida guardada.
+La parcela occidental va de (−14, −5.55) a (−9, −2.55). Se entra por su lindero oriental desde el cruce de acarreo, pasando al norte de la Cantera. La parcela nordeste va de (8, 3) a (13, 6). Se entra por su lindero sur desde el acceso público al patio militar. Cada reserva admite una huella útil de 5 × 3. Unity comprueba que una franja de acarreo de 0.76 de ancho puede recorrer ambos itinerarios entre las parcelas actuales. Se conserva el terreno natural hasta construir sus futuros distritos.
 
-## Calles, ocupación y cámara
+## Referencias de composición
 
-La puerta del Bastión tiene un antepatio de piedra centrado 0,46 unidades por debajo de su umbral. El patio usa el mismo suelo continuo que la calle. El cruce del pozo está en (2,2; −1,7) y el de carga en (−1; −6,5). Los accesos del Bastión y el Cuartel miden 1,32 unidades de ancho. La vía de abastos mide 1,15 y los accesos de faena 0,92. Los caminos llegan de frente a la puerta en su último tramo. El acopio, el patio de armas, el cultivo y el frente de roca tienen su propia ocupación lateral.
+En la captura de Whiteout Survival, el suelo de tierra alrededor del Horno llega hasta las fachadas. Los huecos entre ellas conducen hacia la nieve periférica. En la ciudad de Call of Dragons, los edificios forman calles por su alineación y varios comparten un mismo tramo de acceso. El casco construido tiene un límite propio, independiente de la pantalla.
 
-La cámara abre en (0; 1,9). En 390 × 844 su semialtura es 6,60 unidades. El centro puede recorrer X de −13 a 13 e Y de −10 a 9. Desde el pozo se puede buscar el Aserradero al oeste o subir hacia el Cuartel al nordeste. La Cantera se descubre siguiendo la calle inferior hacia el oeste.
+En bedeb5f la puerta y la casa del cruce estaban separadas por césped a ambos lados de la calzada. La zona cubierta de césped continuaba hasta el patio de armas. El nuevo trazado trata las fachadas y sus umbrales como una manzana, reserva el suelo de acarreo para el tránsito y conserva áreas más abiertas al oeste y nordeste.
 
-## Reservas VI–X
+[Whiteout Survival](https://cdn.topuplive.com/uploads/images/goods/20250529/1748511294_Qk3pdYAgR2.jpg) · [Call of Dragons](https://truth.bahamut.com.tw/s01/202310/b1fa833ed128a8f10da1ce0e7066026e.JPG)
 
-El bancal occidental ocupa X −14 a −9 e Y −8 a −5. La reserva nordeste ocupa X 8 a 13 e Y 3 a 6. Cada una admite una parcela de 5 × 3. El límite oriental conecta con la prolongación militar y el occidental con el distrito extractivo. Son puntos de crecimiento utilizables en etapas futuras, con la asignación de edificios pendiente del diseño de VI–X. Se conservan libres de huellas funcionales I–V.
-
-Las posiciones se mantienen en ValoriaUrbanPlan.City. Los accesorios se registran con su pie, escala y distrito en Environment. Las vías y los itinerarios de los habitantes usan las mismas puertas y cruces. Los recursos gráficos conservan su registro de apoyo en los parámetros de importación de Unity.
+La fuente espacial es ValoriaUrbanPlan.City. El pie de dibujo, la puerta y la huella se expresan por separado. Los indicadores y la selección utilizan el edificio de la escena. La partida conserva el identificador de cada construcción.

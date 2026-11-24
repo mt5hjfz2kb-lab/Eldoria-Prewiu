@@ -25,10 +25,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             public readonly string Asset;
             public readonly Vector2 Foot;
             public readonly float Scale;
-            public readonly int District;
-            public Prop(int district, string asset, Vector2 origin, float x, float y, float scale)
+            public readonly int District, FirstLevel;
+            public Prop(int district, string asset, Vector2 origin, float x, float y, float scale, int firstLevel=1)
             {
                 District=district;
+                FirstLevel=firstLevel;
                 Asset=asset;
                 Foot=origin+new Vector2(x,y);
                 Scale=scale;
@@ -43,6 +44,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public Rect MillSelection => new Rect(Mill.Foot+new Vector2(-1.84f,-.53f),new Vector2(3.76f,3.64f));
 
         public Vector2[] FreightRoad => new[]{Freight,Vector2.Lerp(Freight,Junction,.5f)+Vector2.left*.6f,Junction};
+        // These future entrances and centre lines reserve access without drawing unfinished roads.
+        public Vector2[][] GrowthApproaches => new[]{
+            new[]{Freight,new Vector2(-3.3f,-5.08f),new Vector2(-6.1f,-4.05f),new Vector2(Growth[0].xMax,Growth[0].center.y)},
+            new[]{Approach(Barracks)[1],new Vector2(6.75f,-.7f),new Vector2(8.55f,.36f),new Vector2(9.55f,Growth[1].yMin)}
+        };
         public Vector2[] ReturnWalk(Parcel plot)
         {
             var walk=Approach(plot);
@@ -53,18 +59,21 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             new Prop(0,"ArbolAntiguo",Keep.Foot,3.55f,2.85f,.88f),
             new Prop(0,"ArboledaAntigua",Keep.Foot,-3.65f,1.65f,.73f),
             new Prop(0,"MatojosFlores",Keep.Foot,-2.85f,-.23f,.58f),
-            new Prop(0,"PozoPiedra",Junction,.70f,.42f,.66f),
-            new Prop(0,"CasasDelCamino",Junction,-2.73f,-.08f,1f),
+            new Prop(0,"PozoPiedra",Junction,.94f,-.20f,.75f),
+            new Prop(0,"CasasDelCamino",Keep.Door,-1.62f,-2.55f,.86f),
+            new Prop(2,"CasasDeOficio",Keep.Door,2.38f,-2.72f,.87f,2),
+            new Prop(3,"FrenteTejedores",Junction,-2.15f,-1.57f,.96f,4),
+            new Prop(3,"LonjaGrano",Freight,1.92f,.63f,.78f,3),
             new Prop(0,"MatojosFlores",Junction,1.22f,1.02f,.39f),
             new Prop(0,"ArboledaAntigua",Mill.Foot,-2.62f,1.72f,.85f),
             new Prop(0,"ArbolAntiguo",Mill.Foot,-3.15f,.46f,.65f),
             new Prop(1,"CarroMadera",Mill.Foot,1.66f,-.68f,.72f),
             new Prop(1,"VallaLenador",Mill.Foot,2.03f,-1.34f,.65f),
-            new Prop(2,"ArmeriaDelPatio",Barracks.Foot,1.08f,-2.05f,.90f),
+            new Prop(2,"ArmeriaDelPatio",Barracks.Foot,1.12f,-2.12f,.88f),
             new Prop(2,"VallaLenador",Barracks.Foot,-2.05f,-.55f,.52f),
             new Prop(3,"HuertosValoria",Granary.Foot,-2.35f,.2f,.78f),
             new Prop(3,"CarroMadera",Granary.Foot,1.86f,-.71f,.62f),
-            new Prop(3,"PuestoDeAbastos",Granary.Foot,2.76f,-1.45f,.95f),
+            new Prop(3,"PuestoDeAbastos",Granary.Foot,.73f,-2.12f,.88f,4),
             new Prop(4,"MuroDerruido",Quarry.Foot,2.17f,.82f,.58f),
             new Prop(4,"CarroMadera",Quarry.Foot,-1.7f,-.82f,.60f)
         };
@@ -75,17 +84,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public ValoriaUrbanPlan(bool terraces)
         {
             Keep = new Parcel("bastion", new Vector2(0,3), new Vector2(0,-.25f),new Vector2(5,2.4f));
-            Mill = new Parcel("sawmill", terraces ? new Vector2(-4,-1) : new Vector2(5,-1),
+            Mill = new Parcel("sawmill", terraces ? new Vector2(-4.65f,.05f) : new Vector2(5,-1),
                 new Vector2(-.45f,-.2f),new Vector2(3.8f,1.7f));
-            Barracks = new Parcel("barracks", terraces ? new Vector2(6,1) : new Vector2(-6,0),
+            Barracks = new Parcel("barracks", terraces ? new Vector2(5.85f,1.28f) : new Vector2(-6,0),
                 new Vector2(-.35f,-.2f),new Vector2(3.8f,1.9f));
-            Granary = new Parcel("granary", terraces ? new Vector2(3,-5) : new Vector2(-3,-6),
+            Granary = new Parcel("granary", terraces ? new Vector2(3.95f,-5.65f) : new Vector2(-3,-6),
                 new Vector2(.35f,-.2f),new Vector2(3.8f,2));
-            Quarry = new Parcel("stoneworks", terraces ? new Vector2(-7,-7) : new Vector2(8,-6),
+            Quarry = new Parcel("stoneworks", terraces ? new Vector2(-7.35f,-7.75f) : new Vector2(8,-6),
                 new Vector2(.55f,-.2f),new Vector2(4,2.1f));
-            Junction = terraces ? new Vector2(2.2f,-1.7f) : new Vector2(-.8f,-1.15f);
-            Freight = terraces ? new Vector2(-1,-6.5f) : new Vector2(.3f,-6.9f);
-            Growth = terraces ? new[]{new Rect(-14,-8,5,3),new Rect(8,3,5,3)}
+            Junction = terraces ? new Vector2(.64f,-1.72f) : new Vector2(-.8f,-1.15f);
+            Freight = terraces ? new Vector2(-.65f,-5.9f) : new Vector2(.3f,-6.9f);
+            Growth = terraces ? new[]{new Rect(-14,-5.55f,5,3),new Rect(8,3,5,3)}
                               : new[]{new Rect(-12,-7,5,3),new Rect(5,5,5,3)};
         }
 

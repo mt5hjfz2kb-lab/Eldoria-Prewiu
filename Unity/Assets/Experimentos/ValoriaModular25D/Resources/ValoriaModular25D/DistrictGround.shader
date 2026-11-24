@@ -39,9 +39,19 @@ half4 frag(Varying i):SV_Target {
  float alley=distanceToLane(p,_WorkLane.xy,_CivicAxis.zw);
  float bend=distanceToLane(p,_CivicAxis.zw,_WorkLane.zw);
  half urban=1-smoothstep(.72,2.05,min(approach,alley)+erosion*.43);
+ // The shoulders of the street are occupied land. The strip narrows toward the
+ // gate and broadens at the well. Thresholds on both sides share its paving.
+ float2 spine=_CivicAxis.zw-_CivicAxis.xy;
+ float station=saturate(dot(p-_CivicAxis.xy,spine)/dot(spine,spine));
+ float frontage=lerp(1.47,2.16,station)+.32*_Built.x;
+ half street=1-smoothstep(frontage-.24,frontage+.17,approach+erosion*.19);
+ half kerb=1-smoothstep(.03,.12,abs(approach-.83)+.025*erosion);
+ half3 gravel=lerp(dirt*.81,seam*half3(.90,.90,.86),.56);
+ ground=lerp(ground,gravel,street*.89);
+ ground=lerp(ground,seam*1.12,street*kerb*.64);
  half crossing=1-smoothstep(.46,1.48,length((p-_CivicAxis.zw)*float2(.85,1.2))+erosion*.32);
- ground=lerp(ground,lerp(dirt*.81,seam*.88,.33),urban*.54+crossing*.27);
- ground=lerp(ground,dirt*.86,(1-smoothstep(.56,1.33,bend+erosion*.42))*max(_Built.y,_Built.z)*.42);
+ ground=lerp(ground,lerp(dirt*.81,seam*.88,.33),saturate(urban*.25+crossing*.49));
+ ground=lerp(ground,dirt*.86,(1-smoothstep(.56,1.33,bend+erosion*.42))*max(_Built.y,_Built.z)*(.53+.28*_Built.w));
  // Broad stone landing tapers into the avenue. Its exposed lip stops on either
  // side of the entrance so the approach stays at the same walking level.
  float2 court=(p-_Forecourt.xy)/_Forecourt.zw;
@@ -65,7 +75,9 @@ half4 frag(Varying i):SV_Target {
  half trace=abs(across+.24*sin(along*1.35))+.30*erosion;
  half seamWidth=lerp(1.38,.47,smoothstep(.4,5.2,along));
  half outcrop=(1-smoothstep(seamWidth*.42,seamWidth+.5,trace))*smoothstep(-2,.3,along)*(1-smoothstep(4,6.0,along));
- half floorCover=saturate(max(rock*.66,outcrop))*_Built.z;
+ half ledge=(1-smoothstep(.08,.25,abs(frac(across*2.7+.23*sin(along*1.4))-.45)))*outcrop;
+ shale*=lerp(.82,1.17,ledge);
+ half floorCover=saturate(max(rock*.88,outcrop))*_Built.z;
  ground=lerp(ground,lerp(dirt*.83,shale*half3(.98,.96,.93),.86),floorCover);
  return half4(ground,1);
 }

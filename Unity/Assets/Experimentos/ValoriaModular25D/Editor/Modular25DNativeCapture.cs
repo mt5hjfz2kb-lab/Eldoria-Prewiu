@@ -274,7 +274,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     throw new Exception("No verifiable animated work cycle at sawmill log rack");
                 // Presentation fixtures, deliberately not an end-to-end campaign claim.
                 // No fixture is written into the gateway, beta, or any player save.
-                for(int level=1;level<=5;level++)
+                foreach(int level in new[]{5,4,3,2,1})
                 {
                     var fixture=new PlayerState { BastionLevel=level, SawmillLevel=1,
                         BarracksLevel=level>=2?1:0 };
@@ -415,6 +415,24 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 var occupied=new Rect(foot-plot.GroundSize*.5f,plot.GroundSize);
                 foreach(var reserve in plan.Growth)
                     if(reserve.Overlaps(occupied))throw new InvalidDataException("Parcel occupies expansion area: "+plot.Id);
+            }
+            // Sweep a cart-width test along each reserved access in the built city.
+            foreach(var route in plan.GrowthApproaches)
+            {
+                for(int n=1;n<route.Length;n++)
+                {
+                    int samples=Mathf.CeilToInt(Vector2.Distance(route[n-1],route[n])/.15f);
+                    for(int step=0;step<=samples;step++)
+                    {
+                        Vector2 point=Vector2.Lerp(route[n-1],route[n],step/(float)samples);
+                        foreach(var parcel in plots)
+                        {
+                            var clearance=parcel.GroundSize+new Vector2(.76f,.76f);
+                            if(new Rect(parcel.Foot-clearance*.5f,clearance).Contains(point))
+                                throw new InvalidDataException("Growth approach blocked by "+parcel.Id);
+                        }
+                    }
+                }
             }
             if(!world.HitSawmill(plan.Mill.Foot) || world.HitSawmill(plan.Keep.Foot))
                 throw new InvalidDataException("Sawmill touch target detached from its parcel");
