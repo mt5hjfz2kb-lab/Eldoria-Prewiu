@@ -9,10 +9,10 @@ namespace Eldoria.LegacyProgression
     public enum ProfileEntryState { Information, Earned, Available, Locked, Unavailable }
     public sealed class ProfileEntry
     {
-        public readonly string Key, Title, Detail;
+        public readonly string Key, Title, Detail, CommandKind, CommandTarget;
         public readonly ProfileEntryState State;
-        public ProfileEntry(string key,string title,string detail,ProfileEntryState state)
-        { Key=key;Title=title;Detail=detail;State=state; }
+        public ProfileEntry(string key,string title,string detail,ProfileEntryState state,string commandKind="",string commandTarget="")
+        { Key=key;Title=title;Detail=detail;State=state;CommandKind=commandKind;CommandTarget=commandTarget; }
     }
 
     // All display decisions are independent of art and UI layout, and read the existing save.
@@ -59,7 +59,7 @@ namespace Eldoria.LegacyProgression
                 default:throw new ArgumentOutOfRangeException(nameof(k));
             }
         }
-        public static IReadOnlyList<ProfileEntry> Rows(LocalProfile p,ProfileSection section)
+        public static IReadOnlyList<ProfileEntry> Rows(LocalProfile p,ProfileSection section,DateTime? localUtc=null)
         {
             if(!Sections(p).Contains(section))
                 return new[]{Entry("locked","Todavía no disponible","Avanza en Valoria para desbloquearlo.",ProfileEntryState.Locked)};
@@ -89,9 +89,23 @@ namespace Eldoria.LegacyProgression
                     foreach(RankingKind k in Enum.GetValues(typeof(RankingKind)))
                     {
                         var value=LegacyProgressionRules.PersonalMetric(f,k);
-                        rankingRows.Add(Entry("ranking:"+k,RankingLabel(k),value.HasValue?N(value.Value)+" · marca personal":
+                        string qualifier=" · marca personal";
+                        if(k==RankingKind.Hunters&&f.Bastion>=3&&p.Saved?.Ledger!=null&&localUtc.HasValue)
+                        {
+                            long start=LegacyReceiptLedger.WeekStartUtc(localUtc.Value).Ticks;
+                            value=p.Saved.Ledger.HuntPoints(start,Math.Min(start+TimeSpan.FromDays(7).Ticks,localUtc.Value.Ticks+1));
+                            qualifier=" · puntos esta semana (local)";
+                        }
+                        rankingRows.Add(Entry("ranking:"+k,RankingLabel(k),value.HasValue?N(value.Value)+qualifier:
                             k==RankingKind.Hunters?"Registro completo de caza pendiente":"Todavía no disponible",
                             value.HasValue?ProfileEntryState.Information:ProfileEntryState.Unavailable));
+                    }
+                    if(f.Bastion>=3&&p.Saved?.Ledger!=null&&localUtc.HasValue)
+                    {
+                        long start=LegacyReceiptLedger.WeekStartUtc(localUtc.Value).Ticks;
+                        long end=Math.Min(start+TimeSpan.FromDays(7).Ticks,localUtc.Value.Ticks+1);
+                        rankingRows.Add(Entry("week:discoveries","Exploración semanal",N(p.Saved.Ledger.UniqueDiscoveries(start,end))+" · familias únicas (local)"));
+                        rankingRows.Add(Entry("week:gathered","Recolección semanal",N(p.Saved.Ledger.Gathered(start,end))+" · recursos de nodos (local)"));
                     }
                     return rankingRows;
                 case ProfileSection.Trophies:
@@ -105,7 +119,7 @@ namespace Eldoria.LegacyProgression
                     return p.Discoveries.Select(c=>Entry(c.Id,c.Name,Ratio(c.Count(f),c.Entries.Count),
                         c.Count(f)==c.Entries.Count?ProfileEntryState.Earned:ProfileEntryState.Information)).ToArray();
                 case ProfileSection.Heraldry:
-                    return CosmeticRows(p,LegacyProgressionRules.Banners);
+                    return TitleRows(p).Concat(CosmeticRows(p,LegacyProgressionRules.Banners)).ToArray();
                 case ProfileSection.Monuments:
                     return CosmeticRows(p,LegacyProgressionRules.Monuments);
                 default:throw new ArgumentOutOfRangeException(nameof(section));
@@ -121,10 +135,32 @@ namespace Eldoria.LegacyProgression
         static IReadOnlyList<ProfileEntry> CosmeticRows(LocalProfile p,IReadOnlyList<Cosmetic> catalog)
         {
             var unlocked=new HashSet<string>((catalog==LegacyProgressionRules.Banners?p.Banners:p.Monuments).Select(c=>c.Id),StringComparer.Ordinal);
-            return catalog.Where(c=>c.MinBastion<=p.Facts.Bastion).Select(c=>Entry(c.Id,
-                unlocked.Contains(c.Id)?c.Name:"Distinción por descubrir",
-                unlocked.Contains(c.Id)?"Conseguida · presentación pendiente":"Completa la hazaña asociada",
-                unlocked.Contains(c.Id)?ProfileEntryState.Earned:ProfileEntryState.Locked)).ToArray();
+            bool banner=catalog==LegacyProgressionRules.Banners;
+            string selected=banner?p.Saved?.SelectedBanner:p.Saved?.SelectedMonument;
+            string command=banner?"SelectLegacyBanner":"SelectLegacyMonument";
+            var rows=catalog.Where(c=>c.MinBastion<=p.Facts.Bastion).Select(c=>{
+                bool earned=unlocked.Contains(c.Id);
+                bool active=earned&&selected==c.Id;
+                return new ProfileEntry(c.Id,earned?c.Name:"Distinción por descubrir",
+                    active?"Seleccionada · arte pendiente":earned?"Conseguida · arte pendiente":"Completa la hazaña asociada",
+                    earned?ProfileEntryState.Earned:ProfileEntryState.Locked,
+                    earned&&!active&&p.Saved!=null?command:"",c.Id);
+            }).ToList();
+            if(!string.IsNullOrEmpty(selected))rows.Insert(0,new ProfileEntry("clear:"+command,"Retirar selección",
+                "No afecta al poder ni al progreso",ProfileEntryState.Available,command,""));
+            return rows;
+        }
+        static IEnumerable<ProfileEntry> TitleRows(LocalProfile p)
+        {
+            var unlocked=new HashSet<string>(p.Titles.Select(t=>t.Id),StringComparer.Ordinal);
+            foreach(var t in LegacyProgressionRules.Titles)
+            {
+                bool earned=unlocked.Contains(t.Id), selected=p.Saved?.SelectedTitle==t.Id;
+                yield return new ProfileEntry("title:"+t.Id,t.Name,
+                    selected?"Título seleccionado":earned?"Título conseguido":"Requiere "+N(t.Prestige)+" prestigio",
+                    earned?ProfileEntryState.Earned:ProfileEntryState.Locked,
+                    earned&&!selected&&p.Saved!=null?"SelectLegacyTitle":"",t.Id);
+            }
         }
     }
 }

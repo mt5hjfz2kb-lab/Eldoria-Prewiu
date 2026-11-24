@@ -21,5 +21,6 @@
 <Compile Include="../../Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs" Link="LocalGateway.cs"/>
       <Compile Include="../../Unity/Assets/Eldoria/LegacyProgression/ProfilePresentation.cs"/>
       <Compile Include="../../Unity/Assets/Eldoria/LegacyProgression/LegacySavedProgress.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/LegacyProgression/BestiaryProjection.cs"/>
   </ItemGroup>
 </Project>

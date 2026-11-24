@@ -14,7 +14,7 @@ namespace Eldoria.LegacyProgression.UI
         [SerializeField] RectTransform tabsRoot, rowsRoot;
         [SerializeField] Button tabTemplate, closeButton;
         [SerializeField] LegacyProfileRow rowTemplate;
-        [SerializeField] Text heading;
+        [SerializeField] Text heading, feedback;
         [SerializeField] GameObject panelRoot;
         readonly List<GameObject> generatedTabs=new List<GameObject>();
         readonly List<GameObject> generatedRows=new List<GameObject>();
@@ -39,6 +39,7 @@ namespace Eldoria.LegacyProgression.UI
         {
             if(gateway==null)throw new InvalidOperationException("Profile has no canonical gateway");
             profile=LegacyPlayerAdapter.Read(gateway);
+            if(feedback)feedback.text="";
             section=ProfileSection.Overview;collectionId=null;
             panelRoot.SetActive(true);
             RebuildTabs();Render();
@@ -91,11 +92,22 @@ namespace Eldoria.LegacyProgression.UI
                 foreach(var row in ProfilePresentation.DiscoveryEntries(profile,collectionId))AddRow(row,null);
                 return;
             }
-            foreach(var row in ProfilePresentation.Rows(profile,section))
+            foreach(var row in ProfilePresentation.Rows(profile,section,DateTime.UtcNow))
             {
                 string id=row.Key;
-                AddRow(row,section==ProfileSection.Discoveries?new Action(()=>{collectionId=id;Render();}):null);
+                Action action=null;
+                if(section==ProfileSection.Discoveries)action=()=>{collectionId=id;Render();};
+                else if(!string.IsNullOrEmpty(row.CommandKind))action=()=>Select(row);
+                AddRow(row,action);
             }
+        }
+        void Select(ProfileEntry entry)
+        {
+            var s=gateway.Snapshot();
+            var result=gateway.Execute(new GameCommand("legacy:"+Guid.NewGuid().ToString("N"),
+                s.PlayerId,entry.CommandKind,entry.CommandTarget,s.Revision));
+            if(feedback){feedback.supportRichText=false;feedback.text=result.Message;}
+            Refresh();
         }
         void AddRow(ProfileEntry data,Action action)
         {

@@ -116,6 +116,31 @@ static class Program
         Check(defensive.Prestige==historicPrestige,"snapshot does not alias source");
         bool wrongOwner=false;try{persisted.BindIdentity("another","w");}catch(InvalidOperationException){wrongOwner=true;}
         Check(wrongOwner,"save identity mismatch rejected");
+        Check(ProfilePresentation.Rows(local,ProfileSection.Heraldry).Any(x=>x.Key=="title:pioneer"&&x.CommandKind=="SelectLegacyTitle"),"earned title command");
+        Check(ProfilePresentation.Rows(local,ProfileSection.Monuments).Single(x=>x.Key=="monument-hunt").CommandKind=="","locked monument no command");
+        Check(ProfilePresentation.Rows(local,ProfileSection.Heraldry).Any(x=>x.Key=="clear:SelectLegacyBanner"),"clear banner command");
+        Check(ProfilePresentation.Rows(p,ProfileSection.Heraldry).All(x=>x.CommandKind==""),"unintegrated state no write controls");
+        var recorded=new LegacySavedProgress();
+        recorded.BindIdentity("p","w");
+        recorded.Ledger.RecordCommitted(Receipt("regional",ReceiptKind.HuntVictory,"regional:boar",start,3));
+        recorded.Ledger.RecordCommitted(Receipt("oldwolf",ReceiptKind.HuntVictory,"legacy:wolf",start,1));
+        recorded.Ledger.RecordCommitted(Receipt("future",ReceiptKind.HuntVictory,"regional:boar",end,5));
+        recorded.Ledger.RecordCommitted(Receipt("d1",ReceiptKind.ScoutDiscovery,"family:1",start));
+        recorded.Ledger.RecordCommitted(Receipt("d2",ReceiptKind.ScoutDiscovery,"family:1",start));
+        recorded.Ledger.RecordCommitted(Receipt("g1",ReceiptKind.GatherReturn,"wood",start,0,120));
+        var codexFacts=new ProgressFacts{Bastion=7,EngendroDefeated=true};
+        recorded.Reconcile(codexFacts);
+        var codex=new LocalProfile("Codex",codexFacts,recorded);
+        var weekly=ProfilePresentation.Rows(codex,ProfileSection.Rankings,week.AddDays(1));
+        Check(weekly.Single(x=>x.Key=="ranking:Hunters").Detail.StartsWith("4 ·"),"weekly score excludes later receipt");
+        Check(weekly.Single(x=>x.Key=="week:discoveries").Detail.StartsWith("1 ·"),"weekly unique discovery");
+        Check(weekly.Single(x=>x.Key=="week:gathered").Detail.StartsWith("120 ·"),"weekly gathered");
+        var beast=BestiaryProjection.Read(codex);
+        Check(beast.Single(x=>x.Id=="boar").HighestRecordedTier==5,"actual recorded regional tier");
+        Check(beast.Single(x=>x.Id=="wolf").HighestRecordedTier==0,"legacy scoring convention not creature tier");
+        Check(beast.Single(x=>x.Id=="spawnling").Known&&beast.Single(x=>x.Id=="spawnling").RecordedVictories==0,"historic boss known, count not invented");
+        Check(!beast.Single(x=>x.Id=="ash-stalker").Known&&beast.Single(x=>x.Id=="ash-stalker").Name=="Criatura por descubrir","unknown species hidden");
+        Check(BestiaryProjection.Read(local).Count==0,"Códice gated B7");
         Console.WriteLine("PASS: "+checks+" legacy progression assertions");
     }
 }

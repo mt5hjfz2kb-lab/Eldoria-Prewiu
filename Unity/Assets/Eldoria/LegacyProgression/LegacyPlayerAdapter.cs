@@ -29,7 +29,8 @@ namespace Eldoria.LegacyProgression
                 EngendroDefeated=s.EngendroDefeated||s.ChapterProgress?.EngendroDefeated==true,
                 LyraContacted=c?.LyraContacted??false,FissureExplored=c?.FissureExplored??false,
                 FissureClosed=c?.FissureClosed??false,LyraRecruited=c?.LyraRecruited??false,
-                AshStalkerDefeated=c?.AshStalkerDefeated??false
+                AshStalkerDefeated=c?.AshStalkerDefeated??false,
+                HasWolfHide=c?.Inventory?.Contains("treated-hide")??false,HasBoarTusk=c?.Inventory?.Contains("stone-tusk")??false
             });
         }
     }

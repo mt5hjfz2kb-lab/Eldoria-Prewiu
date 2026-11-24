@@ -10,7 +10,7 @@ namespace Eldoria.LegacyProgression
         public int Bastion, TotalPower, KingdomPower, ArmyPower, VigilantStage,
             ScoutReports, DiscoveryMask, RecordedHunts;
         public bool JourneyComplete, RouteCleared, EngendroDefeated, LyraContacted,
-            FissureExplored, FissureClosed, LyraRecruited, AshStalkerDefeated;
+            FissureExplored, FissureClosed, LyraRecruited, AshStalkerDefeated, HasWolfHide, HasBoarTusk;
     }
 
     public sealed class Trophy
