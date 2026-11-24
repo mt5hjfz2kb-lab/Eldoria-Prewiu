@@ -1496,6 +1496,17 @@ namespace Eldoria.Tests
                     Assert.IsNotNull(actor,"Missing live painted encounter: "+kind);
                     var foot=actor.transform.position;
                     Call(nav,"PanTo",foot);Call(canon,"RefreshForCapture");
+                    if(kind=="Spawn"){
+                        var clarity=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                            .First(x=>x&&x.GetType().Name=="PlayerClarityRuntime");
+                        Call(clarity,"RefreshForCapture");
+                        Canvas.ForceUpdateCanvases();
+                        var plaques=Object.FindObjectsByType<RectTransform>(FindObjectsSortMode.None);
+                        Assert.IsFalse(plaques.Any(x=>x.name=="Clarity / engendro-valoria" ||
+                            x.name.StartsWith("Clarity / region1:spawnling:",StringComparison.Ordinal)),
+                            "A level plaque obscures the illustrated spawnling");
+                        Assert.IsTrue(actor.enabled && actor.gameObject.activeInHierarchy);
+                    }
                     var folder=Path.Combine(output,"idle-"+kind);
                     Directory.CreateDirectory(folder);
                     for(int i=0;i<32;i++){

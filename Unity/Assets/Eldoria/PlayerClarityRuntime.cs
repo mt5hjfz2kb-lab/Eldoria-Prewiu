@@ -323,7 +323,7 @@ namespace Eldoria
             }
         }
 
-        private static int CampaignTier(string targetId)
+        public static int CampaignTier(string targetId)
         {
             var real = SliceRules.CampaignEnemy(targetId);
             int result = 1, lowest = int.MaxValue;
@@ -377,6 +377,12 @@ namespace Eldoria
             Place(id, "Nv. " + level, null, null, camera, true, level, model);
         }
 
+        // Threat information belongs in the selected encounter panel. At regional
+        // zoom the fixed-size level plaque can cover the whole illustrated enemy.
+        public static bool HideSpawnlingMapPlaque(string id) =>
+            RegionOneModularArt.Enabled && id != null && (id == "engendro-valoria" ||
+                id.StartsWith("region1:spawnling:", StringComparison.Ordinal));
+
         public static Vector3 LabelAnchor(GameObject go, bool building)
         {
             var renderers = go.GetComponentsInChildren<Renderer>(false);
@@ -397,7 +403,7 @@ namespace Eldoria
             WorldHotspot hot, Camera camera, bool building, int level, GameObject model = null)
         {
             var go = model ? model : hot ? hot.gameObject : null;
-            if (!go) return;
+            if (!go || (!building && HideSpawnlingMapPlaque(id))) return;
             var anchor = LabelAnchor(go, building);
             var point = camera.WorldToScreenPoint(anchor);
             // The operation timer occupies the space above the roof. Keep

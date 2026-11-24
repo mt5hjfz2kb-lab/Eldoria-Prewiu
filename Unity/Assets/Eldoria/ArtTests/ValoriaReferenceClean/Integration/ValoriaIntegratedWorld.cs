@@ -650,7 +650,7 @@ namespace Eldoria.ReferenceClean {
    var points=FocusPoints(target);
    var hotspot=target.GetComponent<WorldHotspot>();
    string focusId=hotspot?hotspot.Id:"";
-   bool withMarker=InWorld&&(focusId.StartsWith("region1:",StringComparison.Ordinal)||
+   bool withMarker=InWorld&&!Eldoria.PlayerClarityRuntime.HideSpawnlingMapPlaque(focusId)&&(focusId.StartsWith("region1:",StringComparison.Ordinal)||
     focusId=="forest-valoria"||focusId=="quarry-valoria"||focusId=="meat-valoria"||
     focusId.StartsWith("hunt-",StringComparison.Ordinal)||focusId=="corrupt-scout"||
     focusId=="engendro-valoria"||focusId=="ash-stalker-valoria");
@@ -864,6 +864,11 @@ namespace Eldoria.ReferenceClean {
     bool thisMarch=selectedMarch!=null;
     bool active=MarchCapacityRules.ActiveCount(s,city.Clock.UtcTicks)>=MarchCapacityRules.MaxConcurrentMarches;
     var b=new RoyalBuilding{Id=selected,Name=TargetName(selected),Function=DestinationSummary(selected,s),State=action.Label};
+    if(Eldoria.PlayerClarityRuntime.HideSpawnlingMapPlaque(selected)){
+     var location=s.WorldCreatureLocations.FirstOrDefault(creature=>creature.TargetId==selected);
+     int tier=location!=null?location.Level:Eldoria.PlayerClarityRuntime.CampaignTier("engendro-valoria");
+     b.Name+=" · "+L("Nv. ","Lv. ")+tier;
+    }
     if(thisMarch){
      b.OperationActive=true;
      b.State=MarchStatus(selectedMarch);
