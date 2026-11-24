@@ -99,6 +99,23 @@ static class Program
         Check(ProfilePresentation.Rows(snapshot,ProfileSection.Trophies).Single(x=>x.Key=="fissure").Title=="Hazaña por descubrir","narrative trophy spoiler guard");
         Check(ProfilePresentation.Rows(p,ProfileSection.Monuments).Any(x=>x.Key=="monument-founder"&&x.State==ProfileEntryState.Earned),"monument earned but not installed");
         Check(ProfilePresentation.Rows(p,ProfileSection.Overview).Any(x=>x.Key=="next-title"),"next prestige goal shown");
+        var saved=new LegacySavedProgress();
+        saved.BindIdentity("p","w");
+        Check(saved.Reconcile(f)&&!saved.Reconcile(f),"reconciliation idempotent");
+        Check(saved.TrySelect(f,"banner","banner-founder")&&saved.TrySelect(f,"monument","monument-founder"),"earned cosmetics selectable");
+        Check(!saved.TrySelect(f,"monument","monument-hunt")&&!saved.TrySelect(f,"banner","unknown"),"locked and unknown cosmetics rejected");
+        var historicPrestige=saved.Prestige;f.AshStalkerDefeated=false;f.FissureClosed=false;
+        Check(!saved.Reconcile(f)&&saved.Prestige==historicPrestige,"earned trophies never revoked by transient facts");
+        var persisted=JsonSerializer.Deserialize<LegacySavedProgress>(JsonSerializer.Serialize(saved,options),options);
+        persisted.BindIdentity("p","w");
+        Check(persisted.Prestige==historicPrestige&&persisted.SelectedBanner=="banner-founder","same-save persistence");
+        var local=new LocalProfile("Real",f,persisted);
+        Check(local.Trophies.Any(x=>x.Id=="ash-stalker")&&local.Prestige==historicPrestige,"profile displays permanent prestige");
+        Check(ProfilePresentation.Rows(local,ProfileSection.Trophies).Single(x=>x.Key=="ash-stalker").State==ProfileEntryState.Earned,"earned view preserved");
+        var defensive=local.Saved;persisted.EarnedTrophyIds.Clear();
+        Check(defensive.Prestige==historicPrestige,"snapshot does not alias source");
+        bool wrongOwner=false;try{persisted.BindIdentity("another","w");}catch(InvalidOperationException){wrongOwner=true;}
+        Check(wrongOwner,"save identity mismatch rejected");
         Console.WriteLine("PASS: "+checks+" legacy progression assertions");
     }
 }

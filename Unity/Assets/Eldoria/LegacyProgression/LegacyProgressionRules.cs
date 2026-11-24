@@ -162,15 +162,16 @@ namespace Eldoria.LegacyProgression
     {
         public readonly string Name;
         public readonly ProgressFacts Facts;
-        public LocalProfile(string name,ProgressFacts facts)
-        { Name=name??""; Facts=facts??throw new ArgumentNullException(nameof(facts)); }
-        public int Prestige => LegacyProgressionRules.Prestige(Facts);
+        public readonly LegacySavedProgress Saved;
+        public LocalProfile(string name,ProgressFacts facts,LegacySavedProgress saved=null)
+        { Name=name??""; Facts=facts??throw new ArgumentNullException(nameof(facts)); Saved=saved?.Copy(); }
+        public int Prestige => Saved?.Prestige??LegacyProgressionRules.Prestige(Facts);
         public bool ProfileUnlocked => Facts.Bastion>=4;
         public bool RankingsVisible => Facts.Bastion>=2;
-        public IReadOnlyList<Trophy> Trophies => LegacyProgressionRules.Earned(Facts);
-        public IReadOnlyList<HonorTitle> Titles => LegacyProgressionRules.EarnedTitles(Facts);
-        public IReadOnlyList<Cosmetic> Banners => LegacyProgressionRules.Unlocked(Facts,LegacyProgressionRules.Banners);
-        public IReadOnlyList<Cosmetic> Monuments => LegacyProgressionRules.Unlocked(Facts,LegacyProgressionRules.Monuments);
+        public IReadOnlyList<Trophy> Trophies => Saved?.Earned()??LegacyProgressionRules.Earned(Facts);
+        public IReadOnlyList<HonorTitle> Titles => Saved?.Titles(Facts)??LegacyProgressionRules.EarnedTitles(Facts);
+        public IReadOnlyList<Cosmetic> Banners => Saved?.Cosmetics(Facts,LegacyProgressionRules.Banners)??LegacyProgressionRules.Unlocked(Facts,LegacyProgressionRules.Banners);
+        public IReadOnlyList<Cosmetic> Monuments => Saved?.Cosmetics(Facts,LegacyProgressionRules.Monuments)??LegacyProgressionRules.Unlocked(Facts,LegacyProgressionRules.Monuments);
         public IReadOnlyList<DiscoveryCollection> Discoveries =>
             LegacyProgressionRules.Collections.Where(c=>Facts.Bastion>=c.MinBastion).ToArray();
         // Distinguish "not connected" from an empty real ranking; never invent rows.

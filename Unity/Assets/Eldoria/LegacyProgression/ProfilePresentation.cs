@@ -76,7 +76,7 @@ namespace Eldoria.LegacyProgression
                     if(f.Bastion>=3)rows.Add(Entry("discoveries","Hallazgos de Exploradores",N(LegacyProgressionRules.DiscoveryCount(f.DiscoveryMask))));
                     if(p.ProfileUnlocked)
                     {
-                        var title=p.Titles.LastOrDefault();
+                        var title=p.Titles.FirstOrDefault(t=>t.Id==p.Saved?.SelectedTitle)??p.Titles.LastOrDefault();
                         rows.Add(Entry("title","Título",title?.Name??"Sin título"));
                         rows.Add(Entry("prestige","Prestigio",N(p.Prestige)));
                         var next=LegacyProgressionRules.Titles.FirstOrDefault(t=>t.Prestige>p.Prestige);
@@ -97,7 +97,7 @@ namespace Eldoria.LegacyProgression
                 case ProfileSection.Trophies:
                     // Avoid revealing future lore or naming unearned narrative achievements.
                     return LegacyProgressionRules.Trophies.Where(t=>t.MinBastion<=f.Bastion)
-                        .Select(t=>{bool earned=t.Earned(f);bool secret=t.Id=="engendro"||t.Id=="fissure"||t.Id=="lyra"||t.Id=="ash-stalker";
+                        .Select(t=>{bool earned=p.Trophies.Any(x=>x.Id==t.Id);bool secret=t.Id=="engendro"||t.Id=="fissure"||t.Id=="lyra"||t.Id=="ash-stalker";
                             return Entry(t.Id,!earned&&secret?"Hazaña por descubrir":t.Name,
                                 earned?"+ "+N(t.Prestige)+" prestigio":secret?"Continúa tu aventura":"Pendiente de completar",
                                 earned?ProfileEntryState.Earned:ProfileEntryState.Locked);}).ToArray();
@@ -120,7 +120,7 @@ namespace Eldoria.LegacyProgression
         }
         static IReadOnlyList<ProfileEntry> CosmeticRows(LocalProfile p,IReadOnlyList<Cosmetic> catalog)
         {
-            var unlocked=new HashSet<string>(LegacyProgressionRules.Unlocked(p.Facts,catalog).Select(c=>c.Id),StringComparer.Ordinal);
+            var unlocked=new HashSet<string>((catalog==LegacyProgressionRules.Banners?p.Banners:p.Monuments).Select(c=>c.Id),StringComparer.Ordinal);
             return catalog.Where(c=>c.MinBastion<=p.Facts.Bastion).Select(c=>Entry(c.Id,
                 unlocked.Contains(c.Id)?c.Name:"Distinción por descubrir",
                 unlocked.Contains(c.Id)?"Conseguida · presentación pendiente":"Completa la hazaña asociada",
