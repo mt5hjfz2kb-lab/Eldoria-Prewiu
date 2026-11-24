@@ -214,8 +214,8 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // Forest litter extends into clearings. Break its edge with regional
   // slope and soil variation already sampled by this pass.
   half woodEdge=smoothstep(.10,.82,canopy+standBend.x*.14);
-  half3 litter=lerp(sharedEarth*half3(.81,.76,.62),grass*half3(.77,.89,.73),.52);
-  grass=lerp(grass,litter,woodEdge*(.44+.18*close));
+  half3 forestFloor=lerp(sharedEarth*half3(.81,.76,.62),grass*half3(.77,.89,.73),.52);
+  grass=lerp(grass,forestFloor,woodEdge*(.44+.18*close));
   half shoulderStone=smoothstep(.36,.88,upland)*(1-woodEdge);
   grass=lerp(grass,lerp(slate,grass,.37),shoulderStone*.55);
   half3 colour=lerp(grass,fracturedSlate,faultWeight*.87);

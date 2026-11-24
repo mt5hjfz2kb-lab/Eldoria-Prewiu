@@ -1187,6 +1187,7 @@ namespace Eldoria.HeroesUI
                                 hideFlags=HideFlags.DontSave};
                             hallAldricMatteMaterial.SetFloat("_PortraitFeather",.22f);
                             hallAldricMatteMaterial.SetFloat("_Strength",.21f);
+                            hallAldricMatteMaterial.SetFloat("_FillLight",coronaTypography?.72f:0f);
                         }
                         image.material=hallAldricMatteMaterial;
                     }else image.material=hallPortraitPaintMaterial;

@@ -5,6 +5,7 @@ Shader "UI/Eldoria/HallPainterly"
         [PerRendererData] _MainTex ("Source architecture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
         _Strength ("Brush reduction", Range(0,1)) = 0.94
+        _FillLight ("Portrait bounced light", Range(0,1)) = 0
         _PortraitFeather ("Original portrait edge dissolve", Range(0,0.3)) = 0
         _PortraitUVRect ("Actual approved portrait UV region", Vector) = (0,0,1,1)
     }
@@ -29,6 +30,7 @@ Shader "UI/Eldoria/HallPainterly"
                 half4 _Color;
                 half _Strength;
                 half _PortraitFeather;
+                half _FillLight;
                 float4 _PortraitUVRect;
             CBUFFER_END
             struct Attributes { float4 vertex : POSITION; float2 uv : TEXCOORD0; float4 color : COLOR; };
@@ -86,6 +88,9 @@ Shader "UI/Eldoria/HallPainterly"
                 half shadow=saturate(1.0h-luminance);
                 ink=ink*(1.0h-.12h*shadow)+half3(.014h,.009h,.004h);
                 half3 merged=lerp(source.rgb,saturate(ink),_Strength);
+                // Reveal the face and armour in the original dark portrait.
+                // Black linework and polished highlights retain their endpoints.
+                merged+=_FillLight*merged*(1.0h-merged)*half3(1.0h,.91h,.78h);
                 half4 result=half4(merged,source.a)*i.color;
                 #ifdef UNITY_UI_CLIP_RECT
                     float2 inside=step(_ClipRect.xy,i.uiPosition.xy)*
