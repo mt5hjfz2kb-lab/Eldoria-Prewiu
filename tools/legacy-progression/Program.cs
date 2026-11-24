@@ -85,6 +85,20 @@ static class Program
         try { VerifiedRankings.Build(scope,new[]{Score("end",1,end)}); }
         catch(ArgumentException){boundaryRejected=true;}
         Check(boundaryRejected,"end time rejected");
+        var fresh=new LocalProfile("",new ProgressFacts{Bastion=1});
+        Check(ProfilePresentation.Sections(fresh).SequenceEqual(new[]{ProfileSection.Overview}),"B1 no feature dump");
+        Check(ProfilePresentation.Rows(fresh,ProfileSection.Rankings).Single().State==ProfileEntryState.Locked,"rankings locked B1");
+        Check(!ProfilePresentation.Rows(fresh,ProfileSection.Overview).Any(x=>x.Key=="prestige"),"prestige hidden before B4");
+        Check(ProfilePresentation.Sections(snapshot).Contains(ProfileSection.Discoveries)&&!ProfilePresentation.Sections(snapshot).Contains(ProfileSection.Heraldry),"B3 navigation");
+        var rankView=ProfilePresentation.Rows(snapshot,ProfileSection.Rankings);
+        Check(rankView.Count==7&&rankView.First().State==ProfileEntryState.Unavailable,"no fake leaderboard or positions");
+        Check(rankView.Single(x=>x.Key=="ranking:Hunters").State==ProfileEntryState.Unavailable,"no fabricated hunter metric");
+        Check(ProfilePresentation.DiscoveryEntries(snapshot,"frontier").Count(x=>x.State==ProfileEntryState.Earned)==2,"collection detail from facts");
+        Check(ProfilePresentation.DiscoveryEntries(snapshot,"frontier").Count(x=>x.Title=="Hallazgo desconocido")==2,"unseen lore hidden");
+        Check(ProfilePresentation.DiscoveryEntries(fresh,"frontier").Count==0,"hidden collection not inspectable");
+        Check(ProfilePresentation.Rows(snapshot,ProfileSection.Trophies).Single(x=>x.Key=="fissure").Title=="Hazaña por descubrir","narrative trophy spoiler guard");
+        Check(ProfilePresentation.Rows(p,ProfileSection.Monuments).Any(x=>x.Key=="monument-founder"&&x.State==ProfileEntryState.Earned),"monument earned but not installed");
+        Check(ProfilePresentation.Rows(p,ProfileSection.Overview).Any(x=>x.Key=="next-title"),"next prestige goal shown");
         Console.WriteLine("PASS: "+checks+" legacy progression assertions");
     }
 }

@@ -17,3 +17,6 @@
 
 ## Límites
 No se modificaron archivos compartidos de dominio/UI ni escena, arte, build, publicación o economía; Windows reservado por el trabajo artístico modular25D. No declarar lista para merge ni funcionalidad jugable completa. Ver PR y resultados exactos de Actions. Los umbrales y nombres son decisiones provisionales de diseño.
+
+## Perfil reutilizable (24/11, segunda intervención)
+`ProfilePresentation` proyecta perfil, clasificaciones, trofeos, hallazgos, heráldica y monumentos con desbloqueos progresivos. Se ocultan nombres de hazañas narrativas no conseguidas y entradas no descubiertas. `LegacyProfilePanel` y `LegacyProfileRow` implementan navegación y detalle de colección con controles uGUI y plantillas inactivas inyectadas por el HUD autorizado. No crean Canvas, no interceptan el HUD, no leen archivos ni escriben guardados. Conectar un botón de perfil existente a Open, configurar templates/roots/heading/close y Bind con el gateway de la ciudad, llamar Refresh tras cambios de estado, integrar cierre modal del HUD. No se ha creado ni aprobado un prefab de presentación, por tanto no hay nueva pantalla en el juego actual; compilación y QA nativo del binding pendientes. No confundir los desbloqueos lógicos de cosméticos con equipamiento visual.
