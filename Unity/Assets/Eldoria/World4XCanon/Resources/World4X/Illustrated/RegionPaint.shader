@@ -211,6 +211,13 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half faultWeight=saturate(mask.b);
   half3 fracturedSlate=slate*lerp(half3(1,1,1),half3(.84,.72,.96),
                                   smoothstep(.035,.45,district.b)*mapScale);
+  // Forest litter extends into clearings. Break its edge with regional
+  // slope and soil variation already sampled by this pass.
+  half woodEdge=smoothstep(.10,.82,canopy+standBend.x*.14);
+  half3 litter=lerp(sharedEarth*half3(.81,.76,.62),grass*half3(.77,.89,.73),.52);
+  grass=lerp(grass,litter,woodEdge*(.44+.18*close));
+  half shoulderStone=smoothstep(.36,.88,upland)*(1-woodEdge);
+  grass=lerp(grass,lerp(slate,grass,.37),shoulderStone*.55);
   half3 colour=lerp(grass,fracturedSlate,faultWeight*.87);
   // Sample the geological opening on the terrain triangles themselves.
   // A separately tessellated patch clipped into the steep fault walls in
@@ -270,6 +277,8 @@ Shader "Eldoria/Region1/Illustrated ground" {
   #endif
   half bank=(1-smoothstep(.15,1.35,abs(shore)))*local*close;
   colour=lerp(colour,lerp(earth,slate,.55),bank*.68);
+  half floodplain=(1-smoothstep(.8,5.9+shoal*3.0,abs(shore)))*local;
+  colour=lerp(colour,lerp(sharedEarth,slate,.34),floodplain*(1-mask.g)*.43);
   colour=lerp(colour,riverColour,mask.r);
   // The geographic mesh is REAL height-based terrain. Shade that geometry
   // directly with a restrained painterly key matching Valoria's baked

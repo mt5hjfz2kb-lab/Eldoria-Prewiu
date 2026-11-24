@@ -92,6 +92,8 @@ half4 frag(Varying i):SV_Target {
  float sillDistance=min(distanceToLane(p,_WestSills.xy,_WestSills.zw),
                         distanceToLane(p,_EastSills.xy,_EastSills.zw));
  half doorstep=(1-smoothstep(.12,.49,sillDistance+erosion*.15))*_Boroughs;
+ half streetMargin=(1-smoothstep(.25,1.08,sillDistance+.31*erosion))*_Boroughs;
+ ground=lerp(ground,lerp(dirt,ground,.38+.18*blades),streetMargin);
  ground=lerp(ground,lerp(dirt*.96,seam*.92,.29),apron*(.70+.14*erosion));
  ground=lerp(ground,lerp(dirt*.93,seam*.97,.68),doorstep*.91);
  ground=lerp(ground,gravel,street*.89);
@@ -106,12 +108,17 @@ half4 frag(Varying i):SV_Target {
  float edge=abs(court.x)+abs(court.y)*.54;
  float outline=max(edge,abs(court.y));
  half worn=erosion*.075;
- half landing=1-smoothstep(.87,1.07,outline+worn);
+ half landing=1-smoothstep(.81,1.14,outline+worn+erosion*.07);
  half margin=(1-smoothstep(.035,.105,abs(outline-.91+worn)))*smoothstep(.25,.51,abs(court.x));
  half front=smoothstep(.1,.9,-court.y);
  half3 laidStone=tex2D(_Paving,float2(.94*p.x+.34*p.y,1.18*p.y-.16*p.x)).rgb;
  half3 flags=lerp(laidStone,dirt,.30)*half3(1.01,.98,.92);
  flags*=1-margin*(.10+.28*front);
+ // Foot traffic carries fine stone out of the landing into the grass.
+ float tread=distanceToLane(p,_Forecourt.xy,_CivicAxis.zw);
+ half fringe=(1-smoothstep(.88,1.43,outline+erosion*.19))*(1-landing);
+ half traffic=1-smoothstep(.24,1.26,tread);
+ ground=lerp(ground,lerp(dirt,seam,traffic*.51),fringe*(.29+.46*traffic));
  ground=lerp(ground,flags,landing*.91);
  half3 pad=lerp(dirt*.84,seam*half3(.87,.84,.77),.44);
  ground=lerp(ground,pad,drill*.91);
