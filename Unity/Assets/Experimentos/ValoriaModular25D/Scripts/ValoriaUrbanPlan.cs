@@ -58,6 +58,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public Vector2 UpperRow => Keep.Foot + new Vector2(-4.38f,.76f);
         public Vector2 UpperCourt => Keep.Foot + new Vector2(-2.87f,3.98f);
         public Vector2 OrchardBoundary => new Vector2((UpperCourt.x+Growth[1].center.x)*.5f, Growth[1].yMax+1.93f);
+        public Vector2 WestFront => Keep.Door + new Vector2(-1.39f,-3.02f);
+        public Vector2 EastFront => Keep.Door + new Vector2(2.12f,-2.61f);
         public Vector2 WorkshopRow => Junction + new Vector2(-3.50f,-1.34f);
         public Vector2 MarketRow => Freight + new Vector2(4.02f,2.38f);
 
@@ -88,9 +90,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             new Prop(0,"MatojosFlores",Keep.Foot,-2.85f,-.23f,.58f),
             new Prop(0,"PozoPiedra",Junction,.94f,-.20f,.75f),
             new Prop(0,"CasasDelCamino",Keep.Door,-1.62f,-2.55f,.86f,1,4),
-            new Prop(0,"AceraZapateros",Keep.Door,-1.58f,-3.02f,1f,5),
+            new Prop(0,"AceraZapateros",WestFront,0,0,1f,5),
             new Prop(2,"CasasDeOficio",Keep.Door,2.38f,-2.72f,.87f,2,4),
-            new Prop(2,"CasaDelGremio",Keep.Door,2.47f,-2.82f,1f,5),
+            new Prop(2,"CasaDelGremio",EastFront,0,0,1f,5),
             new Prop(0,"LindeDelVergel",OrchardBoundary,0,0,1f,5),
             new Prop(3,"FrenteTejedores",Junction,-2.15f,-1.57f,.96f,4,4),
             new Prop(0,"ManzanaDelAdarve",UpperCourt,0f,0f,.88f,5),

@@ -334,7 +334,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                         var city=ValoriaUrbanPlan.City;
                         var sites=new[]{city.UpperRow,city.CourtCenter,city.Junction,city.WorkshopRow,
                             city.Mill.Foot,city.Barracks.Foot,city.Granary.Foot,city.MarketRow,city.Quarry.Foot,
-                            city.Growth[0].center,city.Growth[1].center};
+                            Vector2.Lerp(city.Growth[0].center,city.GrowthApproaches[0][2],.24f),
+                            city.Growth[1].center+new Vector2(-1.46f,1.06f)};
                         var names=new[]{"postigo","nucleo","calle-mayor","portales","aserradero","distrito-militar",
                             "abastos","casa-del-peso","cantera","reserva-oeste","reserva-nordeste"};
                         for(int i=0;i<sites.Length;i++)

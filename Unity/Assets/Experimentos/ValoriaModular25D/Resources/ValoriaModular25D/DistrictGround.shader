@@ -12,6 +12,7 @@ sampler2D _MainTex,_Paving,_Soil,_Slate;
 float4 _CivicAxis,_WorkLane,_Forecourt;
 float4 _UpperBlock,_LowerBlock,_Orchard,_QuarryMeadow;
 float _Boroughs;
+float4 _WestSills,_EastSills;
 float4 _Built, _MilitaryYard, _MarketYard, _StoneFace;
 struct Vertex { float4 vertex:POSITION; float2 uv:TEXCOORD0; };
 struct Varying { float4 position:SV_POSITION; float2 uv:TEXCOORD0; };
@@ -42,7 +43,9 @@ half4 frag(Varying i):SV_Target {
                  (1-smoothstep(7.7,10.6,abs(orchard.x)));
  half blades=smoothstep(.23,.77,frac(2.4*(bankHeight+.035*orchard.x*orchard.x)+.31*erosion));
  half arable=yard(p,float4(_Orchard.zw+float2(0,.35),3.35,2.02),erosion);
- half stony=yard(p,_QuarryMeadow,erosion);
+ float2 meadow=(p-_QuarryMeadow.xy)/_QuarryMeadow.zw;
+ half stony=(1-smoothstep(.22,1.26,length(meadow)+.22*sin(p.x*1.14)+erosion*.43))
+            *smoothstep(-.76,.86,meadow.x-meadow.y);
  ground=lerp(ground,lerp(ground*half3(1.11,1.00,.77),dirt*.91,.42),arable*_Boroughs*.76);
  ground=lerp(ground,lerp(ground*.94,dirt*1.03,.54),upperField*_Boroughs*(.47+.48*blades));
  ground=lerp(ground,lerp(ground*.91,seam*half3(.90,.93,.95),.36),stony*_Boroughs*.76);
@@ -66,6 +69,9 @@ half4 frag(Varying i):SV_Target {
  float doors=smoothstep(.22,.47,station)*(1-smoothstep(.78,1.0,station));
  float occupied=side<0 ? 1 : _Built.x;
  float width=lerp(.81,1.02,station)+doors*occupied*1.04;
+ // In the mature street the stone is concentrated in the carriageway.
+ // Door aprons are registered to the two diagonal facades separately.
+ width=lerp(width,lerp(.63,.78,station),_Boroughs);
  float crossEdge=abs(side)-width+erosion*.23;
  float endEdge=max(-alongStreet-.22,alongStreet-axisLength-.38)+erosion*.22;
  half street=1-smoothstep(-.13,.19,max(crossEdge,endEdge));
@@ -76,13 +82,18 @@ half4 frag(Varying i):SV_Target {
  // block. Beyond the last house the original meadow takes over.
  half upper=yard(p,float4(_UpperBlock.xy+float2(0,-.28),3.03,1.06),erosion);
  half rear=yard(p,float4(_UpperBlock.zw+float2(.18,-.21),2.02,1.08),erosion);
- half looms=yard(p,float4(_LowerBlock.xy+float2(0,-.27),2.63,1.05),erosion);
- half scales=yard(p,float4(_LowerBlock.zw+float2(0,-.28),2.85,1.18),erosion);
+ half looms=yard(p,float4(_LowerBlock.xy+float2(0,-.27),2.59,.66),erosion);
+ half scales=yard(p,float4(_LowerBlock.zw+float2(0,-.28),2.82,.77),erosion);
  half apron=max(max(upper,rear),max(looms,scales)*_Built.y)*_Boroughs;
- ground=lerp(ground,lerp(dirt*.94,seam*.93,.42),apron*.88);
+ float sillDistance=min(distanceToLane(p,_WestSills.xy,_WestSills.zw),
+                        distanceToLane(p,_EastSills.xy,_EastSills.zw));
+ half doorstep=(1-smoothstep(.12,.49,sillDistance+erosion*.15))*_Boroughs;
+ ground=lerp(ground,lerp(dirt*.96,seam*.92,.29),apron*(.70+.14*erosion));
+ ground=lerp(ground,lerp(dirt*.93,seam*.97,.68),doorstep*.91);
  ground=lerp(ground,gravel,street*.89);
  ground=lerp(ground,seam*1.12,street*kerb*.64);
- half crossing=1-smoothstep(.46,1.48,length((p-_CivicAxis.zw)*float2(.85,1.2))+erosion*.32);
+ float2 wellCenter=_CivicAxis.zw+float2(.50,-.08)*_Boroughs;
+ half crossing=1-smoothstep(.46,1.48,length((p-wellCenter)*float2(.85,1.2))+erosion*.32);
  ground=lerp(ground,lerp(dirt*.81,seam*.88,.33),saturate(urban*.25+crossing*.49));
  ground=lerp(ground,dirt*.86,(1-smoothstep(.56,1.33,bend+erosion*.42))*max(_Built.y,_Built.z)*(.53+.28*_Built.w));
  // Broad stone landing tapers into the avenue. Its exposed lip stops on either
