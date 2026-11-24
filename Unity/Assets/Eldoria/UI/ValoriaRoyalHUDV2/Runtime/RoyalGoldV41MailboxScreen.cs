@@ -1057,6 +1057,13 @@ namespace Eldoria.UI.RoyalGold.V2
                     messageSubtitles[i].color=msg.Read?
                         new Color(.38f,.33f,.29f):new Color(.28f,.22f,.16f);
                     messageDates[i].color=new Color(.38f,.31f,.24f);
+                    if(RoyalGoldV2Hud.UseCoronaArt)
+                    {
+                        messageSurfaces[i].color=msg.Read?new Color(.23f,.27f,.28f):new Color(.27f,.33f,.36f);
+                        messageLabels[i].color=msg.Read?CoronaFinish.Muted:CoronaFinish.Ivory;
+                        messageSubtitles[i].color=CoronaFinish.Muted;
+                        messageDates[i].color=CoronaFinish.Brass;
+                    }
                     string preview=recordedBattle==null?msg.Subtitle:
                         (recordedBattle.EffectiveOutcome=="draw"?"Empate ante ":recordedBattle.EffectiveOutcome=="victory"?"Victoria contra ":"Derrota ante ")+TargetName(recordedBattle.TargetId);
                     // Let the measured two-line row wrap; a fixed 22-character

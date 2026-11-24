@@ -1169,7 +1169,7 @@ namespace Eldoria.HeroesUI
                     // paintings. Applying the old 42% grey tint erased faces.
                     slot>=2?new Color(.90f,.91f,.94f,.97f):
                     new Color(.42f,.46f,.51f,.90f);
-                if(slot<2 && hallPaintMaterial && !(coronaTypography && unlocked && slot==0)){
+                if(slot<2 && hallPaintMaterial){
                     // Render approved source sprites as illustrated character
                     // cards. Originals, Tripo geometry and saved hero identities
                     // remain untouched; only card material is painted.
@@ -1361,13 +1361,14 @@ namespace Eldoria.HeroesUI
             float cardGridH=Mathf.Max(rows*78f,availableH-gap*(rows-1));
             bool tieredRows=(rows==2&&!phoneLandscape)||narrowPortrait||compactLandscape;
             float primaryH=compactLandscape?cardGridH*.60f:
-                narrowPortrait?cardGridH*(coronaTypography&&displayCount==6?.55f:.46f):
+                narrowPortrait?cardGridH*(coronaTypography&&displayCount==6?.62f:.46f):
                 tieredRows?cardGridH*.625f:cardGridH/rows;
             float secondaryH=compactLandscape?cardGridH-primaryH:
                 narrowPortrait?(cardGridH-primaryH)/Mathf.Max(1,rows-1):
                 tieredRows?cardGridH-primaryH:cardGridH/rows;
-            if(tieredRows&&!compactLandscape&&secondaryH<110f){
-                secondaryH=110f;
+            float reserveMin=narrowPortrait && coronaTypography ? 90f : 110f;
+            if(tieredRows&&!compactLandscape&&secondaryH<reserveMin){
+                secondaryH=reserveMin;
                 primaryH=cardGridH-secondaryH*(rows-1);
             }
             // Approved master: 134px-wide featured cards in a 512px-wide

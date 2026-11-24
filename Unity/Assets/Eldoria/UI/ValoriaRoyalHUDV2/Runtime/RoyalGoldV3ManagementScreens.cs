@@ -1199,10 +1199,10 @@ namespace Eldoria.UI.RoyalGold.V2
             float portraitOrderH=Mathf.Min(485f,bodyH*.47f);
             float artH=wide?bodyH:bodyH-portraitOrderH-12;
             Place(left,x,bodyY,wide?width*.54f:width,artH);
-            float floorMargin=RoyalGoldV2Hud.UseCoronaArt && !wide ? artH*.065f : 0f;
+            float floorMargin=RoyalGoldV2Hud.UseCoronaArt && !wide ? artH*.095f : 0f;
             float archerH=Mathf.Min(artH-floorMargin, (wide?width*.51f:width*.65f)*1.5f);
             float archerW=archerH/1.5f;
-            Place(approvedArcher.rectTransform,width*(wide?.10f:.055f),artH-archerH-floorMargin,archerW,archerH);
+            Place(approvedArcher.rectTransform,width*(wide?.10f:.09f),artH-archerH-floorMargin,archerW,archerH);
             float rosterW=wide?Mathf.Clamp(width*.15f,156f,180f):184f;
             float rosterH=wide?Mathf.Min(155f,artH*.30f):164f;
             bool sideRoster=RoyalGoldV2Hud.UseCoronaArt && !wide;
@@ -1344,7 +1344,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
             float leftW=wide?(width-gap)*.58f:width;
             float rightW=wide?width-leftW-gap:width;
-            float heroH=wide?bodyH*.53f:bodyH*(RoyalGoldV2Hud.UseCoronaArt?.30f:.34f);
+            float heroH=wide?bodyH*.53f:bodyH*(RoyalGoldV2Hud.UseCoronaArt?.36f:.34f);
             float troopH=wide?bodyH-heroH:bodyH*(RoyalGoldV2Hud.UseCoronaArt?.30f:.28f);
             float summaryH=wide?bodyH:bodyH-heroH-troopH-gap;
             Place(left,x,bodyY,leftW,heroH+troopH);
@@ -1355,7 +1355,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
             // The owner's three vertical character cards own the top third;
             // they remain exactly three. The third stays narratively locked.
-            float heroTitleH=wide?56f:64f;
+            float heroTitleH=wide?56f:54f;
             Place(marchHeadingSurface,7f,2f,lw-14f,heroTitleH);
             Place(unitTitle.rectTransform,17f,5f,lw*.61f,heroTitleH-8f);
             unitTitle.fontSize=wide?23:30;

@@ -331,8 +331,7 @@ namespace Eldoria.UI.RoyalGold.V2
             count.fontSize=shortWide?14:17;
             float cardsTop=y0+37f,footer=h-b-58f;
             int columns=w>h?(w>=1150f?6:4):3;
-            if(RoyalGoldV2Hud.UseCoronaArt && w<h)
-                columns=2;
+            if(portraitCorona) columns=width>=345f?3:2;
             float gap=shortWide?7f:10f;
             float cell=Mathf.Min((width-gap*(columns-1))/columns,
                 Mathf.Max(80f,footer-52f-cardsTop));
@@ -354,7 +353,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     cardsTop+line*(cell+rowGap),cell,cell);
                 At(item.Frame,2f,2f,cell-4f,cell-4f);
                 At((RectTransform)item.Seen.transform,0f,0f,cell,cell);
-                float icon=cell*.53f,iconY=cell*.13f;
+                float icon=cell*(portraitCorona?.56f:.53f),iconY=cell*(portraitCorona?.025f:.13f);
                 At(item.Icon.rectTransform,(cell-icon)*.5f,iconY,icon,icon);
                 At(item.Quantity.rectTransform,(cell-icon)*.5f+icon*.15f,
                     iconY+icon*.73f,icon*.70f,icon*.18f);
@@ -362,7 +361,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 At(item.Amount.rectTransform,cell*.105f,cell*.065f,cell*.79f,Mathf.Max(26f,cell*.19f));
                 item.Amount.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.13f,13f,24f));
                 item.Amount.alignment=TextAnchor.MiddleLeft;
-                At(item.Name.rectTransform,5f,cell*.63f,cell-10f,cell*.15f);
+                At(item.Name.rectTransform,5f,cell*(portraitCorona?.54f:.63f),cell-10f,cell*.15f);
                 item.Name.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.09f,10f,17f));
                 item.Name.alignment=TextAnchor.MiddleCenter;
                 // Novelty is already represented by the original badge.
