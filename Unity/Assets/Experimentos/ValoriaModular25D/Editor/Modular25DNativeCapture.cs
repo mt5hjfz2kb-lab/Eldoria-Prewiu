@@ -331,7 +331,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                             Render(cam,output,report,"stage-5-"+names[i],780,1040,
                                 (Vector3)sites[i]+new Vector3(0,.75f,-30),4.8f);
                         var tour=new[]{(Vector2)framing,city.UpperRow,city.CourtCenter,city.Mill.Foot,city.WorkshopRow,
-                            city.Junction,city.Barracks.Foot,city.Granary.Foot,city.MarketRow,city.Quarry.Foot};
+                            city.Junction,city.Barracks.Foot,city.Granary.Foot,city.MarketRow,city.Quarry.Foot,city.Growth[0].center,city.UpperRow,city.Growth[1].center};
                         for (int frame=0; frame<120; frame++)
                         {
                             float t=frame*(tour.Length-1)/119f;

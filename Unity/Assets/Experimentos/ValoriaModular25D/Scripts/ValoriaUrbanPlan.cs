@@ -55,27 +55,36 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var walk=Approach(plot);
             return new[]{walk[0],walk[1],walk[2],walk[3],walk[2],walk[1]};
         }
-        public Vector2 UpperRow => Keep.Foot + new Vector2(-4.05f,3.55f);
-        public Vector2 WorkshopRow => Junction + new Vector2(-3.85f,-1.47f);
-        public Vector2 MarketRow => Freight + new Vector2(.9f,-3.1f);
+        public Vector2 UpperRow => Keep.Foot + new Vector2(-4.38f,.76f);
+        public Vector2 WorkshopRow => Junction + new Vector2(-3.35f,-.79f);
+        public Vector2 MarketRow => Freight + new Vector2(4.02f,2.38f);
 
         public Vector2[][] BoroughStreets => new[]{
-            new[]{CourtCenter,Keep.Foot+new Vector2(-2.6f,-.95f),UpperRow+new Vector2(.95f,-2.5f),
-                UpperRow+new Vector2(.7f,-.48f),UpperRow+new Vector2(-2.38f,-.48f)},
-            new[]{FreightRoad[1],WorkshopRow+new Vector2(1.7f,-.54f),WorkshopRow+new Vector2(-2.15f,-.54f)},
-            new[]{Freight,MarketRow+new Vector2(-2.95f,1.95f),MarketRow+new Vector2(-3.35f,-.56f),
-                MarketRow+new Vector2(-1.3f,-.63f),MarketRow+new Vector2(2.4f,-.6f)}
+            // The postern lane returns to the mill, enclosing a built block.
+            new[]{CourtCenter,UpperRow+new Vector2(2.05f,-.62f),UpperRow+new Vector2(-1.72f,-.48f),
+                UpperRow+new Vector2(-2.78f,-.96f),Mill.Door+new Vector2(-1.28f,.47f),Mill.Door},
+            // Opposite the mill yard, the workshop arcade opens onto the well.
+            new[]{Mill.Door,WorkshopRow+new Vector2(-2.20f,-.76f),WorkshopRow+new Vector2(-.30f,-.64f),
+                WorkshopRow+new Vector2(2.05f,-.49f),Junction},
+            // The weighing house fronts the supply lane between well and granary.
+            new[]{Junction,MarketRow+new Vector2(-2.93f,-.21f),MarketRow+new Vector2(-1.45f,-.55f),
+                MarketRow+new Vector2(1.62f,-.61f),Granary.Door+new Vector2(1.86f,-.68f),Granary.Door},
+            new[]{CourtCenter,Keep.Foot+new Vector2(2.42f,-.69f),Keep.Foot+new Vector2(3.83f,.22f),
+                Keep.Foot+new Vector2(5.78f,.24f),Barracks.Door+new Vector2(1.82f,.16f),Barracks.Door}
         };
 
         public Prop[] Environment => new[]{
             new Prop(0,"MuroDerruido",Keep.Foot,-2.88f,.40f,.86f,1,4),
-            new Prop(0,"ArbolAntiguo",Keep.Foot,3.55f,2.85f,.88f),
+            new Prop(0,"ArbolAntiguo",Keep.Foot,3.55f,2.85f,.88f,1,4),
             new Prop(0,"ArboledaAntigua",Keep.Foot,-3.65f,1.65f,.73f,1,4),
             new Prop(0,"MatojosFlores",Keep.Foot,-2.85f,-.23f,.58f),
             new Prop(0,"PozoPiedra",Junction,.94f,-.20f,.75f),
             new Prop(0,"CasasDelCamino",Keep.Door,-1.62f,-2.55f,.86f),
             new Prop(2,"CasasDeOficio",Keep.Door,2.38f,-2.72f,.87f,2),
             new Prop(3,"FrenteTejedores",Junction,-2.15f,-1.57f,.96f,4,4),
+            new Prop(0,"CasasDelCamino",UpperRow,-.48f,1.66f,.81f,5),
+            new Prop(2,"CasasDeOficio",Keep.Foot,3.62f,2.44f,.87f,5),
+            new Prop(2,"FrenteTejedores",Keep.Foot,4.03f,.79f,.84f,5),
             new Prop(0,"CalleDelPostigo",UpperRow,0,0,1f,5),
             new Prop(3,"PortalesDeOficios",WorkshopRow,0,0,1f,5),
             new Prop(3,"CasasDelPeso",MarketRow,0,0,1f,5),
