@@ -26,7 +26,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             approaches["granary"].SetActive(market);
             approaches["stoneworks"].SetActive(quarry);
             approaches["freight"].SetActive(market || quarry);
-            for(int i=0;i<boroughStreets.Count;i++) boroughStreets[i].SetActive(level>=5 && (i==0 || i==4 || (i==3 ? military : market)));
+            for(int i=0;i<boroughStreets.Count;i++) boroughStreets[i].SetActive(level>=5 && (i==0 || i==4 || i==5 || (i==3 ? military : market)));
         }
         readonly List<Mesh> meshes=new List<Mesh>();
         readonly List<Texture2D> textures=new List<Texture2D>();
@@ -100,11 +100,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             approaches.Add("freight",freight);
             freight.SetActive(false);
 
-            var streetNames=new[]{"Calle del Postigo","Portales de oficios","Casas del Peso","Ronda del cuartel","Cuesta del adarve"};
+            var streetNames=new[]{"Calle del Postigo","Portales de oficios","Casas del Peso","Ronda del cuartel","Cuesta del adarve","Paso bajo el postigo"};
             var streets=plan.BoroughStreets;
             for(int i=0;i<streets.Length;i++)
             {
-                var lane=AddRoad(streetNames[i],streets[i],i==2?1.18f:1.04f,imperialMat,true);
+                var lane=AddRoad(streetNames[i],streets[i],i==5?.66f:i==2?1.18f:1.04f,imperialMat,true);
                 lane.SetActive(false);
                 boroughStreets.Add(lane);
             }

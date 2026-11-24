@@ -63,13 +63,20 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public Vector2 WorkshopRow => Junction + new Vector2(-3.50f,-1.34f);
         public Vector2 MarketRow => Freight + new Vector2(4.02f,2.38f);
 
+        // A unit along the painted frontage maps to a shorter, oblique ground axis.
+        // Door stations use the same basis as the elevation and its ground shadow.
+        public static readonly Vector2 PostigoAxis = new Vector2(.88f,-.21f);
+        public static readonly Vector2 PortalesAxis = new Vector2(.92f,-.15f);
+        public Vector2 PostigoLane(float station) => UpperRow + PostigoAxis*station + Vector2.down*.32f;
+        public Vector2 PortalesLane(float station) => WorkshopRow + PortalesAxis*station + Vector2.down*.22f;
+
         public Vector2[][] BoroughStreets => new[]{
             // The postern lane returns to the mill, enclosing a built block.
-            new[]{CourtCenter,UpperRow+new Vector2(2.05f,-.62f),UpperRow+new Vector2(-1.72f,-.48f),
+            new[]{CourtCenter,PostigoLane(2.24f),PostigoLane(0),PostigoLane(-2.10f),
                 UpperRow+new Vector2(-2.78f,-.96f),Mill.Door+new Vector2(-1.28f,.47f),Mill.Door},
             // Opposite the mill yard, the workshop arcade opens onto the well.
-            new[]{Mill.Door,WorkshopRow+new Vector2(-2.20f,-.76f),WorkshopRow+new Vector2(-.30f,-.64f),
-                WorkshopRow+new Vector2(2.05f,-.49f),Junction},
+            new[]{Mill.Door,PortalesLane(-2.20f),PortalesLane(-.30f),
+                PortalesLane(2.05f),Junction},
             // The weighing house fronts the supply lane between well and granary.
             new[]{Junction,MarketRow+new Vector2(-2.93f,-.21f),MarketRow+new Vector2(-1.45f,-.55f),
                 MarketRow+new Vector2(1.62f,-.61f),Granary.Door+new Vector2(1.86f,-.68f),Granary.Door},
@@ -80,7 +87,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             new[]{UpperRow+new Vector2(-2.02f,-.5f),UpperRow+new Vector2(-3.03f,.42f),
                 UpperCourt+new Vector2(-2.03f,.03f),UpperCourt+new Vector2(.48f,-.48f),
                 Keep.Foot+new Vector2(2.42f,3.05f),Keep.Foot+new Vector2(5.42f,1.91f),
-                Keep.Foot+new Vector2(5.78f,.24f)}
+                Keep.Foot+new Vector2(5.78f,.24f)},
+            // Passage below the central arch, connecting the street to the upper return.
+            new[]{PostigoLane(0),UpperRow,UpperRow+new Vector2(-.10f,.88f),
+                UpperCourt+new Vector2(-2.03f,.03f)}
         };
 
         public Prop[] Environment => new[]{

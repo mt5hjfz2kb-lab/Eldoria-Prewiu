@@ -33,9 +33,27 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         Mesh mesh;
         Material material;
 
+        Material originalMaterial, elevation;
+        Vector2 streetAxis = Vector2.right;
+
         void OnEnable()
         {
             source=GetComponent<SpriteRenderer>();
+            if (source.sprite != null)
+            {
+                if (source.sprite.name == "CalleDelPostigo") streetAxis = ValoriaUrbanPlan.PostigoAxis;
+                if (source.sprite.name == "PortalesDeOficios") streetAxis = ValoriaUrbanPlan.PortalesAxis;
+                if (streetAxis != Vector2.right)
+                {
+                    elevation = new Material(Resources.Load<Shader>("ValoriaModular25D/StreetElevation"));
+                    elevation.SetVector("_StreetAxis",new Vector4(streetAxis.x,streetAxis.y,0,0));
+                    originalMaterial = source.sharedMaterial;
+                    source.sharedMaterial = elevation;
+                    var bounds = source.sprite.bounds;
+                    bounds.Expand(new Vector3(0,2f*Mathf.Abs(streetAxis.y)*bounds.extents.x,0));
+                    source.localBounds = bounds;
+                }
+            }
             shadow=new GameObject("Projected architectural ground shadow");
             shadow.transform.SetParent(transform,false);
             mesh=new Mesh { name="Ground projection of authored building silhouette" };
@@ -104,7 +122,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 {
                     float lift=(row-sills[i])*bounds.size.y;
                     int n=2*i+row;
-                    vertices[n]=new Vector3(x+.32f*lift,contactY-.18f*lift,0f);
+                    vertices[n]=new Vector3(streetAxis.x*x+.32f*lift,contactY+streetAxis.y*x-.18f*lift,0f);
                     texCoords[n]=new Vector2((uv.xMin+t*uv.width)/w,(uv.yMin+row*uv.height)/h);
                     colors[n]=new Color(.10f,.13f,.19f,row==0 ? .22f : .03f);
                 }
@@ -119,6 +137,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         void OnDisable()
         {
+            if (elevation)
+            {
+                source.sharedMaterial = originalMaterial;
+                source.ResetLocalBounds();
+                if (UnityEngine.Application.isPlaying) Destroy(elevation);
+                else DestroyImmediate(elevation);
+                elevation = null;
+            }
             if(UnityEngine.Application.isPlaying)
             {
                 Destroy(shadow);Destroy(mesh);Destroy(material);
