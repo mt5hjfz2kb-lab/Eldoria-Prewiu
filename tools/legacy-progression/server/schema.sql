@@ -50,9 +50,9 @@ CREATE TABLE eldoria_legacy.score (
 );
 CREATE TABLE eldoria_legacy.frozen (
  world_id text NOT NULL, period_id text NOT NULL, category text NOT NULL,
- position bigint NOT NULL CHECK(position>0), player_id text NOT NULL,
+ rank_position bigint NOT NULL CHECK(rank_position>0), player_id text NOT NULL,
  display_name text NOT NULL, value bigint NOT NULL, achieved_at timestamptz NOT NULL,
- PRIMARY KEY(world_id,period_id,category,position),
+ PRIMARY KEY(world_id,period_id,category,rank_position),
  UNIQUE(world_id,period_id,category,player_id),
  FOREIGN KEY(world_id,period_id,category) REFERENCES eldoria_legacy.period(world_id,period_id,category)
 );
@@ -113,7 +113,7 @@ CREATE FUNCTION eldoria_legacy.record_score(
  END $$;
 
 CREATE FUNCTION eldoria_legacy.live_rows(w text,per text,cat text)
- RETURNS TABLE(position bigint,player_id text,display_name text,value bigint,achieved_at timestamptz)
+ RETURNS TABLE(rank_position bigint,player_id text,display_name text,value bigint,achieved_at timestamptz)
  LANGUAGE sql STABLE SET search_path=pg_catalog AS $$
  WITH win AS (
   SELECT * FROM eldoria_legacy.period q WHERE q.world_id=w AND q.period_id=per AND q.category=cat
@@ -145,7 +145,7 @@ CREATE FUNCTION eldoria_legacy.live_rows(w text,per text,cat text)
 -- Server-only read API. The caller MUST authorize the requested world against
 -- the logged-in player; this shared DB role is not a substitute for user auth.
 CREATE FUNCTION eldoria_legacy.read_rows(w text,per text,cat text,lim int,offst int)
- RETURNS TABLE(position bigint,player_id text,display_name text,value bigint,achieved_at timestamptz)
+ RETURNS TABLE(rank_position bigint,player_id text,display_name text,value bigint,achieved_at timestamptz)
  LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path=pg_catalog AS $$
  DECLARE closed timestamptz;
  BEGIN
@@ -154,11 +154,11 @@ CREATE FUNCTION eldoria_legacy.read_rows(w text,per text,cat text,lim int,offst 
   SELECT q.closed_at INTO STRICT closed FROM eldoria_legacy.period q
    WHERE q.world_id=w AND q.period_id=per AND q.category=cat;
   IF closed IS NOT NULL THEN
-   RETURN QUERY SELECT f.position,f.player_id,f.display_name,f.value,f.achieved_at
+   RETURN QUERY SELECT f.rank_position,f.player_id,f.display_name,f.value,f.achieved_at
    FROM eldoria_legacy.frozen f WHERE f.world_id=w AND f.period_id=per AND f.category=cat
-   ORDER BY f.position LIMIT lim OFFSET offst;
+   ORDER BY f.rank_position LIMIT lim OFFSET offst;
   ELSE
-   RETURN QUERY SELECT r.* FROM eldoria_legacy.live_rows(w,per,cat) r ORDER BY r.position LIMIT lim OFFSET offst;
+   RETURN QUERY SELECT r.* FROM eldoria_legacy.live_rows(w,per,cat) r ORDER BY r.rank_position LIMIT lim OFFSET offst;
   END IF;
  END $$;
 
@@ -174,12 +174,12 @@ CREATE FUNCTION eldoria_legacy.close_period(w text,per text,cat text)
   IF win.closed_at IS NOT NULL THEN RETURN false; END IF;
   IF win.cadence='permanent' OR win.ends_at>clock_timestamp() THEN RAISE EXCEPTION 'period not closable'; END IF;
   INSERT INTO eldoria_legacy.frozen
-   SELECT w,per,cat,r.position,r.player_id,r.display_name,r.value,r.achieved_at
+   SELECT w,per,cat,r.rank_position,r.player_id,r.display_name,r.value,r.achieved_at
    FROM eldoria_legacy.live_rows(w,per,cat) r;
   INSERT INTO eldoria_legacy.award
    SELECT w,per,cat,f.player_id,'champion:'||cat||':'||per
    FROM eldoria_legacy.frozen f WHERE f.world_id=w AND f.period_id=per AND f.category=cat
-     AND f.position=1 AND f.value>0;
+     AND f.rank_position=1 AND f.value>0;
   UPDATE eldoria_legacy.period SET closed_at=clock_timestamp()
    WHERE world_id=w AND period_id=per AND category=cat;
   RETURN true;

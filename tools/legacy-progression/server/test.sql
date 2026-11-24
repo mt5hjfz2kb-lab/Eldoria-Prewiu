@@ -38,12 +38,12 @@ END $$;
 RESET ROLE;
 SET ROLE eldoria_rank_reader;
 DO $$ DECLARE got text[]; scores bigint[]; BEGIN
- SELECT array_agg(player_id ORDER BY position),array_agg(value ORDER BY position)
+ SELECT array_agg(player_id ORDER BY rank_position),array_agg(value ORDER BY rank_position)
  INTO got,scores FROM eldoria_legacy.read_rows('w','2020-W02','hunters',100,0);
  IF got IS DISTINCT FROM ARRAY['a','b'] OR scores IS DISTINCT FROM ARRAY[5::bigint,5::bigint] THEN RAISE EXCEPTION 'hunters ordering/window/world'; END IF;
- SELECT array_agg(value ORDER BY position) INTO scores FROM eldoria_legacy.read_rows('w','2020-W02','explorers',100,0);
+ SELECT array_agg(value ORDER BY rank_position) INTO scores FROM eldoria_legacy.read_rows('w','2020-W02','explorers',100,0);
  IF scores IS DISTINCT FROM ARRAY[2::bigint,1::bigint] THEN RAISE EXCEPTION 'unique discovery'; END IF;
- SELECT array_agg(player_id ORDER BY position) INTO got FROM eldoria_legacy.read_rows('w','s1','power',100,0);
+ SELECT array_agg(player_id ORDER BY rank_position) INTO got FROM eldoria_legacy.read_rows('w','s1','power',100,0);
  IF got IS DISTINCT FROM ARRAY['a','b'] THEN RAISE EXCEPTION 'tie timestamp preserved'; END IF;
  IF (SELECT player_id FROM eldoria_legacy.read_rows('w','2020-W02','hunters',1,1)) IS DISTINCT FROM 'b' THEN RAISE EXCEPTION 'pagination'; END IF;
  BEGIN
