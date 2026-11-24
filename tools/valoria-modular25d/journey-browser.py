@@ -64,6 +64,18 @@ async def main():
                 await page.wait_for_timeout(55)
             await cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
             await page.wait_for_timeout(300);await fresh()
+        async def pinch_city(start, end):
+            def points(radius):
+                return [{'x':195-radius,'y':225,'id':0},{'x':195+radius,'y':225,'id':1}]
+            await cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':points(start)})
+            await page.wait_for_timeout(450)
+            for step in range(1,13):
+                await cdp.send('Input.dispatchTouchEvent',{'type':'touchMove',
+                    'touchPoints':points(start+(end-start)*step/12)})
+                await page.wait_for_timeout(150)
+            await cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
+            await fresh()
+
         def find(prefix):
             return next((t for t in state['taps'] if t['name']==prefix or prefix.endswith('*') and t['name'].startswith(prefix[:-1])),None)
         async def tap(name,scroll=True):
@@ -275,6 +287,13 @@ async def main():
                 await tap('Confirm your name',False)
                 await until(lambda:not find('Confirm your name'))
             await page.wait_for_timeout(1800);await page.screenshot(path=OUT/'bastion-1.png')
+            assert abs(state['halfWidth']-6.04)<.03, state['halfWidth']
+            await pinch_city(52,85)
+            await until(lambda:state['halfWidth']<5.85)
+            near=state['halfWidth']
+            await pinch_city(92,34)
+            await until(lambda:state['halfWidth']>6.19)
+            log.append({'city_entry_half_width':6.04,'pinch_in':near,'pinch_out':state['halfWidth']})
             await tap('Toggle left activities',False);assert state['drawer']
             await tap('Current real construction objective',False);assert state['sawmillPanel']
             await tap('Close sawmill',False)

@@ -65,6 +65,11 @@ async def main():
         def target(name):
             return next((t for t in city.get("taps",[]) if t["name"]==name), None)
 
+        def entry_frame():
+            return (abs(city.get("cameraX",100)+1.98)<.03
+                    and abs(city.get("cameraY",100)-1.54)<.03
+                    and abs(city.get("halfWidth",0)-6.04)<.03)
+
         async def touch(item):
             box = await page.locator("canvas").bounding_box()
             await page.touchscreen.tap(box["x"]+item["x"]*box["width"], box["y"]+item["y"]*box["height"])
@@ -76,6 +81,8 @@ async def main():
             await page.keyboard.press("Enter")
             await touch(target("Confirm your name"))
             await until(lambda:not target("Confirm your name") and target("Toggle left activities"))
+            await until(entry_frame,10)
+            await page.screenshot(path=OUT/"00-entrada.png")
             if not target("Sawmill world nameplate"):
                 await touch(target("Toggle left activities"))
                 await until(lambda:target("Current real construction objective"))
@@ -120,6 +127,7 @@ async def main():
                 else:
                     await until(lambda:city_arrived() or region.get("sample",0)>sample,20)
             await until(city_arrived)
+            await until(entry_frame,10)
             assert city["level"]==1 and city["sawmill"]==1
             await page.screenshot(path=OUT/"04-regreso.png")
             print("WEBKIT_B1_ROUNDTRIP_AND_CONSTRUCTION_PASS",flush=True)

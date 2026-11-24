@@ -16,6 +16,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         [Serializable] sealed class JourneyView
         {
             public int level, sawmill, barracks, granary, stoneworks, wood, stone, food, army;
+            public float cameraX,cameraY,halfWidth;
             public long revision;
             public int forestRemaining,quarryRemaining;
             public string room, activeScene;
@@ -30,6 +31,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if (s == null) return;
             var view = new JourneyView {
                 room=activeRoom,
+                cameraX=world.ViewCamera.transform.position.x, cameraY=world.ViewCamera.transform.position.y,
+                halfWidth=world.ViewCamera.orthographicSize*world.ViewCamera.aspect,
                 handVisible=firstBuildGuide && firstBuildGuide.gameObject.activeInHierarchy,
                 sawmillClockVisible=worldProgressTrack && worldProgressTrack.gameObject.activeInHierarchy && sawmillTagText.text.StartsWith("OBRA"),
                 activeScene=UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,

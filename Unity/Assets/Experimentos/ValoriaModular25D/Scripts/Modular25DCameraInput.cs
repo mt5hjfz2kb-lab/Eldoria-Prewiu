@@ -13,16 +13,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         Modular25DWorld world;
         Vector2 pressAt, previous;
         bool held, dragged, beganOnUI, pinched;
-        float previousPinch, homeSize;
+        float previousPinch;
 
-        // Same geometry in the real player and the native Editor A/B.
-        // Commercial Bastion-I hero composition: both authored buildings occupy
-        // more of a phone viewport. Terrain stays continuous and exploration
-        // retains unrestricted pan/zoom, only Home framing is changed.
-        public static Vector3 HomePosition => new Vector3(ValoriaUrbanPlan.City.Keep.Foot.x,ValoriaUrbanPlan.City.Keep.Foot.y-1.10f,-30f);
+        // Calibrated to the owner's portrait capture. Keep the same horizontal
+        // coverage across phone viewports, measured on the game canvas alone.
+        public static Vector3 HomePosition => (Vector3)ValoriaUrbanPlan.City.Keep.Foot
+            + new Vector3(-1.98f,-1.46f,-30f);
+
         public static float HomeSizeForAspect(float aspect)
         {
-            return Mathf.Clamp(3.05f/Mathf.Max(.42f,aspect),4.90f,7.10f);
+            return Mathf.Clamp(6.04f / Mathf.Max(.4f, aspect), 4.9f, 15.1f);
         }
 
         public static Vector3 ExpansionCenterForLevel(int level) => HomePosition;
@@ -35,7 +35,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             world=GetComponent<Modular25DWorld>();
             camera=world.ViewCamera;
-            homeSize=HomeSizeForAspect(camera.aspect);
             Home();
         }
 
@@ -160,16 +159,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         void Zoom(float ratio)
         {
             if(float.IsNaN(ratio)||float.IsInfinity(ratio)||ratio<=0)return;
-            camera.orthographicSize=Mathf.Clamp(camera.orthographicSize*ratio,4.2f,world.DisplayedBastionLevel>=2?Mathf.Max(11.8f,ExpansionSize(camera.aspect)):11.8f);
+            float farLimit=Mathf.Max(11.8f,HomeSizeForAspect(camera.aspect)*1.5f);
+            camera.orthographicSize=Mathf.Clamp(camera.orthographicSize*ratio,4.2f,farLimit);
         }
 
         public void Home()
         {
             if(camera==null)return;
-            bool expanded=world!=null && world.DisplayedBastionLevel>=2;
-            int level=world!=null?world.DisplayedBastionLevel:1;
-            camera.orthographicSize=expanded?ExpansionSizeForLevel(camera.aspect,level):homeSize;
-            camera.transform.position=expanded?ExpansionCenterForLevel(level):HomePosition;
+            camera.orthographicSize=HomeSizeForAspect(camera.aspect);
+            camera.transform.position=HomePosition;
         }
 
         void TrySelect(Vector2 screen)

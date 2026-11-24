@@ -10,7 +10,7 @@ La puerta del Bastión da a la calle del pozo. La fachada del camino ocupa su la
 | Granero | 3.95, −5.65 | 4.30, −5.85 | 3.8 × 2 |
 | Cantera | −7.35, −7.75 | −6.80, −7.95 | 4 × 2.1 |
 
-El cruce del pozo está en (0.64, −1.72). El de acarreo, en (−0.65, −5.90). El encuadre inicial permanece en (0, 1.90) para comparar el cambio de composición con bedeb5f. El centro de cámara puede explorar X −13…13 e Y −10…9. El ancho de la vía monumental y de la vía militar es 1.32. La calle de acarreo mide 1.15 y los accesos de faena 0.92.
+El cruce del pozo está en (0.64, −1.72). El de acarreo, en (−0.65, −5.90). La cámara de entrada y regreso se centra en (−1.98, 1.54). En vertical muestra 12.08 unidades de ancho, calibradas con la captura del iPhone del 24 de noviembre. El jugador puede acercar, alejar y desplazar la cámara. El centro de cámara puede explorar X −13…13 e Y −10…9. El ancho de la vía monumental y de la vía militar es 1.32. La calle de acarreo mide 1.15 y los accesos de faena 0.92.
 
 ## Crecimiento posterior
 

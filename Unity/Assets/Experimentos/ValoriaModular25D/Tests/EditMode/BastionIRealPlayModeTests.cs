@@ -662,9 +662,9 @@ namespace Eldoria.Modular25D.Tests
 
             // Camera Home is a runtime action, not an inert button/gesture.
             var camera=Member(world,"ViewCamera") as Camera;
-            var original=camera.transform.position;
+            var original = new Vector3(-1.98f,1.54f,-30f);
             Assert.That(camera.orthographicSize,
-                Is.EqualTo(Mathf.Clamp(3.05f/Mathf.Max(.42f,camera.aspect),4.90f,7.10f)).Within(.02f),
+                Is.EqualTo(Mathf.Clamp(6.04f/Mathf.Max(.4f,camera.aspect),4.9f,15.1f)).Within(.02f),
                 "Player and captured authentic Unity Camera must share actual framing");
             var input=all.FirstOrDefault(x=>x&&x.GetType().Name=="Modular25DCameraInput");
             Assert.NotNull(input);

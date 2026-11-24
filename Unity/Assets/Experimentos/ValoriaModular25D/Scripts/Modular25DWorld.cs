@@ -127,7 +127,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             root.transform.rotation=Quaternion.identity;
             var camera=root.AddComponent<Camera>();
             camera.orthographic=true;
-            camera.orthographicSize=Modular25DCameraInput.HomeSizeForAspect(390f/844f);
+            camera.orthographicSize=Modular25DCameraInput.HomeSizeForAspect(camera.aspect);
             camera.clearFlags=CameraClearFlags.SolidColor;
             camera.backgroundColor=new Color(.24f,.30f,.26f);
             camera.nearClipPlane=.1f;
@@ -282,7 +282,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public void Apply(PlayerState snapshot)
         {
             if(snapshot==null||SawmillRenderer==null)return;
-            int previouslyDisplayed=DisplayedBastionLevel;
             DisplayedBastionLevel=Mathf.Clamp(snapshot.BastionLevel,1,5);
             BastionRenderer.sprite=Modular25DArt.BastionForLevel(DisplayedBastionLevel);
             BastionRenderer.GetComponent<Modular25DArchitecturalShadow>()?.Refresh();
@@ -313,11 +312,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             SawmillRenderer.GetComponent<Modular25DArchitecturalShadow>()?.Refresh();
             if(WorkshopAction!=null)
                 WorkshopAction.gameObject.SetActive(stage==ParcelBuildingState.BUILT);
-            // Reframe only on a real Bastion milestone, not on each resource
-            // tick, camera gesture or save refresh. The scene's first Start
-            // also calls Home to restore the correct saved-level composition.
-            if(previouslyDisplayed!=DisplayedBastionLevel)
-                GetComponent<Modular25DCameraInput>()?.Home();
+
         }
 
         public bool HitSawmill(Vector2 world)

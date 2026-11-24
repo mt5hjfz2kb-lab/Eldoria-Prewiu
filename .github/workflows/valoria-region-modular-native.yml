@@ -86,8 +86,8 @@ jobs:
           leases=[x for x in state["active"] if "windows-runner-heavy" in x.get("resources",[])]
           branch=gh("git/ref/heads/"+os.environ["GITHUB_REF_NAME"])
           ok=(len(leases)==1 and leases[0]["id"]==ident and
-             leases[0].get("ownership_revision")==10 and leases[0].get("ownership_state")=="claimed" and
-             leases[0].get("owner")=="chatgpt-valoria-capital-20261124" and
+             leases[0].get("ownership_revision")==12 and leases[0].get("ownership_state")=="claimed" and
+             leases[0].get("owner")=="chatgpt-valoria-zoom-20261124" and
              state.get("resource_rotation",{}).get("current_workstream")==ident and
              branch["object"]["sha"]==os.environ["GITHUB_SHA"])
           with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write("allowed="+str(ok).lower()+"\n")
@@ -118,8 +118,8 @@ jobs:
           $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
           $held=@($reg.active|Where-Object{@($_.resources) -contains 'windows-runner-heavy'})
           $id='eldoria-valoria-modular25d-bastion1-20261119'
-          if($held.Count -ne 1 -or $held[0].id -ne $id -or $held[0].ownership_revision -ne 10 -or
-             $held[0].owner -ne 'chatgpt-valoria-capital-20261124' -or
+          if($held.Count -ne 1 -or $held[0].id -ne $id -or $held[0].ownership_revision -ne 12 -or
+             $held[0].owner -ne 'chatgpt-valoria-zoom-20261124' -or
              $reg.resource_rotation.current_workstream -ne $id){throw 'Lease not ours'}
           if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
             throw 'Existing Windows native process: refuse interference'}
@@ -554,7 +554,7 @@ jobs:
           for stage in 1 2 3 4 5; do
             n=stage-$stage-fixture-390x844.png
             cp "referencia/base/ciudad/$n" "entrega/comparacion/antes-bedeb5f/$n"
-            cp "city/$n" "entrega/comparacion/ahora/$n"
+            cp "city/stage-$stage-registered-entry.png" "entrega/comparacion/ahora/$n"
           done
           for n in 0 1 2 3 4; do
             cp "referencia/base/ciudad/district-close-$n.png" "entrega/comparacion/antes-bedeb5f/distrito-$n.png"

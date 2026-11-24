@@ -297,6 +297,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     float size=level==1?portrait:
                         Modular25DCameraInput.ExpansionSizeForLevel(390f/844f,level);
                     Render(cam,output,report,"stage-"+level+"-fixture-390x844",390,844,framing,size);
+                    Render(cam,output,report,"stage-"+level+"-registered-entry",390,844,new Vector3(0,1.9f,-30f),6.600513f);
+                    cam.transform.position=framing;cam.orthographicSize=size;
                     ValidateUrbanPlan(world,level);
                     AssertProgressionComposition(cam,world,level);
                     Render(cam,output,report,"stage-"+level+"-fixture-1170x2532",1170,2532,framing,size);
@@ -312,13 +314,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                         {
                             var center=stops[n].bounds.center;
                             center.z=-30f;
-                            Render(cam,output,report,"district-close-"+n,390,844,center,portrait);
+                            Render(cam,output,report,"district-close-"+n,390,844,center,6.600513f);
                         }
                         // Cameras recorded in the source manifest of the reviewed bedeb5f release.
                         var earlierCameras=new[]{new Vector2(0.00000000f,4.64062452f), new Vector2(-4.00000000f,0.22281241f), new Vector2(6.00000000f,1.90277839f), new Vector2(3.00000000f,-3.58159614f), new Vector2(-7.00000000f,-6.21760559f)};
                         for(int n=0;n<earlierCameras.Length;n++)
                             Render(cam,output,report,"stage-5-registered-"+n,390,844,
-                                (Vector3)earlierCameras[n]+Vector3.back*30f,portrait);
+                                (Vector3)earlierCameras[n]+Vector3.back*30f,6.600513f);
                         for (int frame=0; frame<120; frame++)
                         {
                             float t=frame*(stops.Length-1)/119f;
@@ -328,7 +330,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                             center.z=-30f;
                             foreach(var walker in walkers) walker.StepForNativeCapture(1f/15f);
                             workshop[0].StepForNativeCapture(1f/15f);
-                            Render(cam,output,report,"district-tour-"+frame.ToString("D3"),390,844,center,portrait);
+                            Render(cam,output,report,"district-tour-"+frame.ToString("D3"),390,844,center,6.600513f);
                         }
                     }
                     report.progressionStagesCaptured++;
