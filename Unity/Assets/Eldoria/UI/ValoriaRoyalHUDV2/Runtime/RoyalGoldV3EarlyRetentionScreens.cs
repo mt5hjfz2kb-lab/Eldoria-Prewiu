@@ -642,6 +642,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     paper.gameObject.AddComponent<CanvasRenderer>();
                     var paperImage=paper.gameObject.AddComponent<Image>();
                     paperImage.sprite=scoutParchmentSprite;
+                    if(RoyalGoldV2Hud.UseCoronaArt) paperImage.color=new Color(.83f,.85f,.79f);
                     paperImage.type=Image.Type.Sliced;
                     paperImage.fillCenter=true;
                     // Source margins/curls are in pixels. Keep them compact
@@ -1561,7 +1562,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 // No ordinary encounter can insert a second painted
                 // landscape. Both Engendro and four distinct guardians are
                 // integrated into the SAME tactile royal encounter bay.
-                bool showEncounterArt=showEngendro;
+                bool showEncounterArt=showEngendro || (RoyalGoldV2Hud.UseCoronaArt && !boss && scoutVignettes!=null);
                 Texture2D paintedBoss=info.Step==5?guardianArt[0]:
                     info.Step==10?guardianArt[1]:
                     info.Step==20?guardianArt[2]:
@@ -1570,7 +1571,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     guardianRelief.SetStage(info.Step);
                     guardianRelief.SetBreach(showEngendro);
-                    guardianRelief.UsePaintedFigure(paintedBoss!=null||showEngendro);
+                    guardianRelief.UsePaintedFigure(paintedBoss!=null||showEncounterArt);
                     guardianRelief.gameObject.SetActive(true);
                 }
                 if(guardianPainted)
@@ -1596,7 +1597,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     // environment; the authentic transparent Engendro keeps
                     // its exact original colour and silhouette.
                     engendroPortrait.color=showEngendro?Color.white:
-                        new Color(.90f,.96f,.89f,.63f);
+                        new Color(.93f,.96f,.89f,.89f);
                 }
                 if(enemyGroundBack)enemyGroundBack.Configure(showEngendro,boss);
                 if(enemyGroundFront)enemyGroundFront.Configure(showEngendro,boss);

@@ -110,7 +110,7 @@ namespace Eldoria.DailyTreasures
         Image milestoneVignette;
         Image milestoneInsignia;
         // Separately painted alpha layers, behind official scene/hero identity.
-        Image milestoneStageArt,milestoneOrnament,bastionPerimeter;
+        Image milestoneStageArt,milestoneOrnament,bastionPerimeter,calendarChest;
         // The original EldoriaRetention atlas already represents four REAL
         // scout mission families. An earned discovery may paint the matching
         // actual persisted Kind on the existing blank parchment. Never use a
@@ -455,6 +455,9 @@ namespace Eldoria.DailyTreasures
             var closeLabel=Label(closeButton.transform,"Accessible close","X",24,Ivory,TextAnchor.MiddleCenter);
             Stretch(closeLabel.rectTransform);
             calendar=NewRect("Seven genuine rewards",cardSurface);
+            calendarChest=Plate(NewRect("Daily coffer",calendar),Color.white,false);
+            calendarChest.sprite=entryArtwork.sprite;
+            calendarChest.preserveAspect=true;
             for(int i=0;i<7;i++)
             {
                 var day=NewRect("Day "+(i+1)+" / non-clickable informational card",calendar);
@@ -2151,12 +2154,15 @@ namespace Eldoria.DailyTreasures
             Place((RectTransform)closeButton.transform,1f,1f,1f,1f,-8f,-8f,48f,48f);
             int cols=portrait?2:4,rows=portrait?4:2;
             float left=15f,gap=7f;
-            float gridTop=82f,gridBottom=83f;
+            float cofferH=portrait && panelH>=570f?Mathf.Min(102f,panelH*.14f):0f;
+            float gridTop=82f+cofferH,gridBottom=83f;
             float gridHeight=panelH-gridTop-gridBottom;
             float cellW=(panelW-2f*left-gap*(cols-1))/cols;
             float cellH=(gridHeight-gap*(rows-1))/rows;
             Place(calendar,.5f,.5f,.5f,.5f,0f,
                 (-gridTop+gridBottom)*.5f,panelW,gridHeight);
+            calendarChest.gameObject.SetActive(cofferH>0f);
+            Place(calendarChest.rectTransform,.5f,1f,.5f,0f,0f,0f,cofferH*1.6f,cofferH);
             for(int i=0;i<7;i++)
             {
                 int column=i%cols,row=i/cols;
