@@ -10126,6 +10126,31 @@
       },
       "previous_owner": "chatgpt-valoria-zoom-20261124",
       "next": "Next owner may claim canonical workstream eldoria-valoria-modular25d-bastion1-20261119 on existing PR after live queue check; preserve 6743b8baf2448679f1670acd961d64a76bd33a01 and last_completed_area."
+    },
+    {
+      "id": "eldoria-collections-rankings-prestige-20261124",
+      "title": "Rankings, coleccionismo y prestigio",
+      "owner": "chatgpt-eldoria-collections-rankings-20261124",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "scope": [
+        "Unity/Assets/Eldoria/LegacyProgression/**",
+        "Unity/Assets/Eldoria/LegacyProgression.meta",
+        "tools/legacy-progression/**",
+        "docs/legacy-progression/**",
+        ".github/workflows/eldoria-legacy-progression-domain.yml"
+      ],
+      "resources": [],
+      "status": "active",
+      "claimed_at": "2026-11-24",
+      "base_main_sha": "398330d95fb9e31ef6ef3a0caa0bc073634e531b",
+      "branch": "feature/eldoria-collections-rankings-prestige-20261124",
+      "delivery_definition": {
+        "deliverable": "Implementación aislada del núcleo de estadísticas, prestigio, colecciones y clasificación; integración real condicionada por titularidad y autoridad de servidor.",
+        "evidence": "Pruebas de dominio, persistencia, idempotencia, desbloqueos y pruebas Unity cuando se libere el recurso.",
+        "handoff": "PR única draft, SHA, pruebas y pendientes exactos."
+      }
     }
   ],
   "history": [
