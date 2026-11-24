@@ -10119,7 +10119,18 @@
         "note": "Ciudad, guardado histórico, mapa, WebGL, WebKit y dos recorridos I–V finalizados. El PC queda disponible. Revisión artística del propietario y prueba física de iPhone pendientes."
       },
       "previous_owner": "chatgpt-valoria-capital-20261124",
-      "next": "Next owner may claim canonical workstream eldoria-valoria-modular25d-bastion1-20261119 on existing PR after live queue check; preserve 6743b8baf2448679f1670acd961d64a76bd33a01 and last_completed_area."
+      "next": "Next owner may claim canonical workstream eldoria-valoria-modular25d-bastion1-20261119 on existing PR after live queue check; preserve 6743b8baf2448679f1670acd961d64a76bd33a01 and last_completed_area.",
+      "area_handoff_request": {
+        "status": "ready",
+        "completed": true,
+        "area": "Cámara de entrada y regreso a Valoria en iPhone",
+        "owner": "chatgpt-valoria-zoom-20261124",
+        "revision": 12,
+        "branch_head": "5f0e1f55f6cebf45357b3a8abfacbeb6013fea5a",
+        "run_id": 45387226984,
+        "artistic_approval": "pending_owner_review",
+        "note": "Unity y WebGL terminados. WebKit confirmó entrada y regreso, Chromium comprobó ambos gestos y la partida I–V. El recorrido Retina adicional usa infraestructura alojada y no necesita el PC."
+      }
     }
   ],
   "history": [
