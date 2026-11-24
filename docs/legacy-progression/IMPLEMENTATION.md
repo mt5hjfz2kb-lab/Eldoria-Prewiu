@@ -1,0 +1,19 @@
+# Rankings, colección y prestigio — PR de implantación (draft)
+
+## Implementado en esta candidata
+- Módulo independiente Unity `Eldoria.LegacyProgression` con proyección de la sesión existente mediante `ICommandGateway.Snapshot()`, sin modificar ni duplicar el guardado.
+- Seis categorías declaradas: poder, reino, ejército, Vigilantes, cazadores y exploradores. Cinco métricas personales disponibles según desbloqueo; cazadores devuelve no disponible hasta tener recibos reales completos. Los contadores de capítulo no son clasificaciones globales.
+- Catálogo de 30 trofeos calculados a partir de hechos existentes, 10 títulos, 8 estandartes y 5 monumentos **como desbloqueos lógicos**, no como assets visibles. Tres colecciones de descubrimientos auténticos: cenizas, fisura y frontera.
+- Códice continúa desbloqueándose en VII, no se altera su contrato; el perfil puede proyectar hallazgos previos a partir de III.
+- Contrato de recibos persistibles con identidad, idempotencia y ventanas UTC. Las pruebas de dominio se ejecutan por .NET en CI Ubuntu; no reservan Windows. No se instala un segundo almacén.
+- Ninguna posición, rival, recompensa ni ranking público inventados; sin economía ni bonus por prestigio.
+
+## Integración restante (no completada)
+1. Integrar el ledger en el PlayerState/LocalGateway canónico al liberarse los archivos de PR190/186; anexar recibos al mismo commit idempotente de acciones reales (caza, regreso, exploración, combate). La API de ledger **no es prueba de autenticidad**; solo la autoridad que resuelve la acción puede invocarla. Definir migración de guardados, política de retención/compactación y logros permanentes sin reconstruir historia que no existe. No contar dos veces eventos de historia y del mundo. La proyección de poder actual refleja la fórmula existente; completar sus categorías antes de clasificar públicamente.
+2. Integrar perfil y acceso a clasificaciones en el HUD aprobado al liberarse su ámbito; mostrar "no disponible" sin filas ficticias. Capturas nativas, interacción iPhone, navegación y guardados. Estandartes y monumentos necesitan arte aprobado, sockets espaciales y guardado de selección, sin crear parcelas o alterar composición. Los catálogos actuales son provisionales, requieren balance y no habilitan contenido de Bastión futuro.
+3. Forja VI, Relicario/Códice VII y posteriores: usar los sistemas reales al estar integrados; ampliar colección de equipo/cartas sin activar prematuramente ni sustituir sus propios inventarios. Duelos, estrategias y alianzas dependen de sistemas reales y backend.
+4. Servidor: identidad autenticada por reino, datos derivados de comandos/resoluciones autoritativas, idempotencia por evento, aislamiento por mundo, instantáneas/ranking semanal y de temporada con reloj UTC del servidor, política de desempate estable (puntuación descendente, momento de logro, ID), historial y recompensas únicas. No aceptar puntuaciones directas del cliente. Mantener temporadas y tablas públicas desactivadas hasta verificar autoridad, seguridad y privacidad. No se desplegó ni se configuró ningún backend.
+5. Pruebas: .NET del dominio, compilar Unity exacto, pruebas reales B I–V, migración/recarga, deduplicación, UI y telemetría de testers. Medir consultas, descubrimientos, obtención de trofeos y retorno. No usar datos de producción falsos.
+
+## Límites
+No se modificaron archivos compartidos de dominio/UI ni escena, arte, build, publicación o economía; Windows reservado por el trabajo artístico modular25D. No declarar lista para merge ni funcionalidad jugable completa. Ver PR y resultados exactos de Actions. Los umbrales y nombres son decisiones provisionales de diseño.

@@ -1,0 +1,24 @@
+name: Eldoria legacy progression domain
+on:
+  pull_request:
+    paths:
+      - 'Unity/Assets/Eldoria/LegacyProgression/**'
+      - 'tools/legacy-progression/**'
+      - '.github/workflows/eldoria-legacy-progression-domain.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  domain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          sparse-checkout: |
+            Unity/Assets/Eldoria/LegacyProgression
+            tools/legacy-progression
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - run: dotnet run --project tools/legacy-progression/Smoke.csproj --configuration Release
