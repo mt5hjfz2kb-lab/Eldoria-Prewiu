@@ -42,10 +42,21 @@ half4 frag(Varying i):SV_Target {
  // The shoulders of the street are occupied land. The strip narrows toward the
  // gate and broadens at the well. Thresholds on both sides share its paving.
  float2 spine=_CivicAxis.zw-_CivicAxis.xy;
- float station=saturate(dot(p-_CivicAxis.xy,spine)/dot(spine,spine));
- float frontage=lerp(1.47,2.16,station)+.32*_Built.x;
- half street=1-smoothstep(frontage-.24,frontage+.17,approach+erosion*.19);
- half kerb=1-smoothstep(.03,.12,abs(approach-.83)+.025*erosion);
+ float axisLength=length(spine);
+ float2 tangent=spine/axisLength;
+ float alongStreet=dot(p-_CivicAxis.xy,tangent);
+ float side=dot(p-_CivicAxis.xy,float2(-tangent.y,tangent.x));
+ float station=saturate(alongStreet/axisLength);
+ // Only widen the paving opposite a built frontage. At the well the street
+ // opens sideways into the existing crossing, with a short, worn lower edge.
+ float doors=smoothstep(.22,.47,station)*(1-smoothstep(.78,1.0,station));
+ float occupied=side<0 ? 1 : _Built.x;
+ float width=lerp(.81,1.02,station)+doors*occupied*1.04;
+ float crossEdge=abs(side)-width+erosion*.23;
+ float endEdge=max(-alongStreet-.22,alongStreet-axisLength-.38)+erosion*.22;
+ half street=1-smoothstep(-.13,.19,max(crossEdge,endEdge));
+ half kerb=(1-smoothstep(.035,.12,abs(abs(side)-.79)+.025*erosion))
+           *smoothstep(.26,.65,alongStreet)*(1-smoothstep(axisLength-.57,axisLength,alongStreet));
  half3 gravel=lerp(dirt*.81,seam*half3(.90,.90,.86),.56);
  ground=lerp(ground,gravel,street*.89);
  ground=lerp(ground,seam*1.12,street*kerb*.64);
