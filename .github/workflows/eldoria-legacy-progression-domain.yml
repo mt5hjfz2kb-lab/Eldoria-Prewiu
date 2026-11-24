@@ -17,6 +17,8 @@ jobs:
           lfs: false
           sparse-checkout: |
             Unity/Assets/Eldoria/LegacyProgression
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
             tools/legacy-progression
       - uses: actions/setup-dotnet@v4
         with:

@@ -7,5 +7,17 @@
     <Compile Include="Program.cs"/>
     <Compile Include="../../Unity/Assets/Eldoria/LegacyProgression/LegacyProgressionRules.cs"/>
     <Compile Include="../../Unity/Assets/Eldoria/LegacyProgression/LegacyReceiptLedger.cs"/>
+      <Compile Include="../../Unity/Assets/Eldoria/LegacyProgression/VerifiedRankings.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/LegacyProgression/LegacyPlayerAdapter.cs"/>
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/GameState.cs" Link="GameState.cs"/>
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EconomyProductionV2.cs" Link="GameState.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs" Link="EldoriaV41Contracts.cs" />
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs" Link="EarlyRetentionRules.cs"/>
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/NarrativeCoherenceRules.cs" Link="NarrativeCoherenceRules.cs"/>
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs" Link="SliceContentProfiles.cs"/>
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs" Link="PlayerIdentityPolicy.cs" />
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs" Link="ResourceNodeTierPolicy.cs" />
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs" Link="RenewablePopulationPolicy.cs" />
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs" Link="LocalGateway.cs"/>
   </ItemGroup>
 </Project>

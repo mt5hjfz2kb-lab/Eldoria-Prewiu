@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using Eldoria.LegacyProgression;
+using Eldoria.Domain;
+using Eldoria.Application;
 
 static class Program
 {
@@ -56,6 +58,33 @@ static class Program
         var options=new JsonSerializerOptions{IncludeFields=true};
         var restored=JsonSerializer.Deserialize<LegacyReceiptLedger>(JsonSerializer.Serialize(ledger,options),options);
         Check(restored.HuntPoints(start,end)==3&&!restored.RecordCommitted(hunt),"serialization and replay");
+        Check(LegacyProgressionRules.Titles.Max(t=>t.Prestige)<=r.Sum(t=>t.Prestige),"highest title attainable");
+        var state=new PlayerState{BastionLevel=3,PlayerName="Real player"};
+        state.Retention.LastClearedStage=5;
+        state.Retention.ScoutDiscoveryMask=3;
+        state.ChapterThree.Hunts=1;
+        var snapshot=LegacyPlayerAdapter.Project(state);
+        Check(snapshot.Name=="Real player"&&snapshot.Facts.VigilantStage==5&&snapshot.Facts.DiscoveryMask==3,"actual state adapter");
+        Check(snapshot.Facts.TotalPower==SliceRules.TotalPower(state).Total&&state.Retention.LastClearedStage==5,"canonical power and read-only projection");
+        var scope=new RankingScope{WorldId="w",PeriodId="2026-W48",Kind=RankingKind.Hunters,
+            Period=RankingPeriod.Weekly,StartUtcTicks=start,EndUtcTicks=end};
+        VerifiedScore Score(string id,long value,long when,string world="w")=>
+            new VerifiedScore{PlayerId=id,DisplayName=id,WorldId=world,PeriodId=scope.PeriodId,
+                Kind=scope.Kind,Score=value,AchievedUtcTicks=when};
+        var scores=new[]{Score("b",10,start+1),Score("a",10,start+1),Score("c",10,start),
+            Score("d",20,start),Score("wrong-world",999,start,"other")};
+        var rows=VerifiedRankings.Build(scope,scores);
+        Check(rows.Select(x=>x.PlayerId).SequenceEqual(new[]{"d","c","a","b"}),"ranking sorted, tie break, world isolated");
+        Check(rows.Select(x=>x.Position).SequenceEqual(new[]{1,2,3,4}),"deterministic positions");
+        Check(VerifiedRankings.Build(scope,Array.Empty<VerifiedScore>()).Count==0,"empty ranking never creates rows");
+        bool duplicateRejected=false;
+        try { VerifiedRankings.Build(scope,new[]{scores[0],scores[0]}); }
+        catch(ArgumentException){duplicateRejected=true;}
+        Check(duplicateRejected,"duplicate score rejected");
+        bool boundaryRejected=false;
+        try { VerifiedRankings.Build(scope,new[]{Score("end",1,end)}); }
+        catch(ArgumentException){boundaryRejected=true;}
+        Check(boundaryRejected,"end time rejected");
         Console.WriteLine("PASS: "+checks+" legacy progression assertions");
     }
 }

@@ -5,7 +5,7 @@
 - Seis categorías declaradas: poder, reino, ejército, Vigilantes, cazadores y exploradores. Cinco métricas personales disponibles según desbloqueo; cazadores devuelve no disponible hasta tener recibos reales completos. Los contadores de capítulo no son clasificaciones globales.
 - Catálogo de 30 trofeos calculados a partir de hechos existentes, 10 títulos, 8 estandartes y 5 monumentos **como desbloqueos lógicos**, no como assets visibles. Tres colecciones de descubrimientos auténticos: cenizas, fisura y frontera.
 - Códice continúa desbloqueándose en VII, no se altera su contrato; el perfil puede proyectar hallazgos previos a partir de III.
-- Contrato de recibos persistibles con identidad, idempotencia y ventanas UTC. Las pruebas de dominio se ejecutan por .NET en CI Ubuntu; no reservan Windows. No se instala un segundo almacén.
+- Contrato de recibos persistibles con identidad, idempotencia y ventanas UTC. Las pruebas de dominio se ejecutan por .NET en CI Ubuntu; no reservan Windows. No se instala un segundo almacén. `VerifiedRankings` implementa orden, desempate, validación temporal, aislamiento por mundo y rechazo de duplicados sobre puntuaciones que deberá suministrar la futura autoridad. No es un servicio online. Las pruebas compilan también el adaptador contra las fuentes reales de dominio/gateway.
 - Ninguna posición, rival, recompensa ni ranking público inventados; sin economía ni bonus por prestigio.
 
 ## Integración restante (no completada)

@@ -95,7 +95,7 @@ namespace Eldoria.LegacyProgression
             new HonorTitle("guardian","Guardián",100),new HonorTitle("knight","Caballero",200),
             new HonorTitle("warden","Custodio",350),new HonorTitle("chronicler","Cronista",500),
             new HonorTitle("champion","Campeón",700),new HonorTitle("marshal","Mariscal",950),
-            new HonorTitle("legend","Leyenda",1250),new HonorTitle("legacy","Legado de Eldoria",1600)
+            new HonorTitle("legend","Leyenda",1250),new HonorTitle("legacy","Legado de Eldoria",1500)
         });
         public static readonly IReadOnlyList<Cosmetic> Banners=Array.AsReadOnly(new[] {
             new Cosmetic("banner-founder","Fundador","bastion-5",5),
