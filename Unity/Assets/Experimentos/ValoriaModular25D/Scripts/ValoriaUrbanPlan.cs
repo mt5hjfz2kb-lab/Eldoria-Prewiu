@@ -25,11 +25,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             public readonly string Asset;
             public readonly Vector2 Foot;
             public readonly float Scale;
-            public readonly int District, FirstLevel;
-            public Prop(int district, string asset, Vector2 origin, float x, float y, float scale, int firstLevel=1)
+            public readonly int District, FirstLevel, LastLevel;
+            public Prop(int district, string asset, Vector2 origin, float x, float y, float scale, int firstLevel=1,int lastLevel=5)
             {
                 District=district;
                 FirstLevel=firstLevel;
+                LastLevel=lastLevel;
                 Asset=asset;
                 Foot=origin+new Vector2(x,y);
                 Scale=scale;
@@ -54,15 +55,30 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var walk=Approach(plot);
             return new[]{walk[0],walk[1],walk[2],walk[3],walk[2],walk[1]};
         }
+        public Vector2 UpperRow => Keep.Foot + new Vector2(-4.05f,3.55f);
+        public Vector2 WorkshopRow => Junction + new Vector2(-3.85f,-1.47f);
+        public Vector2 MarketRow => Freight + new Vector2(.9f,-3.1f);
+
+        public Vector2[][] BoroughStreets => new[]{
+            new[]{CourtCenter,Keep.Foot+new Vector2(-2.6f,-.95f),UpperRow+new Vector2(.95f,-2.5f),
+                UpperRow+new Vector2(.7f,-.48f),UpperRow+new Vector2(-2.38f,-.48f)},
+            new[]{FreightRoad[1],WorkshopRow+new Vector2(1.7f,-.54f),WorkshopRow+new Vector2(-2.15f,-.54f)},
+            new[]{Freight,MarketRow+new Vector2(-2.95f,1.95f),MarketRow+new Vector2(-3.35f,-.56f),
+                MarketRow+new Vector2(-1.3f,-.63f),MarketRow+new Vector2(2.4f,-.6f)}
+        };
+
         public Prop[] Environment => new[]{
-            new Prop(0,"MuroDerruido",Keep.Foot,-2.88f,.40f,.86f),
+            new Prop(0,"MuroDerruido",Keep.Foot,-2.88f,.40f,.86f,1,4),
             new Prop(0,"ArbolAntiguo",Keep.Foot,3.55f,2.85f,.88f),
-            new Prop(0,"ArboledaAntigua",Keep.Foot,-3.65f,1.65f,.73f),
+            new Prop(0,"ArboledaAntigua",Keep.Foot,-3.65f,1.65f,.73f,1,4),
             new Prop(0,"MatojosFlores",Keep.Foot,-2.85f,-.23f,.58f),
             new Prop(0,"PozoPiedra",Junction,.94f,-.20f,.75f),
             new Prop(0,"CasasDelCamino",Keep.Door,-1.62f,-2.55f,.86f),
             new Prop(2,"CasasDeOficio",Keep.Door,2.38f,-2.72f,.87f,2),
-            new Prop(3,"FrenteTejedores",Junction,-2.15f,-1.57f,.96f,4),
+            new Prop(3,"FrenteTejedores",Junction,-2.15f,-1.57f,.96f,4,4),
+            new Prop(0,"CalleDelPostigo",UpperRow,0,0,1f,5),
+            new Prop(3,"PortalesDeOficios",WorkshopRow,0,0,1f,5),
+            new Prop(3,"CasasDelPeso",MarketRow,0,0,1f,5),
             new Prop(3,"LonjaGrano",Freight,1.76f,.63f,.66f,3),
             new Prop(0,"MatojosFlores",Junction,1.22f,1.02f,.39f),
             new Prop(0,"ArboledaAntigua",Mill.Foot,-2.62f,1.72f,.85f),

@@ -146,7 +146,7 @@ namespace Eldoria.Modular25D.Tests
 
             var land=all.FirstOrDefault(x=>x && x.GetType().Name=="Modular25DLandscape");
             Assert.NotNull(land);
-            Assert.That((int)Member(land,"RoadCount"),Is.EqualTo(6));
+            Assert.That((int)Member(land,"RoadCount"),Is.EqualTo(9));
             Assert.That((int)Member(land,"FootprintCount"),Is.EqualTo(1));
             var commonGround=all.Single(x=>x && x.GetType().Name=="Modular25DGround");
             Assert.That((bool)Member(commonGround,"HasCivicCourt"),Is.True);

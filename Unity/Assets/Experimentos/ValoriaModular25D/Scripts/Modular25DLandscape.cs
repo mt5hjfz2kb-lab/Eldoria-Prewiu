@@ -19,12 +19,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         const int RoadW=256, RoadH=512, FootW=512, FootH=320;
         static Vector2 Sawmill => ValoriaUrbanPlan.City.Mill.Foot;
         readonly Dictionary<string,GameObject> approaches=new Dictionary<string,GameObject>();
-        public void SetDistricts(bool military,bool market,bool quarry)
+        readonly List<GameObject> boroughStreets=new List<GameObject>();
+        public void SetDistricts(bool military,bool market,bool quarry,int level)
         {
             approaches["barracks"].SetActive(military);
             approaches["granary"].SetActive(market);
             approaches["stoneworks"].SetActive(quarry);
             approaches["freight"].SetActive(market || quarry);
+            for(int i=0;i<boroughStreets.Count;i++) boroughStreets[i].SetActive(level>=5 && (i==0 || market));
         }
         readonly List<Mesh> meshes=new List<Mesh>();
         readonly List<Texture2D> textures=new List<Texture2D>();
@@ -97,6 +99,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var freight=AddRoad("Camino de abastos",plan.FreightRoad,1.15f,imperialMat,true);
             approaches.Add("freight",freight);
             freight.SetActive(false);
+
+            var streetNames=new[]{"Calle del Postigo","Portales de oficios","Casas del Peso"};
+            var streets=plan.BoroughStreets;
+            for(int i=0;i<streets.Length;i++)
+            {
+                var lane=AddRoad(streetNames[i],streets[i],i==2?1.18f:1.04f,imperialMat,true);
+                lane.SetActive(false);
+                boroughStreets.Add(lane);
+            }
 
             var mill=MakeFootprint("Sawmill",new Color(.54f,.44f,.31f,1),
                 new Color(.73f,.59f,.38f,1),false,true);

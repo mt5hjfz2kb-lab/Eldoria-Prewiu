@@ -34,8 +34,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public int SettlementZonesPlaced { get; private set; }
 
         Transform millWorkYard, garrisonYard, grainYard, quarryYard;
-        readonly System.Collections.Generic.List<(Transform visual,int level)> stagedFrontages =
-            new System.Collections.Generic.List<(Transform,int)>();
+        readonly System.Collections.Generic.List<(Transform visual,int first,int last)> stagedFrontages =
+            new System.Collections.Generic.List<(Transform,int,int)>();
 
         const float GroundSpacingX = 1f;
         const float GroundSpacingY = .5f;
@@ -87,7 +87,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             foreach (var prop in plan.Environment)
             {
                 var placed = AddOriginalProp(yards[prop.District],prop.Asset,prop.Foot,prop.Scale);
-                if (placed && prop.FirstLevel>1) stagedFrontages.Add((placed,prop.FirstLevel));
+                if (placed && (prop.FirstLevel>1 || prop.LastLevel<5))
+                    stagedFrontages.Add((placed,prop.FirstLevel,prop.LastLevel));
             }
             CreateVillager(people,"Valoria citizen A",plan.ReturnWalk(plan.Keep),0f);
             CreateVillager(people,"Valoria citizen B",plan.ReturnWalk(plan.Mill),1.8f);
@@ -292,10 +293,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 BarracksRenderer.gameObject.activeSelf,GranaryRenderer.gameObject.activeSelf,StoneworksRenderer.gameObject.activeSelf,DisplayedBastionLevel);
             bool garrison = BarracksRenderer.gameObject.activeSelf;
             GetComponentInChildren<Modular25DLandscape>().SetDistricts(garrison,
-                GranaryRenderer.gameObject.activeSelf,StoneworksRenderer.gameObject.activeSelf);
+                GranaryRenderer.gameObject.activeSelf,StoneworksRenderer.gameObject.activeSelf,DisplayedBastionLevel);
             garrisonYard.gameObject.SetActive(garrison);
             grainYard.gameObject.SetActive(GranaryRenderer.gameObject.activeSelf);
-            foreach(var frontage in stagedFrontages) frontage.visual.gameObject.SetActive(DisplayedBastionLevel>=frontage.level);
+            foreach(var frontage in stagedFrontages) frontage.visual.gameObject.SetActive(DisplayedBastionLevel>=frontage.first && DisplayedBastionLevel<=frontage.last);
             quarryYard.gameObject.SetActive(StoneworksRenderer.gameObject.activeSelf);
             var stage=ParcelBuildingStates.For(snapshot,"sawmill");
             // Three independently authored visuals; only the canonical snapshot

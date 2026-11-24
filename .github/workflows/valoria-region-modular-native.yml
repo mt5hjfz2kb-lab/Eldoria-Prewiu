@@ -86,8 +86,8 @@ jobs:
           leases=[x for x in state["active"] if "windows-runner-heavy" in x.get("resources",[])]
           branch=gh("git/ref/heads/"+os.environ["GITHUB_REF_NAME"])
           ok=(len(leases)==1 and leases[0]["id"]==ident and
-             leases[0].get("ownership_revision")==12 and leases[0].get("ownership_state")=="claimed" and
-             leases[0].get("owner")=="chatgpt-valoria-zoom-20261124" and
+             leases[0].get("ownership_revision")==13 and leases[0].get("ownership_state")=="claimed" and
+             leases[0].get("owner")=="chatgpt-valoria-barrios-20261124" and
              state.get("resource_rotation",{}).get("current_workstream")==ident and
              branch["object"]["sha"]==os.environ["GITHUB_SHA"])
           with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write("allowed="+str(ok).lower()+"\n")
@@ -118,8 +118,8 @@ jobs:
           $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
           $held=@($reg.active|Where-Object{@($_.resources) -contains 'windows-runner-heavy'})
           $id='eldoria-valoria-modular25d-bastion1-20261119'
-          if($held.Count -ne 1 -or $held[0].id -ne $id -or $held[0].ownership_revision -ne 12 -or
-             $held[0].owner -ne 'chatgpt-valoria-zoom-20261124' -or
+          if($held.Count -ne 1 -or $held[0].id -ne $id -or $held[0].ownership_revision -ne 13 -or
+             $held[0].owner -ne 'chatgpt-valoria-barrios-20261124' -or
              $reg.resource_rotation.current_workstream -ne $id){throw 'Lease not ours'}
           if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
             throw 'Existing Windows native process: refuse interference'}

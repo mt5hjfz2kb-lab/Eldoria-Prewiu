@@ -86,7 +86,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 if(ground==null || ground.ChunkCount!=81)
                     throw new Exception("Ground chunks are not actually present: "+(ground==null?-1:ground.ChunkCount));
                 var landscape=world.GetComponentInChildren<Modular25DLandscape>();
-                if(landscape==null||landscape.RoadCount!=6||landscape.FootprintCount!=1||
+                if(landscape==null||landscape.RoadCount!=6+ValoriaUrbanPlan.City.BoroughStreets.Length||landscape.FootprintCount!=1||
                    !landscape.OriginalCobbleRoadLoaded)
                     throw new Exception("Actual Unity spatial terrain integration missing: roads="+
                         (landscape==null?-1:landscape.RoadCount)+" footprints="+
@@ -321,11 +321,22 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                         for(int n=0;n<earlierCameras.Length;n++)
                             Render(cam,output,report,"stage-5-registered-"+n,390,844,
                                 (Vector3)earlierCameras[n]+Vector3.back*30f,6.600513f);
+                        var city=ValoriaUrbanPlan.City;
+                        var sites=new[]{city.UpperRow,city.CourtCenter,city.Junction,city.WorkshopRow,
+                            city.Mill.Foot,city.Barracks.Foot,city.Granary.Foot,city.MarketRow,city.Quarry.Foot,
+                            city.Growth[0].center,city.Growth[1].center};
+                        var names=new[]{"postigo","nucleo","calle-mayor","portales","aserradero","distrito-militar",
+                            "abastos","casa-del-peso","cantera","reserva-oeste","reserva-nordeste"};
+                        for(int i=0;i<sites.Length;i++)
+                            Render(cam,output,report,"stage-5-"+names[i],780,1040,
+                                (Vector3)sites[i]+new Vector3(0,.75f,-30),4.8f);
+                        var tour=new[]{(Vector2)framing,city.UpperRow,city.CourtCenter,city.Mill.Foot,city.WorkshopRow,
+                            city.Junction,city.Barracks.Foot,city.Granary.Foot,city.MarketRow,city.Quarry.Foot};
                         for (int frame=0; frame<120; frame++)
                         {
-                            float t=frame*(stops.Length-1)/119f;
-                            int start=Mathf.Min(Mathf.FloorToInt(t),stops.Length-2);
-                            var center=Vector3.Lerp(stops[start].bounds.center,stops[start+1].bounds.center,
+                            float t=frame*(tour.Length-1)/119f;
+                            int start=Mathf.Min(Mathf.FloorToInt(t),tour.Length-2);
+                            var center=Vector3.Lerp(tour[start],tour[start+1],
                                 Mathf.SmoothStep(0f,1f,t-start));
                             center.z=-30f;
                             foreach(var walker in walkers) walker.StepForNativeCapture(1f/15f);
@@ -421,7 +432,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 world.GranaryRenderer,world.StoneworksRenderer};
             var landscape=world.GetComponentInChildren<Modular25DLandscape>();
             var roads=landscape.GetComponentsInChildren<MeshFilter>(true);
-            if(roads.Length!=6)throw new InvalidDataException("Unexpected legacy or duplicate street mesh");
+            if(roads.Length!=6+plan.BoroughStreets.Length)throw new InvalidDataException("Unexpected legacy or duplicate street mesh");
             for(int i=0;i<plots.Length;i++)
             {
                 var plot=plots[i];
@@ -462,7 +473,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             var frontageFeet=new System.Collections.Generic.List<Rect>();
             foreach(var prop in plan.Environment)
             {
-                if(prop.Asset!="CasasDelCamino" && prop.Asset!="CasasDeOficio" && prop.Asset!="ArmeriaDelPatio" &&
+                if(level<prop.FirstLevel || level>prop.LastLevel)continue;
+                if(prop.Asset!="CalleDelPostigo" && prop.Asset!="PortalesDeOficios" && prop.Asset!="CasasDelPeso" && prop.Asset!="CasasDelCamino" && prop.Asset!="CasasDeOficio" && prop.Asset!="ArmeriaDelPatio" &&
                    prop.Asset!="PuestoDeAbastos" && prop.Asset!="FrenteTejedores" && prop.Asset!="LonjaGrano")continue;
                 var sprite=Resources.Load<Sprite>("ValoriaModular25D/RecoveredProps/"+prop.Asset);
                 if(!sprite)throw new InvalidDataException("Missing street frontage: "+prop.Asset);
