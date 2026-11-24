@@ -24,6 +24,8 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - run: dotnet run --project tools/legacy-progression/Smoke.csproj --configuration Release
+      - name: Verify canonical integration in disposable source copy
+        run: python3 tools/legacy-progression/integration/prepare.py
   server:
     runs-on: ubuntu-latest
     services:
