@@ -10008,6 +10008,17 @@
     {
       "id": "eldoria-valoria-modular25d-bastion1-20261119",
       "title": "Eldoria — Valoria Bastión I modular 2.5D: premium authored sprites + Unity native proof",
+      "area_handoff_request": {
+        "status": "ready",
+        "completed": true,
+        "area": "Integración de las fachadas del Postigo y los Portales en Bastión V",
+        "owner": "chatgpt-valoria-umbrales-20261124",
+        "revision": 15,
+        "branch_head": "2ad82c894e597107c442fd150df2b3cd44d31bfc",
+        "run_id": 45472764940,
+        "artistic_approval": "provisional",
+        "note": "Verificado en 313 fotogramas de recorrido nativo y en cámaras fijas. En las dos fachadas, proyectar el eje de la calle tanto en la elevación como en el contacto de la sombra y en las entradas. El Postigo conserva una hilera larga y repetitiva. Revisión personal móvil publicada con ?arte=2ad82c8. iPhone físico pendiente."
+      },
       "owner": "chatgpt-valoria-umbrales-20261124",
       "ownership_state": "claimed",
       "ownership_revision": 15,
