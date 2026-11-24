@@ -10107,7 +10107,18 @@
         "note": "277 fotogramas Unity, 14 encuadres A/B, recorridos I–V a 1× y 3× y WebKit con perfil iPhone 13. Partida física y aprobación artística del propietario pendientes. Una incidencia 404 sin URL en la consola de arranque de Chromium, sin bloqueo durante la partida. Código y arte en rama experimental."
       },
       "previous_owner": "chatgpt-valoria-urbanismo-20261123",
-      "next": "Next owner may claim canonical workstream eldoria-valoria-modular25d-bastion1-20261119 on existing PR after live queue check; preserve bedeb5fad7049ebc6b45f476067ec1820dbc5391 and last_completed_area."
+      "next": "Next owner may claim canonical workstream eldoria-valoria-modular25d-bastion1-20261119 on existing PR after live queue check; preserve bedeb5fad7049ebc6b45f476067ec1820dbc5391 and last_completed_area.",
+      "area_handoff_request": {
+        "status": "ready",
+        "completed": true,
+        "area": "Capital en formación, Región 1 y Corona de la Brecha",
+        "owner": "chatgpt-valoria-capital-20261124",
+        "revision": 10,
+        "branch_head": "6743b8baf2448679f1670acd961d64a76bd33a01",
+        "run_id": 45361939987,
+        "artistic_approval": "pending_owner_review",
+        "note": "Ciudad, guardado histórico, mapa, WebGL, WebKit y dos recorridos I–V finalizados. El PC queda disponible. Revisión artística del propietario y prueba física de iPhone pendientes."
+      }
     }
   ],
   "history": [
