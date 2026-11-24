@@ -10008,14 +10008,14 @@
     {
       "id": "eldoria-valoria-modular25d-bastion1-20261119",
       "title": "Eldoria — Valoria Bastión I modular 2.5D: premium authored sprites + Unity native proof",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 11,
-      "write_scope_released": true,
+      "owner": "chatgpt-valoria-zoom-20261124",
+      "ownership_state": "claimed",
+      "ownership_revision": 12,
+      "write_scope_released": false,
       "branch": "experiment/valoria-ciudad-region-unificada-20261121",
       "status": "active",
       "phase": "AREA_COMPLETE_READY_FOR_NEXT_CHAT",
-      "claimed_at": "2026-11-24T08:08:01.903Z",
+      "claimed_at": "2026-11-24T11:44:36.595Z",
       "base_main_sha": "60d8ce11dde88960ece713f725d4564283cc6a90",
       "user_authorization": "Owner 2026-11-20: research, design, implement and finish new commercial strategy mobile HUD for the existing modular Bastion I; complete pending artist sprite/Unity/WebGL issues, preserve original main and game logic, isolated branch, no paid credits.",
       "scope": [
@@ -10025,7 +10025,9 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_approved": false,
       "device_qa": "PENDING physical Safari iPhone",
       "delivery_definition": {
@@ -10087,6 +10089,12 @@
           "ownership_revision": 10,
           "transferred_at": "2026-11-24T10:48:12.352Z",
           "reason": "Completed area Capital en formación, Región 1 y Corona de la Brecha; explicit verified handoff to next normal chat"
+        },
+        {
+          "owner": "chatgpt-valoria-zoom-20261124",
+          "ownership_revision": 12,
+          "transferred_at": "2026-11-24T11:44:36.595Z",
+          "reason": "Ajuste autorizado del zoom de entrada y regreso a Valoria"
         }
       ],
       "handoff_note": "Technical source e681fda70aaa985dc62a928e4c9c6a0c63628cd5 certified by 44713811420; HEAD 63c4059 is documentation-only. See docs/valoria-modular-25d/DELIVERY_20261120_NATIVE_WEBGL_CAMERA.md and PRODUCTION_GUIDE_BASTION_I_20261120.md. Art approval and physical iPhone separate. Owner/Windows released to available rev5; reuse SAME canonical ID on authorized continuation.",
@@ -10098,7 +10106,7 @@
       "next_native_head": "b00897b081fe3e0e143a51df37a71533fad25beb",
       "last_browser_run": 44713811420,
       "released_at": "2026-11-24T10:48:12.352Z",
-      "current_art_goal": "Capital en formación: composición urbana, continuidad regional y lectura de Corona en móvil",
+      "current_art_goal": "Encuadre de entrada a Valoria según la captura del iPhone",
       "last_failed_native_run": 44745994989,
       "last_completed_area": {
         "area": "Capital en formación, Región 1 y Corona de la Brecha",
