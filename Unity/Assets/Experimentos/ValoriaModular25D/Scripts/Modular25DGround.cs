@@ -103,6 +103,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 districtMaterial.SetTexture("_Slate",Resources.Load<Texture2D>("World4X/Illustrated/Slate"));
                 districtMaterial.SetVector("_UpperBlock",new Vector4(plan.UpperRow.x,plan.UpperRow.y,plan.UpperCourt.x,plan.UpperCourt.y));
                 districtMaterial.SetVector("_LowerBlock",new Vector4(plan.WorkshopRow.x,plan.WorkshopRow.y,plan.MarketRow.x,plan.MarketRow.y));
+                var east=plan.Growth[1];
+                var west=plan.Growth[0];
+                districtMaterial.SetVector("_Orchard",new Vector4(plan.OrchardBoundary.x,plan.OrchardBoundary.y,east.center.x,east.center.y));
+                districtMaterial.SetVector("_QuarryMeadow",new Vector4(west.center.x,west.center.y,west.width*.62f,west.height*.66f));
                 SetYard("_MilitaryYard",plan.Barracks,1.72f);
                 SetYard("_MarketYard",plan.Granary,1.16f);
                 SetYard("_StoneFace",plan.Quarry,1.35f);

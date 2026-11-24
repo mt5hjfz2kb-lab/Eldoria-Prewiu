@@ -479,7 +479,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             foreach(var prop in plan.Environment)
             {
                 if(level<prop.FirstLevel || level>prop.LastLevel)continue;
-                if(prop.Asset!="ManzanaDelAdarve" && prop.Asset!="CalleDelPostigo" && prop.Asset!="PortalesDeOficios" && prop.Asset!="CasasDelPeso" && prop.Asset!="CasasDelCamino" && prop.Asset!="CasasDeOficio" && prop.Asset!="ArmeriaDelPatio" &&
+                if(prop.Asset!="AceraZapateros" && prop.Asset!="CasaDelGremio" && prop.Asset!="ManzanaDelAdarve" && prop.Asset!="CalleDelPostigo" && prop.Asset!="PortalesDeOficios" && prop.Asset!="CasasDelPeso" && prop.Asset!="CasasDelCamino" && prop.Asset!="CasasDeOficio" && prop.Asset!="ArmeriaDelPatio" &&
                    prop.Asset!="PuestoDeAbastos" && prop.Asset!="FrenteTejedores" && prop.Asset!="LonjaGrano")continue;
                 var sprite=Resources.Load<Sprite>("ValoriaModular25D/RecoveredProps/"+prop.Asset);
                 if(!sprite)throw new InvalidDataException("Missing street frontage: "+prop.Asset);

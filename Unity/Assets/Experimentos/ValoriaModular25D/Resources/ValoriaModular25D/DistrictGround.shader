@@ -10,7 +10,7 @@ CGPROGRAM
 #include "UnityCG.cginc"
 sampler2D _MainTex,_Paving,_Soil,_Slate;
 float4 _CivicAxis,_WorkLane,_Forecourt;
-float4 _UpperBlock,_LowerBlock;
+float4 _UpperBlock,_LowerBlock,_Orchard,_QuarryMeadow;
 float _Boroughs;
 float4 _Built, _MilitaryYard, _MarketYard, _StoneFace;
 struct Vertex { float4 vertex:POSITION; float2 uv:TEXCOORD0; };
@@ -34,6 +34,18 @@ half4 frag(Varying i):SV_Target {
  half3 seam=tex2D(_Paving,float2(.47*p.x+.17*p.y,.59*p.y-.08*p.x)).rgb;
  half3 dirt=tex2D(_Soil,float2(.24+.44*frac(.29*p.x+.09*p.y),frac(.31*p.y))).rgb;
  half erosion=dot(ground,half3(.24,.56,.20))+seam.r-.6;
+ // The old field lies above the orchard boundary. The open lower meadow
+ // remains available for expansion, with a different soil at the quarry edge.
+ float2 orchard=p-_Orchard.xy;
+ float bankHeight=orchard.y-orchard.x*.17;
+ half upperField=smoothstep(.15,1.12,bankHeight)*(1-smoothstep(3.2,5.3,bankHeight))*
+                 (1-smoothstep(7.7,10.6,abs(orchard.x)));
+ half blades=smoothstep(.23,.77,frac(2.4*(bankHeight+.035*orchard.x*orchard.x)+.31*erosion));
+ half arable=yard(p,float4(_Orchard.zw+float2(0,.35),3.35,2.02),erosion);
+ half stony=yard(p,_QuarryMeadow,erosion);
+ ground=lerp(ground,lerp(ground*half3(1.11,1.00,.77),dirt*.91,.42),arable*_Boroughs*.76);
+ ground=lerp(ground,lerp(ground*.94,dirt*1.03,.54),upperField*_Boroughs*(.47+.48*blades));
+ ground=lerp(ground,lerp(ground*.91,seam*half3(.90,.93,.95),.36),stony*_Boroughs*.76);
  half drill=yard(p,_MilitaryYard,erosion)*_Built.x;
  half market=yard(p,_MarketYard,erosion)*_Built.y;
  half rock=yard(p,_StoneFace,erosion)*_Built.z;
