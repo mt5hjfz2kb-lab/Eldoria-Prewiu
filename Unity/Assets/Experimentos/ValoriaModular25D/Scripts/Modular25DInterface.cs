@@ -354,7 +354,24 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             inner.sprite = activityPanelPlate;
             inner.color = Color.white;
             inner.type = Image.Type.Sliced;
-            frame.GetComponent<Image>().color = AntiqueBrass;
+            frame.GetComponent<Image>().color = Eldoria.UI.RoyalGold.V2.CoronaFinish.Brass;
+            var scene=Resources.Load<Texture2D>("DailyTreasureCeremonies/bastion_stage");
+            if(scene)
+            {
+                var illustration=new GameObject("Valoria at the naming ceremony",typeof(RectTransform),typeof(RawImage));
+                var painting=illustration.GetComponent<RawImage>();
+                painting.transform.SetParent(prompt.transform,false);
+                painting.transform.SetAsFirstSibling();
+                var bounds=painting.rectTransform;
+                bounds.anchorMin=Vector2.zero; bounds.anchorMax=Vector2.one;
+                bounds.offsetMin=Vector2.zero; bounds.offsetMax=Vector2.zero;
+                painting.texture=scene;
+                var fit=illustration.AddComponent<AspectRatioFitter>();
+                fit.aspectRatio=scene.width/(float)scene.height;
+                fit.aspectMode=AspectRatioFitter.AspectMode.EnvelopeParent;
+                painting.color=new Color(.62f,.66f,.66f);
+                painting.raycastTarget=false;
+            }
             foreach (var text in inner.transform.parent.GetComponentsInChildren<Text>(true))
             {
                 text.font=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+(text.name=="Opening question"
@@ -1146,7 +1163,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             button.transition = Selectable.Transition.ColorTint;
             var colours = button.colors;
             colours.normalColor = Color.white;
-            colours.highlightedColor = new Color(1f, .97f, .87f, 1f);
+            colours.highlightedColor = Eldoria.UI.RoyalGold.V2.CoronaFinish.Ivory;
+            colours.selectedColor = new Color(.90f,.96f,.93f);
             colours.pressedColor = new Color(.74f, .82f, .77f, 1f);
             colours.disabledColor = new Color(.55f, .57f, .56f, .7f);
             colours.fadeDuration = .09f;

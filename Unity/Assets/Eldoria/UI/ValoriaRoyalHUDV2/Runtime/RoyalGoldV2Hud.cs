@@ -7,6 +7,13 @@ using UnityEngine.UI;
 
 namespace Eldoria.UI.RoyalGold.V2
 {
+    public static class CoronaFinish
+    {
+        public static readonly Color32 Ivory=new Color32(250,239,213,255);
+        public static readonly Color32 Muted=new Color32(201,205,192,255);
+        public static readonly Color32 Brass=new Color32(192,159,106,255);
+    }
+
     /// <summary>
     /// Presentation-only companion for the existing RoyalHUD.
     /// Every displayed value and action comes from V1's authoritative binding.
