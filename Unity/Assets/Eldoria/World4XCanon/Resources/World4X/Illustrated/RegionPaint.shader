@@ -38,7 +38,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
    half4 rock=SAMPLE_TEXTURE2D_LOD(_FaultPigment,sampler_FaultPigment,faultUV,2);
    half core=smoothstep(.002,.045,min(rock.b-rock.g,rock.r-rock.g));
    half shelf=smoothstep(.10,.43,dot(rock.rgb,half3(.24,.56,.20)));
-   v.p.y+=rock.a*(shelf*2.0-core*3.6);
+   v.p.y+=rock.a*(shelf*2.65-core*5.7);
   }
   o.p=TransformObjectToHClip(v.p); o.uv=v.uv;
   o.slope=TransformObjectToWorldNormal(v.normal);
@@ -82,9 +82,9 @@ Shader "Eldoria/Region1/Illustrated ground" {
    // Carry only vegetation and geology through the chart edge. Curving
    // contours prevent the edge texels from stretching into straight bands.
    float2 fold=1-abs(frac(i.uv*.5)*2-1);
-   float swing=smoothstep(0,480,beyondDistance);
+   float swing=smoothstep(0,360,beyondDistance);
    float2 bend=float2(sin(metre.y*.0027+metre.x*.0012),cos(metre.x*.0031+metre.y*.0014));
-   i.uv=saturate(fold+bend*swing*.072);
+   i.uv=saturate(fold+bend*swing*float2(85.0/1820,115.0/3600));
   }
   // This is the only visible regional ground surface. The old imported
   // colour-map is NOT drawn as a background image beneath another landscape.
@@ -94,8 +94,8 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half4 mask=SAMPLE_TEXTURE2D(_Weights,sampler_Weights,i.uv);
   half coast=smoothstep(.70,1.0,mask.r)*smoothstep(545,925,metre.x);
   if (_BeyondMap>.5) {
-   mask.g*=1-smoothstep(0,48,beyondDistance);
-   mask.r=lerp(mask.r,coast,smoothstep(0,90,beyondDistance));
+   mask.g*=1-smoothstep(0,190,beyondDistance);
+   // The same water mask continues across the outermost mesh vertices.
   }
   float2 localUV=(metre-float2(-200,-148))/float2(416,512);
   float2 localBorder=min(localUV,1-localUV)*float2(416,512);
@@ -194,7 +194,13 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half glade=(1-canopy)*(1-valley)*(1-upland);
   half field=saturate(.5+.32*sin(metre.x*.014+sin(metre.y*.018))+.18*cos(metre.y*.031-metre.x*.009));
   half3 openMeadow=grass*lerp(half3(.93,1.11,1.05),half3(1.28,1.11,.80),field*glade);
-  half3 woodedMeadow=grass*half3(.70,.92,.98);
+  // Merge painted crowns into irregular stands at map scale. Fine ridges
+  // follow the stand instead of lining up with the field or the atlas border.
+  half crowns=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,(metre+standBend*9)/float2(37,29)).g;
+  half clearEdge=smoothstep(.22,.62,canopy+(crowns-.23)*.50);
+  half3 woodedMeadow=lerp(sharedEarth*half3(.70,.75,.51),grass*half3(.43,.75,.67),
+                           .42+.55*clearEdge);
+  woodedMeadow*=lerp(.90,1.13,saturate(crowns*2.8));
   half3 districtGrass=lerp(openMeadow,woodedMeadow,canopy);
   districtGrass=lerp(districtGrass,grass*half3(.76,1.02,1.11),valley*.82);
   districtGrass=lerp(districtGrass,lerp(grass,slate,.68),upland*.94);
@@ -256,9 +262,9 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half shelf=lerp(1-smoothstep(.17,.79,district.r),1-smoothstep(.1,3.8+shoal*2.4,shore),local);
   half3 channel=half3(.167,.276,.266)*(.77+pigment*.30+shoal*.15);
   half3 shallows=half3(.38,.435,.346)*(.85+pigment*.32);
-  half3 riverColour=lerp(channel,shallows,shelf*.88);
+  half3 riverColour=lerp(channel,shallows,shelf*.79);
   half glint=smoothstep(.36,.85,pigment)*lerp(.42,1,close);
-  riverColour+=half3(.11,.12,.115)*glint;
+  riverColour+=half3(.064,.078,.073)*glint;
   #ifndef UNITY_COLORSPACE_GAMMA
   riverColour=SRGBToLinear(riverColour);
   #endif
@@ -287,9 +293,9 @@ Shader "Eldoria/Region1/Illustrated ground" {
    half wooded=canopy*(.70+.30*cos(metre.y*.018+sin(metre.x*.013)));
    half3 heath=lerp(districtGrass,grass*half3(.52,.73,.60),wooded);
    half3 ridge=lerp(heath,slate,saturate(.12*upland+shoulder*.70))*(.87+.18*geomLight);
-   ridge=lerp(ridge,riverColour,coast);
-   colour=lerp(colour,ridge,smoothstep(0,410,beyondDistance));
-   colour=lerp(colour,peripheralMist(metre),smoothstep(800,3900,beyondDistance)*.56);
+   ridge=lerp(ridge,riverColour,mask.r);
+   colour=lerp(colour,ridge,smoothstep(190,1150,beyondDistance)*.72);
+   colour=lerp(colour,peripheralMist(metre),smoothstep(1850,6400,beyondDistance)*.28);
   }
   return half4(colour,1);
  }

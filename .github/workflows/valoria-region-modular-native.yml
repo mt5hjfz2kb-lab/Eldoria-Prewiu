@@ -243,4 +243,332 @@ jobs:
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/urban-*
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/district-tour-*.png
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/district-close-*.png
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/plano-urbano.json
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/evidence.json
+      - name: Native integrated scene, identical routes and fixed-camera art A/B
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $out=Join-Path $project 'Artifacts/RegionModular'
+          New-Item -ItemType Directory -Force $out|Out-Null
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(!$blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          $python=@(Get-ChildItem (Split-Path $blender) -Filter python.exe -File -Recurse |
+            Where-Object {$_.FullName -match '[\\/]python[\\/]bin[\\/]python.exe$'})
+          if($python.Count -ne 1){throw 'Blender bundled Python executable unresolved'}
+          "MOD25D_PYTHON=$($python[0].FullName)" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          & $blender --background --python-exit-code 1 --python (Join-Path $env:MOD25D_SOURCE 'tools/bastion-iii/author-frontier.py')
+          if($LASTEXITCODE){throw 'Canonical private fissure authoring failed'}
+          $bakeLog=Join-Path $out 'canonical-bake.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',$project,'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',$bakeLog)
+          $bake=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($bake.ExitCode){Get-Content $bakeLog -Tail 160;throw 'Canonical chapter III prefab bake failed'}
+          $env:VALORIA_CONTENT_PROBE='1'
+          $env:VALORIA_GAMEPLAY_PROBE='1'
+          $failed=@()
+          foreach($phase in @('before','after')){
+            $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $out $phase
+            New-Item -ItemType Directory -Force $env:ELDORIA_REGION1_CAPTURE_OUT|Out-Null
+            $env:ELDORIA_WORLD_ART_BASELINE=if($phase -eq 'before'){'1'}else{'0'}
+            $env:ELDORIA_BAKE_TERRAIN_QUERIES=if($phase -eq 'before'){'1'}else{'0'}
+            $env:ELDORIA_VALIDATE_TERRAIN_RAYCAST=if($phase -eq 'after'){'1'}else{'0'}
+            $log=Join-Path $out ($phase+'.log')
+            $xml=Join-Path $out ($phase+'.xml')
+            $args=@('-batchmode','-force-d3d11','-projectPath',$project,'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.CoronaRegionRendersAndRetainsGeographicRoutes','-testResults',$xml,'-logFile',$log)
+            $proc=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+            if($proc.ExitCode -or !(Test-Path $xml)){
+              Get-Content $log -Tail 100
+              $failed += $phase
+            }else{
+              [xml]$result=Get-Content $xml
+              if($result.'test-run'.passed -ne '1'){$failed += $phase}
+            }
+            $tape=Join-Path $env:ELDORIA_REGION1_CAPTURE_OUT 'terrain.bytes'
+            if($phase -eq 'before' -and (Test-Path $tape)){Copy-Item $tape (Join-Path $project 'Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes')}
+          }
+          if($failed.Count){throw ("Native integrated phase failed: "+($failed -join ', '))}
+          if((Get-FileHash "$out/before/routes.txt").Hash -ne (Get-FileHash "$out/after/routes.txt").Hash){throw 'Canonical route or cells changed'}
+          if((Get-FileHash "$out/before/grid.bin").Hash -ne (Get-FileHash "$out/after/grid.bin").Hash){throw 'Navigable X/Z lattice differs'}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: region1-cameras-and-routes
+          path: |
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/RegionModular/
+            !${{env.MOD25D_SOURCE}}/Unity/Artifacts/RegionModular/before/terrain.bytes
+      - name: Stage mobile runtime assets from the verified project
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $source=Join-Path $project 'Assets/Eldoria/Resources/Valoria'
+          $dest=Join-Path $project 'Assets/ValoriaBuildInputs/LegacyModels'
+          New-Item -ItemType Directory -Force $dest|Out-Null
+          # Original optimized Valoria packaging excluded historical source GLBs.
+          # Keep their GUIDs inside Assets so serialized scene dependencies still resolve.
+          $files=@(Get-ChildItem $source -Recurse -File -Filter '*.glb')
+          foreach($file in $files){
+            $relative=$file.FullName.Substring($source.Length+1)
+            $target=Join-Path $dest $relative
+            New-Item -ItemType Directory -Force (Split-Path $target)|Out-Null
+            Move-Item $file.FullName $target
+            Move-Item ($file.FullName+'.meta') ($target+'.meta')
+          }
+          & $env:MOD25D_PYTHON (Join-Path $env:MOD25D_SOURCE 'tools/valoria-modular25d/pack-hidden-geography.py') $project --combined-player
+          if($LASTEXITCODE){throw 'Hidden source geometry could not be verified'}
+          Write-Host ("Historical model roots removed from automatic player inclusion: "+$files.Count)
+      - name: Build actual integrated WebGL player
+        shell: powershell
+        run: |
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $env:ELDORIA_WORLD_PLAYER_OUT=Join-Path $project 'Builds/RegionModular'
+          $log=Join-Path $project 'Artifacts/RegionModular/webgl.log'
+          $args=@('-batchmode','-quit','-projectPath',$project,'-executeMethod','Eldoria.World4XCanon.Editor.RegionOneCanonicalCapture.BuildModularWorld','-logFile',$log)
+          $proc=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($proc.ExitCode -or !(Test-Path "$env:ELDORIA_WORLD_PLAYER_OUT/index.html")){Get-Content $log -Tail 150;throw 'Integrated WebGL build failed'}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-region1-webgl
+          path: ${{env.MOD25D_SOURCE}}/Unity/Builds/RegionModular/
+
+  mobile-journey:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dpr: 1
+            evidence: ciudad-region-recorrido
+          - dpr: 3
+            evidence: ciudad-region-retina
+    needs: unity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-region1-webgl
+          path: player
+      - name: Play a fresh city through Bastion V and visit the canonical region
+        env:
+          VALORIA_DPR: ${{ matrix.dpr }}
+          VALORIA_EVIDENCE: evidence
+          VALORIA_TEST_REGION: '1'
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet playwright==1.56.0
+          python3 -m playwright install ffmpeg
+          python3 tools/valoria-modular25d/journey-serve.py player 8824 &
+          python3 -u tools/valoria-modular25d/journey-browser.py 'http://127.0.0.1:8824/index.html?journey-qa'
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.evidence }}
+          path: evidence/
+
+  # Publish the actual run URL on this exact experiment commit so reviewers
+  # can discover native Unity artifacts even when GitHub's plugin only lists
+  # PR-triggered Actions. No source code or gameplay data is written.
+  publish-run-reference:
+    if: always()
+    needs: [verify-packaging, preflight, unity, mobile-journey]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      statuses: write
+      contents: read
+    steps:
+      - name: Attach real native proof URL to this commit
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request
+          jobs=json.loads(os.environ["RESULTS"])
+          states={key:value.get("result","unknown") for key,value in jobs.items()}
+          ok=states.get("unity")=="success" and states.get("mobile-journey")=="success"
+          state="success" if ok else "failure"
+          description=("; ".join(k+"="+v for k,v in sorted(states.items())))[:140]
+          repo=os.environ["GITHUB_REPOSITORY"]
+          sha=os.environ["GITHUB_SHA"]
+          url="https://github.com/"+repo+"/actions/runs/"+os.environ["GITHUB_RUN_ID"]
+          body=json.dumps({"state":state,"context":"eldoria/valoria-2-5d-visual-proof",
+                           "target_url":url,"description":description}).encode("utf-8")
+          req=urllib.request.Request("https://api.github.com/repos/"+repo+"/statuses/"+sha,
+              method="POST",data=body,headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
+              "Accept":"application/vnd.github+json","Content-Type":"application/json"})
+          with urllib.request.urlopen(req,timeout=25) as answer:
+              print("Native proof status published:",answer.status,url,description)
+          PY
+
+  package:
+    needs: unity
+    env:
+      SOURCE: ${{ github.sha }}
+      BUILD_RUN: ${{ github.run_id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="valoria-review-${SOURCE:0:7}-m2"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            test "$(gh release view "$tag" --json body --jq .body)" = "Unity source $SOURCE · Actions $BUILD_RUN"
+            exit 0
+          fi
+          # Reserve this review tag while this packaging commit is still the branch head.
+          # Release assets are uploaded only after the referenced Unity run has produced them.
+          if ! gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" >/dev/null 2>&1; then
+            gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$tag" -f sha="$GITHUB_SHA" >/dev/null
+          fi
+          repo="repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN"
+          test "$(gh api "$repo" --jq .head_sha)" = "$SOURCE"
+          for i in $(seq 1 90); do
+            if gh api "$repo/artifacts" --jq '.artifacts[].name' | grep -Fxq valoria-region1-webgl; then break; fi
+            test "$(gh api "$repo" --jq .status)" != completed || exit 1
+            sleep 45
+          done
+          gh run download "$BUILD_RUN" -n valoria-region1-webgl -D player
+          src=tools/valoria-modular25d
+          python3 -m pip install --quiet UnityPy==1.25.4
+          python3 "$src/pack-embedded-region-mips.py" player/Build/RegionModular.data.unityweb
+          python3 "$src/bound-webgl-uploads.py" player/Build/RegionModular.framework.js.unityweb
+          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" "$SOURCE" "${SOURCE:0:7}-m2"
+          mapfile -d '' -t assets < <(find mobile/r -type f -print0)
+          gh release create "$tag" --verify-tag --prerelease --latest=false --title "Valoria · Mundo y obras · ${SOURCE:0:7}" --notes "Unity source $SOURCE · Actions $BUILD_RUN" "${assets[@]}" mobile/assets.json mobile/index.html
+      - if: failure() && hashFiles('mobile/index.html') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-review-fallback
+          path: mobile/
+  webkit:
+    needs: package
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          edition="${GITHUB_SHA:0:7}-m2"
+          export VALORIA_TEST_EDITION="$edition"
+          gh release download "valoria-review-$edition" -D flat
+          python3 - <<'PY'
+          import json, pathlib, shutil, os
+          src=pathlib.Path('flat')
+          dest=pathlib.Path('mobile')
+          for rel,length in json.loads((src/'assets.json').read_text()).items():
+              f=src/pathlib.Path(rel).name
+              assert f.stat().st_size==length
+              p=dest/'r'/os.environ['VALORIA_TEST_EDITION']/rel
+              p.parent.mkdir(parents=True,exist_ok=True)
+              f.rename(p)
+          shutil.copyfile(src/'index.html',dest/'index.html')
+          PY
+          python -m pip install -q playwright
+          python -m playwright install webkit
+          python -u tools/valoria-modular25d/first-travel-webkit.py
+      - if: failure()
+        run: |
+          /usr/bin/log show --last 6m --style compact --predicate '(process CONTAINS[c] "WebKit.GPU" OR process == "kernel") AND (eventMessage CONTAINS[c] "GPU" OR eventMessage CONTAINS[c] "memory" OR eventMessage CONTAINS[c] "fault" OR eventMessage CONTAINS[c] "terminate")' | tail -65 || true
+          ls -t ~/Library/Logs/DiagnosticReports | head -15 || true
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: primer-viaje-webkit
+          path: evidence-webkit/
+
+  evidence:
+    needs: [package, webkit, mobile-journey]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Design/Valoria
+            tools/valoria-modular25d
+            Unity/Assets/Experimentos/ValoriaModular25D/Scripts
+          persist-credentials: false
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for spec in ciudad-cinco-bastiones-unity:city region1-cameras-and-routes:world ciudad-region-recorrido:phone primer-viaje-webkit:webkit; do
+            for attempt in 1 2 3; do
+              if gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" -n "${spec%:*}" -D "${spec#*:}"; then break; fi
+              test "$attempt" -lt 3 || exit 1
+              sleep 5
+            done
+          done
+          command -v ffmpeg >/dev/null || { sudo apt-get -qq update && sudo apt-get -qq install ffmpeg; }
+          mkdir -p entrega/{ciudad,mundo,interfaz,pruebas}
+          python3 - <<'PY'
+          import json,os,pathlib
+          data=json.loads(pathlib.Path('city/evidence.json').read_text(encoding='utf-8-sig'))
+          assert data['sourceSha']==os.environ['GITHUB_SHA'] and data['historicSchema1Restored'] and data['savedAndReloaded']
+          PY
+          ffmpeg -loglevel error -framerate 10 -i city/district-tour-%03d.png -c:v libx264 -pix_fmt yuv420p -movflags +faststart entrega/Recorrido-Bastion-V.mp4
+          cp -r Design/Valoria entrega/plano
+          cp Unity/Assets/Experimentos/ValoriaModular25D/Scripts/ValoriaUrbanPlan.cs entrega/plano/
+          cp city/plano-urbano.json entrega/plano/
+          python3 tools/valoria-modular25d/urban-map.py city/plano-urbano.json entrega/plano/Plano-capital.svg
+          cp city/stage-*-fixture-390x844.png city/district-close-*.png city/urban-* entrega/ciudad/
+          cp phone/bastion-{1,2,3,4,5-completo}.png entrega/ciudad/
+          cp world/after/{home,region,panorama,breach,breach-near,breach-panorama,stone,wood,woodland,river,city-at-alternate-position}.png entrega/mundo/
+          cp world/after/idle-Boar/000.png entrega/mundo/jabali.png
+          cp world/after/idle-Spawn/000.png entrega/mundo/engendro.png
+          cp phone/region-1-{pan,pinch}-real-bastion-5.png entrega/mundo/
+          cp phone/ciudad-a-region-5.png entrega/interfaz/HUD-mundo.png
+          cp phone/bastion-5-completo.png entrega/interfaz/HUD-ciudad.png
+          ffmpeg -loglevel error -framerate 10 -i world/after/camera/%03d.png -c:v libx264 -pix_fmt yuv420p -movflags +faststart entrega/mundo/Recorrido-region.mp4
+          gh release download valoria-review-bedeb5f-m2 --repo "$GITHUB_REPOSITORY" -p Valoria-revision.zip -D referencia
+          unzip -q referencia/Valoria-revision.zip -d referencia/base
+          test "$(cat referencia/base/REVISION.txt)" = bedeb5fad7049ebc6b45f476067ec1820dbc5391
+          mkdir -p entrega/comparacion/{antes-bedeb5f,ahora}
+          for stage in 1 2 3 4 5; do
+            n=stage-$stage-fixture-390x844.png
+            cp "referencia/base/ciudad/$n" "entrega/comparacion/antes-bedeb5f/$n"
+            cp "city/$n" "entrega/comparacion/ahora/$n"
+          done
+          for n in 0 1 2 3 4; do
+            cp "referencia/base/ciudad/district-close-$n.png" "entrega/comparacion/antes-bedeb5f/distrito-$n.png"
+            cp "city/stage-5-registered-$n.png" "entrega/comparacion/ahora/distrito-$n.png"
+          done
+          for n in home region panorama breach; do
+            cp "referencia/base/mundo/$n.png" "entrega/comparacion/antes-bedeb5f/mundo-$n.png"
+            cp "world/after/$n.png" "entrega/comparacion/ahora/mundo-$n.png"
+          done
+          cp phone/sistema-*.png phone/guia-iniciar-obra.png phone/temporizador-en-parcela.png entrega/interfaz/
+          cp city/evidence.json phone/journey.json entrega/pruebas/
+          cp -r webkit entrega/pruebas/
+          for item in grid.bin routes.txt; do cmp "world/before/$item" "world/after/$item"; done
+          sha256sum world/{before,after}/{grid.bin,routes.txt} > entrega/pruebas/geografia-sha256.txt
+          echo "$GITHUB_SHA" > entrega/REVISION.txt
+          (cd entrega && zip -qr ../Valoria-revision.zip .)
+          gh release upload "valoria-review-${GITHUB_SHA:0:7}-m2" --repo "$GITHUB_REPOSITORY" Valoria-revision.zip entrega/Recorrido-Bastion-V.mp4 --clobber

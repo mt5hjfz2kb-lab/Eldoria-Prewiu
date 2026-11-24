@@ -33,7 +33,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public int RoadCount { get; private set; }
         public bool OriginalCobbleRoadLoaded { get; private set; }
         public int FootprintCount { get; private set; }
-        public int CivicCourtyardsBuilt { get; private set; }
 
         public void Build()
         {
@@ -103,12 +102,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Color(.73f,.59f,.38f,1),false,true);
             PutFoot("Sawmill — earth, sawdust, trampled grass",mill,
                 Sawmill+new Vector2(0,-.18f),1.00f);
-            // One subdued shared civic clearing binds the well, gate and
-            // timber road while leaving the future plots as natural meadow.
-            // Different alpha / sorting from the two functional footprints.
-            var yard=MakeCommonsSoil();
-            PutCommons("Worked stone and soil | civic commons",yard,
-                plan.Junction,.78f);
+
         }
 
         static Color32 Mix(Color a,Color b,float t)
@@ -358,56 +352,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             tex.SetPixels32(pixels);tex.Apply(false,true);
             textures.Add(tex);
             return tex;
-        }
-
-        Texture2D MakeCommonsSoil()
-        {
-            // Low-ink shared passage, not a third rectangular building pad.
-            // Distinct warm stone dust at the well and compressed olive soil
-            // along the gate-to-sawmill connection. Fully feathered outer alpha.
-            var tex=new Texture2D(FootW,FootH,TextureFormat.RGBA32,false,false){
-                name="Reconstruction commons | warm compacted earth and chipped paving",
-                filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp};
-            var colors=new Color32[FootW*FootH];
-            var soil=new Color(.53f,.44f,.31f,1);
-            var stone=new Color(.63f,.57f,.45f,1);
-            var olive=new Color(.40f,.48f,.29f,1);
-            for(int y=0;y<FootH;y++)for(int x=0;x<FootW;x++)
-            {
-                float px=(x/(float)(FootW-1)-.5f)*2f;
-                float py=(y/(float)(FootH-1)-.5f)*2f;
-                float broad=N(px*4.2f+4f,py*5.0f-3f,298);
-                float speck=N(px*38f,py*36f,901);
-                float radius=Mathf.Sqrt((px+.12f)*(px+.12f)*.94f+py*py*1.2f);
-                float rough=(broad-.5f)*.30f+(speck-.5f)*.09f;
-                float fade=1f-Sm(.31f+rough,.93f+rough,radius);
-                // Soft small remnants of broken stone near the well, not a
-                // regular cobble carpet or a light-grey oval around the keep.
-                float mineral=N(px*15.2f,py*16.4f,819);
-                float chips=Mathf.Clamp01((mineral-.58f)*3.2f)*
-                    (1f-Sm(.13f,.82f,Mathf.Abs(py+.10f)));
-                Color c=Color.Lerp(soil,olive,Mathf.Clamp01(.23f+.40f*broad));
-                c=Color.Lerp(c,stone,chips*.39f);
-                c.a=fade*(.14f+.20f*speck);
-                colors[y*FootW+x]=(Color32)c;
-            }
-            tex.SetPixels32(colors);tex.Apply(false,true);
-            textures.Add(tex);
-            return tex;
-        }
-
-        void PutCommons(string name,Texture2D texture,Vector2 at,float scale)
-        {
-            var sprite=Sprite.Create(texture,new Rect(0,0,texture.width,texture.height),
-                new Vector2(.5f,.5f),88f,0,SpriteMeshType.FullRect);
-            var go=new GameObject(name);
-            go.transform.SetParent(transform,false);
-            go.transform.localPosition=new Vector3(at.x,at.y,-.08f);
-            go.transform.localScale=Vector3.one*scale;
-            var renderer=go.AddComponent<SpriteRenderer>();
-            renderer.sprite=sprite;
-            renderer.sortingOrder=-4130; // under road mesh and both building footprints
-            CivicCourtyardsBuilt++;
         }
 
         void PutFoot(string name,Texture2D texture,Vector2 at,float scale)

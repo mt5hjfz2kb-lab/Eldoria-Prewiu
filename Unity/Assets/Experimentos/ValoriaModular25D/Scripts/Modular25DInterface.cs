@@ -506,8 +506,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public static string PlayerDisplayName(string savedName)
         {
             if(string.IsNullOrWhiteSpace(savedName))return "VALORIA";
-            string name=savedName.Trim();
-            return name.Length>8?name.Substring(0,7)+"…":name;
+            return savedName.Trim();
         }
 
         // WOS/Kingshot-sized resource indicators must remain legible
@@ -886,6 +885,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             RectTransform[] resourceChips;
             Text title,level,woodValue,stoneValue,foodValue;
             Image woodAccent;
+            Vector4 lastLayout;
             public RectTransform PlateRect => topRibbon;
 
             public PlayerRibbon(Transform rootTransform)
@@ -960,7 +960,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 identity.anchorMin=identity.anchorMax=new Vector2(0f,1f);
                 identity.pivot=new Vector2(0f,1f);
                 identity.anchoredPosition=new Vector2(stripLeft+6f,-top-1f);
-                identity.sizeDelta=new Vector2(102f,44f);
+                lastLayout=new Vector4(width,left,safeWidth,top);
+                float identityWidth=Mathf.Clamp(title.preferredWidth+46f,102f,Mathf.Max(102f,stripWidth-182f));
+                identity.sizeDelta=new Vector2(identityWidth,44f);
+                title.rectTransform.sizeDelta=new Vector2(identityWidth-44f,22f);
+                level.rectTransform.sizeDelta=new Vector2(identityWidth-44f,16f);
                 resourceRow.anchorMin=resourceRow.anchorMax=new Vector2(1f,1f);
                 resourceRow.pivot=new Vector2(1f,1f);
                 resourceRow.anchoredPosition=new Vector2(stripLeft+stripWidth-width-6f,-top-3f);
@@ -969,7 +973,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 // 27%. Cap all orientations at 270pt. This is SMALLER,
                 // preserves premium artist proportions and liberates map.
                 float economyWidth=Mathf.Min(270f,
-                    Mathf.Max(168f,stripWidth-119f));
+                    Mathf.Max(145f,stripWidth-identityWidth-17f));
                 resourceRow.sizeDelta=new Vector2(economyWidth,40f);
                 float chipWidth=(economyWidth-12f)/3f;
                 float sourceAspect=resourcePlate.rect.height/
@@ -1009,7 +1013,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             public void Refresh(PlayerState s)
             {
                 if(s==null){woodValue.text=stoneValue.text=foodValue.text="—";return;}
-                title.text=PlayerDisplayName(s.PlayerName);
+                string name=PlayerDisplayName(s.PlayerName);
+                if(title.text!=name){
+                    title.text=name;
+                    if(lastLayout.x>0)Layout(lastLayout.x,lastLayout.y,lastLayout.z,lastLayout.w);
+                }
                 level.text = "Bastión " + s.BastionLevel;
                 woodValue.text = CompactResource(s.Resources.Wood);
                 stoneValue.text = CompactResource(s.Resources.Stone);

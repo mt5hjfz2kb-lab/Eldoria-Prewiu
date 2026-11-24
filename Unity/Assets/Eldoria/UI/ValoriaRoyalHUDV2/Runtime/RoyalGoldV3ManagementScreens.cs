@@ -814,12 +814,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 // four long sentences wrapped into five lines and were cut
                 // off despite using the full reserved physical phone width.
                 if(!compactLandscape && root.rect.height>root.rect.width)
-                    status.Put("RUPTURA "+power.Break+" · T1 DISP. "+s.Available.ArcherT1+
-                        " · T2 "+s.Available.ArcherT2+
-                        "\nCAPACIDAD "+MarchCapacityRules.Capacity(s,selectedHero)+
-                        " · NIVEL "+MarchCapacityRules.HeroLevel(s,selectedHero)+
-                        "\nMARCHAS ACTIVAS "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
-                        " · PREPARADOS "+(s.MarchConfigured?s.PreparedTroops.Total:0));
+                    status.Put("Disponibles     T1  "+s.Available.ArcherT1+"     T2  "+s.Available.ArcherT2+
+                        "\nCapacidad  "+MarchCapacityRules.Capacity(s,selectedHero)+"     Nivel  "+MarchCapacityRules.HeroLevel(s,selectedHero)+
+                        "     Ruptura  "+power.Break+
+                        "\nMarchas  "+occupied+" / "+MarchCapacityRules.MaxConcurrentMarches+
+                        "     Preparados  "+(s.MarchConfigured?s.PreparedTroops.Total:0));
                 else if(compactLandscape)
                     status.Put("RUPTURA "+power.Break+" · DISP. T1 "+s.Available.ArcherT1+" · T2 "+s.Available.ArcherT2+
                         "\nCAP. "+HeroName(selectedHero)+" "+MarchCapacityRules.Capacity(s,selectedHero)+
@@ -1200,23 +1199,26 @@ namespace Eldoria.UI.RoyalGold.V2
             float portraitOrderH=Mathf.Min(485f,bodyH*.47f);
             float artH=wide?bodyH:bodyH-portraitOrderH-12;
             Place(left,x,bodyY,wide?width*.54f:width,artH);
-            float archerH=Mathf.Min(artH, (wide?width*.51f:width*.65f)*1.5f);
+            float floorMargin=RoyalGoldV2Hud.UseCoronaArt && !wide ? artH*.065f : 0f;
+            float archerH=Mathf.Min(artH-floorMargin, (wide?width*.51f:width*.65f)*1.5f);
             float archerW=archerH/1.5f;
-            Place(approvedArcher.rectTransform,width*(wide?.10f:.04f),artH-archerH,archerW,archerH);
+            Place(approvedArcher.rectTransform,width*(wide?.10f:.055f),artH-archerH-floorMargin,archerW,archerH);
             float rosterW=wide?Mathf.Clamp(width*.15f,156f,180f):184f;
             float rosterH=wide?Mathf.Min(155f,artH*.30f):164f;
-            float rosterTop=artH*.15f;
+            bool sideRoster=RoyalGoldV2Hud.UseCoronaArt && !wide;
+            if(sideRoster){rosterW=width*.32f;rosterH=Mathf.Min(86f,artH*.17f);}
+            float rosterTop=sideRoster?artH*.37f:artH*.15f;
             for(int i=0;i<2;i++)
             {
                 Place((RectTransform)trainingTierChoices[i].transform,
-                    8,rosterTop+i*(rosterH+11f),rosterW,rosterH);
+                    sideRoster?width*.64f:8f,rosterTop+i*(rosterH+11f),rosterW,rosterH);
                 // Oversized, transparently clipped upper bust: no old
                 // screenshot pixels or dark box inside the aperture.
                 Place(trainingTierPortraits[i].rectTransform,
-                    -7f,-9f,rosterW+14f,rosterH-24f);
+                    -7f,-9f,sideRoster?Mathf.Min(rosterW*.29f,rosterH):rosterW+14f,rosterH-24f);
                 Place(trainingTierLabels[i].rectTransform,
-                    5f,rosterH-(wide?68f:100f),rosterW-10f,wide?64f:96f);
-                trainingTierLabels[i].fontSize=wide?17:18;
+                    5f,sideRoster?0f:rosterH-(wide?68f:100f),rosterW-10f,sideRoster?rosterH:wide?64f:96f);
+                trainingTierLabels[i].fontSize=sideRoster?24:wide?17:18;
             }
             // The label is a physically bounded parchment nameplate, not
             // dark letters placed on an unpredictable bright sky.
@@ -1353,7 +1355,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
             // The owner's three vertical character cards own the top third;
             // they remain exactly three. The third stays narratively locked.
-            float heroTitleH=wide?56f:85f;
+            float heroTitleH=wide?56f:64f;
             Place(marchHeadingSurface,7f,2f,lw-14f,heroTitleH);
             Place(unitTitle.rectTransform,17f,5f,lw*.61f,heroTitleH-8f);
             unitTitle.fontSize=wide?23:30;
@@ -1389,10 +1391,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 else
                 {
                     float nameH=wide?Mathf.Clamp(cardHeight*.23f,54f,68f):
-                        Mathf.Min(104f,Mathf.Max(88f,cardHeight*.32f));
+                        Mathf.Clamp(cardHeight*.24f,55f,78f);
                     float apH=cardHeight-nameH-12f,apW=cardW-12f;
                     Place(heroPortraitViewports[i],6f,5f,apW,apH);
-                    float imgW=Mathf.Min(apW-8f,apH*ratio);
+                    float imgW=RoyalGoldV2Hud.UseCoronaArt && !wide ? Mathf.Max(apW,apH*ratio) : Mathf.Min(apW-8f,apH*ratio);
                     float imgH=imgW/Mathf.Max(.1f,ratio);
                     Place(approvedHeroes[i].rectTransform,(apW-imgW)*.5f,
                         (apH-imgH)*.5f,imgW,imgH);
@@ -1413,7 +1415,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 lw-38f,wide?34f:43f);
             marchTroopChapter.fontSize=wide?22:29;
             marchTroopChapter.gameObject.SetActive(true);
-            float troopPicW=wide?lw*.25f:lw*.26f;
+            float troopPicW=wide?lw*.25f:lw*.23f;
             float picY=troopTop+(wide?46f:53f);
             float picH=Mathf.Max(55f,troopH-(wide?54f:62f));
             Place(approvedTroopRow.rectTransform,13f,picY,troopPicW,picH);
@@ -1428,7 +1430,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 orderY+descH+4f,orderW,wide?36f:Mathf.Min(60f,orderH*.20f));
             float selectorsY=orderY+descH+4f+(wide?40f:Mathf.Min(64f,orderH*.20f))+5f;
             float selectorsH=Mathf.Clamp(orderH*.26f,wide?40f:56f,wide?54f:83f);
-            float quantityW=orderW*.53f;
+            float quantityW=orderW*(wide?.53f:.48f);
             float percentW=orderW-quantityW-8f;
             Place(percentModeButton.transform as RectTransform,
                 orderX,selectorsY,percentW,selectorsH);
@@ -1439,7 +1441,7 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(selectedText.rectTransform,buttonW+3f,0f,
                 Mathf.Max(36f,quantityW-2f*buttonW-6f),selectorsH);
             selectedText.fontSize=wide?21:27;
-            percentModeLabel.fontSize=wide?16:21;
+            percentModeLabel.fontSize=wide?16:25;
             float sliderY=selectorsY+selectorsH+(wide?8f:11f);
             Place(slider.transform as RectTransform,orderX+8f,sliderY,
                 orderW-16f,wide?16f:22f);
@@ -1484,14 +1486,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 foreach(var img in art)if(img.name.StartsWith("Approved source /"))
                     img.enabled=false;
                 Place(marchMetricValues[i].rectTransform,5f,2f,tileW-10f,tileH-4f);
-                marchMetricValues[i].fontSize=wide?(compact?15:18):26;
+                marchMetricValues[i].fontSize=wide?(compact?15:18):31;
                 marchMetricValues[i].alignment=TextAnchor.MiddleLeft;
             }
             float statusY=rh-statusH;
             Place(marchStatusBacking,6f,statusY,statsW-12f,statusH-4f);
             Place(status.rectTransform,14f,statusY+4f,
                 statsW-28f,statusH-12f);
-            status.fontSize=wide?(compact?15:17):26;
+            status.fontSize=wide?(compact?15:17):29;
             status.alignment=TextAnchor.UpperLeft;
             if(marchReferencePreview)
             {

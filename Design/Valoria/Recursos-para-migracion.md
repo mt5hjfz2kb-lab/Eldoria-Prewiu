@@ -25,3 +25,7 @@ Las casas del camino, la armería y el puesto de abastos son tres ilustraciones 
 | RoyalGoldV3ManagementScreens | Reordenar las acciones de Entrenamiento y las áreas de héroes, tropas y resumen de Marchas en orientación vertical. |
 | Issue186BagOverlay | Aplicar margen exterior, dos columnas y texto de confirmación centrado a la Bolsa. Conservar inventario, recibos y comandos. |
 | Buzón, Tesoros, Vigilantes, Exploradores y HUD | Conservar los presentadores de cada destino y las fuentes y marcos de Corona ya enlazados. Las pruebas del jugador comprueban qué acceso existe según el estado real. |
+
+### Capital en formación
+
+El frente de tejedores comparte alineación con la calle y aparece desde Bastión IV con granero construido. CorteCaliza sustituye el muro de ruina de la cantera por un frente de extracción. El acceso cívico se pinta directamente en DistrictGround. Se retira el antiguo sprite de patio. El JSON y el plano vectorial de la entrega se obtienen de las parcelas instanciadas en Unity.

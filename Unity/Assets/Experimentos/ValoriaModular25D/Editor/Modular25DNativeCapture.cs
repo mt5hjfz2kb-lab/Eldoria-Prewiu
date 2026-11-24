@@ -103,7 +103,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 report.paintedGroundSourceLoaded=true;
                 report.roadAndFootprintKits=true;
                 report.composedSettlementZones=world.SettlementZonesPlaced==4 &&
-                    world.RecoveredPropsPlaced>=15 && landscape.CivicCourtyardsBuilt==1;
+                    world.RecoveredPropsPlaced>=15 && ground.HasCivicCourt && landscape.GetComponentsInChildren<SpriteRenderer>(true).Length==1;
                 if(!report.composedSettlementZones)
                     throw new Exception("Semantic four-zone settlement / civic clearing not built");
                 var originalArt=new[]{
@@ -303,6 +303,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     Render(cam,output,report,"stage-"+level+"-keep-detail",1170,1170,(Vector3)ValoriaUrbanPlan.City.Keep.Foot+new Vector3(0,1.65f,-30f),3.3f);
                     if(level==5)
                     {
+                        RecordPlan(output,sourceSha);
                         Render(cam,output,report,"stage-5-district-1170x2532",1170,2532,(Vector3)ValoriaUrbanPlan.City.Freight+new Vector3(0,1,-30f),6.6f);
                         Render(cam,output,report,"stage-5-baseline-camera",1170,2532,new Vector3(-.02f,-1.5f,-30f),9.15f);
                         var stops = new[] { world.BastionRenderer, world.SawmillRenderer,
@@ -313,6 +314,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                             center.z=-30f;
                             Render(cam,output,report,"district-close-"+n,390,844,center,portrait);
                         }
+                        // Cameras recorded in the source manifest of the reviewed bedeb5f release.
+                        var earlierCameras=new[]{new Vector2(0.00000000f,4.64062452f), new Vector2(-4.00000000f,0.22281241f), new Vector2(6.00000000f,1.90277839f), new Vector2(3.00000000f,-3.58159614f), new Vector2(-7.00000000f,-6.21760559f)};
+                        for(int n=0;n<earlierCameras.Length;n++)
+                            Render(cam,output,report,"stage-5-registered-"+n,390,844,
+                                (Vector3)earlierCameras[n]+Vector3.back*30f,portrait);
                         for (int frame=0; frame<120; frame++)
                         {
                             float t=frame*(stops.Length-1)/119f;
@@ -370,6 +376,41 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 throw new InvalidOperationException("Bastion outside home composition");
         }
 
+        [Serializable] sealed class MappedLot
+        {
+            public string id;
+            public Vector2 foot,door,size;
+            public Vector2[] road;
+        }
+        [Serializable] sealed class MappedReserve
+        {
+            public Vector2 lower,size;
+            public Vector2[] access;
+        }
+        [Serializable] sealed class RecordedPlan
+        {
+            public string source;
+            public MappedLot[] lots;
+            public MappedReserve[] reserves;
+            public Vector2[] freightRoad;
+            public Vector2 junction,freight;
+        }
+        static void RecordPlan(string output,string source)
+        {
+            var p=ValoriaUrbanPlan.City;
+            var plots=new[]{p.Keep,p.Mill,p.Barracks,p.Granary,p.Quarry};
+            var routes=p.GrowthApproaches;
+            var report=new RecordedPlan{source=source,junction=p.Junction,freight=p.Freight,
+                freightRoad=p.FreightRoad,lots=new MappedLot[plots.Length],reserves=new MappedReserve[routes.Length]};
+            for(int i=0;i<plots.Length;i++){
+                var lot=plots[i];
+                report.lots[i]=new MappedLot{id=lot.Id,foot=lot.Foot,door=lot.Door,size=lot.GroundSize,road=p.Approach(lot)};
+            }
+            for(int i=0;i<routes.Length;i++)
+                report.reserves[i]=new MappedReserve{lower=p.Growth[i].min,size=p.Growth[i].size,access=routes[i]};
+            File.WriteAllText(Path.Combine(output,"plano-urbano.json"),JsonUtility.ToJson(report,true),Encoding.UTF8);
+        }
+
         static void ValidateUrbanPlan(Modular25DWorld world, int level)
         {
             var plan=ValoriaUrbanPlan.City;
@@ -416,6 +457,21 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 foreach(var reserve in plan.Growth)
                     if(reserve.Overlaps(occupied))throw new InvalidDataException("Parcel occupies expansion area: "+plot.Id);
             }
+            var frontageFeet=new System.Collections.Generic.List<Rect>();
+            foreach(var prop in plan.Environment)
+            {
+                if(prop.Asset!="CasasDelCamino" && prop.Asset!="CasasDeOficio" && prop.Asset!="ArmeriaDelPatio" &&
+                   prop.Asset!="PuestoDeAbastos" && prop.Asset!="FrenteTejedores" && prop.Asset!="LonjaGrano")continue;
+                var sprite=Resources.Load<Sprite>("ValoriaModular25D/RecoveredProps/"+prop.Asset);
+                if(!sprite)throw new InvalidDataException("Missing street frontage: "+prop.Asset);
+                float width=sprite.rect.width/sprite.pixelsPerUnit*prop.Scale;
+                var size=new Vector2(width*.85f,Mathf.Min(.68f,width*.30f));
+                var footprint=new Rect(prop.Foot-size*.5f,size);
+                foreach(var reserve in plan.Growth)
+                    if(reserve.Overlaps(footprint))throw new InvalidDataException("Street frontage occupies reserve "+prop.Asset);
+                if(frontageFeet.Exists(other=>other.Overlaps(footprint)))throw new InvalidDataException("Frontages overlap at "+prop.Asset);
+                frontageFeet.Add(footprint);
+            }
             // Sweep a cart-width test along each reserved access in the built city.
             foreach(var route in plan.GrowthApproaches)
             {
@@ -425,6 +481,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     for(int step=0;step<=samples;step++)
                     {
                         Vector2 point=Vector2.Lerp(route[n-1],route[n],step/(float)samples);
+                        var cart=new Rect(point-new Vector2(.38f,.38f),new Vector2(.76f,.76f));
+                        if(frontageFeet.Exists(front=>front.Overlaps(cart)))
+                            throw new InvalidDataException("Furniture or frontage blocks future cart access at "+point);
                         foreach(var parcel in plots)
                         {
                             var clearance=parcel.GroundSize+new Vector2(.76f,.76f);

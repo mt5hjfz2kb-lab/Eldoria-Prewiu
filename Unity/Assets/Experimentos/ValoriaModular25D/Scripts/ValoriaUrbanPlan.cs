@@ -47,7 +47,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         // These future entrances and centre lines reserve access without drawing unfinished roads.
         public Vector2[][] GrowthApproaches => new[]{
             new[]{Freight,new Vector2(-3.3f,-5.08f),new Vector2(-6.1f,-4.05f),new Vector2(Growth[0].xMax,Growth[0].center.y)},
-            new[]{Approach(Barracks)[1],new Vector2(6.75f,-.7f),new Vector2(8.55f,.36f),new Vector2(9.55f,Growth[1].yMin)}
+            new[]{Approach(Barracks)[1],new Vector2(6.85f,-2.22f),new Vector2(8.77f,-1.92f),new Vector2(9.55f,Growth[1].yMin)}
         };
         public Vector2[] ReturnWalk(Parcel plot)
         {
@@ -55,7 +55,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             return new[]{walk[0],walk[1],walk[2],walk[3],walk[2],walk[1]};
         }
         public Prop[] Environment => new[]{
-            new Prop(0,"MuroDerruido",Keep.Foot,-2.62f,2.95f,.95f),
+            new Prop(0,"MuroDerruido",Keep.Foot,-2.88f,.40f,.86f),
             new Prop(0,"ArbolAntiguo",Keep.Foot,3.55f,2.85f,.88f),
             new Prop(0,"ArboledaAntigua",Keep.Foot,-3.65f,1.65f,.73f),
             new Prop(0,"MatojosFlores",Keep.Foot,-2.85f,-.23f,.58f),
@@ -63,7 +63,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             new Prop(0,"CasasDelCamino",Keep.Door,-1.62f,-2.55f,.86f),
             new Prop(2,"CasasDeOficio",Keep.Door,2.38f,-2.72f,.87f,2),
             new Prop(3,"FrenteTejedores",Junction,-2.15f,-1.57f,.96f,4),
-            new Prop(3,"LonjaGrano",Freight,1.92f,.63f,.78f,3),
+            new Prop(3,"LonjaGrano",Freight,1.76f,.63f,.66f,3),
             new Prop(0,"MatojosFlores",Junction,1.22f,1.02f,.39f),
             new Prop(0,"ArboledaAntigua",Mill.Foot,-2.62f,1.72f,.85f),
             new Prop(0,"ArbolAntiguo",Mill.Foot,-3.15f,.46f,.65f),
@@ -74,7 +74,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             new Prop(3,"HuertosValoria",Granary.Foot,-2.35f,.2f,.78f),
             new Prop(3,"CarroMadera",Granary.Foot,1.86f,-.71f,.62f),
             new Prop(3,"PuestoDeAbastos",Granary.Foot,.73f,-2.12f,.88f,4),
-            new Prop(4,"MuroDerruido",Quarry.Foot,2.17f,.82f,.58f),
+            new Prop(4,"CorteCaliza",Quarry.Foot,-1.85f,1.30f,1f),
             new Prop(4,"CarroMadera",Quarry.Foot,-1.7f,-.82f,.60f)
         };
 

@@ -148,8 +148,10 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(land);
             Assert.That((int)Member(land,"RoadCount"),Is.EqualTo(6));
             Assert.That((int)Member(land,"FootprintCount"),Is.EqualTo(1));
-            Assert.That((int)Member(land,"CivicCourtyardsBuilt"),Is.EqualTo(1),
-                "The civic courtyard is a third independent, soft-alpha ground element, not a building platform");
+            var commonGround=all.Single(x=>x && x.GetType().Name=="Modular25DGround");
+            Assert.That((bool)Member(commonGround,"HasCivicCourt"),Is.True);
+            Assert.That(land.GetComponentsInChildren<SpriteRenderer>(true).Length,Is.EqualTo(1),
+                "Only the sawmill's work surface remains a separate painted footprint");
             var pathMeshes=land.GetComponentsInChildren<MeshFilter>(false);
             Assert.That(pathMeshes.Length,Is.EqualTo(2),
                 "Both artistic road ribbons must remain separate world meshes");

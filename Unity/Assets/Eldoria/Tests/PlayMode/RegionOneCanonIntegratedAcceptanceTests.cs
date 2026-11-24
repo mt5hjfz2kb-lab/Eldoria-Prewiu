@@ -1448,10 +1448,12 @@ namespace Eldoria.Tests
                 Debug.Log("REGION1_APPROVED_ART_PARITY terrain=1 roads=1 castle=1 forest=4 hidden_donor=1 edge=1");
             }
             var home=(Vector3)Member(host,"WorldHome");
-            foreach(var view in new[]{("home",2,""),("wood",2,"forest-valoria"),("stone",2,"quarry-valoria"),("region",1,""),("breach",1,""),("panorama",0,"")}){
+            foreach(var view in new[]{("home",2,""),("wood",2,"forest-valoria"),("stone",2,"quarry-valoria"),("region",1,""),("breach",1,""),("panorama",0,""),("woodland",2,""),("river",2,""),("breach-panorama",0,"")}){
                 var pos=home;
                 if(view.Item3!=""){var target=(Component)Call(host,"FindTarget",view.Item3);Assert.IsNotNull(target,view.Item3);pos=target.transform.position;}
-                if(view.Item1=="breach")pos=home+new Vector3(-260,0,150);
+                if(view.Item1=="woodland")pos=home+new Vector3(-50,0,100);
+                if(view.Item1=="river")pos=home+new Vector3(25,0,-27.5f);
+                if(view.Item1.StartsWith("breach",StringComparison.Ordinal))pos=home+new Vector3(-260,0,150);
                 camera.aspect=390f/844;
                 Call(nav,"SetZoomLevel",view.Item2,true);Call(nav,"PanTo",pos);Call(canon,"RefreshForCapture");
                 yield return null;yield return null;

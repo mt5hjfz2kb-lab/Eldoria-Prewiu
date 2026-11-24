@@ -440,7 +440,7 @@ namespace Eldoria.UI.RoyalGold.V2
             Position((RectTransform)back.transform,left,top,Mathf.Max(48f,headerH*.72f),headerH);
             back.GetComponentInChildren<RoyalText>().Put("<");
 
-            float tabsY=top+headerH+Mathf.Clamp(h*.028f,9f,24f);
+            float tabsY=top+headerH+Mathf.Clamp(h*(RoyalGoldV2Hud.UseCoronaArt && !wide?.015f:.028f),9f,24f);
             float tabH=wide?Mathf.Clamp(h*.088f,45f,72f):
                 Mathf.Clamp(h*.079f,49f,91f);
             float tabGap=wide?Mathf.Clamp(w*.008f,6f,15f):5f;
@@ -528,8 +528,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 Position(messageSubtitles[i].rectTransform,textX,rowH*.52f,
                     Mathf.Max(45f,copyWidth-(wide?130f:72f)),rowH*.31f);
                 float dateW=wide?119f:65f;
+                bool stackedDate=RoyalGoldV2Hud.UseCoronaArt && !wide && rowH>82f;
+                if(stackedDate)
+                    Position(messageSubtitles[i].rectTransform,textX,rowH*.43f,copyWidth,rowH*.24f);
                 Position(messageDates[i].rectTransform,
-                    textX+copyWidth-dateW,rowH*.53f,dateW,rowH*.29f);
+                    stackedDate?textX:textX+copyWidth-dateW,stackedDate?rowH*.68f:rowH*.53f,stackedDate?copyWidth:dateW,stackedDate?rowH*.22f:rowH*.29f);
+                messageDates[i].alignment=stackedDate?TextAnchor.MiddleLeft:TextAnchor.MiddleRight;
                 Position(messageArrows[i].rectTransform,
                     innerW-arrowW-7f,(rowH-6f-36f)*.50f,
                     arrowW,36f);

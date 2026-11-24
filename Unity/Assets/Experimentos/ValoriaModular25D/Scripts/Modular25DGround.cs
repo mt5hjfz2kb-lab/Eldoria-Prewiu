@@ -75,8 +75,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 renderer.sortingOrder=-6000;
                 ChunkCount++;
             }
+            SetDistricts(false,false,false,1);
         }
         Material districtMaterial;
+        public bool HasCivicCourt => districtMaterial && districtMaterial.GetVector("_Forecourt").z>0 &&
+            districtMaterial.GetTexture("_Paving") && districtMaterial.GetTexture("_Soil");
         Vector4 previousDistricts;
         public void SetDistricts(bool barracks, bool granary, bool quarry, int level)
         {

@@ -339,6 +339,10 @@ namespace Eldoria.UI.RoyalGold.V2
             int lines=Mathf.Clamp(Mathf.FloorToInt(
                 (footer-52f-cardsTop+gap)/(cell+gap)),1,12/columns);
             perPage=columns*lines;
+            // Share leftover portrait height between rows while keeping the feedback
+            // and paging controls anchored below the inventory.
+            float rowGap=portraitCorona && lines>1
+                ? Mathf.Clamp((footer-66f-cardsTop-lines*cell)/(lines-1),gap,cell*.24f) : gap;
             float gridW=columns*cell+(columns-1)*gap;
             float gridLeft=x0+(width-gridW)*.5f;
             for(int i=0;i<rows.Count;i++)
@@ -347,7 +351,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(i>=perPage){item.Root.gameObject.SetActive(false);continue;}
                 int column=i%columns,line=i/columns;
                 At(item.Root,gridLeft+column*(cell+gap),
-                    cardsTop+line*(cell+gap),cell,cell);
+                    cardsTop+line*(cell+rowGap),cell,cell);
                 At(item.Frame,2f,2f,cell-4f,cell-4f);
                 At((RectTransform)item.Seen.transform,0f,0f,cell,cell);
                 float icon=cell*.53f,iconY=cell*.13f;
@@ -355,7 +359,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 At(item.Quantity.rectTransform,(cell-icon)*.5f+icon*.15f,
                     iconY+icon*.73f,icon*.70f,icon*.18f);
                 At(item.New.rectTransform,cell-25f,-5f,27f,27f);
-                At(item.Amount.rectTransform,6f,2f,cell-12f,Mathf.Max(26f,cell*.19f));
+                At(item.Amount.rectTransform,cell*.105f,cell*.065f,cell*.79f,Mathf.Max(26f,cell*.19f));
                 item.Amount.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.13f,13f,24f));
                 item.Amount.alignment=TextAnchor.MiddleLeft;
                 At(item.Name.rectTransform,5f,cell*.63f,cell-10f,cell*.15f);
@@ -376,7 +380,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(portraitCorona)
             {
                 feedback.alignment=TextAnchor.MiddleCenter;
-                feedback.fontSize=16;
+                feedback.fontSize=17;
             }
             float navW=Mathf.Clamp(width*.25f,92f,160f);
             At((RectTransform)prev.transform,x0,footer,navW,48f);

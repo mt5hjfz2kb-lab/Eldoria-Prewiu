@@ -116,7 +116,7 @@ namespace Eldoria.World4XCanon
         // samples coincide with the outermost tile vertices on all four sides.
         Mesh BuildHinterland()
         {
-            float[] distances = { 0, 20, 50, 95, 155, 240, 360, 540, 800, 1200, 1850, 2900, 4500, 6800 };
+            float[] distances = { 0, 8, 24, 48, 80, 120, 166, 220, 290, 360, 435, 540, 660, 800, 1200, 1850, 2900, 4500, 6800 };
             var vertices = new List<Vector3>();
             var uv = new List<Vector2>();
             var triangles = new List<int>();
@@ -130,12 +130,10 @@ namespace Eldoria.World4XCanon
                         Vector2 shore = Vector2.Lerp(start, end, j / (float)steps);
                         float x = shore.x * (1 + distance / 910f);
                         float z = shore.y * (1 + distance / 1800f);
-                        float basin = Mathf.PerlinNoise(x * .0014f + 32, z * .0018f + 19);
-                        float fold = 1 - Mathf.Abs(2 * Mathf.PerlinNoise(x * .0024f + z * .0007f, z * .0031f + 46) - 1);
-                        float hills = 12 + basin * basin * 145 + fold * fold * 83;
-                        float coast = Mathf.SmoothStep(0, 1, Mathf.Clamp01((shore.x - 600) / 310));
-                        float height = Mathf.Lerp(Ground(shore.x, shore.y), hills * (1 - coast),
-                            1 - Mathf.Exp(-distance / 265));
+                        // Follow the surveyed landform across its seam. Reflected samples are
+                        // used only for the unplayable foothills. Skew increases inland, which
+                        // carries the actual valley out of frame without repeating the map.
+                        float height=HinterlandHeight(x,z);
                         vertices.Add(new Vector3(x, height, z));
                         uv.Add(new Vector2(x / 1820 + .5f, z / 3600 + .5f));
                     }
@@ -158,6 +156,24 @@ namespace Eldoria.World4XCanon
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             return mesh;
+        }
+        static Vector2 BoundarySample(float x,float z,float distance)
+        {
+            float bend=Mathf.SmoothStep(0,1,Mathf.Clamp01(distance/360f));
+            float sx=Mathf.PingPong(x+910f,1820f)-910f;
+            float sz=Mathf.PingPong(z+1800f,3600f)-1800f;
+            return new Vector2(Mathf.Clamp(sx+85f*bend*Mathf.Sin(z*.0027f+x*.0012f),-910,910),
+                Mathf.Clamp(sz+115f*bend*Mathf.Cos(x*.0031f+z*.0014f),-1800,1800));
+        }
+        float HinterlandHeight(float x,float z)
+        {
+            float distance=Mathf.Max(0,Mathf.Max(Mathf.Abs(x)-910,Mathf.Abs(z)-1800));
+            var source=BoundarySample(x,z,distance);
+            float drainage=1-Mathf.SmoothStep(0,1,RegionOneBlenderLandscape.Water(source.x,source.y));
+            float basin=Mathf.PerlinNoise(x*.0014f+32,z*.0018f+19);
+            float fold=1-Mathf.Abs(2*Mathf.PerlinNoise(x*.0024f+z*.0007f,z*.0031f+46)-1);
+            float hills=(4+basin*basin*85+fold*fold*49)*drainage;
+            return Mathf.Lerp(Ground(source.x,source.y),hills,Mathf.SmoothStep(0,1,Mathf.Clamp01(distance/720f))*.78f);
         }
         // Spatial batches keep woodland and rocks visible in the same geography at every scale.
         System.Collections.IEnumerator Plant()
@@ -205,7 +221,7 @@ namespace Eldoria.World4XCanon
                     tree.z=Mathf.Clamp(tree.z+(drift-.5f)*8,-1799.9f,1799.9f);
                     float stand=Mathf.PerlinNoise(tree.x*.016f+7,tree.z*.016f+41);
                     float fringe=Mathf.PerlinNoise(tree.x*.051f+21,tree.z*.046f+9);
-                    if(stand+.34f*(fringe-.5f)<.43f || RegionOneBlenderLandscape.Shore(tree.x,tree.z)<4f ||
+                    if(stand+.42f*(fringe-.5f)<.40f || RegionOneBlenderLandscape.Shore(tree.x,tree.z)<4f ||
                        RegionOneBlenderLandscape.Road(tree.x,tree.z)>.15f) continue;
                     var cell=new Vector2Int(Mathf.FloorToInt((tree.x+910f)/182f),Mathf.FloorToInt((tree.z+1800f)/180f));
                     if(!groves.TryGetValue(cell,out var clump)){clump=new List<Vector3>();groves.Add(cell,clump);}
@@ -213,17 +229,33 @@ namespace Eldoria.World4XCanon
                 }
             }
             PlantBanksAndWoodland(groves);
-            for(int bz=-1800;bz<1800;bz+=180)for(int bx=-910;bx<910;bx+=182){
+            for(int bz=-2160;bz<2160;bz+=180)for(int bx=-1274;bx<1274;bx+=182){
                 var batches=new Dictionary<string,List<Vector3>>();
                 foreach(var k in names)batches[k]=new List<Vector3>();
                 var cityTrees=new Dictionary<Vector3,float>();
                 var tileId=new Vector2Int((bx+910)/182,(bz+1800)/180);
-                if(groves.TryGetValue(tileId,out var clump))foreach(var tree in clump){
+                bool exterior=bx < -910 || bx >=910 || bz < -1800 || bz>=1800;
+                groves.TryGetValue(tileId,out var clump);
+                if(exterior){
+                    clump=new List<Vector3>();
+                    var local=new System.Random(unchecked(257*bx+971*bz));
+                    for(int n=0;n<100;n++){
+                        float px=bx+182f*(float)local.NextDouble(),pz=bz+180f*(float)local.NextDouble();
+                        float distance=Mathf.Max(Mathf.Abs(px)-910,Mathf.Abs(pz)-1800);
+                        var sample=BoundarySample(px,pz,distance);
+                        float stand=Mathf.PerlinNoise(px*.014f+7,pz*.013f+41);
+                        if(stand<.50f+Mathf.InverseLerp(180,360,distance)*.14f ||
+                            RegionOneBlenderLandscape.Shore(sample.x,sample.y)<6f ||
+                            RegionOneBlenderLandscape.Water(sample.x,sample.y)>.12f)continue;
+                        clump.Add(new Vector3(px,5f+6f*(float)local.NextDouble(),pz));
+                    }
+                }
+                if(clump!=null)foreach(var tree in clump){
                     float px=tree.x,pz=tree.z;
-                    var foot=new Vector3(px,Ground(px,pz)+.12f,pz);
+                    var foot=new Vector3(px,(exterior?HinterlandHeight(px,pz):Ground(px,pz))+.12f,pz);
                     int pick=Mathf.Abs(Mathf.RoundToInt(px*3.1f+pz*7.7f))%13;
                     float stand=Mathf.PerlinNoise(px*.009f+8,pz*.009f+3);
-                    float valley=Mathf.InverseLerp(15f,4f,RegionOneBlenderLandscape.Shore(px,pz));
+                    float valley=exterior?0:Mathf.InverseLerp(15f,4f,RegionOneBlenderLandscape.Shore(px,pz));
                     float ridge=Mathf.InverseLerp(18f,70f,foot.y);
                     stand=Mathf.Clamp01(stand+.22f*ridge-.24f*valley);
                     string family=stand>.55f ? (pick<9?"PaintedFir":"PaintedForestGrove") :
@@ -232,11 +264,11 @@ namespace Eldoria.World4XCanon
                     float core=Mathf.InverseLerp(.36f,.69f,Mathf.PerlinNoise(px*.016f+7,pz*.016f+41));
                     // Grove art depicts several crowns; sizing it like a single fir
                     // compressed groups into rows of identical miniature silhouettes.
-                    float breadth=family=="CityGrove" || family=="PaintedForestGrove" ? 1.52f : 1.08f;
-                    cityTrees[foot]=tree.y*breadth*Mathf.Lerp(.68f,1.34f,core)*Mathf.Lerp(.9f,1.1f,stand);
+                    float breadth=family=="CityGrove" || family=="PaintedForestGrove" ? 1.75f : 1.14f;
+                    cityTrees[foot]=tree.y*breadth*Mathf.Lerp(.62f,1.41f,core)*Mathf.Lerp(.9f,1.1f,stand);
                 }
                 // Rock outcrops punctuate clearings. All trees come from the authored stands.
-                for(int n=0;n<40;n++){
+                for(int n=0;!exterior && n<40;n++){
                     float x=bx+(float)rng.NextDouble()*182,z=bz+(float)rng.NextDouble()*180;
                     if(RegionOneBlenderLandscape.Shore(x,z)<4f || RegionOneBlenderLandscape.Water(x,z)>.05f ||
                        RegionOneBlenderLandscape.Road(x,z)>.15f || x*x+z*z<500f) continue;
