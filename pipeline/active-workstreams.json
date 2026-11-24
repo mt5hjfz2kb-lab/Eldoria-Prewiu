@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-23T23:59:10.861Z",
+  "updated_at": "2026-11-24T10:48:12.352Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10008,10 +10008,10 @@
     {
       "id": "eldoria-valoria-modular25d-bastion1-20261119",
       "title": "Eldoria — Valoria Bastión I modular 2.5D: premium authored sprites + Unity native proof",
-      "owner": "chatgpt-valoria-capital-20261124",
-      "ownership_state": "claimed",
-      "ownership_revision": 10,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 11,
+      "write_scope_released": true,
       "branch": "experiment/valoria-ciudad-region-unificada-20261121",
       "status": "active",
       "phase": "AREA_COMPLETE_READY_FOR_NEXT_CHAT",
@@ -10025,9 +10025,7 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_approved": false,
       "device_qa": "PENDING physical Safari iPhone",
       "delivery_definition": {
@@ -10083,6 +10081,12 @@
           "ownership_revision": 10,
           "transferred_at": "2026-11-24T08:08:01.903Z",
           "reason": "Intervención capital en formación autorizada sobre bedeb5f"
+        },
+        {
+          "owner": "chatgpt-valoria-capital-20261124",
+          "ownership_revision": 10,
+          "transferred_at": "2026-11-24T10:48:12.352Z",
+          "reason": "Completed area Capital en formación, Región 1 y Corona de la Brecha; explicit verified handoff to next normal chat"
         }
       ],
       "handoff_note": "Technical source e681fda70aaa985dc62a928e4c9c6a0c63628cd5 certified by 44713811420; HEAD 63c4059 is documentation-only. See docs/valoria-modular-25d/DELIVERY_20261120_NATIVE_WEBGL_CAMERA.md and PRODUCTION_GUIDE_BASTION_I_20261120.md. Art approval and physical iPhone separate. Owner/Windows released to available rev5; reuse SAME canonical ID on authorized continuation.",
@@ -10093,32 +10097,21 @@
       "last_browser_failure": "Initial dark first frame misclassified by top pixel-only HUD test; image shows safe-area header is correctly inset. Inspect new browser test with real source-pinned player.",
       "next_native_head": "b00897b081fe3e0e143a51df37a71533fad25beb",
       "last_browser_run": 44713811420,
-      "released_at": "2026-11-23T23:59:10.861Z",
+      "released_at": "2026-11-24T10:48:12.352Z",
       "current_art_goal": "Capital en formación: composición urbana, continuidad regional y lectura de Corona en móvil",
       "last_failed_native_run": 44745994989,
       "last_completed_area": {
-        "area": "Valoria I–V · plano urbano, Región 1 y Corona de la Brecha",
-        "owner": "chatgpt-valoria-urbanismo-20261123",
-        "revision": 8,
-        "source_sha": "bedeb5fad7049ebc6b45f476067ec1820dbc5391",
-        "unity_run_id": 45279167863,
-        "closed_at": "2026-11-23T23:59:10.861Z",
-        "artistic_approval": "pending_owner_review",
-        "note": "277 fotogramas Unity, 14 encuadres A/B, recorridos I–V a 1× y 3× y WebKit con perfil iPhone 13. Partida física y aprobación artística del propietario pendientes. Una incidencia 404 sin URL en la consola de arranque de Chromium, sin bloqueo durante la partida. Código y arte en rama experimental."
-      },
-      "previous_owner": "chatgpt-valoria-urbanismo-20261123",
-      "next": "Next owner may claim canonical workstream eldoria-valoria-modular25d-bastion1-20261119 on existing PR after live queue check; preserve bedeb5fad7049ebc6b45f476067ec1820dbc5391 and last_completed_area.",
-      "area_handoff_request": {
-        "status": "ready",
-        "completed": true,
         "area": "Capital en formación, Región 1 y Corona de la Brecha",
         "owner": "chatgpt-valoria-capital-20261124",
         "revision": 10,
-        "branch_head": "6743b8baf2448679f1670acd961d64a76bd33a01",
-        "run_id": 45361939987,
+        "source_sha": "6743b8baf2448679f1670acd961d64a76bd33a01",
+        "unity_run_id": 45361939987,
+        "closed_at": "2026-11-24T10:48:12.352Z",
         "artistic_approval": "pending_owner_review",
         "note": "Ciudad, guardado histórico, mapa, WebGL, WebKit y dos recorridos I–V finalizados. El PC queda disponible. Revisión artística del propietario y prueba física de iPhone pendientes."
-      }
+      },
+      "previous_owner": "chatgpt-valoria-capital-20261124",
+      "next": "Next owner may claim canonical workstream eldoria-valoria-modular25d-bastion1-20261119 on existing PR after live queue check; preserve 6743b8baf2448679f1670acd961d64a76bd33a01 and last_completed_area."
     }
   ],
   "history": [
