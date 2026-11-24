@@ -7,30 +7,31 @@ CREATE ROLE eldoria_untrusted_client NOLOGIN;
 SET ROLE eldoria_rank_writer;
 INSERT INTO eldoria_legacy.player VALUES ('w','a','A'),('w','b','B'),('w','c','C'),('other','a','Other');
 INSERT INTO eldoria_legacy.period(world_id,period_id,category,cadence,starts_at,ends_at)
- VALUES ('w','2020-W02','hunters','weekly','2020-01-06Z','2020-01-13Z'),
- ('w','2020-W02','explorers','weekly','2020-01-06Z','2020-01-13Z'),
- ('other','2020-W02','hunters','weekly','2020-01-06Z','2020-01-13Z'),
- ('w','s1','power','season','2020-01-06Z','2020-01-13Z');
+ VALUES ('w','2020-W02','hunters','weekly','2020-01-06 00:00:00+00','2020-01-13 00:00:00+00'),
+ ('w','2020-W02','explorers','weekly','2020-01-06 00:00:00+00','2020-01-13 00:00:00+00'),
+ ('other','2020-W02','hunters','weekly','2020-01-06 00:00:00+00','2020-01-13 00:00:00+00'),
+ ('w','s1','power','season','2020-01-06 00:00:00+00','2020-01-13 00:00:00+00');
 DO $$ BEGIN
- IF NOT eldoria_legacy.record_receipt('w','a','h1','hunt','boar','2020-01-06Z',1,5) THEN RAISE EXCEPTION 'new event'; END IF;
- IF eldoria_legacy.record_receipt('w','a','h1','hunt','boar','2020-01-06Z',1,5) THEN RAISE EXCEPTION 'duplicate'; END IF;
+ IF NOT eldoria_legacy.record_receipt('w','a','h1','hunt','boar','2020-01-06 00:00:00+00',1,5) THEN RAISE EXCEPTION 'new event'; END IF;
+ IF eldoria_legacy.record_receipt('w','a','h1','hunt','boar','2020-01-06 00:00:00+00',1,5) THEN RAISE EXCEPTION 'duplicate'; END IF;
  BEGIN
-  PERFORM eldoria_legacy.record_receipt('w','a','h1','hunt','boar','2020-01-06Z',1,4);
+  PERFORM eldoria_legacy.record_receipt('w','a','h1','hunt','boar','2020-01-06 00:00:00+00',1,4);
   RAISE EXCEPTION 'mismatch accepted';
  EXCEPTION WHEN raise_exception THEN IF SQLERRM<>'receipt identity conflict' THEN RAISE; END IF; END;
- PERFORM eldoria_legacy.record_receipt('w','b','h2','hunt','boar','2020-01-07Z',1,5);
- PERFORM eldoria_legacy.record_receipt('w','a','h3','hunt','boar','2020-01-13Z',1,5);
- PERFORM eldoria_legacy.record_receipt('other','a','h1','hunt','boar','2020-01-06Z',1,5);
- PERFORM eldoria_legacy.record_receipt('w','a','d1','discovery','frontier','2020-01-06Z',1,0);
- PERFORM eldoria_legacy.record_receipt('w','a','d2','discovery','frontier','2020-01-07Z',1,0);
- PERFORM eldoria_legacy.record_receipt('w','a','d3','discovery','breach','2020-01-08Z',1,0);
- PERFORM eldoria_legacy.record_receipt('w','b','d1','discovery','frontier','2020-01-06Z',1,0);
- IF NOT eldoria_legacy.record_score('w','s1','power','a',10,'2020-01-06Z',1) THEN RAISE EXCEPTION 'snapshot'; END IF;
- IF NOT eldoria_legacy.record_score('w','s1','power','a',10,'2020-01-08Z',2) THEN RAISE EXCEPTION 'same score new revision'; END IF;
- IF eldoria_legacy.record_score('w','s1','power','a',99,'2020-01-06Z',1) THEN RAISE EXCEPTION 'stale revision'; END IF;
- PERFORM eldoria_legacy.record_score('w','s1','power','b',10,'2020-01-07Z',1);
+ PERFORM eldoria_legacy.record_receipt('w','b','h2','hunt','boar','2020-01-07 00:00:00+00',1,5);
+ PERFORM eldoria_legacy.record_receipt('w','a','h3','hunt','boar','2020-01-13 00:00:00+00',1,5);
+ PERFORM eldoria_legacy.record_receipt('other','a','h1','hunt','boar','2020-01-06 00:00:00+00',1,5);
+ PERFORM eldoria_legacy.record_receipt('w','a','d1','discovery','frontier','2020-01-06 00:00:00+00',1,0);
+ PERFORM eldoria_legacy.record_receipt('w','a','d2','discovery','frontier','2020-01-07 00:00:00+00',1,0);
+ PERFORM eldoria_legacy.record_receipt('w','a','d3','discovery','breach','2020-01-08 00:00:00+00',1,0);
+ PERFORM eldoria_legacy.record_receipt('w','b','d1','discovery','frontier','2020-01-06 00:00:00+00',1,0);
+ IF NOT eldoria_legacy.record_score('w','s1','power','a',10,'2020-01-06 00:00:00+00',1) THEN RAISE EXCEPTION 'snapshot'; END IF;
+ IF NOT eldoria_legacy.record_score('w','s1','power','a',10,'2020-01-08 00:00:00+00',2) THEN RAISE EXCEPTION 'same score new revision'; END IF;
+ IF eldoria_legacy.record_score('w','s1','power','a',10,'2020-01-08 00:00:00+00',2) THEN RAISE EXCEPTION 'duplicate unchanged score revision'; END IF;
+ IF eldoria_legacy.record_score('w','s1','power','a',99,'2020-01-06 00:00:00+00',1) THEN RAISE EXCEPTION 'stale revision'; END IF;
+ PERFORM eldoria_legacy.record_score('w','s1','power','b',10,'2020-01-07 00:00:00+00',1);
  BEGIN
-  PERFORM eldoria_legacy.record_score('w','2020-W02','hunters','b',99,'2020-01-06Z',1);
+  PERFORM eldoria_legacy.record_score('w','2020-W02','hunters','b',99,'2020-01-06 00:00:00+00',1);
   RAISE EXCEPTION 'client score accepted';
  EXCEPTION WHEN raise_exception THEN IF SQLERRM<>'receipt-derived category' THEN RAISE; END IF; END;
 END $$;
@@ -46,7 +47,7 @@ DO $$ DECLARE got text[]; scores bigint[]; BEGIN
  IF got IS DISTINCT FROM ARRAY['a','b'] THEN RAISE EXCEPTION 'tie timestamp preserved'; END IF;
  IF (SELECT player_id FROM eldoria_legacy.read_rows('w','2020-W02','hunters',1,1)) IS DISTINCT FROM 'b' THEN RAISE EXCEPTION 'pagination'; END IF;
  BEGIN
-  PERFORM eldoria_legacy.record_receipt('w','a','illegal','hunt','boar','2020-01-06Z',1,5);
+  PERFORM eldoria_legacy.record_receipt('w','a','illegal','hunt','boar','2020-01-06 00:00:00+00',1,5);
   RAISE EXCEPTION 'reader can write';
  EXCEPTION WHEN insufficient_privilege THEN NULL; END;
  BEGIN
@@ -67,7 +68,7 @@ SET ROLE eldoria_rank_writer;
 DO $$ BEGIN
  IF NOT eldoria_legacy.close_period('w','2020-W02','hunters') THEN RAISE EXCEPTION 'close'; END IF;
  IF eldoria_legacy.close_period('w','2020-W02','hunters') THEN RAISE EXCEPTION 'duplicate close'; END IF;
- PERFORM eldoria_legacy.record_receipt('w','b','late','hunt','boar','2020-01-08Z',1,5);
+ PERFORM eldoria_legacy.record_receipt('w','b','late','hunt','boar','2020-01-08 00:00:00+00',1,5);
  UPDATE eldoria_legacy.player SET display_name='New A' WHERE world_id='w' AND player_id='a';
  IF (SELECT display_name FROM eldoria_legacy.read_rows('w','2020-W02','hunters',1,0)) IS DISTINCT FROM 'A' THEN RAISE EXCEPTION 'frozen changed'; END IF;
  IF (SELECT value FROM eldoria_legacy.read_rows('w','2020-W02','hunters',1,0)) IS DISTINCT FROM 5::bigint THEN RAISE EXCEPTION 'late event changed final'; END IF;

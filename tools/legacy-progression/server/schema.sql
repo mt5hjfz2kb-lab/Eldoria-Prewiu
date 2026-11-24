@@ -43,7 +43,7 @@ CREATE INDEX receipt_window ON eldoria_legacy.receipt(world_id,kind,occurred_at,
 CREATE TABLE eldoria_legacy.score (
  world_id text NOT NULL, period_id text NOT NULL, category text NOT NULL,
  player_id text NOT NULL, value bigint NOT NULL CHECK(value>=0),
- achieved_at timestamptz NOT NULL, revision bigint NOT NULL CHECK(revision>=0),
+ achieved_at timestamptz NOT NULL, observed_at timestamptz NOT NULL, revision bigint NOT NULL CHECK(revision>=0),
  PRIMARY KEY(world_id,period_id,category,player_id),
  FOREIGN KEY(world_id,period_id,category) REFERENCES eldoria_legacy.period(world_id,period_id,category),
  FOREIGN KEY(world_id,player_id) REFERENCES eldoria_legacy.player(world_id,player_id)
@@ -95,19 +95,19 @@ CREATE FUNCTION eldoria_legacy.record_score(
    WHERE world_id=w AND period_id=per AND category=cat FOR SHARE;
   IF win.closed_at IS NOT NULL OR t IS NULL OR t<win.starts_at OR t>=win.ends_at OR t>clock_timestamp()
    OR v IS NULL OR v<0 OR rev IS NULL OR rev<0 THEN RAISE EXCEPTION 'invalid snapshot'; END IF;
-  INSERT INTO eldoria_legacy.score(world_id,period_id,category,player_id,value,achieved_at,revision)
-   VALUES(w,per,cat,p,v,t,rev)
+  INSERT INTO eldoria_legacy.score(world_id,period_id,category,player_id,value,achieved_at,observed_at,revision)
+   VALUES(w,per,cat,p,v,t,t,rev)
    ON CONFLICT(world_id,period_id,category,player_id) DO NOTHING;
   IF FOUND THEN RETURN true; END IF;
   SELECT * INTO STRICT old FROM eldoria_legacy.score
    WHERE world_id=w AND period_id=per AND category=cat AND player_id=p FOR UPDATE;
   IF rev<old.revision THEN RETURN false; END IF;
   IF rev=old.revision THEN
-   IF old.value<>v OR old.achieved_at<>t THEN RAISE EXCEPTION 'snapshot identity conflict'; END IF;
+   IF old.value<>v OR old.observed_at<>t THEN RAISE EXCEPTION 'snapshot identity conflict'; END IF;
    RETURN false;
   END IF;
-  IF t<old.achieved_at THEN RAISE EXCEPTION 'snapshot time regression'; END IF;
-  UPDATE eldoria_legacy.score SET value=v, achieved_at=CASE WHEN old.value=v THEN old.achieved_at ELSE t END,revision=rev
+  IF t<old.observed_at THEN RAISE EXCEPTION 'snapshot time regression'; END IF;
+  UPDATE eldoria_legacy.score SET value=v, achieved_at=CASE WHEN old.value=v THEN old.achieved_at ELSE t END,observed_at=t,revision=rev
    WHERE world_id=w AND period_id=per AND category=cat AND player_id=p;
   RETURN true;
  END $$;
