@@ -1,0 +1,81 @@
+name: Eldoria Studio - recover native evidence and owned scratch
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths:
+      - 'tools/openai-development-studio/native-closeout/45675919389.json'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-studio-native-closeout
+  cancel-in-progress: false
+jobs:
+  evidence:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Recover already rendered frames, not a new Unity run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 45675919389 --repo "${{ github.repository }}" --name studio-native-unity-45675919389 --dir native
+          python3 -m pip install --disable-pip-version-check Pillow==11.3.0
+          python3 tools/openai-development-studio/native_pixel_review.py native review
+      - uses: actions/upload-artifact@v4
+        with:
+          name: studio-native-pixel-review
+          path: review/
+          retention-days: 14
+          if-no-files-found: error
+  cleanup:
+    needs: evidence
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    concurrency:
+      group: eldoria-modular25d-exclusive-unity-native
+      cancel-in-progress: false
+    timeout-minutes: 10
+    steps:
+      - name: Confirm exclusive live lease and remove only exact owned scratch
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json'}
+          $api="https://api.github.com/repos/$env:GITHUB_REPOSITORY/"
+          $meta=Invoke-RestMethod -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main') -Headers $h
+          $blob=Invoke-RestMethod -Uri ($api+'git/blobs/'+$meta.sha) -Headers $h
+          if($blob.sha -ne $meta.sha){throw 'Registry SHA mismatch'}
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
+          $held=@($reg.active | Where-Object {@($_.resources) -contains 'windows-runner-heavy'})
+          if($held.Count -ne 1 -or $held[0].id -ne 'eldoria-openai-development-studio-20261125' -or $held[0].owner -ne 'chatgpt-eldoria-studio-native-20261125' -or $held[0].ownership_revision -ne 1 -or $reg.resource_rotation.current_workstream -ne $held[0].id){throw 'Lease changed'}
+          $run=Invoke-RestMethod -Uri ($api+'actions/runs/45675919389') -Headers $h
+          if($run.status -ne 'completed' -or $run.head_sha -ne '02b8ea3306c5348ca3c0f56f560ad501c170f52e'){throw 'Source run not finished'}
+          $jobs=Invoke-RestMethod -Uri ($api+'actions/runs/45675919389/jobs') -Headers $h
+          if(@($jobs.jobs | Where-Object {$_.name -eq 'unity' -and $_.conclusion -eq 'success'}).Count -ne 1){throw 'Native job success missing'}
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){throw 'Native process still active; do not delete'}
+          $root=Join-Path $env:RUNNER_TEMP 'eldoria-studio-native-45675919389'
+          if(Test-Path -LiteralPath $root){
+            $item=Get-Item -LiteralPath $root
+            if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Unexpected reparse point'}
+            if(-not(Test-Path -LiteralPath (Join-Path $root '.git/HEAD'))){throw 'Not recognized owned checkout'}
+            $head=(Get-Content -LiteralPath (Join-Path $root '.git/HEAD') -Raw).Trim()
+            if($head -ne '5ef2aee67cf8fde57ba2fc4b3d929b517ee67944'){throw 'Unexpected checkout identity'}
+            Remove-Item -LiteralPath $root -Recurse -Force -ErrorAction Stop
+          }
+          if(Test-Path -LiteralPath $root){throw 'Owned scratch remains'}
+          Write-Host 'STUDIO_OWN_SCRATCH_REMOVED_VERIFIED 45675919389'
+          $out=Join-Path $env:RUNNER_TEMP ('studio-cleanup-proof-'+$env:GITHUB_RUN_ID+'.json')
+          @{source_run=45675919389;removed=$true;other_native_processes=$false;native_repeated=$false} | ConvertTo-Json | Set-Content -LiteralPath $out -Encoding utf8
+      - uses: actions/upload-artifact@v4
+        with:
+          name: studio-cleanup-proof
+          path: ${{ runner.temp }}/studio-cleanup-proof-${{ github.run_id }}.json
+          if-no-files-found: error
