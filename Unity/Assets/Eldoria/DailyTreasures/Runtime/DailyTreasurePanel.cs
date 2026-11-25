@@ -2157,7 +2157,10 @@ namespace Eldoria.DailyTreasures
             Place((RectTransform)closeButton.transform,1f,1f,1f,1f,-8f,-8f,48f,48f);
             int cols=portrait?2:4,rows=portrait?4:2;
             float left=15f,gap=7f;
-            float cofferH=portrait && panelH>=570f?Mathf.Min(147f,panelH*.19f):0f;
+            // Enlarge the genuine coffer in the spare vertical space of tall calendars.
+            // Keep the compact layout for short screens and reserve all four reward rows.
+            float cofferH=portrait && panelH>=570f
+                ?Mathf.Min(178f,panelH*.19f+Mathf.Max(0f,panelH-590f)*.20f):0f;
             float gridTop=82f+cofferH,gridBottom=83f;
             float gridHeight=panelH-gridTop-gridBottom;
             float cellW=(panelW-2f*left-gap*(cols-1))/cols;
