@@ -340,7 +340,7 @@ namespace Eldoria.UI.RoyalGold.V2
             trainingEnvironment.rectTransform.SetAsLastSibling();
             var courtyardFit=trainingEnvironment.gameObject.AddComponent<AspectRatioFitter>();
             courtyardFit.aspectMode=AspectRatioFitter.AspectMode.EnvelopeParent;
-            courtyardFit.aspectRatio=1.5f;
+            courtyardFit.aspectRatio=trainingEnvironment.sprite ? trainingEnvironment.sprite.rect.width / trainingEnvironment.sprite.rect.height : 1.5f;
             marchEnvironment=RoyalGoldV41SourceArt.Surface(root,TrainingGroundArt);
             marchEnvironment.rectTransform.SetAsLastSibling();
             var marchFit=marchEnvironment.gameObject.AddComponent<AspectRatioFitter>();
@@ -1376,11 +1376,37 @@ namespace Eldoria.UI.RoyalGold.V2
             float cardHeight=Mathf.Max(83f,heroH-cardTop-6f);
             float cardGap=Mathf.Clamp(lw*.010f,5f,11f);
             float cardW=(lw-24f-cardGap*2f)/3f;
+            bool commandRoster=RoyalGoldV2Hud.UseCoronaArt && !wide;
             for(int i=0;i<3;i++)
             {
                 var card=(RectTransform)heroSlotButtons[i].transform;
                 Place(card,12f+i*(cardW+cardGap),cardTop,cardW,cardHeight);
                 var source=approvedHeroes[i].sprite;
+                if(commandRoster)
+                {
+                    // The commander occupies the main card. Support and the locked
+                    // slot retain independent buttons on a two-row duty roster.
+                    float commandWidth=(lw-24f-cardGap)*.53f;
+                    bool leader=i==0;
+                    float supportHeight=(cardHeight-cardGap)*.5f;
+                    float slotWidth=leader?commandWidth:lw-24f-cardGap-commandWidth;
+                    float slotHeight=leader?cardHeight:supportHeight;
+                    Place(card,leader?12f:12f+commandWidth+cardGap,
+                        cardTop+(i==2?supportHeight+cardGap:0f),slotWidth,slotHeight);
+                    float labelH=leader?Mathf.Clamp(slotHeight*.18f,46f,65f):slotHeight-12f;
+                    float artW=leader?slotWidth-12f:Mathf.Min(slotHeight-14f,slotWidth*.41f);
+                    float artH=leader?slotHeight-labelH-8f:slotHeight-14f;
+                    Place(heroPortraitViewports[i],6f,6f,artW,artH);
+                    float aspect=source?source.rect.width/Mathf.Max(1f,source.rect.height):1f;
+                    float portraitWidth=Mathf.Min(artW,artH*aspect);
+                    Place(approvedHeroes[i].rectTransform,(artW-portraitWidth)*.5f,
+                        (artH-portraitWidth/aspect)*.5f,portraitWidth,portraitWidth/aspect);
+                    Place(heroSlotLabels[i].rectTransform,leader?6f:artW+12f,
+                        leader?slotHeight-labelH:6f,leader?slotWidth-12f:slotWidth-artW-18f,labelH);
+                    heroSlotLabels[i].fontSize=leader?30:24;
+                    heroSlotLabels[i].alignment=leader?TextAnchor.MiddleCenter:TextAnchor.MiddleLeft;
+                    continue;
+                }
                 float ratio=source?source.rect.width/Mathf.Max(1f,source.rect.height):.82f;
                 if(compact)
                 {
@@ -1423,7 +1449,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 lw-38f,wide?34f:43f);
             marchTroopChapter.fontSize=wide?22:29;
             marchTroopChapter.gameObject.SetActive(true);
-            float troopPicW=wide?lw*.25f:lw*.30f;
+            float troopPicW=wide?lw*.25f:lw*.40f;
             float picY=troopTop+(wide?46f:53f);
             float picH=Mathf.Max(55f,troopH-(wide?54f:62f));
             Place(approvedTroopRow.rectTransform,13f,picY,troopPicW,picH);
