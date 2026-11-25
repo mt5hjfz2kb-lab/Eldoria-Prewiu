@@ -226,7 +226,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 r.Frame=Rect("Issue186 aged metal",r.Root);
                 if(corona)
                 {
-                    var pocket=Art(r.Frame,Color.white);
+                    var pocket=Art(r.Frame,new Color(.76f,.73f,.70f,.90f));
                     pocket.sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/panel_obsidian");
                 }
                 else if(sharedTheme)
@@ -354,7 +354,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     cardsTop+line*(cellHeight+rowGap),cell,cellHeight);
                 At(item.Frame,2f,2f,cell-4f,cellHeight-4f);
                 At((RectTransform)item.Seen.transform,0f,0f,cell,cellHeight);
-                float icon=cell*(portraitCorona?.56f:.53f),iconY=cell*(portraitCorona?.025f:.13f);
+                float icon=cell*(portraitCorona?.64f:.53f),iconY=cell*(portraitCorona?0f:.13f);
                 At(item.Icon.rectTransform,(cell-icon)*.5f,iconY,icon,icon);
                 At(item.Quantity.rectTransform,(cell-icon)*.5f+icon*.15f,
                     iconY+icon*.73f,icon*.70f,icon*.18f);
@@ -371,9 +371,10 @@ namespace Eldoria.UI.RoyalGold.V2
                     // Keep the number away from the filigree and the novelty seal.
                     float captionY = cellHeight * .52f;
                     float captionH = cellHeight * .18f;
-                    At(item.Name.rectTransform, cell * .09f, captionY, cell * .49f, captionH);
-                    At(item.Amount.rectTransform, cell * .58f, captionY, cell * .32f, captionH);
-                    item.Amount.alignment = TextAnchor.MiddleRight;
+                    At(item.Name.rectTransform, cell * .15f, captionY, cell * .37f, captionH);
+                    At(item.Amount.rectTransform, cell * .56f, captionY, cell * .25f, captionH);
+                    item.Name.alignment = TextAnchor.MiddleRight;
+                    item.Amount.alignment = TextAnchor.MiddleLeft;
                     item.Amount.resizeTextForBestFit = true;
                     item.Amount.resizeTextMinSize = 9;
                     item.Amount.resizeTextMaxSize = item.Amount.fontSize;
