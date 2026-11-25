@@ -58,7 +58,7 @@ def execute(packet,out,live=False,authorization=None):
     budget_guard.authorize(cycle,dt.datetime.now(dt.timezone.utc).date(),authorization,
         os.environ.get("ELDORIA_AUTH_EVENT"),int(os.environ.get("GITHUB_RUN_ATTEMPT","0")),reserve)
     out=pathlib.Path(out);out.mkdir(parents=True,exist_ok=False)
-    ledger=mission.Ledger(out/"ledger.json")
+    ledger=mission.Ledger(out/"ledger.json",cap=reserve)
     mission.write_json(out/"mission-plan.json",plan)
     context=json.dumps({k:data[k] for k in ("target_id","source_sha","source_run","objective","scope","acceptance","images")},ensure_ascii=False)
     code=source.read_text(encoding="utf-8")
