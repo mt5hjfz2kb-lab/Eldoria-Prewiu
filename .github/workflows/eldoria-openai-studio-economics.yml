@@ -1,0 +1,55 @@
+name: Eldoria Studio - V2 economic proof and historical receipts
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths:
+      - '.github/workflows/eldoria-openai-studio-economics.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-studio-economics
+  cancel-in-progress: false
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Validate economic regressions
+        run: python3 tools/openai-development-studio/test_economics_v2.py
+      - name: Recover and reprice all 15 real historical API receipts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/openai-development-studio/historical_backfill.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: studio-economics-historical
+          path: economics-backfill/
+          retention-days: 90
+          if-no-files-found: error
+  archive:
+    needs: backfill
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - uses: actions/download-artifact@v4
+        with:
+          name: studio-economics-historical
+          path: /tmp/receipts
+      - name: Persist original sanitized receipts permanently in Studio branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/openai-development-studio/publish_receipts.py /tmp/receipts

@@ -34,6 +34,7 @@ jobs:
       - run: python3 tools/openai-development-studio/shader_candidate.py --self-test
       - run: python3 tools/openai-development-studio/request_gate.py --self-test
       - run: python3 tools/openai-development-studio/native_request_gate.py --self-test
+      - run: python3 tools/openai-development-studio/test_economics_v2.py
       - run: python3 -m py_compile tools/openai-development-studio/prepare_evidence.py tools/openai-development-studio/validate_sprite.py tools/openai-development-studio/blender_candidate.py
       - run: python3 tools/openai-development-studio/studio.py smoke --out /tmp/eldoria-api-dry.json
   smoke:

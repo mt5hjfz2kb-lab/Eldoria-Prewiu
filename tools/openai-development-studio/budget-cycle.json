@@ -12,7 +12,7 @@
       "reserve_usd": "0.01",
       "status": "executed",
       "run_id": 45670034719,
-      "estimated_usd": "0.000007"
+      "estimated_usd": "0.0000073"
     },
     {
       "id": "valoria-five-roles-45670811229",
@@ -50,7 +50,8 @@
     "remaining_requires_review": true,
     "api_invoice_verified": false,
     "scope": "This repository pilot only; not a global OpenAI hard limit. Reservations cannot be reclaimed on timeout without billing reconciliation.",
-    "estimated_total_usd": "0.18984725",
-    "actual_invoice_verified": false
+    "estimated_total_usd": "0.18984755",
+    "actual_invoice_verified": false,
+    "estimate_tariff": "2026-11-25-standard-short"
   }
 }

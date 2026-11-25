@@ -15,6 +15,8 @@ jobs:
     if: github.run_attempt == 1
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    outputs:
+      report_ready: ${{ steps.report.outputs.ready }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,6 +29,7 @@ jobs:
           python3 tools/openai-development-studio/request_gate.py --self-test
           python3 tools/openai-development-studio/mission_packet.py --self-test
           python3 tools/openai-development-studio/budget_guard.py --self-test
+          python3 tools/openai-development-studio/test_economics_v2.py
       - name: Verify immutable request, recover exact native evidence
         id: gate
         env:
@@ -40,12 +43,15 @@ jobs:
           retention-days: 14
           if-no-files-found: error
       - name: Execute only explicitly reserved first-attempt request
+        id: live_request
         if: steps.gate.outputs.live == 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ELDORIA_AUTH_EVENT: ${{ steps.gate.outputs.request_id }}
           STUDIO_REQUEST_ID: ${{ steps.gate.outputs.request_id }}
-        run: python3 tools/openai-development-studio/mission_packet.py --packet /tmp/studio-request-packet/packet.json --out /tmp/studio-request-result --live --authorization "$STUDIO_REQUEST_ID"
+        run: |
+          date -u +%Y-%m-%dT%H:%M:%SZ > /tmp/studio-live-started
+          python3 tools/openai-development-studio/mission_packet.py --packet /tmp/studio-request-packet/packet.json --out /tmp/studio-request-result --live --authorization "$STUDIO_REQUEST_ID"
       - name: Preserve role reports and cost reservations
         if: always() && steps.gate.outputs.live == 'true'
         uses: actions/upload-artifact@v4
@@ -54,3 +60,48 @@ jobs:
           path: /tmp/studio-request-result/
           retention-days: 14
           if-no-files-found: warn
+
+      - name: Report economic and productivity evidence even after a failed paid call
+        id: report
+        if: always() && steps.gate.outputs.live == 'true'
+        env:
+          STUDIO_REQUEST_ID: ${{ steps.gate.outputs.request_id }}
+          STUDIO_LIVE_STATUS: ${{ steps.live_request.outcome }}
+        run: |
+          set -eu
+          mkdir -p /tmp/studio-economic-report
+          started=$(cat /tmp/studio-live-started)
+          finished=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          source_run=$(python3 -c 'import json; print(json.load(open("/tmp/studio-request-packet/packet.json"))["source_run"])')
+          python3 tools/openai-development-studio/intervention_report.py collect --root /tmp/studio-request-result --run "$GITHUB_RUN_ID" --request "$STUDIO_REQUEST_ID" --started "$started" --finished "$finished" --source-run "$source_run" --status "$STUDIO_LIVE_STATUS" --out "/tmp/studio-economic-report/run-$GITHUB_RUN_ID.json"
+          cat "/tmp/studio-economic-report/run-$GITHUB_RUN_ID.md" >> "$GITHUB_STEP_SUMMARY"
+          echo ready=true >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.report.outputs.ready == 'true'
+        with:
+          name: studio-economic-report-${{ github.run_id }}
+          path: /tmp/studio-economic-report/
+          retention-days: 90
+          if-no-files-found: error
+  archive:
+    needs: review
+    if: always() && needs.review.outputs.report_ready == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - uses: actions/download-artifact@v4
+        with:
+          name: studio-economic-report-${{ github.run_id }}
+          path: /tmp/receipts
+      - name: Persist sanitized immutable report; no OpenAI credentials in this job
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/openai-development-studio/publish_receipts.py /tmp/receipts
