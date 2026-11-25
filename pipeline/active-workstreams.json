@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-25T19:51:12.741Z",
+  "updated_at": "2026-11-25T20:15:04.759Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9630,12 +9630,14 @@
       "title": "La Senda de la Brecha — vertical slice arcade por carriles, sin alterar beta",
       "owner": "chatgpt-senda-brecha-ios-unity-20261115",
       "ownership_state": "claimed",
-      "ownership_revision": 5,
+      "ownership_revision": 6,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "EXCLUSIVE_WINDOWS_LEASE_NATIVE_QA_NEXT",
-      "claimed_at": "2026-11-15T14:52:00+01:00",
-      "resources": [],
+      "phase": "STUDIO_BENCHMARK_COMMERCIAL_VISUAL_VERTICAL_SLICE",
+      "claimed_at": "2026-11-25T20:15:04.759Z",
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "tools/senda-brecha/**",
         "docs/events/senda-brecha/**",
@@ -9651,7 +9653,7 @@
       "art_approved": false,
       "physical_iphone_verified": false,
       "previous_owner": "chatgpt-senda-brecha-event-20261115",
-      "write_scope_released": true,
+      "write_scope_released": false,
       "last_handoff_at": "2026-11-15T13:28:30.903Z",
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/195",
       "final_source_sha": "f17c6056ad1fb85490f15d0a14477cd49ac39f88",
@@ -9662,7 +9664,8 @@
         "at": "2026-11-15T16:10:39.032Z",
         "to": "eldoria-private-beta-i-v-20261107",
         "reason": "Owner explicitly instructed P0 to use idle PC. No Actions runs in progress at transfer; Windows process preflight must independently confirm no Unity/Blender before work."
-      }
+      },
+      "user_authorization": "Owner approved PR195 benchmark and up to 10 USD additional API experiment; preserve canonical PR, no merge."
     },
     {
       "id": "eldoria-stylized-direction-proof-20261115",
@@ -10166,6 +10169,96 @@
         "deliverable": "Implementación aislada del núcleo de estadísticas, prestigio, colecciones y clasificación; integración real condicionada por titularidad y autoridad de servidor.",
         "evidence": "Pruebas de dominio, persistencia, idempotencia, desbloqueos y pruebas Unity cuando se libere el recurso.",
         "handoff": "PR única draft, SHA, pruebas y pendientes exactos."
+      }
+    },
+    {
+      "id": "eldoria-openai-development-studio-20261125",
+      "title": "Eldoria Development Studio — bounded native Unity validation",
+      "owner": "chatgpt-senda-benchmark-studio-20261125",
+      "ownership_state": "claimed",
+      "ownership_revision": 9,
+      "write_scope_released": false,
+      "branch": "pilot/eldoria-openai-development-studio-20261125",
+      "status": "active",
+      "phase": "SENDA_PR195_BENCHMARK",
+      "claimed_at": "2026-11-25T20:15:04.759Z",
+      "base_main_sha": "184294f7c723458c3eef5a294944a043681dab55",
+      "user_authorization": "Owner approved bounded production benchmark in PR195.",
+      "scope": [
+        "tools/openai-development-studio/**",
+        ".github/workflows/eldoria-openai-*.yml"
+      ],
+      "resources": [],
+      "delivery_definition": {
+        "deliverable": "Real source-level road contact candidate, controlled native A/B, route and B1 regressions; release PC and deliver reversible candidate only if justified.",
+        "evidence": "Native frames, source exact diff and control reversals. Separate technical from aesthetic gain; no extra API spend.",
+        "handoff": "Keep main gameplay and Valoria branch intact until accepted source handoff."
+      },
+      "art_approved": false,
+      "last_native_failure": {
+        "run_id": 45685805585,
+        "stage": "hosted preparation",
+        "cause": "Large registry content omitted by GitHub contents API; fixed by exact blob read. No Windows used."
+      },
+      "current_native_run_id": 45685929688,
+      "current_native_head": "630052347439c62b044fa63e22e60bee17a523b0",
+      "last_hosted_request_proof": 45675138084,
+      "previous_owner": "chatgpt-studio-postigo-delivery-20261125",
+      "closed_at": "2026-11-25T19:51:12.741Z",
+      "last_native_run": 45675919389,
+      "last_native_head": "02b8ea3306c5348ca3c0f56f560ad501c170f52e",
+      "native_closeout_run": 45679533675,
+      "delivery_head": "e400d40f69d4479e4ff8a551edab66c17a3fdccd",
+      "evidence": {
+        "native_run": 45685929688,
+        "closeout_run": 45688957980,
+        "native_artifact": 15057232964,
+        "comparison_artifact": 15058495152,
+        "cleanup_artifact": 15056799206,
+        "frames": 45,
+        "exact_reversals": 8,
+        "courier_entry_steps": 698,
+        "courier_exit_steps": 148,
+        "source_tests": 4,
+        "windows_seconds": 951,
+        "hosted_seconds": 44,
+        "estimated_api_attributed_usd": "0.038709675",
+        "new_api_calls": 0,
+        "quality_decision": "Local modest improvement, insufficient standalone promotion; original retained.",
+        "billing_verified": false
+      },
+      "next": "Use Studio on a high-impact measurable functional task rather than another micro-adjustment; maintain canonical Valoria source ownership.",
+      "phase2_evidence": {
+        "historical_backfill_run": 45681283119,
+        "final_ci_run": 45681700141,
+        "tests_passed": 54,
+        "api_calls_added": 0,
+        "historical_calls": 15,
+        "estimated_api_total_usd": "0.18984755",
+        "billing_verified": false,
+        "persistent_receipts": 4,
+        "github_hosted_seconds_selected": 512,
+        "self_hosted_windows_seconds_selected": 1519,
+        "limitations": "No official cost CSV; new routing profiles and future paid report path tested offline, not with additional live spend. Real productivity savings not measured."
+      },
+      "phase3_evidence": {
+        "source_run": 45638738009,
+        "api_run": 45683014884,
+        "final_ci": 45683596285,
+        "live_calls": 4,
+        "estimated_cost_usd": "0.038709675",
+        "total_estimated_usd": "0.228557225",
+        "api_elapsed_seconds": 69,
+        "diagnosis": "accepted with reserves; actual artistic change not implemented",
+        "billing_verified": false,
+        "reason": "Export contains only time buckets; no amounts."
+      },
+      "source_proof": {
+        "artifact_id": 15055952865,
+        "source_sha256": "fe19f3274135efdcc0766f64e372a61fb0f5b0e066e901dc1a21ec79a2d67c38",
+        "candidate_sha256": "1631d06cfe223da43b099013cce128c8c0e4f11b344315a96fe18ade92ba4439",
+        "source_tests": 4,
+        "art_approved": false
       }
     }
   ],
@@ -20884,14 +20977,14 @@
   },
   "resource_rotation": {
     "resource": "windows-runner-heavy",
-    "authorized_by": "Owner requested real continuation; Windows available",
-    "authorized_at": "2026-11-25T19:28:20.953Z",
+    "authorized_by": "Owner approved PR195 production benchmark; no other native jobs active.",
+    "authorized_at": "2026-11-25T20:15:04.759Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": null,
+    "current_workstream": "eldoria-senda-brecha-lane-event-20261115",
     "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "available",
+    "status": "senda_studio_benchmark_reserved",
     "rules": [
       "Only one owned isolated source clone; do not touch other native processes.",
       "No paid API calls; no beta publication.",
