@@ -35,10 +35,13 @@
     {
       "id": "historic-b1-camera-review-20261125",
       "reserve_usd": "0.70",
-      "status": "authorized_once",
-      "run_id": "historic-b1-camera-review-20261125",
+      "status": "executed",
+      "run_id": 45676636310,
       "request_sha256": "acb42d221b755aa0cbbc41bcfeb8a901a8daff94517b7cb9bf02e72166b6ecc6",
-      "reason": "Live verification of reusable read-only four-role workflow, within existing authorized $5 pilot cap; genuine historical public native evidence only."
+      "reason": "Live verification of reusable read-only four-role workflow, within existing authorized $5 pilot cap; genuine historical public native evidence only.",
+      "estimated_usd": "0.03381925",
+      "result_artifact_id": 15051423806,
+      "quality_result": "Four real responses completed; director and independent auditor confirmed readability in historical native frames, proposed reversible 5% zoom only as untested; no game edit or art approval."
     }
   ],
   "policy": {
@@ -47,7 +50,7 @@
     "remaining_requires_review": true,
     "api_invoice_verified": false,
     "scope": "This repository pilot only; not a global OpenAI hard limit. Reservations cannot be reclaimed on timeout without billing reconciliation.",
-    "estimated_total_usd": "0.156028",
+    "estimated_total_usd": "0.18984725",
     "actual_invoice_verified": false
   }
 }
