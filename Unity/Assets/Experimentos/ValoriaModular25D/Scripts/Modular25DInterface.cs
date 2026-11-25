@@ -625,10 +625,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                         ? "OBRA  "+(timeLeft/60L).ToString()+":"+(timeLeft%60L).ToString("00")
                         : "ASERRADERO";
                 bool constructing=building==ParcelBuildingState.UNDER_CONSTRUCTION;
-                sawmillTagText.rectTransform.anchoredPosition=
-                    new Vector2(12f,constructing?3f:0f);
-                sawmillTagText.rectTransform.sizeDelta=
-                    new Vector2(100f,constructing?23f:30f);
+                // The gilded end caps and hammer sit inside the painted width.
+                // Measure the localized caption so a completed mill can show its
+                // level without projecting past the right cap.
+                float captionWidth=Mathf.Max(74f,Mathf.Ceil(sawmillTagText.preferredWidth));
+                float plateWidth=captionWidth+43f;
+                sawmillTag.sizeDelta=new Vector2(plateWidth,27f);
+                sawmillTagText.rectTransform.anchoredPosition=new Vector2(9f,constructing?3f:0f);
+                sawmillTagText.rectTransform.sizeDelta=new Vector2(captionWidth,constructing?23f:30f);
                 if(worldProgressTrack!=null)
                     worldProgressTrack.gameObject.SetActive(constructing);
                 if (constructing && worldProgressFill)
