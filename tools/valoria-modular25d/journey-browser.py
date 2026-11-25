@@ -38,10 +38,11 @@ async def main():
                 if msg.type=='error': errors.append(msg.text[:600])
             elif msg.type=='error':
                 errors.append(msg.text[:600])
-                log.append({'console_error':msg.text[:200],'scene':state.get('activeScene'),
+                log.append({'console_error':msg.text[:200],'location':msg.location,'scene':state.get('activeScene'),
                             'room':state.get('room'),'level':state.get('level')})
         page.on('response', lambda res: log.append({'http_error':res.status,'url':res.url})
                 if res.status>=400 else None)
+        page.on('requestfailed',lambda req: log.append({'failed_url':req.url,'failure':req.failure}))
         page.on('console',console)
         page.on('pageerror',lambda e: errors.append(str(e)))
         cdp=await ctx.new_cdp_session(page)
