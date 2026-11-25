@@ -3,7 +3,7 @@ on:
   push:
     branches: [pilot/eldoria-openai-development-studio-20261125]
     paths:
-      - '.github/workflows/eldoria-openai-studio-native-ab.yml'
+      - 'tools/openai-development-studio/native-requests/*.json'
 permissions:
   contents: read
   actions: read
@@ -12,21 +12,29 @@ concurrency:
   cancel-in-progress: false
 jobs:
   prepare:
-    if: github.run_attempt == 1 && github.event.before == 'c553bbfff6398ee6005e988c635c2b1c74a7810b' && github.event.head_commit.message == 'Execute owner-authorized native Unity Studio A/B once'
+    if: github.run_attempt == 1
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 2
           sparse-checkout: |
             tools/openai-development-studio
+      - name: Check explicit native request and PC reservation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 tools/openai-development-studio/native_request_gate.py --self-test
+          python3 tools/openai-development-studio/native_request_gate.py --out /tmp/native-request.json
       - name: Freeze reviewed candidate and native adapter
         run: |
           set -eu
           curl -fsSL https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944/Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/DistrictGround.shader -o /tmp/ground.shader
           python3 tools/openai-development-studio/shader_candidate.py --self-test
           python3 tools/openai-development-studio/shader_candidate.py --source /tmp/ground.shader --out /tmp/studio-packet
+          cp /tmp/native-request.json /tmp/studio-packet/
           cp tools/openai-development-studio/unity/native-ab.ps1 /tmp/studio-packet/
           cp tools/openai-development-studio/unity/Editor/EldoriaStudioNativeAB.cs /tmp/studio-packet/
           sha256sum /tmp/studio-packet/*
