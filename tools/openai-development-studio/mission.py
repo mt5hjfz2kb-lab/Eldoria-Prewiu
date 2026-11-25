@@ -40,6 +40,15 @@ class Ledger:
     def complete(self,row,estimated=None,usage=None):
         row.update(state="completed",estimated_usd=None if estimated is None else str(estimated),usage=usage)
         self.save()
+        # A completed request cannot be unspent. Preserve its receipt and stop
+        # before the next paid call if the cost is unknown or over reservation.
+        if estimated is None:
+            raise RuntimeError("Unknown cost; stop mission without retry")
+        cost=D(str(estimated))
+        if not cost.is_finite() or cost<0 or cost>D(row["reserve_usd"]):
+            row["state"]="completed_over_reservation"
+            self.save()
+            raise RuntimeError("Request exceeded estimated reservation; stop before next call")
 
 def write_json(path, obj):
     with pathlib.Path(path).open("x",encoding="utf-8") as f:
@@ -129,6 +138,16 @@ class Tests(unittest.TestCase):
             self.assertEqual(json.loads(l.path.read_text())["reservations"][0]["state"],"reserved")
             l.complete(r,D("0.03"),{})
             self.assertEqual(json.loads(l.path.read_text())["reserved_usd"],"0.75")
+    def test_stop_after_unknown_or_over_reservation(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            l=Ledger(pathlib.Path(d)/"ledger.json")
+            r=l.reserve("director")
+            with self.assertRaises(RuntimeError):l.complete(r,D("0.16"),{})
+            self.assertEqual(json.loads(l.path.read_text())["reservations"][0]["state"],"completed_over_reservation")
+            r=l.reserve("artist")
+            with self.assertRaises(RuntimeError):l.complete(r,None,{})
+            self.assertEqual(json.loads(l.path.read_text())["reservations"][1]["state"],"completed")
     def test_image_rates(self):
         self.assertEqual(image_cost({"input_tokens_details":{"text_tokens":100,"image_tokens":0},"output_tokens":1000}),D("0.0305"))
         self.assertIsNone(image_cost({}))
