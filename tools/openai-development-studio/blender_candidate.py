@@ -9,7 +9,7 @@ image=bpy.data.images.load(str(src)); image.pack()
 w,h=image.size
 if not w or not h: raise RuntimeError("Invalid image")
 bpy.ops.mesh.primitive_plane_add(size=2)
-plane=bpy.context.object;plane.name="Eldoria_Lantern_Candidate_Not_Approved"
+plane=bpy.context.object;plane.name="Eldoria_Material_Reference_Not_Approved"
 plane.scale=(w/h,1,1)
 mat=bpy.data.materials.new("Eldoria_Candidate_RGBA");mat.use_nodes=True
 nodes=mat.node_tree.nodes;links=mat.node_tree.links
@@ -21,5 +21,5 @@ links.new(trans.outputs[0],mix.inputs[1]);links.new(em.outputs[0],mix.inputs[2])
 plane.data.materials.append(mat)
 bpy.ops.wm.save_as_mainfile(filepath=str(p/"candidate.blend"))
 assert pathlib.Path(p/"candidate.blend").stat().st_size>1000 and image.packed_file
-(p/"blender-proof.json").write_text(json.dumps({"blender_version":bpy.app.version_string,"mesh":plane.name,"packed_texture":True,"image_size":[w,h],"native_saved":True,"art_approved":False,"unity_imported":False},indent=2))
+(p/"blender-proof.json").write_text(json.dumps({"blender_version":bpy.app.version_string,"mesh":plane.name,"packed_texture":True,"image_size":[w,h],"native_saved":True,"reference_only":True,"art_approved":False,"unity_imported":False},indent=2))
 print("BLENDER_NATIVE_CANDIDATE_SAVED",bpy.app.version_string)
