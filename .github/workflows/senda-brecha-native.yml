@@ -45,7 +45,7 @@ jobs:
           w=holders[0]
           assert (w['id']=='eldoria-senda-brecha-lane-event-20261115' and
                   w['owner']=='chatgpt-senda-brecha-ios-unity-20261115' and
-                  w['ownership_state']=='claimed'),'Other workstream owns Windows'
+                  w['ownership_state']=='claimed' and w['ownership_revision']==6),'Other workstream owns Windows'
           assert w['branch']=='feature/senda-brecha-lane-event-20261115'
           current=get('git/ref/heads/feature/senda-brecha-lane-event-20261115')['object']['sha']
           assert current==os.environ['GITHUB_SHA'],'Branch moved after native request'
@@ -108,7 +108,7 @@ jobs:
           $owners=@($doc.active | Where-Object { $_.resources -contains 'windows-runner-heavy' })
           if($owners.Count -ne 1 -or $owners[0].id -ne 'eldoria-senda-brecha-lane-event-20261115' -or
              $owners[0].owner -ne 'chatgpt-senda-brecha-ios-unity-20261115' -or
-             $owners[0].ownership_state -ne 'claimed'){throw 'Windows lease changed; refusing Unity'}
+             $owners[0].ownership_state -ne 'claimed' -or $owners[0].ownership_revision -ne 6){throw 'Windows lease changed; refusing Unity'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native process active; refusing overlap'}
       - name: Build disposable minimal Unity project, without original game assets
         id: mini

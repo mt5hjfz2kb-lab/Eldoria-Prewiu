@@ -76,7 +76,11 @@ namespace Eldoria.SendaBrecha
         private int shotCursor;
         private bool initialized;
         private float sessionSpeed = 1f;
-        private readonly Color night = new Color(.095f, .115f, .17f);
+        private readonly Color night = new Color(.12f, .17f, .15f);
+        private Transform[][] soldierLimbs, enemyLimbs;
+        private Transform[] laneMarkers;
+        private UnityEngine.Mesh taperedMesh;
+        private Texture2D roadTexture, earthTexture;
 
         public static bool IsolatedFromMainGame => true;
 
@@ -135,18 +139,20 @@ namespace Eldoria.SendaBrecha
             BuildCameraAndLighting();
             soldierActors = new GameObject[14];
             soldierBodies = new Transform[14];
+            soldierLimbs = new Transform[14][];
             for (int i = 0; i < soldierActors.Length; ++i)
             {
                 var body = Empty(i == 0 ? "Guardian - original temporary 3D avatar" : "Valorian soldier " + i, world, Vector3.zero);
-                BuildSoldier(body, false, i == 0, false);
+                soldierLimbs[i] = BuildSoldier(body, false, i == 0, false);
                 soldierActors[i] = body.gameObject;
                 soldierBodies[i] = body;
             }
             enemies = new GameObject[12];
+            enemyLimbs = new Transform[12][];
             for (int i = 0; i < enemies.Length; ++i)
             {
                 var body = Empty("Corrupted enemy visual proxy " + i, world, Vector3.zero);
-                BuildSoldier(body, true, false, i == 0);
+                enemyLimbs[i] = BuildSoldier(body, true, false, i == 0);
                 enemies[i] = body.gameObject;
             }
             portals = new GameObject[3];
@@ -170,131 +176,205 @@ namespace Eldoria.SendaBrecha
             var cameraObject = new GameObject("Senda isolated perspective camera");
             cameraObject.transform.SetParent(world,false);
             SceneCamera = cameraObject.AddComponent<Camera>();
-            SceneCamera.fieldOfView = 48;
+            SceneCamera.fieldOfView = 46;
             SceneCamera.nearClipPlane = .18f;
             SceneCamera.farClipPlane = 95;
             SceneCamera.clearFlags = CameraClearFlags.SolidColor;
             SceneCamera.backgroundColor = night;
-            SceneCamera.transform.localPosition = new Vector3(0, 12.8f, -20f);
-            SceneCamera.transform.LookAt(new Vector3(0,.5f,13.2f));
+            SceneCamera.transform.localPosition = new Vector3(0, 12f, -18f);
+            SceneCamera.transform.LookAt(new Vector3(0,.3f,10.5f));
             var sun = new GameObject("Slanted cold-sun with warm highlights");
             sun.transform.SetParent(world,false);
             var light = sun.AddComponent<Light>();
             light.type=LightType.Directional; light.color=new Color(.91f,.82f,.75f);
-            light.intensity=1.35f;
+            light.intensity=1.10f;
             sun.transform.rotation=Quaternion.Euler(51,-37,0);
             var rimObject = new GameObject("Rift fill");rimObject.transform.SetParent(world,false);
             var rim=rimObject.AddComponent<Light>();rim.type=LightType.Point;
-            rim.color=new Color(.56f,.31f,.88f);rim.range=29;rim.intensity=15;
-            rimObject.transform.position=new Vector3(0,7,27);
-            RenderSettings.ambientLight=new Color(.53f,.55f,.64f);
+            rim.color=new Color(.43f,.25f,.68f);rim.range=13;rim.intensity=2.1f;
+            rimObject.transform.position=new Vector3(0,5,32);
+            RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight=new Color(.38f,.43f,.39f);
             RenderSettings.fog=true;
-            RenderSettings.fogColor=new Color(.18f,.20f,.28f);
+            RenderSettings.fogColor=night;
             RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogStartDistance=29f;
-            RenderSettings.fogEndDistance=70f;
+            RenderSettings.fogStartDistance=22f;
+            RenderSettings.fogEndDistance=64f;
+        }
+        // Shared tapered geometry (one reusable mesh) and deterministic textured
+        // materials replace the flat primitive-demo look. No external art or gameplay dependencies.
+        private GameObject Taper(string name, Transform parent, Vector3 pos, Vector3 scale, Color c, float metal=0)
+        {
+            if(!taperedMesh)
+            {
+                const int n=10;
+                var vertices=new List<Vector3>();
+                var tris=new List<int>();
+                for(int i=0;i<n;i++)
+                {
+                    float angle=i*Mathf.PI*2/n;
+                    vertices.Add(new Vector3(Mathf.Cos(angle)*.5f,-.5f,Mathf.Sin(angle)*.5f));
+                    vertices.Add(new Vector3(Mathf.Cos(angle)*.08f,.5f,Mathf.Sin(angle)*.08f));
+                }
+                vertices.Add(new Vector3(0,-.5f,0));vertices.Add(new Vector3(0,.5f,0));
+                for(int i=0;i<n;i++)
+                {
+                    int a=2*i,b=2*((i+1)%n);
+                    tris.AddRange(new[]{a,a+1,b,b,a+1,b+1,2*n,a,b,2*n+1,b+1,a+1});
+                }
+                taperedMesh=new UnityEngine.Mesh {name="Senda shared tapered 10-sided mesh"};
+                taperedMesh.SetVertices(vertices);taperedMesh.SetTriangles(tris,0);taperedMesh.RecalculateNormals();taperedMesh.RecalculateBounds();
+            }
+            var g=new GameObject(name);g.transform.SetParent(parent,false);g.transform.localPosition=pos;g.transform.localScale=scale;
+            g.AddComponent<MeshFilter>().sharedMesh=taperedMesh;g.AddComponent<MeshRenderer>().sharedMaterial=Mat(c,metal);
+            return g;
+        }
+        private Texture2D GroundTexture(bool stone)
+        {
+            var t=new Texture2D(128,128,TextureFormat.RGB24,true);
+            t.name=stone?"Senda procedural worn slate":"Senda procedural forest floor";
+            var pixels=new Color32[128*128];
+            var random=new System.Random(stone?7821:7812);
+            for(int y=0;y<128;y++)for(int x=0;x<128;x++)
+            {
+                int row=y/16;int sx=(x+(row%2)*16)%32;
+                bool seam=stone&&(y%16==0||sx==0);
+                float v=(stone?.42f:.32f)+(float)random.NextDouble()*.13f;
+                if(stone)v+=((row*17+((x+(row%2)*16)/32)*11)%5-2)*.014f;
+                if(seam)v*=.60f;
+                pixels[y*128+x]=stone?new Color(v,v*.89f,v*.72f):new Color(v*.76f,v*.87f,v*.55f);
+            }
+            t.SetPixels32(pixels);t.Apply(true,false);t.wrapMode=TextureWrapMode.Repeat;t.filterMode=FilterMode.Bilinear;
+            return t;
+        }
+        private void TextureSurface(GameObject surface,Texture2D texture,Vector2 repeat)
+        {
+            var mat=surface.GetComponent<MeshRenderer>().sharedMaterial;
+            string property=mat.HasProperty("_BaseMap")?"_BaseMap":"_MainTex";
+            if(mat.HasProperty(property)){mat.SetTexture(property,texture);mat.SetTextureScale(property,repeat);}
         }
         private void BuildEnvironment(Transform parent)
         {
-            Color rock = new Color(.28f,.31f,.36f);
-            Color grass = new Color(.20f,.28f,.31f);
-            Color road = new Color(.28f,.27f,.32f);
-            Mesh("Cliff and moss floor",PrimitiveType.Cube,parent,new Vector3(0,-.48f,22),new Vector3(80,.9f,125),grass);
-            Mesh("Dark slate roadway",PrimitiveType.Cube,parent,new Vector3(0,-.11f,23),new Vector3(7.7f,.24f,124),road);
-            Mesh("Worn left stone verge",PrimitiveType.Cube,parent,new Vector3(-4.0f,-.04f,23),new Vector3(.47f,.3f,124),new Color(.44f,.39f,.40f));
-            Mesh("Worn right stone verge",PrimitiveType.Cube,parent,new Vector3(4.0f,-.04f,23),new Vector3(.47f,.3f,124),new Color(.44f,.39f,.40f));
-            var features = new List<Transform>();
-            // Each stone, arch and conifer is genuine Unity geometry, not a painted card.
-            for (int i = 0; i < 66; i++)
+            Color rock=new Color(.34f,.32f,.27f);
+            roadTexture=GroundTexture(true);earthTexture=GroundTexture(false);
+            var floor=Mesh("Forest floor",PrimitiveType.Cube,parent,new Vector3(0,-.48f,22),new Vector3(80,.9f,125),new Color(.91f,.94f,.83f));
+            var road=Mesh("Worn slate roadway",PrimitiveType.Cube,parent,new Vector3(0,-.11f,23),new Vector3(7.7f,.24f,124),new Color(.95f,.92f,.88f));
+            TextureSurface(floor,earthTexture,new Vector2(24,38));
+            TextureSurface(road,roadTexture,new Vector2(3,44));
+            foreach(int side in new[]{-1,1})
+                Mesh("Stone verge",PrimitiveType.Cube,parent,new Vector3(side*4.0f,-.04f,23),new Vector3(.45f,.23f,124),new Color(.36f,.31f,.25f));
+            var features=new List<Transform>();var markers=new List<Transform>();
+            // Actual lane centers are -2.15,0,+2.15. Separators at +/-1.075,
+            // visual only, aligned with physical gate spacing.
+            for(int i=0;i<44;i++)foreach(int side in new[]{-1,1})
+                markers.Add(Mesh("Inset lane separator "+i,PrimitiveType.Cube,parent,new Vector3(side*1.075f,.026f,i*2.4f-9),new Vector3(.07f,.014f,.78f),new Color(.62f,.54f,.37f)).transform);
+            laneMarkers=markers.ToArray();
+            for(int i=0;i<54;i++)
             {
-                float z = -5f+(i*1.87f);
-                float x=((i*17)%23/23f-.5f)*6.5f;
-                var stone=Mesh("Low-contrast stone path "+i, PrimitiveType.Cube,parent,
-                    new Vector3(x,.031f,z),new Vector3(.55f+(i%4)*.19f,.038f,.28f+(i%3)*.12f),
-                    i%3==0?new Color(.38f,.34f,.39f):new Color(.29f,.28f,.33f));
+                float z=-5f+i*2.25f,x=((i*17)%23/23f-.5f)*6.5f;
+                var stone=Mesh("Worn uneven paving "+i,PrimitiveType.Cube,parent,new Vector3(x,.025f,z),new Vector3(.40f+(i%4)*.15f,.021f,.24f+(i%3)*.10f),i%3==0?new Color(.40f,.35f,.29f):new Color(.27f,.25f,.21f));
                 stone.transform.localRotation=Quaternion.Euler(0,(i%7-3)*9,0);
             }
-            for (int i = 0; i < 35; i++)
+            for(int i=0;i<42;i++)
             {
-                float z = (i*7.19f)%85f-8f;
-                int side=i%2==0?-1:1;
-                float x=side*(5.8f+(i%7)*.79f);
-                var scenic=Empty("Moving lowpoly forest / rock " + i,parent,new Vector3(x,0,z));
-                if (i%6==0)
+                float z=(i*7.19f)%85f-8f;
+                int side=i%2==0?-1:1;float x=side*(5.3f+(i%7)*.72f);
+                var scenic=Empty("Forest and weathered stone "+i,parent,new Vector3(x,0,z));
+                if(i%6==0)
                 {
-                    var boulder=Mesh("Basalt",PrimitiveType.Sphere,scenic,new Vector3(0,.36f,0),
-                        new Vector3(1.2f,.9f,.85f),rock);
+                    var boulder=Mesh("Basalt",PrimitiveType.Sphere,scenic,new Vector3(0,.39f,0),new Vector3(1.45f,.88f,.92f),rock);
                     boulder.transform.localRotation=Quaternion.Euler(6,i*23,13);
-                    Mesh("Corruption violet crystal",PrimitiveType.Cylinder,scenic,new Vector3(.25f,.83f,.07f),
-                        new Vector3(.16f,1.1f,.16f),new Color(.43f,.23f,.65f),.1f,true).transform.localRotation=Quaternion.Euler(16,0,24);
+                    Taper("Fracture shard",scenic,new Vector3(.25f,.88f,.07f),new Vector3(.30f,1.04f,.30f),new Color(.37f,.22f,.48f)).transform.localRotation=Quaternion.Euler(16,0,24);
                 }
                 else
                 {
-                    Mesh("Rough trunk",PrimitiveType.Cylinder,scenic,new Vector3(0,.78f,0),
-                        new Vector3(.28f,1.56f,.28f),new Color(.28f,.22f,.21f));
-                    for(int branch=0;branch<3;branch++)
+                    float v=.82f+(i%5)*.14f;
+                    Mesh("Trunk",PrimitiveType.Cylinder,scenic,new Vector3(0,.78f*v,0),new Vector3(.27f*v,.78f*v,.27f*v),new Color(.25f,.19f,.15f));
+                    for(int tier=0;tier<4;tier++)
                     {
-                        Mesh("Conifer tiers",PrimitiveType.Cylinder,scenic,new Vector3(0,2.12f+branch*.65f,0),
-                            new Vector3(1.17f-branch*.22f,.85f,1.17f-branch*.22f),
-                            branch==1?new Color(.22f,.33f,.35f):new Color(.16f,.26f,.31f));
+                        var c=new Color(.16f+tier*.027f,.25f+tier*.027f,.17f+tier*.017f);
+                        Taper("Tapered conifer crown "+tier,scenic,new Vector3(.05f*Mathf.Sin(i+tier),(1.35f+tier*.55f)*v,0),new Vector3((1.85f-tier*.31f)*v,(1.42f-tier*.10f)*v,(1.85f-tier*.31f)*v),c).transform.localRotation=Quaternion.Euler(0,i*17+tier*13,0);
                     }
+                    Mesh("Mossy root stone",PrimitiveType.Sphere,scenic,new Vector3(.48f,.20f,.22f),new Vector3(.72f,.40f,.52f),rock);
                 }
                 features.Add(scenic);
             }
             environment=features.ToArray();
-            for(int n=0;n<9;n++)
+            for(int n=0;n<9;n++)foreach(int side in new[]{-1,1})
             {
-                float z=2+n*11.9f;
-                foreach(int side in new[]{-1,1})
-                {
-                    float x=side*4.5f;
-                    Mesh("Ruined road post",PrimitiveType.Cube,parent,new Vector3(x,.72f,z),new Vector3(.4f,1.45f,.42f),rock);
-                    Mesh("Post cap",PrimitiveType.Cube,parent,new Vector3(x,1.55f,z),new Vector3(.61f,.18f,.61f),new Color(.38f,.36f,.41f));
-                }
+                float z=2+n*11.9f,x=side*4.55f;
+                Mesh("Ruined foundation",PrimitiveType.Cube,parent,new Vector3(x,.19f,z),new Vector3(.78f,.38f,.77f),rock);
+                for(int row=0;row<3;row++)Mesh("Weathered masonry block",PrimitiveType.Cube,parent,new Vector3(x,.46f+row*.32f,z),new Vector3(.44f,.29f,.43f),row%2==0?rock:new Color(.39f,.35f,.29f));
+                Mesh("Broken cap",PrimitiveType.Cube,parent,new Vector3(x,1.41f,z),new Vector3(.67f,.19f,.63f),new Color(.50f,.43f,.31f));
             }
         }
-        private void BuildSoldier(Transform parent,bool evil,bool hero,bool heavy)
+        private Transform[] BuildSoldier(Transform parent,bool evil,bool hero,bool heavy)
         {
-            Color iron=evil?new Color(.30f,.26f,.31f):new Color(.52f,.54f,.55f);
-            Color cloth=evil?new Color(.39f,.17f,.28f):hero?new Color(.30f,.25f,.49f):new Color(.23f,.33f,.46f);
-            Color edge=evil?new Color(.61f,.30f,.44f):new Color(.70f,.53f,.30f);
-            float scale=heavy?1.32f:hero?1.14f:1f;
-            var model=Empty("Articulated medieval soldier / prototype",parent,Vector3.zero);
-            model.localScale=Vector3.one*scale;
-            Mesh("Boot left",PrimitiveType.Cube,model,new Vector3(-.14f,.19f,0),new Vector3(.22f,.42f,.35f),iron);
-            Mesh("Boot right",PrimitiveType.Cube,model,new Vector3(.14f,.19f,0),new Vector3(.22f,.42f,.35f),iron);
-            Mesh("Cloth cape",PrimitiveType.Cube,model,new Vector3(0,.91f,-.19f),new Vector3(.62f,.88f,.13f),cloth);
-            Mesh("Cuirass",PrimitiveType.Capsule,model,new Vector3(0,.95f,0),new Vector3(.57f,.67f,.39f),iron,.55f);
-            Mesh("Belt",PrimitiveType.Cube,model,new Vector3(0,.65f,.20f),new Vector3(.53f,.12f,.12f),edge,.5f);
-            Mesh("Head",PrimitiveType.Sphere,model,new Vector3(0,1.6f,.035f),new Vector3(.40f,.44f,.39f),new Color(.69f,.52f,.40f));
-            Mesh("Medieval helm",PrimitiveType.Cylinder,model,new Vector3(0,1.81f,.0f),new Vector3(.51f,.34f,.50f),iron,.6f);
-            Mesh("Helmet crest",PrimitiveType.Cube,model,new Vector3(0,2.04f,.0f),new Vector3(.13f,.22f,.42f),edge);
-            Mesh("Left shoulder",PrimitiveType.Sphere,model,new Vector3(-.40f,1.26f,0),new Vector3(.35f,.31f,.32f),iron,.5f);
-            Mesh("Right shoulder",PrimitiveType.Sphere,model,new Vector3(.40f,1.26f,0),new Vector3(.35f,.31f,.32f),iron,.5f);
-            Mesh("Round shield",PrimitiveType.Cylinder,model,new Vector3(-.47f,.95f,.25f),new Vector3(.47f,.13f,.47f),cloth,.4f)
-                .transform.localRotation=Quaternion.Euler(70,0,0);
-            Mesh("Shield boss",PrimitiveType.Sphere,model,new Vector3(-.47f,.96f,.34f),new Vector3(.15f,.15f,.15f),edge,.8f);
-            var shaft=Mesh("Spear or staff",PrimitiveType.Cylinder,model,new Vector3(.5f,1.3f,.21f),new Vector3(.065f,1.85f,.065f),new Color(.38f,.25f,.18f));
-            shaft.transform.localRotation=Quaternion.Euler(13,0,-8);
-            Mesh("Spear metal",PrimitiveType.Cylinder,model,new Vector3(.64f,2.33f,.46f),new Vector3(.085f,.33f,.085f),edge,.85f);
-            if(evil) Mesh("Corrupted eyes",PrimitiveType.Sphere,model,new Vector3(0,1.58f,.25f),new Vector3(.24f,.08f,.08f),new Color(.69f,.16f,.43f),0,true);
+            Color iron=evil?new Color(.30f,.27f,.28f):new Color(.47f,.52f,.54f);
+            Color cloth=evil?new Color(.39f,.14f,.12f):hero?new Color(.18f,.25f,.38f):new Color(.15f,.29f,.36f);
+            Color edge=evil?new Color(.65f,.33f,.17f):new Color(.70f,.54f,.28f);
+            var model=Empty("Articulated medieval guard",parent,Vector3.zero);
+            model.localScale=Vector3.one*(heavy?1.26f:hero?1.17f:1f);
+            var rig=new Transform[4];
+            for(int i=0;i<2;i++)
+            {
+                int side=i==0?-1:1;
+                var leg=Empty("Leg pivot "+i,model,new Vector3(side*.16f,.65f,0));rig[i]=leg;
+                Mesh("Thigh",PrimitiveType.Capsule,leg,new Vector3(0,-.15f,0),new Vector3(.22f,.21f,.21f),cloth);
+                Mesh("Steel greave",PrimitiveType.Cube,leg,new Vector3(0,-.39f,.025f),new Vector3(.22f,.30f,.24f),iron,.35f);
+                Mesh("Boot",PrimitiveType.Cube,leg,new Vector3(0,-.55f,.08f),new Vector3(.24f,.16f,.34f),new Color(.20f,.17f,.14f));
+                var arm=Empty("Arm pivot "+i,model,new Vector3(side*.36f,1.19f,0));rig[2+i]=arm;
+                Mesh("Shoulder plate",PrimitiveType.Sphere,arm,Vector3.zero,new Vector3(.42f,.29f,.36f),iron,.50f);
+                Mesh("Sleeve",PrimitiveType.Capsule,arm,new Vector3(side*.035f,-.24f,0),new Vector3(.21f,.22f,.21f),cloth);
+                Mesh("Vambrace",PrimitiveType.Cube,arm,new Vector3(side*.045f,-.44f,.03f),new Vector3(.18f,.23f,.19f),iron,.45f);
+            }
+            Mesh("Cuirass",PrimitiveType.Capsule,model,new Vector3(0,.96f,0),new Vector3(.60f,.39f,.39f),iron,.48f);
+            Taper("Cloth skirt",model,new Vector3(0,.64f,0),new Vector3(.65f,.40f,.42f),cloth).transform.localRotation=Quaternion.Euler(180,0,0);
+            var cape=Mesh("Tapered silhouette cloak",PrimitiveType.Cube,model,new Vector3(0,.91f,-.22f),new Vector3(hero?.72f:.58f,.91f,.10f),cloth);
+            cape.transform.localRotation=Quaternion.Euler(-8,0,0);
+            Mesh("Belt",PrimitiveType.Cube,model,new Vector3(0,.71f,.23f),new Vector3(.54f,.11f,.12f),edge,.5f);
+            Mesh("Face",PrimitiveType.Sphere,model,new Vector3(0,1.52f,.035f),new Vector3(.39f,.43f,.38f),evil?new Color(.40f,.33f,.26f):new Color(.64f,.46f,.34f));
+            Mesh("Helm rim",PrimitiveType.Cylinder,model,new Vector3(0,1.70f,0),new Vector3(.52f,.11f,.50f),iron,.55f);
+            Taper("Conical helm",model,new Vector3(0,1.86f,0),new Vector3(.51f,.42f,.50f),iron,.7f);
+            Mesh("Face guard",PrimitiveType.Cube,model,new Vector3(0,1.57f,.20f),new Vector3(.25f,.11f,.08f),iron,.45f);
+            if(hero) Taper("Valorian gold crest",model,new Vector3(0,2.10f,0),new Vector3(.17f,.31f,.25f),edge,.65f);
+            if(evil)foreach(int side in new[]{-1,1})
+                Taper("Corrupted horn",model,new Vector3(side*.22f,1.94f,0),new Vector3(.15f,.40f,.15f),edge,.3f).transform.localRotation=Quaternion.Euler(0,0,-side*24);
+            var shield=Mesh("Shield",PrimitiveType.Cylinder,rig[2],new Vector3(-.12f,-.27f,.17f),new Vector3(.56f,.065f,.56f),cloth,.30f);
+            shield.transform.localRotation=Quaternion.Euler(90,0,0);
+            Mesh("Shield boss",PrimitiveType.Sphere,rig[2],new Vector3(-.12f,-.27f,.26f),new Vector3(.17f,.17f,.11f),edge,.65f);
+            var shaft=Mesh("Spear shaft",PrimitiveType.Cylinder,rig[3],new Vector3(.12f,.03f,.20f),new Vector3(.065f,.81f,.065f),new Color(.33f,.22f,.13f));
+            shaft.transform.localRotation=Quaternion.Euler(0,0,-7);
+            Taper("Spear head",rig[3],new Vector3(.22f,.99f,.20f),new Vector3(.16f,.34f,.10f),edge,.8f).transform.localRotation=Quaternion.Euler(0,0,-7);
+            if(evil)model.localRotation=Quaternion.Euler(0,180,0);
+            return rig;
+        }
+        private static void AnimateRig(Transform[] rig,float time,int i,bool fallen)
+        {
+            float a=fallen?0:Mathf.Sin(time*9.2f+i*.68f)*22f;
+            rig[0].localRotation=Quaternion.Euler(a,0,0);rig[1].localRotation=Quaternion.Euler(-a,0,0);
+            rig[2].localRotation=Quaternion.Euler(-a*.55f,0,0);rig[3].localRotation=Quaternion.Euler(a*.75f,0,0);
         }
         private void BuildGate(Transform parent)
         {
-            var masonry=new Color(.36f,.35f,.41f);
-            foreach (int side in new[]{-1,1})
+            var masonry=new Color(.35f,.31f,.26f);
+            foreach(int side in new[]{-1,1})
             {
-                Mesh("Rough stone portal pier",PrimitiveType.Cube,parent,new Vector3(side*.81f,1.36f,0),new Vector3(.37f,2.72f,.51f),masonry);
-                Mesh("Bronze collar",PrimitiveType.Cube,parent,new Vector3(side*.81f,2.38f,0),new Vector3(.47f,.20f,.62f),new Color(.53f,.41f,.28f),.7f);
+                Mesh("Stone footing",PrimitiveType.Cube,parent,new Vector3(side*.78f,.17f,0),new Vector3(.43f,.34f,.68f),masonry);
+                for(int i=0;i<5;i++)Mesh("Dressed masonry pier "+i,PrimitiveType.Cube,parent,new Vector3(side*.78f,.46f+i*.39f,0),new Vector3(.29f,.37f,.48f),i%2==0?masonry:new Color(.42f,.36f,.29f));
+                Mesh("Bronze collar",PrimitiveType.Cube,parent,new Vector3(side*.78f,2.27f,0),new Vector3(.45f,.18f,.58f),new Color(.55f,.43f,.25f),.65f);
+                Taper("Stone finial",parent,new Vector3(side*.78f,2.5f,0),new Vector3(.37f,.31f,.37f),masonry);
             }
-            Mesh("Portal lintel",PrimitiveType.Cube,parent,new Vector3(0,2.65f,0),new Vector3(2.15f,.34f,.61f),masonry);
-            Mesh("Rift blade",PrimitiveType.Cube,parent,new Vector3(0,1.32f,.035f),new Vector3(1.40f,1.91f,.06f),new Color(.22f,.44f,.47f),.16f,true);
-            var inscription=Empty("Actual numbered gate label",parent,new Vector3(0,1.48f,-.10f));
+            Mesh("Portal lintel",PrimitiveType.Cube,parent,new Vector3(0,2.48f,0),new Vector3(1.94f,.30f,.59f),masonry);
+            Mesh("Bronze rim",PrimitiveType.Cube,parent,new Vector3(0,2.67f,0),new Vector3(1.49f,.10f,.36f),new Color(.57f,.45f,.26f),.45f);
+            Mesh("Rift blade",PrimitiveType.Cube,parent,new Vector3(0,.99f,.045f),new Vector3(1.21f,1.73f,.04f),new Color(.15f,.35f,.31f),.06f,false);
+            var labelBack=Mesh("Gate inscription dark plaque",PrimitiveType.Cube,parent,new Vector3(0,1.55f,-.31f),new Vector3(1.68f,.73f,.055f),new Color(.10f,.13f,.12f));
+            var inscription=Empty("Actual numbered gate label",parent,new Vector3(0,1.56f,-.36f));
             var text=inscription.gameObject.AddComponent<TextMesh>();
-            text.text="+10";text.fontSize=84;text.characterSize=.024f;
+            text.text="+10";text.fontSize=84;text.characterSize=.020f;
             text.anchor=TextAnchor.MiddleCenter;text.alignment=TextAlignment.Center;
-            text.color=Color.white;
-            inscription.localRotation=Quaternion.Euler(0,180,0);
+            text.color=new Color(.97f,.92f,.79f);
+            // TextMesh default front is toward camera at negative Z.
         }
         public void Begin()
         {
@@ -384,7 +464,8 @@ namespace Eldoria.SendaBrecha
         private void RefreshWorld()
         {
             if(!initialized)return;
-            float scroll=(State==Phase.Running?Elapsed*2.8f:0);
+            float scroll=Elapsed*2.8f;
+            for(int i=0;i<laneMarkers.Length;i++){var mark=laneMarkers[i];var pos=mark.localPosition;pos.z=(((i/2)*2.4f-scroll)%105.6f+105.6f)%105.6f-9;mark.localPosition=pos;}
             for(int i=0;i<environment.Length;i++)
             {
                 var t=environment[i];
@@ -397,13 +478,13 @@ namespace Eldoria.SendaBrecha
                 bool visible=i<VisibleSoldiers;
                 soldierActors[i].SetActive(visible);
                 if(!visible)continue;
-                int column=i%4,row=i/4;
-                float laneX=(i==0?0:(column-1.5f)*.60f);
-                float z=2.7f-row*.61f+(i==0?.7f:0);
-                soldierBodies[i].localPosition=new Vector3(movingX+laneX,
-                    State==Phase.Running?.035f*Mathf.Sin(Elapsed*10+i*1.3f):0,z);
+                int column=(i+3)%4,row=(i-1)/4;
+                float laneX=i==0?0:(column-1.5f)*.48f;
+                float z=i==0?3.56f:2.65f-row*.68f;
+                soldierBodies[i].localPosition=new Vector3(movingX+laneX,0,z);
+                AnimateRig(soldierLimbs[i],Elapsed,i,false);
             }
-            bool running=State==Phase.Running || State==Phase.Intro;
+            bool running=State==Phase.Running || State==Phase.Intro || State==Phase.Paused;
             for(int i=0;i<portals.Length;i++)
             {
                 float gateZ=31f-Mathf.Clamp01(StageTime/GateCrossing)*27.3f;
@@ -413,9 +494,9 @@ namespace Eldoria.SendaBrecha
                 Color c=gate.Type==GateType.Trap?new Color(.69f,.22f,.31f):gate.Type==GateType.Power?
                     new Color(.72f,.53f,.24f):gate.Type==GateType.Ward?new Color(.46f,.25f,.72f):new Color(.14f,.49f,.48f);
                 var blade=portals[i].transform.Find("Rift blade")?.GetComponent<MeshRenderer>();
-                if(blade)blade.sharedMaterial=Mat(c,.12f,.55f,true);
+                if(blade)blade.sharedMaterial=Mat(c,.12f,.38f,false);
                 var label=portals[i].GetComponentInChildren<TextMesh>();
-                if(label){label.text=gate.Label;label.color=Color.white;}
+                if(label){label.text=gate.Label;label.color=new Color(.97f,.92f,.79f);}
             }
             bool showEnemies=running && StageTime>=FightStart && StageTime<WaveLength;
             float enemyTravel=Mathf.Clamp01((StageTime-FightStart)/(FightResolve-FightStart));
@@ -430,6 +511,7 @@ namespace Eldoria.SendaBrecha
                     float z=19f+(i/4)*1.15f-8f*enemyTravel;
                     enemies[i].transform.localPosition=new Vector3(x,dying?-.5f:0,z);
                     enemies[i].transform.localEulerAngles=dying?new Vector3(0,0,65):Vector3.zero;
+                    AnimateRig(enemyLimbs[i],Elapsed,i,dying);
                 }
             }
             fireClock+=State==Phase.Running?Time.deltaTime:0;
@@ -520,6 +602,9 @@ namespace Eldoria.SendaBrecha
             foreach(var material in materials.Values)if(material)
             { if(UnityEngine.Application.isPlaying) Destroy(material); else DestroyImmediate(material); }
             materials.Clear();
+            if(taperedMesh){if(UnityEngine.Application.isPlaying)Destroy(taperedMesh);else DestroyImmediate(taperedMesh);}
+            if(roadTexture){if(UnityEngine.Application.isPlaying)Destroy(roadTexture);else DestroyImmediate(roadTexture);}
+            if(earthTexture){if(UnityEngine.Application.isPlaying)Destroy(earthTexture);else DestroyImmediate(earthTexture);}
         }
     }
 }

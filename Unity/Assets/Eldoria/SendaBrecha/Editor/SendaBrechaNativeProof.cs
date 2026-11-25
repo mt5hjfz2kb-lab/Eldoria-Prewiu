@@ -19,7 +19,8 @@ namespace Eldoria.SendaBrecha.Editor
         [Serializable] private sealed class ProofReport
         {
             public string product = "La Senda de la Brecha";
-            public string test = "isolated procedural URP native GPU screenshot";
+            public string test = "isolated procedural native GPU screenshot (pipeline recorded)";
+            public string renderPipeline = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline ? UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline.GetType().Name : "Built-in";
             public string platform = UnityEngine.Application.platform.ToString();
             public string unity = UnityEngine.Application.unityVersion;
             public bool mainSceneModified;
@@ -49,11 +50,13 @@ namespace Eldoria.SendaBrecha.Editor
             Directory.CreateDirectory(directory);
             RenderTexture target = RenderTexture.GetTemporary(width,height,24,RenderTextureFormat.ARGB32);
             var previousTarget = camera.targetTexture;
+            float previousAspect = camera.aspect;
             var previousActive = RenderTexture.active;
             Texture2D pixels = null;
             try
             {
                 camera.targetTexture=target;
+                camera.aspect=(float)width/height;
                 camera.Render();
                 RenderTexture.active=target;
                 pixels=new Texture2D(width,height,TextureFormat.RGB24,false);
@@ -72,6 +75,7 @@ namespace Eldoria.SendaBrecha.Editor
             finally
             {
                 camera.targetTexture=previousTarget;
+                camera.aspect=previousAspect;
                 RenderTexture.active=previousActive;
                 RenderTexture.ReleaseTemporary(target);
                 if(pixels) UnityEngine.Object.DestroyImmediate(pixels);
