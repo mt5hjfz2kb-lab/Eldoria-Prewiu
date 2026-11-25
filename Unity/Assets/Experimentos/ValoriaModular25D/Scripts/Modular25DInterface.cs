@@ -98,8 +98,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // camera and point only to canonical, currently implemented UI.
             bastionTag=ButtonPlate("Bastion world nameplate",rootTransform,"BASTIÓN · I",
                 slatePlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                Vector2.zero,new Vector2(slatePlate.rect.width * 34f / slatePlate.rect.height, 34f),OpenStatus).GetComponent<RectTransform>();
-            bastionTag.GetComponent<Image>().raycastPadding=new Vector4(0f,-5f,0f,-5f);
+                Vector2.zero,new Vector2(115f,27f),OpenStatus).GetComponent<RectTransform>();
+            bastionTag.GetComponent<Image>().raycastPadding=new Vector4(-3f,-9f,-3f,-9f);
             bastionTagText=bastionTag.GetComponentInChildren<Text>(true);
             bastionTagText.fontSize=12;
             bastionTagText.color=PaleGold;
@@ -108,14 +108,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Keep the two original art plates short/readable in world-space.
             var keepGlyph=Plate("Bastion nameplate original icon",bastionTag,cityIcon,
                 new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                new Vector2(-42f,0f),new Vector2(20f,20f));
+                new Vector2(-37f,0f),new Vector2(17f,17f));
             keepGlyph.GetComponent<Image>().preserveAspect=true;
             bastionTagText.rectTransform.anchoredPosition=new Vector2(10f,0f);
             bastionTagText.rectTransform.sizeDelta=new Vector2(100f,28f);
             sawmillTag=ButtonPlate("Sawmill world nameplate",rootTransform,"ASERRADERO",
                 slatePlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                Vector2.zero,new Vector2(slatePlate.rect.width * 34f / slatePlate.rect.height, 34f),OpenSawmill).GetComponent<RectTransform>();
-            sawmillTag.GetComponent<Image>().raycastPadding=new Vector4(0f,-5f,0f,-5f);
+                Vector2.zero,new Vector2(115f,27f),OpenSawmill).GetComponent<RectTransform>();
+            sawmillTag.GetComponent<Image>().raycastPadding=new Vector4(-3f,-9f,-3f,-9f);
             sawmillTagText=sawmillTag.GetComponentInChildren<Text>(true);
             sawmillTagText.fontSize=12;
             sawmillTagText.color=PaleGold;
@@ -123,18 +123,18 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             sawmillTagText.rectTransform.sizeDelta=new Vector2(100f,30f);
             var sawmillGlyph=Plate("Sawmill nameplate original icon",sawmillTag,hammerIcon,
                 new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                new Vector2(-42f,0f),new Vector2(20f,20f));
+                new Vector2(-37f,0f),new Vector2(17f,17f));
             sawmillGlyph.GetComponent<Image>().preserveAspect=true;
             // Visible AFTER the successful Build auto-dismiss: real progress
             // belongs on the construction parcel, not a persistent modal.
             // This understated track has no new game clock or invented rewards.
             worldProgressTrack=Plate("World sawmill canonical progress track",sawmillTag,null,
                 new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                new Vector2(11f,-15f),new Vector2(120f,6f));
+                new Vector2(0f,-11f),new Vector2(86f,4f));
             worldProgressTrack.GetComponent<Image>().color=new Color32(17,11,32,226);
             worldProgressFill=Plate("World sawmill elapsed canonical fill",worldProgressTrack,null,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
-                new Vector2(2f,0f),new Vector2(2f,4f));
+                new Vector2(2f,0f),new Vector2(2f,2f));
             worldProgressFill.GetComponent<Image>().color=new Color32(76,211,192,255);
             worldProgressTrack.gameObject.SetActive(false);
 
@@ -600,7 +600,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if(worldProgressTrack!=null)
                     worldProgressTrack.gameObject.SetActive(constructing);
                 if (constructing && worldProgressFill)
-                    worldProgressFill.sizeDelta = new Vector2(116f*Mathf.Clamp01(1f-timeLeft/(float)Math.Max(1L,(long)SliceRules.SawmillBuildSeconds)),4f);
+                    worldProgressFill.sizeDelta = new Vector2(82f*Mathf.Clamp01(1f-timeLeft/(float)Math.Max(1L,(long)SliceRules.SawmillBuildSeconds)),2f);
                 if(activityTitle!=null)
                     activityTitle.text=constructing?"OBRA EN CURSO":"ACTIVIDADES";
                 if(activityProgress!=null)
@@ -711,7 +711,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             Vector3 anchor=new Vector3(bounds.center.x+(building==world.SawmillRenderer?bounds.size.x*.10f:0f),
                 above?bounds.max.y:bounds.min.y,building.transform.position.z);
             // Keep a constant logical gap as the architecture changes size with zoom.
-            float gap=label.rect.height*.5f+5f;
+            float gap=label.rect.height*.5f+2f;
             PlaceWorldNameplate(label,canvas,anchor,hidden,above?gap:-gap);
         }
 

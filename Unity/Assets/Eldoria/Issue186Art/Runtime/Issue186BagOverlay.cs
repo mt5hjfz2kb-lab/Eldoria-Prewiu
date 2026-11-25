@@ -331,17 +331,18 @@ namespace Eldoria.UI.RoyalGold.V2
             count.fontSize=shortWide?14:17;
             float cardsTop=y0+37f,footer=h-b-58f;
             int columns=w>h?(w>=1150f?6:4):3;
-            if(portraitCorona) columns=width>=345f?3:2;
+            if(portraitCorona) columns=width>=300f?3:2;
             float gap=shortWide?7f:10f;
             float cell=Mathf.Min((width-gap*(columns-1))/columns,
                 Mathf.Max(80f,footer-52f-cardsTop));
+            float cellHeight=portraitCorona?Mathf.Max(cell,128f):cell;
             int lines=Mathf.Clamp(Mathf.FloorToInt(
-                (footer-52f-cardsTop+gap)/(cell+gap)),1,12/columns);
+                (footer-52f-cardsTop+gap)/(cellHeight+gap)),1,12/columns);
             perPage=columns*lines;
             // Share leftover portrait height between rows while keeping the feedback
             // and paging controls anchored below the inventory.
             float rowGap=portraitCorona && lines>1
-                ? Mathf.Clamp((footer-66f-cardsTop-lines*cell)/(lines-1),gap,cell*.24f) : gap;
+                ? Mathf.Clamp((footer-66f-cardsTop-lines*cellHeight)/(lines-1),gap,cell*.24f) : gap;
             float gridW=columns*cell+(columns-1)*gap;
             float gridLeft=x0+(width-gridW)*.5f;
             for(int i=0;i<rows.Count;i++)
@@ -350,9 +351,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(i>=perPage){item.Root.gameObject.SetActive(false);continue;}
                 int column=i%columns,line=i/columns;
                 At(item.Root,gridLeft+column*(cell+gap),
-                    cardsTop+line*(cell+rowGap),cell,cell);
-                At(item.Frame,2f,2f,cell-4f,cell-4f);
-                At((RectTransform)item.Seen.transform,0f,0f,cell,cell);
+                    cardsTop+line*(cellHeight+rowGap),cell,cellHeight);
+                At(item.Frame,2f,2f,cell-4f,cellHeight-4f);
+                At((RectTransform)item.Seen.transform,0f,0f,cell,cellHeight);
                 float icon=cell*(portraitCorona?.56f:.53f),iconY=cell*(portraitCorona?.025f:.13f);
                 At(item.Icon.rectTransform,(cell-icon)*.5f,iconY,icon,icon);
                 At(item.Quantity.rectTransform,(cell-icon)*.5f+icon*.15f,
@@ -361,14 +362,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 At(item.Amount.rectTransform,cell*.105f,cell*.065f,cell*.79f,Mathf.Max(26f,cell*.19f));
                 item.Amount.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.13f,13f,24f));
                 item.Amount.alignment=TextAnchor.MiddleLeft;
-                At(item.Name.rectTransform,5f,cell*(portraitCorona?.54f:.63f),cell-10f,cell*.15f);
+                At(item.Name.rectTransform,5f,(portraitCorona?cellHeight*.53f:cell*.63f),cell-10f,cell*.15f);
                 item.Name.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.09f,10f,17f));
                 item.Name.alignment=TextAnchor.MiddleCenter;
                 // Novelty is already represented by the original badge.
                 // Keep source state available without duplicating a text line.
                 item.Detail.gameObject.SetActive(false);
                 float useH=RoyalGoldV2Hud.UseCoronaArt?Mathf.Clamp(cell*.24f,35f,54f):Mathf.Max(22f,cell*.20f);
-                At((RectTransform)item.Use.transform,6f,cell-useH-5f,cell-12f,useH);
+                At((RectTransform)item.Use.transform,6f,cellHeight-useH-5f,cell-12f,useH);
                 item.UseText.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.10f,11f,17f));
                 var skin=item.Use.targetGraphic as Image;
                 if(skin&&skin.sprite)
