@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "mill-yard-ab-retry-20261125",
+  "approved_native_execution": true,
+  "source_sha": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+  "candidate_sha256": "4e582b25a420383798e3aa4895d1b71b33158f18de0087165b8055adef068785",
+  "workstream_id": "eldoria-openai-development-studio-20261125",
+  "owner": "chatgpt-eldoria-studio-native-20261125",
+  "revision": 1,
+  "reason": "Recover first pre-Unity source hash mismatch; compare exact normalized source and Git blob; previous scratch cleaned."
+}
