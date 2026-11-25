@@ -1425,8 +1425,12 @@ namespace Eldoria.UI.RoyalGold.V2
                     Place(heroPortraitViewports[i],6f,6f,artW,artH);
                     float aspect=source?source.rect.width/Mathf.Max(1f,source.rect.height):1f;
                     float portraitWidth=leader?Mathf.Max(artW,artH*aspect):Mathf.Min(artW,artH*aspect);
+                    float portraitHeight=portraitWidth/aspect;
+                    // The leader fills the card. Crop the lower armour first so the brow
+                    // and crown remain visible, including on short portrait viewports.
+                    float portraitTop=leader?0f:(artH-portraitHeight)*.5f;
                     Place(approvedHeroes[i].rectTransform,(artW-portraitWidth)*.5f,
-                        (artH-portraitWidth/aspect)*.5f,portraitWidth,portraitWidth/aspect);
+                        portraitTop,portraitWidth,portraitHeight);
                     Place(heroSlotLabels[i].rectTransform,leader?6f:artW+12f,
                         leader?slotHeight-labelH:6f,leader?slotWidth-12f:slotWidth-artW-18f,labelH);
                     heroSlotLabels[i].fontSize=leader?30:24;
