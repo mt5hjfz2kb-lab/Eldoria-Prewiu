@@ -1,0 +1,108 @@
+name: Eldoria Studio - actual Postigo correction and native proof
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths:
+      - 'tools/openai-development-studio/postigo-requests/postigo-frontage-20261125.json'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-studio-postigo-delivery
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Verify immutable explicit request and prepare production diff
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          test "$(git diff --name-status HEAD^ HEAD)" = "$(printf 'A\ttools/openai-development-studio/postigo-requests/postigo-frontage-20261125.json')"
+          python3 - <<'PY'
+          import json,subprocess,base64
+          from pathlib import Path
+          p=Path("tools/openai-development-studio/postigo-requests/postigo-frontage-20261125.json")
+          r=json.loads(p.read_text())
+          assert r["source_sha"]=="5ef2aee67cf8fde57ba2fc4b3d929b517ee67944" and r["revision"]==7 and r["approved_native_execution"] is True
+          assert r["owner"]=="chatgpt-studio-postigo-delivery-20261125" and r["target"]=="POSTIGO_FRONTAGE"
+          m=json.loads(subprocess.check_output(["gh","api","repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main"]))
+          if "content" in m: data=json.loads(base64.b64decode(m["content"]))
+          else:
+            b=json.loads(subprocess.check_output(["gh","api","repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/"+m["sha"]]))
+            data=json.loads(base64.b64decode(b["content"]))
+          h=[x for x in data["active"] if "windows-runner-heavy" in x.get("resources",[])]
+          assert len(h)==1 and h[0]["id"]==r["workstream_id"] and h[0]["owner"]==r["owner"] and h[0]["ownership_revision"]==r["revision"] and data["resource_rotation"]["current_workstream"]==r["workstream_id"]
+          PY
+          curl -fsSL https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944/Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DLandscape.cs -o /tmp/landscape.cs
+          python3 tools/openai-development-studio/postigo_candidate.py --self-test
+          python3 tools/openai-development-studio/postigo_candidate.py --source /tmp/landscape.cs --out /tmp/postigo-packet
+          cp tools/openai-development-studio/postigo-requests/postigo-frontage-20261125.json /tmp/postigo-packet/native-request.json
+          cp tools/openai-development-studio/unity/postigo-ab.ps1 tools/openai-development-studio/unity/Editor/EldoriaStudioPostigoAB.cs /tmp/postigo-packet/
+          sha256sum /tmp/postigo-packet/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: studio-postigo-source
+          path: /tmp/postigo-packet/
+          retention-days: 30
+          if-no-files-found: error
+  unity:
+    needs: prepare
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    concurrency:
+      group: eldoria-modular25d-exclusive-unity-native
+      cancel-in-progress: false
+    timeout-minutes: 65
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: studio-postigo-source
+          path: ${{ runner.temp }}/eldoria-postigo-packet-${{ github.run_id }}
+      - name: Render actual candidate and controls on isolated Unity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $packet=Join-Path $env:RUNNER_TEMP ('eldoria-postigo-packet-'+$env:GITHUB_RUN_ID)
+          $output=Join-Path $env:RUNNER_TEMP ('eldoria-postigo-evidence-'+$env:GITHUB_RUN_ID)
+          & (Join-Path $packet 'postigo-ab.ps1') -Packet $packet -Output $output
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: studio-postigo-native
+          path: ${{ runner.temp }}/eldoria-postigo-evidence-${{ github.run_id }}/
+          retention-days: 30
+          if-no-files-found: warn
+  review:
+    needs: unity
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - uses: actions/download-artifact@v4
+        with:
+          name: studio-postigo-native
+          path: native
+      - run: |
+          python3 -m pip install --disable-pip-version-check Pillow==11.3.0
+          python3 tools/openai-development-studio/postigo_pixel_review.py native review
+      - uses: actions/upload-artifact@v4
+        with:
+          name: studio-postigo-comparison
+          path: review/
+          retention-days: 30
+          if-no-files-found: error
