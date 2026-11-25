@@ -45,6 +45,7 @@ namespace Eldoria.UI.RoyalGold.V2
         // The actual persisted mission kind selects the corresponding quadrant.
         readonly RawImage[] scoutThumbnails=new RawImage[3];
         RawImage engendroPortrait, guardianBanner, guardianPainted;
+        Texture2D patrolArt;
         readonly Texture2D[] guardianArt=new Texture2D[4];
         Texture2D scoutVignettes, guardianBannerTexture;
         Texture2D engendroTexture;
@@ -576,6 +577,7 @@ namespace Eldoria.UI.RoyalGold.V2
             guardianRelief.gameObject.SetActive(false);
             // The boss is a unique transparent image, not a cropped second
             // landscape. The stone niche belongs to the existing card.
+            patrolArt=Resources.Load<Texture2D>("EldoriaRetention/vigilant-corrupt-patrol");
             guardianArt[0]=Resources.Load<Texture2D>("EldoriaRetention/vigilant-guardian-coraza-v5");
             guardianArt[1]=Resources.Load<Texture2D>("EldoriaRetention/vigilant-guardian-umbral-v5");
             guardianArt[2]=Resources.Load<Texture2D>("EldoriaRetention/vigilant-guardian-centinela-v5");
@@ -1559,48 +1561,39 @@ namespace Eldoria.UI.RoyalGold.V2
                 var info=EarlyRetentionRules.Stage(Math.Min(stage,10000));
                 bool boss=info.Step%5==0;
                 bool showEngendro=info.Step==15 && engendroTexture!=null;
-                // No ordinary encounter can insert a second painted
-                // landscape. Both Engendro and four distinct guardians are
-                // integrated into the SAME tactile royal encounter bay.
-                bool showEncounterArt=showEngendro || (RoyalGoldV2Hud.UseCoronaArt && !boss && scoutVignettes!=null);
-                Texture2D paintedBoss=info.Step==5?guardianArt[0]:
+                Texture2D paintedFigure=info.Step==5?guardianArt[0]:
                     info.Step==10?guardianArt[1]:
                     info.Step==20?guardianArt[2]:
-                    info.Step==25?guardianArt[3]:null;
+                    info.Step==25?guardianArt[3]:
+                    !boss && RoyalGoldV2Hud.UseCoronaArt?patrolArt:null;
                 if(guardianRelief)
                 {
                     guardianRelief.SetStage(info.Step);
                     guardianRelief.SetBreach(showEngendro);
-                    guardianRelief.UsePaintedFigure(paintedBoss!=null||showEncounterArt);
-                    guardianRelief.gameObject.SetActive(true);
+                    guardianRelief.UsePaintedFigure(paintedFigure!=null || showEngendro);
+                    guardianRelief.gameObject.SetActive(!showEngendro && (boss || paintedFigure==null));
                 }
                 if(guardianPainted)
                 {
-                    guardianPainted.texture=paintedBoss;
-                    guardianPainted.gameObject.SetActive(!showEngendro && paintedBoss!=null);
+                    guardianPainted.texture=paintedFigure;
+                    guardianPainted.gameObject.SetActive(paintedFigure!=null);
                 }
-                if(showEncounterArt!=encounterPortraitVisible)
+                if(showEngendro!=encounterPortraitVisible)
                 {
-                    encounterPortraitVisible=showEncounterArt;
+                    encounterPortraitVisible=showEngendro;
                     Layout();
                 }
                 if(engendroPortrait)
                 {
-                    engendroPortrait.transform.parent.gameObject.SetActive(showEncounterArt);
-                    // Ordinary corrupt patrols retain an authored encounter
-                    // illustration too; never present an empty adversary card.
-                    engendroPortrait.texture=showEngendro?engendroTexture:scoutVignettes;
-                    engendroPortrait.uvRect=showEngendro?new Rect(0,0,1,1):new Rect(.01f,.51f,.48f,.48f);
-                    var painterlyPortrait=engendroPortrait as RoyalGoldV3VigilantsPortraitGraphic;
-                    if(painterlyPortrait)painterlyPortrait.Configure(showEngendro);
-                    // Ordinary authored patrol art dissolves into the same
-                    // environment; the authentic transparent Engendro keeps
-                    // its exact original colour and silhouette.
-                    engendroPortrait.color=showEngendro?Color.white:
-                        new Color(.93f,.96f,.89f,.89f);
+                    engendroPortrait.transform.parent.gameObject.SetActive(showEngendro);
+                    engendroPortrait.texture=engendroTexture;
+                    engendroPortrait.uvRect=new Rect(0,0,1,1);
+                    var portrait=engendroPortrait as RoyalGoldV3VigilantsPortraitGraphic;
+                    if(portrait)portrait.Configure(true);
+                    engendroPortrait.color=Color.white;
                 }
-                if(enemyGroundBack)enemyGroundBack.Configure(showEngendro,boss);
-                if(enemyGroundFront)enemyGroundFront.Configure(showEngendro,boss);
+                if(enemyGroundBack)enemyGroundBack.gameObject.SetActive(false);
+                if(enemyGroundFront)enemyGroundFront.gameObject.SetActive(false);
                 chapterTrail.rectTransform.anchorMin=Vector2.zero;
                 chapterTrail.rectTransform.anchorMax=Vector2.one;
                 chapterTrail.rectTransform.offsetMin=new Vector2(5,5);

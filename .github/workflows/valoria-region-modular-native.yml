@@ -8,7 +8,8 @@ on:
       - 'Unity/Assets/Eldoria/World4XCanon/**'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/**'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/**'
-      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/**'
+      - 'Unity/Assets/Eldoria/Resources/EldoriaRetention/**'
       - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalNarrativePresentation.cs'
       - 'tools/valoria-modular25d/journey-browser.py'
   workflow_dispatch:
