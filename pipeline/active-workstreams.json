@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-24T10:48:12.352Z",
+  "updated_at": "2026-11-25T18:19:45.948Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10036,9 +10036,7 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_approved": false,
       "device_qa": "PENDING physical Safari iPhone",
       "delivery_definition": {
@@ -10142,7 +10140,8 @@
         "note": "Ciudad, guardado histórico, mapa, WebGL, WebKit y dos recorridos I–V finalizados. El PC queda disponible. Revisión artística del propietario y prueba física de iPhone pendientes."
       },
       "previous_owner": "chatgpt-valoria-zoom-20261124",
-      "next": "Next owner may claim canonical workstream eldoria-valoria-modular25d-bastion1-20261119 on existing PR after live queue check; preserve 6743b8baf2448679f1670acd961d64a76bd33a01 and last_completed_area."
+      "next": "Next owner may claim canonical workstream eldoria-valoria-modular25d-bastion1-20261119 on existing PR after live queue check; preserve 6743b8baf2448679f1670acd961d64a76bd33a01 and last_completed_area.",
+      "resource_handoff_note": "Owner explicitly confirmed no other work and reassigned only PC resources to Eldoria Development Studio. Source ownership unchanged."
     },
     {
       "id": "eldoria-collections-rankings-prestige-20261124",
@@ -10168,6 +10167,33 @@
         "evidence": "Pruebas de dominio, persistencia, idempotencia, desbloqueos y pruebas Unity cuando se libere el recurso.",
         "handoff": "PR única draft, SHA, pruebas y pendientes exactos."
       }
+    },
+    {
+      "id": "eldoria-openai-development-studio-20261125",
+      "title": "Eldoria Development Studio — bounded native Unity validation",
+      "owner": "chatgpt-eldoria-studio-native-20261125",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "branch": "pilot/eldoria-openai-development-studio-20261125",
+      "status": "active",
+      "phase": "NATIVE_UNITY_AB",
+      "claimed_at": "2026-11-25T18:19:45.945Z",
+      "base_main_sha": "184294f7c723458c3eef5a294944a043681dab55",
+      "user_authorization": "Owner 2026-11-25 explicitly states no other work and authorizes reclaiming PC resources for this pilot; no change to other source owners.",
+      "scope": [
+        "tools/openai-development-studio/**",
+        ".github/workflows/eldoria-openai-*.yml"
+      ],
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "delivery_definition": {
+        "deliverable": "Native shader import and matched Bastion I/V A/B on disposable frozen Valoria source, plus reusable API studio workflow.",
+        "evidence": "Unity version, exact frozen source and candidate hashes, camera-matched PNG and regression results, safe scratch cleanup; no artistic auto-approval.",
+        "handoff": "Release PC after safe native exit, record evidence and pending integration decisions."
+      },
+      "art_approved": false
     }
   ],
   "history": [
@@ -20595,77 +20621,93 @@
   },
   "resource_rotation": {
     "resource": "windows-runner-heavy",
-    "authorized_by": "Owner 2026-11-19: PC can be used for the new Bastion I while no other work is active.",
-    "authorized_at": "2026-11-19T12:01:31.172Z",
+    "authorized_by": "Owner 2026-11-25: no other current work; reclaim PC for Studio native validation",
+    "authorized_at": "2026-11-25T18:19:45.948Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+    "current_workstream": "eldoria-openai-development-studio-20261125",
     "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "reserved_modular25d_rev6_bounded_native_art_ab",
+    "status": "reserved_studio_native_ab_rev1",
     "rules": [
-      "No cancellation of ongoing Unity jobs or interruption of other writers.",
-      "Only isolated modular25d branch and native QA; no main gameplay changes, merge, beta publication, paid credits or art approval.",
-      "Preserve source owners and release Windows after the bounded native run.",
-      "Check live claim and Windows processes before Editor invocation."
+      "Check actual runner processes before Unity; never cancel or interfere with other jobs.",
+      "Only isolated frozen source and Studio pilot scope; no main gameplay, beta release, or API spending.",
+      "Release reservation after bounded native job exits safely."
     ],
     "previous_rotation": {
       "resource": "windows-runner-heavy",
-      "authorized_by": "Owner explicitly allowed PC alternation while doing depth work; City2D holds code ownership and has no native Actions job running",
-      "authorized_at": "2026-11-18T09:20:00Z",
-      "mode": "one_bounded_native_execution_per_turn",
-      "current_workstream": "eldoria-valoria-25d-depth-motion-pilot-20261118",
+      "authorized_by": "Owner 2026-11-19: PC can be used for the new Bastion I while no other work is active.",
+      "authorized_at": "2026-11-19T12:01:31.172Z",
+      "mode": "exclusive_one_workstream_at_a_time",
+      "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
       "current_run_id": null,
-      "next_workstream": "eldoria-city2d-illustrated-proof-20261116",
-      "return_to": "eldoria-city2d-illustrated-proof-20261116",
-      "status": "single_depth_native_retry_while_city2d_PC_idle",
+      "next_workstream": null,
+      "return_to": null,
+      "status": "reserved_modular25d_rev6_bounded_native_art_ab",
       "rules": [
-        "Never cancel another workstream or interrupt active Unity/Blender processes.",
-        "Only this branch and exact archived V6 control may be used for 1 bounded Unity A/B run.",
-        "Retain other workstream write ownership and return windows-runner-heavy with CAS after run.",
-        "No merge, no beta publication, no artistic PASS without actual original Unity frames."
+        "No cancellation of ongoing Unity jobs or interruption of other writers.",
+        "Only isolated modular25d branch and native QA; no main gameplay changes, merge, beta publication, paid credits or art approval.",
+        "Preserve source owners and release Windows after the bounded native run.",
+        "Check live claim and Windows processes before Editor invocation."
       ],
-      "previous_completed_run": 44023117740,
-      "note": "One exclusive Unity 6000.3 run with CRLF-tolerant A scene clone and source gate passed; return Windows to City2D immediately after run. No interrupted processes, no beta/merge.",
-      "completed_visual_reboot_run": 43780662139,
-      "priority_override_scope": "Only windows-runner-heavy; all other branch owners and active production scopes retained",
       "previous_rotation": {
         "resource": "windows-runner-heavy",
-        "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
-        "authorized_at": "2026-11-15T22:44:00.333Z",
+        "authorized_by": "Owner explicitly allowed PC alternation while doing depth work; City2D holds code ownership and has no native Actions job running",
+        "authorized_at": "2026-11-18T09:20:00Z",
         "mode": "one_bounded_native_execution_per_turn",
-        "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+        "current_workstream": "eldoria-valoria-25d-depth-motion-pilot-20261118",
         "current_run_id": null,
-        "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
-        "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-        "status": "ashen_turn_available",
+        "next_workstream": "eldoria-city2d-illustrated-proof-20261116",
+        "return_to": "eldoria-city2d-illustrated-proof-20261116",
+        "status": "single_depth_native_retry_while_city2d_PC_idle",
         "rules": [
-          "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
-          "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
-          "Retain both source owners/scopes/branches. Transfer ONLY windows-runner-heavy via fresh CAS.",
-          "Each owner releases Windows while reviewing artifacts or editing source. No automatic expiry or takeover from inactivity.",
-          "After one Visual Reboot native run and clean exit, return Windows availability to Ashen Citadel; respect other legitimate concurrent jobs."
+          "Never cancel another workstream or interrupt active Unity/Blender processes.",
+          "Only this branch and exact archived V6 control may be used for 1 bounded Unity A/B run.",
+          "Retain other workstream write ownership and return windows-runner-heavy with CAS after run.",
+          "No merge, no beta publication, no artistic PASS without actual original Unity frames."
         ],
-        "previous_completed_run": 43906347228,
-        "note": "First real Visual Reboot Unity invocation completed with exit 1, artifact preserved; Windows returned to Ashen immediately while Visual Reboot diagnoses off-PC. All source owners unchanged.",
-        "completed_visual_reboot_run": 43780662139
+        "previous_completed_run": 44023117740,
+        "note": "One exclusive Unity 6000.3 run with CRLF-tolerant A scene clone and source gate passed; return Windows to City2D immediately after run. No interrupted processes, no beta/merge.",
+        "completed_visual_reboot_run": 43780662139,
+        "priority_override_scope": "Only windows-runner-heavy; all other branch owners and active production scopes retained",
+        "previous_rotation": {
+          "resource": "windows-runner-heavy",
+          "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
+          "authorized_at": "2026-11-15T22:44:00.333Z",
+          "mode": "one_bounded_native_execution_per_turn",
+          "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+          "current_run_id": null,
+          "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+          "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
+          "status": "ashen_turn_available",
+          "rules": [
+            "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
+            "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
+            "Retain both source owners/scopes/branches. Transfer ONLY windows-runner-heavy via fresh CAS.",
+            "Each owner releases Windows while reviewing artifacts or editing source. No automatic expiry or takeover from inactivity.",
+            "After one Visual Reboot native run and clean exit, return Windows availability to Ashen Citadel; respect other legitimate concurrent jobs."
+          ],
+          "previous_completed_run": 43906347228,
+          "note": "First real Visual Reboot Unity invocation completed with exit 1, artifact preserved; Windows returned to Ashen immediately while Visual Reboot diagnoses off-PC. All source owners unchanged.",
+          "completed_visual_reboot_run": 43780662139
+        },
+        "handoff_from": "eldoria-city2d-illustrated-proof-20261116",
+        "last_depth_pilot_runs": [
+          44275072091,
+          44275806196
+        ],
+        "last_depth_pilot_status": "NATIVE_RENDER_NOT_PRODUCED; SOURCE_FIX_PENDING_NATIVE_RETEST",
+        "last_depth_pilot_checkout_cleanup": "44275072091 scratch cleaned by retry. 44275806196 failed compilation scratch may remain and must be checked before future run.",
+        "last_depth_pilot_source_sha": "8ee63b684af749adf19d5b73cda15895a2aceabe",
+        "latest_source_asset_audit_run": 44280257279,
+        "last_depth_pilot_run": 44283728868,
+        "last_depth_pilot_result": "Unity compile success, capture aborted by over-strict meta CRLF check, fixed source awaiting fresh native test",
+        "last_depth_temp_cleanup": "confirmed SAFE_DEPTH_SCRATCH_CLEANUP_PASS for run 44283728868; no new native frames",
+        "last_software_api_check": "Unity official 6000.3 TextureImporterSettings.spriteAlignment/spritePivot",
+        "last_depth_previous_run": 44281717983,
+        "last_depth_candidate_sha": "43b90dd31173ebe7f11a773ed8cb541f72454013"
       },
-      "handoff_from": "eldoria-city2d-illustrated-proof-20261116",
-      "last_depth_pilot_runs": [
-        44275072091,
-        44275806196
-      ],
-      "last_depth_pilot_status": "NATIVE_RENDER_NOT_PRODUCED; SOURCE_FIX_PENDING_NATIVE_RETEST",
-      "last_depth_pilot_checkout_cleanup": "44275072091 scratch cleaned by retry. 44275806196 failed compilation scratch may remain and must be checked before future run.",
-      "last_depth_pilot_source_sha": "8ee63b684af749adf19d5b73cda15895a2aceabe",
-      "latest_source_asset_audit_run": 44280257279,
-      "last_depth_pilot_run": 44283728868,
-      "last_depth_pilot_result": "Unity compile success, capture aborted by over-strict meta CRLF check, fixed source awaiting fresh native test",
-      "last_depth_temp_cleanup": "confirmed SAFE_DEPTH_SCRATCH_CLEANUP_PASS for run 44283728868; no new native frames",
-      "last_software_api_check": "Unity official 6000.3 TextureImporterSettings.spriteAlignment/spritePivot",
-      "last_depth_previous_run": 44281717983,
-      "last_depth_candidate_sha": "43b90dd31173ebe7f11a773ed8cb541f72454013"
-    },
-    "note": "Exclusive Unity run for spatial composition and environmental work on existing modular25d branch. Source owner rev6; no other running Actions; Unity process safety rechecked on Windows; release after bounded native run(s)."
+      "note": "Exclusive Unity run for spatial composition and environmental work on existing modular25d branch. Source owner rev6; no other running Actions; Unity process safety rechecked on Windows; release after bounded native run(s)."
+    }
   }
 }
