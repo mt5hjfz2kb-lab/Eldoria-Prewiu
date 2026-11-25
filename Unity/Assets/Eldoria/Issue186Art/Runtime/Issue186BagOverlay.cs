@@ -365,6 +365,23 @@ namespace Eldoria.UI.RoyalGold.V2
                 At(item.Name.rectTransform,5f,(portraitCorona?cellHeight*.53f:cell*.63f),cell-10f,cell*.15f);
                 item.Name.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.09f,10f,17f));
                 item.Name.alignment=TextAnchor.MiddleCenter;
+                if (portraitCorona)
+                {
+                    // Reserve the quiet strip between the illustration and the action.
+                    // Keep the number away from the filigree and the novelty seal.
+                    float captionY = cellHeight * .52f;
+                    float captionH = cellHeight * .18f;
+                    At(item.Name.rectTransform, cell * .09f, captionY, cell * .49f, captionH);
+                    At(item.Amount.rectTransform, cell * .58f, captionY, cell * .32f, captionH);
+                    item.Amount.alignment = TextAnchor.MiddleRight;
+                    item.Amount.resizeTextForBestFit = true;
+                    item.Amount.resizeTextMinSize = 9;
+                    item.Amount.resizeTextMaxSize = item.Amount.fontSize;
+                }
+                else
+                {
+                    item.Amount.resizeTextForBestFit = false;
+                }
                 // Novelty is already represented by the original badge.
                 // Keep source state available without duplicating a text line.
                 item.Detail.gameObject.SetActive(false);
