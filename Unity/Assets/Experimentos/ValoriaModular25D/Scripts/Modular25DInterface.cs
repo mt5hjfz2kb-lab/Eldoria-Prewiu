@@ -324,7 +324,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             {
                 districtClock = Plate("Plazo de la obra", hudCanvas.transform, slatePlate,
                     new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(158f,38f));
-                districtClockText = Label("", districtClock, 15, true, PaleGold, TextAnchor.MiddleCenter,
+                districtClockText = Label("", districtClock, 17, false, WarmWhite, TextAnchor.MiddleCenter,
                     Vector2.zero, new Vector2(148f,32f));
                 districtClock.gameObject.SetActive(false);
                 var hand = Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/guante_guia");
@@ -379,9 +379,25 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 text.color = WarmWhite;
                 if (text.name == "Opening question") text.color = PaleGold;
             }
+            // The gate remains visible above the player's inscription. Fractional
+            // anchors let the same panel contract if the keyboard resizes the view.
+            var plaque = (RectTransform)frame;
+            plaque.anchorMin = new Vector2(.07f,.13f);
+            plaque.anchorMax = new Vector2(.93f,.74f);
+            var inscription = frame.Find("Player's chosen name").GetComponent<Image>();
+            inscription.color = new Color(.105f,.122f,.145f,.94f);
+            var rim = inscription.GetComponent<Outline>();
+            rim.effectColor = new Color(.59f,.51f,.35f,.86f);
+            var editor = inscription.GetComponent<InputField>();
+            editor.textComponent.alignment = TextAnchor.MiddleCenter;
+            var hint = (Text)editor.placeholder;
+            hint.alignment = TextAnchor.MiddleCenter;
+            hint.color = new Color(.81f,.78f,.69f);
             var confirm = frame.Find("Confirm your name").GetComponent<Image>();
             confirm.sprite = actionPlate;
             confirm.color = Color.white;
+            confirm.rectTransform.anchorMin = new Vector2(.22f,.055f);
+            confirm.rectTransform.anchorMax = new Vector2(.78f,.19f);
             prompt.Open(false, name => gateway.Issue("ChoosePlayerName", name).Ok &&
                 string.Equals(gateway.Snapshot().PlayerName, name, StringComparison.Ordinal));
         }
@@ -898,7 +914,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         public sealed class PlayerRibbon
         {
-            RectTransform topRibbon, topRibbonHairline, identity, resourceRow;
+            RectTransform topRibbon, identity, resourceRow;
             RectTransform[] resourceChips;
             Text title,level,woodValue,stoneValue,foodValue;
             Image woodAccent;
@@ -914,10 +930,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     new Vector2(378f,46f));
                 topRibbon.GetComponent<Image>().color=Color.white;
                 topRibbon.GetComponent<Image>().preserveAspect=false;
-                topRibbonHairline=Plate("Shared ribbon gold seam",topRibbon,null,
-                    new Vector2(.5f,0f),new Vector2(.5f,0f),
-                    Vector2.zero,new Vector2(365f,1.2f));
-                topRibbonHairline.GetComponent<Image>().color=new Color32(175,132,72,55);
                 identity = Plate("Valoria identity", rootTransform, null,
                     new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(6f, -6f),
                     new Vector2(102f, 44f));
@@ -972,7 +984,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 float stripLeft=left+safeWidth-stripWidth;
                 topRibbon.anchoredPosition=new Vector2(stripLeft+stripWidth*.5f-width*.5f,-top);
                 topRibbon.sizeDelta=new Vector2(stripWidth-6f,46f);
-                topRibbonHairline.sizeDelta=new Vector2(stripWidth-18f,1.2f);
 
                 identity.anchorMin=identity.anchorMax=new Vector2(0f,1f);
                 identity.pivot=new Vector2(0f,1f);
@@ -1059,6 +1070,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var chip=Plate("Resource "+caption,parent,resourcePlate,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
                 new Vector2(index*123f,0f),new Vector2(117f,52f));
+            // The common velvet ribbon supplies the dark ground. Keep the
+            // small metal insets subordinate to the original resource and value.
+            chip.GetComponent<Image>().color = new Color(.83f,.83f,.87f,.52f);
             var image=Plate(caption+" original resource art",chip,art,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
                 new Vector2(10f,0f),new Vector2(42f,42f));

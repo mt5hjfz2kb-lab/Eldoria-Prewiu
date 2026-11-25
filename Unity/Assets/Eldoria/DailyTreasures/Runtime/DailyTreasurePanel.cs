@@ -462,7 +462,9 @@ namespace Eldoria.DailyTreasures
             {
                 var day=NewRect("Day "+(i+1)+" / non-clickable informational card",calendar);
                 dayBack[i]=Plate(day,i==6?new Color(.27f,.20f,.11f,1f):Oak,false);
-                if(!ApplyAuthoredFrame(day,"valoria_frame_card_256"))
+                // The weekly chest has a forged surround. Ordinary days share
+                // the continuous surface and use light to mark today's reward.
+                if(i==6 && !ApplyAuthoredFrame(day,"valoria_frame_card_256"))
                     Relief(day);
                 var emblem=NewRect("Recognizable actual reward icon",day);
                 dayGlyph[i]=emblem.gameObject.AddComponent<DailyTreasureRewardGlyph>();
@@ -945,8 +947,9 @@ namespace Eldoria.DailyTreasures
                         new Color(.60f,.65f,.68f,1f);
                 else
                     dayBack[i].color=next?new Color(.42f,.29f,.16f,1f):
-                        collected?new Color(.15f,.18f,.15f,1f):
-                        i==6?new Color(.28f,.20f,.11f,1f):Oak;
+                        collected?new Color(.13f,.16f,.14f,.83f):
+                        i==6?new Color(.28f,.20f,.11f,1f):
+                        new Color(.105f,.11f,.12f,.72f);
                 dayBody[i].text=ShortReward(item);
                 dayBody[i].color=collected?Muted:Ivory;
                 if(dayArtwork[i])
@@ -2154,7 +2157,7 @@ namespace Eldoria.DailyTreasures
             Place((RectTransform)closeButton.transform,1f,1f,1f,1f,-8f,-8f,48f,48f);
             int cols=portrait?2:4,rows=portrait?4:2;
             float left=15f,gap=7f;
-            float cofferH=portrait && panelH>=570f?Mathf.Min(102f,panelH*.14f):0f;
+            float cofferH=portrait && panelH>=570f?Mathf.Min(147f,panelH*.19f):0f;
             float gridTop=82f+cofferH,gridBottom=83f;
             float gridHeight=panelH-gridTop-gridBottom;
             float cellW=(panelW-2f*left-gap*(cols-1))/cols;

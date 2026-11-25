@@ -40,6 +40,7 @@ namespace Eldoria.UI.RoyalGold.V2
         int scoutStrategyMode;
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
         readonly RoyalText[] scoutCards=new RoyalText[3];
+        readonly Image[] scoutSheets=new Image[3];
         readonly RoyalText[] scoutTitles=new RoyalText[3];
         // Four reference-derived mission paintings share one mobile texture.
         // The actual persisted mission kind selects the corresponding quadrant.
@@ -644,7 +645,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     paper.gameObject.AddComponent<CanvasRenderer>();
                     var paperImage=paper.gameObject.AddComponent<Image>();
                     paperImage.sprite=scoutParchmentSprite;
-                    if(RoyalGoldV2Hud.UseCoronaArt) paperImage.color=new Color(.73f,.78f,.73f);
+                    scoutSheets[i]=paperImage;
+                    if(RoyalGoldV2Hud.UseCoronaArt)paperImage.color=new Color(.24f,.27f,.25f);
                     paperImage.type=Image.Type.Sliced;
                     paperImage.fillCenter=true;
                     // Source margins/curls are in pixels. Keep them compact
@@ -689,6 +691,17 @@ namespace Eldoria.UI.RoyalGold.V2
                 scoutThumbnails[i].transform.SetSiblingIndex(4);
                 scoutInsetLip[i].transform.SetSiblingIndex(5);
                 scoutArt[i].transform.SetSiblingIndex(6);
+                if(RoyalGoldV2Hud.UseCoronaArt && scoutSheets[i])
+                {
+                    // One inked sheet and its real mission vignette. The large
+                    // raised paper border and double gilt thumbnail mounts
+                    // compete with the illustrated table at phone scale.
+                    scoutBevel[i].enabled=false;
+                    scoutInsetLip[i].enabled=false;
+                    scoutInsetUnder[i].enabled=false;
+                    scoutTitles[i].color=Ivory;
+                    scoutCards[i].color=new Color(.90f,.88f,.78f);
+                }
                 cell.name="Scout / live contract "+(i+1);
             }
             footer=Text(panel,"No artificial notifications",15,Muted);
@@ -1783,6 +1796,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     {
                         bool completed=order.StartedUtcTicks>0&&order.EndsUtcTicks<=now();
                         bool underway=order.StartedUtcTicks>0&&!completed;
+                        if(RoyalGoldV2Hud.UseCoronaArt && scoutSheets[i])
+                            scoutSheets[i].color=completed?new Color(.38f,.34f,.23f):
+                                underway?new Color(.22f,.31f,.34f):new Color(.24f,.27f,.25f);
                         // All three layers inherit the genuine persisted
                         // order's kind and state. No fake or derived missions.
                         scoutContact[i]?.SetLiveState(order.Kind,underway,completed);
