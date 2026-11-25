@@ -27,6 +27,8 @@ namespace Eldoria.SendaBrecha.Editor
             public bool physicalIphoneTested;
             public bool artApproved;
             public int capturedPng;
+            public int originalAldricSkins, originalArchitecture, originalFoliage;
+            public bool originalEnemy, originalAnimationSampled;
             public bool positiveGateChangesVisibleActors;
             public bool victoryRouteChecked;
             public bool defeatRouteChecked;
@@ -94,11 +96,45 @@ namespace Eldoria.SendaBrecha.Editor
             if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
             CreateIsolatedScene(true);
         }
+        private const string Mini = "Assets/Eldoria/SendaBrecha/CanonicalSource/";
+        private const string Full = "Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/";
+        private const string Family = "Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/";
+        private static T Canonical<T>(string file,string original) where T:UnityEngine.Object
+        {
+            var v=AssetDatabase.LoadAssetAtPath<T>(Mini+file);
+            if(!v)v=AssetDatabase.LoadAssetAtPath<T>(original);
+            return v;
+        }
+        private static void ConfigureCanonical(SendaBrechaPrototype game)
+        {
+            const string hero="SirAldric_Approved_RiggedAnimated_v1.glb";
+            const string heroPath="Assets/StreamingAssets/Eldoria/Aldric/"+hero;
+            game.CanonicalAldric=Canonical<GameObject>(hero,heroPath);
+            game.CanonicalGate=Canonical<GameObject>("Valoria_MainGate_CohV1.glb",Family+"Valoria_MainGate_CohV1.glb");
+            game.CanonicalTower=Canonical<GameObject>("Valoria_Tower_CohV1.glb",Family+"Valoria_Tower_CohV1.glb");
+            game.CanonicalWall=Canonical<GameObject>("Valoria_WallSegment_CohV1.glb",Family+"Valoria_WallSegment_CohV1.glb");
+            game.CanonicalSpawnling=Canonical<GameObject>("SpawnlingNear.glb","Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/SpawnlingNear.glb");
+            game.CanonicalPaving=Canonical<Texture2D>("DistrictPaving.jpg",Full+"DistrictPaving.jpg");
+            game.CanonicalMeadow=Canonical<Texture2D>("BastionMeadow.jpg",Full+"BastionMeadow.jpg");
+            game.CanonicalCrest=Canonical<Texture2D>("identity_crest.png",Full+"UI/CoronaBrechaPremium/identity_crest.png");
+            game.CanonicalPanel=Canonical<Texture2D>("panel_obsidian.png",Full+"UI/CoronaBrechaPremium/panel_obsidian.png");
+            game.CanonicalPines=new Texture2D[3];
+            for(int i=0;i<3;i++)game.CanonicalPines[i]=Canonical<Texture2D>("pine_"+i+".png",Full+"pine_"+i+".png");
+            if(game.CanonicalAldric){
+                var path=AssetDatabase.GetAssetPath(game.CanonicalAldric);
+                foreach(var clip in AssetDatabase.LoadAllAssetsAtPath(path)){
+                    if(clip is AnimationClip a){
+                        if(a.name=="Aldric_Walk_v1")game.CanonicalWalk=a;
+                        if(a.name=="Aldric_SwordAttack_v1")game.CanonicalAttack=a;
+                    }
+                }
+            }
+        }
         private static void CreateIsolatedScene(bool save)
         {
             var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             var root=new GameObject("SendaBrecha standalone 3D - prototype (runtime generated)");
-            root.AddComponent<SendaBrechaPrototype>();
+            ConfigureCanonical(root.AddComponent<SendaBrechaPrototype>());
             Selection.activeGameObject=root;
             if(save)
             {
@@ -123,7 +159,10 @@ namespace Eldoria.SendaBrecha.Editor
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
                 var root=new GameObject("SendaBrecha isolated native QA root");
                 var game=root.AddComponent<SendaBrechaPrototype>();
+                ConfigureCanonical(game);
+                Need(game.CanonicalAldric&&game.CanonicalWalk&&game.CanonicalAttack&&game.CanonicalPaving&&game.CanonicalMeadow&&game.CanonicalCrest&&game.CanonicalPanel,"Original imported assets / clips missing");
                 game.Initialize();
+                Need(game.CanonicalSkinCount>0&&game.CanonicalArchitectureCount==3&&game.CanonicalFoliageCount>25&&game.CanonicalEnemyInstalled&&game.CanonicalAnimationSampled,"Original models not installed in real scene");
                 Need(game.SceneCamera!=null && game.SceneCamera.gameObject.scene==SceneManager.GetActiveScene(),
                     "Generated camera must belong to isolated scene");
                 Need(SendaBrechaPrototype.Waves.Length==6, "Exactly six event chapters expected");
@@ -180,6 +219,7 @@ namespace Eldoria.SendaBrecha.Editor
                 var report=new ProofReport
                 {
                     mainSceneModified=false,physicalIphoneTested=false,artApproved=false,
+                    originalAldricSkins=game.CanonicalSkinCount,originalArchitecture=game.CanonicalArchitectureCount,originalFoliage=game.CanonicalFoliageCount,originalEnemy=game.CanonicalEnemyInstalled,originalAnimationSampled=game.CanonicalAnimationSampled,
                     capturedPng=9,finalSoldiers=victorySoldiers,totalStages=6,
                     positiveGateChangesVisibleActors=true,victoryRouteChecked=true,defeatRouteChecked=true,
                     result="VictoryAndDefeatNativeSimulationPass"

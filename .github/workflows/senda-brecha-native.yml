@@ -45,7 +45,7 @@ jobs:
           w=holders[0]
           assert (w['id']=='eldoria-senda-brecha-lane-event-20261115' and
                   w['owner']=='chatgpt-senda-brecha-ios-unity-20261115' and
-                  w['ownership_state']=='claimed' and w['ownership_revision']==6),'Other workstream owns Windows'
+                  w['ownership_state']=='claimed' and w['ownership_revision']==8),'Other workstream owns Windows'
           assert w['branch']=='feature/senda-brecha-lane-event-20261115'
           current=get('git/ref/heads/feature/senda-brecha-lane-event-20261115')['object']['sha']
           assert current==os.environ['GITHUB_SHA'],'Branch moved after native request'
@@ -108,9 +108,9 @@ jobs:
           $owners=@($doc.active | Where-Object { $_.resources -contains 'windows-runner-heavy' })
           if($owners.Count -ne 1 -or $owners[0].id -ne 'eldoria-senda-brecha-lane-event-20261115' -or
              $owners[0].owner -ne 'chatgpt-senda-brecha-ios-unity-20261115' -or
-             $owners[0].ownership_state -ne 'claimed' -or $owners[0].ownership_revision -ne 6){throw 'Windows lease changed; refusing Unity'}
+             $owners[0].ownership_state -ne 'claimed' -or $owners[0].ownership_revision -ne 8){throw 'Windows lease changed; refusing Unity'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native process active; refusing overlap'}
-      - name: Build disposable minimal Unity project, without original game assets
+      - name: Build disposable Unity project with exact original Valoria assets
         id: mini
         shell: powershell
         run: |
@@ -129,8 +129,27 @@ jobs:
           $utf8=New-Object System.Text.UTF8Encoding($false)
           # IMGUI is a built-in module in Unity 6000.3; the disposable project must explicitly enable it
           # because SendaBrechaPrototype uses GUIStyle for its standalone playable controls.
-          [System.IO.File]::WriteAllText((Join-Path $mini 'Packages/manifest.json'),'{"dependencies":{"com.unity.modules.imgui":"1.0.0","com.unity.modules.physics":"1.0.0","com.unity.modules.imageconversion":"1.0.0"}}',$utf8)
+          [System.IO.File]::WriteAllText((Join-Path $mini 'Packages/manifest.json'),'{"dependencies":{"com.unity.cloud.gltfast":"6.14.1","com.unity.modules.animation":"1.0.0","com.unity.modules.unitywebrequest":"1.0.0","com.unity.modules.unitywebrequesttexture":"1.0.0","com.unity.modules.imgui":"1.0.0","com.unity.modules.physics":"1.0.0","com.unity.modules.imageconversion":"1.0.0"}}',$utf8)
           [System.IO.File]::WriteAllText((Join-Path $mini 'ProjectSettings/ProjectVersion.txt'),"m_EditorVersion: 6000.3.23f1`nm_EditorVersionWithRevision: 6000.3.23f1 (09d2ecc7fb28)`n",$utf8)
+          $assetRoot=Join-Path $mini 'Assets/Eldoria/SendaBrecha/CanonicalSource'
+          New-Item -ItemType Directory -Path $assetRoot | Out-Null
+          $raw='https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944/'
+          $family='Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/'
+          $valoria='Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/'
+          $paths=@('Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb',
+              ($family+'Valoria_MainGate_CohV1.glb'),($family+'Valoria_Tower_CohV1.glb'),($family+'Valoria_WallSegment_CohV1.glb'),
+              'Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/SpawnlingNear.glb',
+              ($valoria+'DistrictPaving.jpg'),($valoria+'BastionMeadow.jpg'),($valoria+'pine_0.png'),($valoria+'pine_1.png'),($valoria+'pine_2.png'),
+              ($valoria+'UI/CoronaBrechaPremium/identity_crest.png'),($valoria+'UI/CoronaBrechaPremium/panel_obsidian.png'))
+          foreach($relative in $paths){
+            $dest=Join-Path $assetRoot ([IO.Path]::GetFileName($relative))
+            Invoke-WebRequest -Uri ($raw+$relative) -UseBasicParsing -OutFile $dest -TimeoutSec 90
+            if((Get-Item -LiteralPath $dest).Length -lt 1000){throw "Missing original asset $relative"}
+          }
+          $hero=Join-Path $assetRoot 'SirAldric_Approved_RiggedAnimated_v1.glb'
+          if((Get-Item $hero).Length -ne 10140372 -or (Get-FileHash $hero -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b'){throw 'Original Aldric digest mismatch'}
+          Write-Host 'SENDA_ORIGINAL_ASSETS_PINNED: 12 exact source files'
+
           "mini=$mini" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           Write-Host 'MINI_PROJECT_CREATED: Only SendaBrecha source and builtin Unity; no current beta/source assets.'
       - name: Execute native EditMode real camera GPU proof
@@ -149,7 +168,7 @@ jobs:
           $report=Join-Path $out 'proof.json'
           if(-not(Test-Path -LiteralPath $report)){throw 'Real Unity proof report absent; Editor exit alone is not success'}
           $p=Get-Content $report -Raw | ConvertFrom-Json
-          if($p.capturedPng -ne 9 -or !$p.positiveGateChangesVisibleActors -or !$p.victoryRouteChecked -or !$p.defeatRouteChecked -or
+          if($p.originalAldricSkins -lt 1 -or $p.originalArchitecture -ne 3 -or $p.originalFoliage -lt 25 -or !$p.originalEnemy -or !$p.originalAnimationSampled -or $p.capturedPng -ne 9 -or !$p.positiveGateChangesVisibleActors -or !$p.victoryRouteChecked -or !$p.defeatRouteChecked -or
              $p.result -ne 'VictoryAndDefeatNativeSimulationPass' -or $p.mainSceneModified -or $p.artApproved -or $p.physicalIphoneTested){throw 'Exact event native proof contract failed'}
           $png=@(Get-ChildItem -LiteralPath $out -Filter '*.png')
           if($png.Count -ne 9){throw "Expected 9 independent GPU PNG images, got $($png.Count)"}

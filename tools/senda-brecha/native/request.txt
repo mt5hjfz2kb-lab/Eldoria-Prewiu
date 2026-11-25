@@ -18,3 +18,6 @@ failure_repaired_4=Unity_PhysicsModule_and_ImageConversionModule_enabled_in_temp
 
 revision=STUDIO_ART_BENCHMARK_20261125
 source=actual_procedural_geometry_and_animation
+
+lease_revision=8
+revision=CANONICAL_VALORIA_ORIGINAL_ASSETS_20261125
