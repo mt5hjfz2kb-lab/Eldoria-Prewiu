@@ -35,7 +35,7 @@ def collect(root,run_id,request_id,started,finished,decision="pending",status="u
         ts=v.get("utc") or row.get("utc") or None
         elapsed=v.get("duration_seconds",row.get("duration_seconds"))
         try:
-            if row["state"] not in ("completed","completed_over_reservation") or not model or not usage:raise ValueError("Missing completed receipt")
+            if not model or not usage:raise ValueError("Missing usage receipt")
             if row.get("usage") and v.get("usage") and row["usage"]!=v["usage"]:raise ValueError("Conflicting receipt usage")
             r=receipt(slot,model,usage,v.get("service_tier",row.get("service_tier","standard")),elapsed,ts)
         except (ValueError,KeyError,TypeError):

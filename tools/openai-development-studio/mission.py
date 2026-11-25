@@ -157,7 +157,7 @@ class Tests(unittest.TestCase):
             with self.assertRaises(RuntimeError):l.complete(r,None,{})
             self.assertEqual(json.loads(l.path.read_text())["reservations"][1]["state"],"completed")
     def test_image_rates(self):
-        self.assertEqual(image_cost({"input_tokens_details":{"text_tokens":100,"image_tokens":0},"output_tokens":1000}),D("0.0305"))
+        self.assertEqual(image_cost({"input_tokens":100,"input_tokens_details":{"text_tokens":100,"image_tokens":0},"output_tokens":1000}),D("0.0305"))
         self.assertIsNone(image_cost({}))
     def test_total(self):
         self.assertLess(sum(RESERVES.values()),MAX_MISSION)
