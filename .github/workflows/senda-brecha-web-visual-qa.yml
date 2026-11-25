@@ -1,0 +1,54 @@
+name: Senda Brecha isolated 3D WebGL visual QA
+'on':
+  push:
+    branches:
+      - feature/senda-brecha-lane-event-20261115
+    paths:
+      - tools/senda-brecha/visual-3d/**
+      - tools/senda-brecha/tests/visual_3d_browser.cjs
+      - .github/workflows/senda-brecha-web-visual-qa.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: senda-brecha-web-visual-${{ github.ref }}
+  cancel-in-progress: true # only obsolete Senda WebGL proofs on this same ref; never cancel Windows
+jobs:
+  real-webgl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          sparse-checkout: |
+            tools/senda-brecha/visual-3d
+            tools/senda-brecha/tests
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated Chromium (no Unity/Windows reservation)
+        run: |
+          mkdir -p "$RUNNER_TEMP/senda-node"
+          npm install --no-save --prefix "$RUNNER_TEMP/senda-node" playwright@1.55.0
+          "$RUNNER_TEMP/senda-node/node_modules/.bin/playwright" install chromium
+      - name: Run real rendered graphics and touch interactions in four viewports
+        env:
+          NODE_PATH: ${{ runner.temp }}/senda-node/node_modules
+          SENDA_SCREENSHOTS: senda-3d-evidence
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8769 --bind 127.0.0.1 > /tmp/senda-web.log 2>&1 &
+          server=$!
+          trap 'kill $server || true' EXIT
+          sleep 2
+          node tools/senda-brecha/tests/visual_3d_browser.cjs
+      - name: Retain actual Chromium screenshots and non-approval proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: senda-brecha-web3d-${{ github.sha }}
+          path: senda-3d-evidence/
+          if-no-files-found: warn
+          retention-days: 14
