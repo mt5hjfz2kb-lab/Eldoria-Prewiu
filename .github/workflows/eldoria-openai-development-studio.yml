@@ -30,7 +30,12 @@ jobs:
       - run: python3 tools/openai-development-studio/generate_candidate.py --self-test
       - run: python3 tools/openai-development-studio/studio.py smoke --out /tmp/eldoria-api-dry.json
   smoke:
-    if: github.event_name == 'workflow_dispatch' && inputs.live_smoke == true
+    # One-time owner-authorized push. Later pushes and reruns cannot repeat this request.
+    if: >-
+      github.run_attempt == 1 &&
+      ((github.event_name == 'workflow_dispatch' && inputs.live_smoke == true) ||
+       (github.event_name == 'push' && github.event.before == '5ea4dc05eb2b27aa27a4798de8b8ca0f3fb0df13' &&
+        github.event.head_commit.message == 'Run owner-authorized OpenAI connectivity proof once'))
     needs: offline
     runs-on: ubuntu-latest
     timeout-minutes: 5
