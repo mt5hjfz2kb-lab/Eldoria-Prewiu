@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-25T21:18:22.059Z",
+  "updated_at": "2026-11-25T21:34:36.449Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9628,16 +9628,14 @@
     {
       "id": "eldoria-senda-brecha-lane-event-20261115",
       "title": "La Senda de la Brecha — vertical slice arcade por carriles, sin alterar beta",
-      "owner": "chatgpt-senda-brecha-ios-unity-20261115",
-      "ownership_state": "claimed",
-      "ownership_revision": 8,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 9,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "CONCEPT_CANONICAL_NATIVE_AND_WEB",
+      "phase": "CONCEPT_WEB_PROVEN_NATIVE_IMPORT_BLOCKED",
       "claimed_at": "2026-11-25T21:13:10.720Z",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "tools/senda-brecha/**",
         "docs/events/senda-brecha/**",
@@ -9652,13 +9650,13 @@
       "art_production_routing_reason": "Actual 3D procedural scene and visual content is being authored under isolated SendaBrecha path; art approval remains explicitly false; routing documentation to be added before authoring final art assets.",
       "art_approved": false,
       "physical_iphone_verified": false,
-      "previous_owner": "chatgpt-senda-brecha-event-20261115",
-      "write_scope_released": false,
-      "last_handoff_at": "2026-11-25T20:34:52.869Z",
+      "previous_owner": "chatgpt-senda-brecha-ios-unity-20261115",
+      "write_scope_released": true,
+      "last_handoff_at": "2026-11-25T21:34:36.449Z",
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/195",
-      "final_source_sha": "c48a7a7041aea18159696a85851bfc7ff2f77331",
-      "final_evidence": "Native Built-in isolated Unity exact source 130e73e, run 45694055440 PASS; 9 frames, both routes, visible reinforcements, own Library cleanup. Web source 1ebfada, run 45695680165 PASS 4 viewports, 1060→118 draw calls mobile. No iPhone physical, commercial art or production URP approval. PR195 remains draft.",
-      "next": "Owner visual review and physical iPhone acceptance; stronger authored character meshes and gate labels needed. No merge.",
+      "final_source_sha": "6668a00adef5c27a27c0775f0fd237e1729e1afb",
+      "final_evidence": "Final WebGL 45704914735 PASS 4 viewports, 22 guard rigs, 5999 triangles base guard armor/cape, 223 draw calls mobile; native 45703272784 FAIL original Aldric glTFast import, no captures. No art or physical iPhone approval.",
+      "next": "Repair original Aldric GLB import without modifying source; port final WebGL art to native, then prove actual GPU captures and physical iPhone. Improve concept-quality lighting, environment and animation. No merge.",
       "art_production_request": "pipeline/art-production-requests/eldoria-senda-brecha-lane-event-20261115.json",
       "resource_handoff": {
         "at": "2026-11-15T16:10:39.032Z",
@@ -9666,8 +9664,8 @@
         "reason": "Owner explicitly instructed P0 to use idle PC. No Actions runs in progress at transfer; Windows process preflight must independently confirm no Unity/Blender before work."
       },
       "user_authorization": "Owner approved visual concept and requests actual implementation in PR195; no merge, no new API spend in this pass.",
-      "current_native_run_id": 45694055440,
-      "current_web_run_id": 45695680165
+      "current_native_run_id": 45703272784,
+      "current_web_run_id": 45704914735
     },
     {
       "id": "eldoria-stylized-direction-proof-20261115",
@@ -20997,11 +20995,11 @@
     "authorized_by": "Owner requested actual concept implementation; isolated Unity validation using free runner.",
     "authorized_at": "2026-11-25T21:18:22.058Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": "eldoria-senda-brecha-lane-event-20261115",
+    "current_workstream": null,
     "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "senda_canonical_native_reserved",
+    "status": "available_after_senda_native_exit",
     "rules": [
       "Only one owned isolated source clone; do not touch other native processes.",
       "No paid API calls; no beta publication.",
@@ -21082,9 +21080,9 @@
       },
       "note": "Exclusive Unity run for spatial composition and environmental work on existing modular25d branch. Source owner rev6; no other running Actions; Unity process safety rechecked on Windows; release after bounded native run(s)."
     },
-    "released_at": "2026-11-25T20:34:52.869Z",
-    "released_after_run": 45694055440,
-    "previous_completed_run": 45694055440,
-    "note": "Senda native job completed successfully and own disposable Library cleanup succeeded. Source ownership released; other scopes untouched."
+    "released_at": "2026-11-25T21:34:36.449Z",
+    "released_after_run": 45703272784,
+    "previous_completed_run": 45703272784,
+    "note": "Unity exited and job terminal; no Unity/Blender process reported by cleanup guard. Isolated disposable Library deletion failed on long/deep package-cache path, retained only in temp; future native preflight must check idle process and use separate clone. No production deletion."
   }
 }
