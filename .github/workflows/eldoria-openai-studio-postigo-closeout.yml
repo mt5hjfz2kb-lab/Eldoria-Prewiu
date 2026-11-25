@@ -1,0 +1,103 @@
+name: Eldoria Studio - verify Postigo archive and release owned scratch
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths:
+      - 'tools/openai-development-studio/postigo-closeout/45685929688.json'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-studio-postigo-closeout
+  cancel-in-progress: false
+jobs:
+  review:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Recover existing native evidence without repeating Unity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 45685929688 --repo "${{ github.repository }}" --name studio-postigo-native --dir native
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          r=Path("native");m=json.loads((r/"native-evidence.json").read_text(encoding="utf-8-sig"))
+          p=json.loads((r/"provenance.json").read_text(encoding="utf-8-sig"))
+          assert m["engineVersion"]=="6000.3.23f1" and m["sourceFrames"]==len(m["frames"])==45
+          assert m["nativeWorldRender"] and m["artApproved"]=="NO"
+          assert m["sourceSha"]==p["frozen_sha"]=="5ef2aee67cf8fde57ba2fc4b3d929b517ee67944"
+          assert p["candidate_sha256"]=="1631d06cfe223da43b099013cce128c8c0e4f11b344315a96fe18ade92ba4439"
+          assert "POSTIGO_REAL_NATIVE_PASS 45 frames" in (r/"unity-native.log").read_text(errors="replace")
+          for f in m["frames"]:
+            assert hashlib.sha256((r/f["file"]).read_bytes()).hexdigest()==f["sha256"]
+          # Wrapper did not finish. Never rewrite this as a passing cleanup or wrapper.
+          (r/"cleanup.json").write_text(json.dumps({"native_pass":False,"scratch_removed":False,"run_id":45685929688,"reason":"Original Windows closeout failed; archive contains native Editor success and all hashes."}))
+          PY
+          python3 -m pip install --disable-pip-version-check Pillow==11.3.0
+          python3 tools/openai-development-studio/postigo_pixel_review.py native review
+      - uses: actions/upload-artifact@v4
+        with:
+          name: studio-postigo-verified-comparison
+          path: review/
+          retention-days: 30
+          if-no-files-found: error
+  cleanup:
+    needs: review
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    concurrency:
+      group: eldoria-modular25d-exclusive-unity-native
+      cancel-in-progress: false
+    timeout-minutes: 10
+    steps:
+      - name: Remove only the exact owned Postigo scratch after safe exit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json'}
+          $api="https://api.github.com/repos/$env:GITHUB_REPOSITORY/"
+          $meta=Invoke-RestMethod -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main') -Headers $h
+          $blob=Invoke-RestMethod -Uri ($api+'git/blobs/'+$meta.sha) -Headers $h
+          if($blob.sha -ne $meta.sha){throw 'Registry mismatch'}
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
+          $held=@($reg.active|Where-Object{@($_.resources) -contains 'windows-runner-heavy'})
+          if($held.Count -ne 1 -or $held[0].id -ne 'eldoria-openai-development-studio-20261125' -or $held[0].owner -ne 'chatgpt-studio-postigo-delivery-20261125' -or $held[0].ownership_revision -ne 7 -or $reg.resource_rotation.current_workstream -ne $held[0].id){throw 'Lease changed'}
+          $run=Invoke-RestMethod -Uri ($api+'actions/runs/45685929688') -Headers $h
+          if($run.status -ne 'completed' -or $run.head_sha -ne '630052347439c62b044fa63e22e60bee17a523b0'){throw 'Original run not finished'}
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){throw 'Native process still active; do not delete'}
+          $root=Join-Path $env:RUNNER_TEMP 'eldoria-studio-postigo-45685929688'
+          $proofRoot=Join-Path $env:RUNNER_TEMP 'eldoria-postigo-evidence-45685929688'
+          $prov=Get-Content -LiteralPath (Join-Path $proofRoot 'provenance.json') -Raw | ConvertFrom-Json
+          if($prov.frozen_sha -ne '5ef2aee67cf8fde57ba2fc4b3d929b517ee67944' -or $prov.pilot_sha -ne $run.head_sha){throw 'Owned scratch provenance missing'}
+          $sourceHash=$null
+          if(Test-Path -LiteralPath $root) {
+            $item=Get-Item -LiteralPath $root
+            if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Unexpected scratch reparse point'}
+            if(Test-Path -LiteralPath (Join-Path $root '.git/HEAD')) {
+              if((Get-Content -LiteralPath (Join-Path $root '.git/HEAD') -Raw).Trim() -ne $prov.frozen_sha){throw 'Scratch checkout identity changed'}
+            }
+            $land=Join-Path $root 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DLandscape.cs'
+            if(Test-Path -LiteralPath $land){$sourceHash=(Get-FileHash -LiteralPath $land -Algorithm SHA256).Hash.ToLowerInvariant()}
+            if($sourceHash -and $sourceHash -ne $prov.editor_sha256){throw 'Native source changed unexpectedly'}
+            # Native Win32 extended path deletion, restricted to the exact owned root.
+            $extended='\\?\'+[IO.Path]::GetFullPath($root)
+            & cmd.exe /d /c ('rd /s /q "'+$extended+'"')
+            if(Test-Path -LiteralPath $root){throw 'Owned scratch still exists after extended-path deletion'}
+          }
+          Write-Host 'POSTIGO_OWNED_SCRATCH_REMOVED_VERIFIED'
+          $out=Join-Path $env:RUNNER_TEMP ('postigo-cleanup-proof-'+$env:GITHUB_RUN_ID+'.json')
+          @{source_run=45685929688;removed=$true;other_native_processes=$false;post_run_editor_sha256=$sourceHash;native_repeated=$false} | ConvertTo-Json | Set-Content -LiteralPath $out -Encoding utf8
+      - uses: actions/upload-artifact@v4
+        with:
+          name: postigo-cleanup-proof
+          path: ${{ runner.temp }}/postigo-cleanup-proof-${{ github.run_id }}.json
+          if-no-files-found: error
