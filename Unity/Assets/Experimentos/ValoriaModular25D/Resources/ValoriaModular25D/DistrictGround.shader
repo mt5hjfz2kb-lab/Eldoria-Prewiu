@@ -49,12 +49,33 @@ half4 frag(Varying i):SV_Target {
  ground=lerp(ground,lerp(ground*half3(1.11,1.00,.77),dirt*.91,.42),arable*_Boroughs*.76);
  ground=lerp(ground,lerp(ground*.94,dirt*1.03,.54),upperField*_Boroughs*(.47+.48*blades));
  ground=lerp(ground,lerp(ground*.91,seam*half3(.90,.93,.95),.36),stony*_Boroughs*.76);
+ // Wet pasture at the valley bottom, dry seed heads on the high side.
+ // Use the original grass pigment to interrupt the boundaries at tuft scale.
+ half plantValue=dot(ground,half3(.24,.56,.20));
+ half reliefBend=sin(p.x*.22+p.y*.10)+.42*sin(p.y*.51-p.x*.28);
+ half hollow=1-smoothstep(.15,4.6,abs(p.y-_WorkLane.y+2.7+.23*p.x+reliefBend));
+ half crest=smoothstep(.6,5.1,p.y-_Forecourt.y+.32*p.x+reliefBend);
+ half3 pasture=ground*lerp(half3(1,1,1),half3(.57,.86,.81),hollow*.88);
+ ground=lerp(pasture,pasture*half3(1.13,1.04,.84),crest);
  half drill=yard(p,_MilitaryYard,erosion)*_Built.x;
  half market=yard(p,_MarketYard,erosion)*_Built.y;
  half rock=yard(p,_StoneFace,erosion)*_Built.z;
  float approach=distanceToLane(p,_CivicAxis.xy,_CivicAxis.zw);
  float alley=distanceToLane(p,_WorkLane.xy,_CivicAxis.zw);
  float bend=distanceToLane(p,_CivicAxis.zw,_WorkLane.zw);
+ // The oldest trampled ground is at the mill and the castle gate.
+ // As the other districts open they share this underlayer. Feather via soil
+ // and grass pigmentation; each lane still follows its actual spline.
+ half vergeBreak=reliefBend*.38+(plantValue-.34)*1.25;
+ float settlementDistance=min(approach,alley);
+ half occupiedSoil=1-smoothstep(.75,3.35+.48*_Built.x,settlementDistance+vergeBreak);
+ float2 millGround=p-_WorkLane.xy;
+ half millYard=1-smoothstep(.48,1.18,length(float2((millGround.x+millGround.y*.25)/2.75,
+                  (millGround.y+.16)/1.53))+vergeBreak*.16);
+ half3 crushedEarth=lerp(dirt*.94,seam*half3(.89,.84,.71),.18);
+ half3 grassStubble=lerp(ground*half3(.94,.88,.64),crushedEarth,.57);
+ ground=lerp(ground,grassStubble,occupiedSoil*.88);
+ ground=lerp(ground,lerp(crushedEarth,ground,.19),millYard*.78);
  half urban=1-smoothstep(.72,2.05,min(approach,alley)+erosion*.43);
  // The shoulders of the street are occupied land. The strip narrows toward the
  // gate and broadens at the well. Thresholds on both sides share its paving.
@@ -82,6 +103,10 @@ half4 frag(Varying i):SV_Target {
  // block. Beyond the last house the original meadow takes over.
  // Three staggered thresholds share the postern lane. Leave meadow behind the row.
  float2 postern=p-_UpperBlock.xy;
+ float2 frontage=float2(postern.x,postern.y+.22*postern.x);
+ half blockLand=1-smoothstep(.57,1.32,length(frontage/float2(3.48,1.26))+vergeBreak*.14);
+ half lowerStreet=1-smoothstep(.62,2.1,distanceToLane(p,_LowerBlock.xy,_LowerBlock.zw)+vergeBreak);
+ ground=lerp(ground,lerp(crushedEarth,ground,.26),max(blockLand,lowerStreet)*_Boroughs*.78);
  half upper=max(yard(postern,float4(-1.57,.36,.89,.51),erosion),
                 yard(postern,float4(1.79,-.42,1.12,.48),erosion));
  upper=max(upper,yard(postern,float4(0,-.08,1.05,.48),erosion));

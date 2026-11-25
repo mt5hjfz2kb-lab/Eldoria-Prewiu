@@ -20,9 +20,15 @@ SubShader { Tags {"Queue"="Transparent" "RenderType"="Transparent"} Pass {
    fixed3 stone=tex2D(_Paving,float2(.85*p.x+.32*p.y,1.08*p.y-.25*p.x)).rgb;
    half variation=dot(stone,half3(.24,.56,.20));
    half middle=1-smoothstep(.22,.96,2*abs(i.uv.x-.5));
-   half blend=_Stone*(.43+.51*middle);
+   // Paving settles into a compact wheel bed. On the outer shoulder,
+   // individual exposed stones interrupt the edge of the road paint.
+   half edge=abs(i.uv.x-.5)*2;
+   half chips=saturate((variation-.24)*2.8);
+   half shoulder=smoothstep(.50,.96,edge);
+   half blend=_Stone*(.36+.55*middle+.13*chips*shoulder);
+   half roadCoverage=i.alpha*(1-shoulder*(.35+.40*(1-chips)));
    return fixed4(lerp(earth.rgb*.88,stone*half3(.93,.88,.79),blend),
-       i.alpha*saturate(earth.a+.12)*(.76+.22*variation));
+       roadCoverage*saturate(earth.a+.12)*(.76+.22*variation));
  }
  ENDCG
 } } }
