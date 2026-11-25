@@ -75,7 +75,12 @@ half4 frag(Varying i):SV_Target {
  half3 crushedEarth=lerp(dirt*.94,seam*half3(.89,.84,.71),.18);
  half3 grassStubble=lerp(ground*half3(.94,.88,.64),crushedEarth,.57);
  ground=lerp(ground,grassStubble,occupiedSoil*.88);
- ground=lerp(ground,lerp(crushedEarth,ground,.19),millYard*.78);
+ // Work-worn earth grades towards the delivery path. Pale fibres follow
+ // the foot of the timber stack rather than enclosing the whole plot.
+ float timberLine=distanceToLane(millGround,float2(-.73,.52),float2(.03,.25));
+ half woodDust=(1-smoothstep(.04,.50,timberLine+.18*erosion))*millYard;
+ half3 workEarth=lerp(crushedEarth,crushedEarth*half3(1.37,1.22,.91),woodDust);
+ ground=lerp(ground,lerp(workEarth,ground,.23+.15*blades),millYard*.84);
  half urban=1-smoothstep(.72,2.05,min(approach,alley)+erosion*.43);
  // The shoulders of the street are occupied land. The strip narrows toward the
  // gate and broadens at the well. Thresholds on both sides share its paving.
@@ -107,7 +112,7 @@ half4 frag(Varying i):SV_Target {
  half blockLand=1-smoothstep(.57,1.32,length(frontage/float2(3.48,1.26))+vergeBreak*.14);
  half lowerStreet=1-smoothstep(.62,2.1,distanceToLane(p,_LowerBlock.xy,_LowerBlock.zw)+vergeBreak);
  ground=lerp(ground,lerp(crushedEarth,ground,.26),max(blockLand,lowerStreet)*_Boroughs*.78);
- half upper=max(yard(postern,float4(-1.57,.36,.89,.51),erosion),
+ half upper=max(yard(postern,float4(-1.49,.13,.89,.51),erosion),
                 yard(postern,float4(1.79,-.42,1.12,.48),erosion));
  upper=max(upper,yard(postern,float4(0,-.08,1.05,.48),erosion));
  half rear=yard(p,float4(_UpperBlock.zw+float2(.18,-.21),2.02,1.08),erosion);
@@ -129,22 +134,31 @@ half4 frag(Varying i):SV_Target {
  ground=lerp(ground,dirt*.86,(1-smoothstep(.56,1.33,bend+erosion*.42))*max(_Built.y,_Built.z)*(.53+.28*_Built.w));
  // Broad stone landing tapers into the avenue. Its exposed lip stops on either
  // side of the entrance so the approach stays at the same walking level.
- float2 court=(p-_Forecourt.xy)/_Forecourt.zw;
  // The outer pavers taper along the walking line; surviving stones
  // follow individual joints rather than a straight courtyard perimeter.
- float2 gateAxis=_CivicAxis.zw-_Forecourt.xy;
- float gateT=distanceToLane(p,_Forecourt.xy,_Forecourt.xy+gateAxis*.46);
- float approachBed=gateT/max(.35,_Forecourt.w*.52);
- float shoulder=length(float2(court.x+.13*court.y,court.y*.94));
- float outline=min(shoulder,approachBed+.38);
- outline+=.17*sin(p.x*2.35+p.y*.89)+.14*sin(p.y*3.1-p.x*.84);
- half worn=(seam.r-seam.g)*.55+erosion*.21;
- half landing=1-smoothstep(.55,1.22,outline+worn);
- half margin=(1-smoothstep(.035,.105,abs(outline-.91+worn)))*smoothstep(.25,.51,abs(court.x));
- half front=smoothstep(.1,.9,-court.y);
+ // The original gate is reached from the junction, with service traffic
+ // cutting across its west jamb. Keep a compact stone sill at the door,
+ // then follow those two paths rather than painting a plaza-sized oval.
+ float2 gate=_CivicAxis.xy;
+ float2 avenue=_CivicAxis.zw-gate;
+ float2 route=normalize(avenue);
+ float2 sideAxis=float2(-route.y,route.x);
+ float2 doorDelta=p-gate;
+ float run=dot(doorDelta,route);
+ float gateSide=dot(doorDelta,sideAxis);
+ float rough=.10*sin(p.x*3.1+p.y*.47)+.10*sin(p.y*4.6-p.x*.88)+.18*erosion;
+ float sill=max(abs(gateSide+.12*run)/1.18,abs(run-.13)/.41);
+ float gateWidth=lerp(.82,.43,smoothstep(.15,2.1,run));
+ float curve=.19*sin(run*1.6);
+ float spine=max(abs(gateSide-curve)/gateWidth,max(-run/.45,(run-1.6)/1.35));
+ float2 sideEnd=gate+float2(-1.6,-.54);
+ float service=distanceToLane(p,gate+float2(-.37,-.23),sideEnd)/.40;
+ float outline=min(sill,min(spine,service+.18));
+ half worn=rough+.23*(seam.r-seam.g);
+ half landing=1-smoothstep(.45,1.34,outline+worn);
  half3 laidStone=tex2D(_Paving,float2(.94*p.x+.34*p.y,1.18*p.y-.16*p.x)).rgb;
  half3 flags=lerp(laidStone,dirt,.30)*half3(1.01,.98,.92);
- flags*=1-margin*(.025+.08*front);
+ flags*=lerp(.97,1.03,blades);
  // Foot traffic carries fine stone out of the landing into the grass.
  float tread=distanceToLane(p,_Forecourt.xy,_CivicAxis.zw);
  half fringe=(1-smoothstep(.88,1.43,outline+erosion*.19))*(1-landing);

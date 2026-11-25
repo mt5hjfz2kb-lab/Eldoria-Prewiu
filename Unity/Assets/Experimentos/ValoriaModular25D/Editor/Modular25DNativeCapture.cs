@@ -87,11 +87,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 if(ground==null || ground.ChunkCount!=81)
                     throw new Exception("Ground chunks are not actually present: "+(ground==null?-1:ground.ChunkCount));
                 var landscape=world.GetComponentInChildren<Modular25DLandscape>();
-                if(landscape==null||landscape.RoadCount!=6+ValoriaUrbanPlan.City.BoroughStreets.Length||landscape.FootprintCount!=1||
+                if(landscape==null||landscape.RoadCount!=6+ValoriaUrbanPlan.City.BoroughStreets.Length||!ground.HasMillYard||landscape.GetComponentsInChildren<SpriteRenderer>(true).Length!=0||
                    !landscape.OriginalCobbleRoadLoaded)
                     throw new Exception("Actual Unity spatial terrain integration missing: roads="+
                         (landscape==null?-1:landscape.RoadCount)+" footprints="+
-                        (landscape==null?-1:landscape.FootprintCount));
+                        (landscape==null?-1:landscape.GetComponentsInChildren<SpriteRenderer>(true).Length));
                 report.continuousTerrainPresent=true;
                 var actualGroundRenderer=ground.GetComponentInChildren<MeshRenderer>();
                 if(!ground.OriginalProjectMeadowLoaded ||

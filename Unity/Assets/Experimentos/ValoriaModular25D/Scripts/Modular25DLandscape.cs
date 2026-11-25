@@ -6,7 +6,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 {
     /// <summary>
     /// Ground language shared by all buildings: organic textured road ribbons,
-    /// soil footprint decals and small edge vegetation. This authoring system
+    /// painted road edges and continuous district terrain. This authoring system
     /// creates independent geometry and textures, NOT one composited city image.
     /// The fixed seed/locations permit exact reproductions in later bastion tiers.
     /// </summary>
@@ -16,8 +16,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public static Vector2 BarracksFoot => ValoriaUrbanPlan.City.Barracks.Foot;
         public static Vector2 GranaryFoot => ValoriaUrbanPlan.City.Granary.Foot;
         public static Vector2 StoneworksFoot => ValoriaUrbanPlan.City.Quarry.Foot;
-        const int RoadW=256, RoadH=512, FootW=512, FootH=320;
-        static Vector2 Sawmill => ValoriaUrbanPlan.City.Mill.Foot;
+        const int RoadW=256, RoadH=512;
         readonly Dictionary<string,GameObject> approaches=new Dictionary<string,GameObject>();
         readonly List<GameObject> boroughStreets=new List<GameObject>();
         public void SetDistricts(bool military,bool market,bool quarry,int level)
@@ -34,7 +33,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         bool built;
         public int RoadCount { get; private set; }
         public bool OriginalCobbleRoadLoaded { get; private set; }
-        public int FootprintCount { get; private set; }
 
         public void Build()
         {
@@ -108,18 +106,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 lane.SetActive(false);
                 boroughStreets.Add(lane);
             }
-
-            var mill=MakeFootprint("Sawmill",new Color(.54f,.44f,.31f,1),
-                new Color(.73f,.59f,.38f,1),false,true);
-            PutFoot("Sawmill — earth, sawdust, trampled grass",mill,
-                Sawmill+new Vector2(0,-.18f),1.00f);
-
         }
 
-        static Color32 Mix(Color a,Color b,float t)
-        {
-            return (Color32)Color.Lerp(a,b,Mathf.Clamp01(t));
-        }
         static float Sm(float a,float b,float x)
         {
             x=Mathf.Clamp01((x-a)/(b-a));
@@ -302,81 +290,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             renderer.sortingOrder=-4100;
             RoadCount++;
             return obj;
-        }
-
-        Texture2D MakeFootprint(string label,Color soil,Color lit,bool cobbled,bool workshopDust)
-        {
-            var tex=new Texture2D(FootW,FootH,TextureFormat.RGBA32,false,false){
-                name=label+" authored foot-plane earth/grass/stone transition",
-                filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp};
-            var pixels=new Color32[FootW*FootH];
-            Color shade=new Color(.28f,.31f,.25f,1);
-            for(int y=0;y<FootH;y++)for(int x=0;x<FootW;x++)
-            {
-                float xx=(x/(float)(FootW-1)-.5f)*2f;
-                float yy=(y/(float)(FootH-1)-.5f)*2f;
-                float r=Mathf.Sqrt(xx*xx+yy*yy);
-                float broad=N(xx*5.2f+10f,yy*6.2f+10f,42);
-                float fine=N(xx*33f,yy*28f,79);
-                float irregular=(broad-.5f)*.31f+(fine-.5f)*.07f;
-                float fade=1f-Sm(.42f+irregular,1.02f+irregular,r);
-                // Even an organic radial mask can retain a few alpha values
-                // exactly on the texture frame. Bilinear sampling then reveals
-                // the quad as a horizontal platform at retina resolution.
-                float frame=Mathf.Min(1f-Mathf.Abs(xx),1f-Mathf.Abs(yy));
-                fade*=Sm(0f,.13f,frame);
-                float dirt=N(xx*14f,yy*12f,8),grit=N(xx*59f,yy*58f,17);
-                Color c=Color.Lerp(soil,lit,Mathf.Clamp01(.20f+.54f*dirt));
-                // Stone paving around the keep gate is part of its own
-                // alpha footprint kit, not a rectangular background board.
-                // Organic entrance grading: avoid the rectangular hard
-                // cobble inset previously visible as a separate platform.
-                float gateOffset=xx+.15f*yy;
-                float gateWidth=Mathf.Abs(gateOffset)*(1f+.10f*(broad-.5f));
-                float stoneZone=cobbled?
-                    (1f-Sm(-.63f,.76f,yy))*(1f-Sm(.18f,.83f,gateWidth)):
-                    0f;
-                if(stoneZone>0)
-                {
-                    float tilex=xx*5.8f+Mathf.Floor(yy*6.6f)*.5f;
-                    float tiley=yy*6.6f;
-                    float edgeX=Mathf.Abs(tilex-Mathf.Round(tilex));
-                    float edgeY=Mathf.Abs(tiley-Mathf.Round(tiley));
-                    float seam=1f-Sm(.035f,.115f,Mathf.Min(edgeX,edgeY));
-                    Color paving=Color.Lerp(new Color(.35f,.35f,.29f,1),
-                        new Color(.65f,.60f,.49f,1),dirt*.78f+fine*.22f);
-                    paving=Color.Lerp(paving,shade,seam*.33f);
-                    c=Color.Lerp(c,paving,stoneZone*.90f);
-                }
-                // Sawdust subtly warms the middle of the mill footprint.
-                if(workshopDust)
-                {
-                    float sawdust=(1f-Sm(.10f,.69f,r))*(.28f+.2f*grit);
-                    c=Color.Lerp(c,new Color(.78f,.65f,.40f,1),sawdust);
-                }
-                // Blend into actual painted grass and the incoming road rather
-                // than drawing a solid ochre oval around both buildings.
-                float alpha=fade*(cobbled ? .39f+.29f*fine : .29f+.23f*fine);
-                c.a=Mathf.Clamp01(alpha);
-                pixels[y*FootW+x]=(Color32)c;
-            }
-            tex.SetPixels32(pixels);tex.Apply(false,true);
-            textures.Add(tex);
-            return tex;
-        }
-
-        void PutFoot(string name,Texture2D texture,Vector2 at,float scale)
-        {
-            var sprite=Sprite.Create(texture,new Rect(0,0,texture.width,texture.height),
-                new Vector2(.5f,.5f),88f,0,SpriteMeshType.FullRect);
-            var go=new GameObject(name);
-            go.transform.SetParent(transform,false);
-            go.transform.localPosition=new Vector3(at.x,at.y,-.07f);
-            go.transform.localScale=Vector3.one*scale;
-            var sr=go.AddComponent<SpriteRenderer>();
-            sr.sprite=sprite;
-            sr.sortingOrder=-4050;
-            FootprintCount++;
         }
 
         void OnDestroy()

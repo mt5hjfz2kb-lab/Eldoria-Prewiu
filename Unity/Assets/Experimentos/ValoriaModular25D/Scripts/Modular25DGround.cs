@@ -80,6 +80,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         Material districtMaterial;
         public bool HasCivicCourt => districtMaterial && districtMaterial.GetVector("_Forecourt").z>0 &&
             districtMaterial.GetTexture("_Paving") && districtMaterial.GetTexture("_Soil");
+        public bool HasMillYard => districtMaterial && districtMaterial.GetTexture("_Soil") &&
+            ((Vector2)districtMaterial.GetVector("_WorkLane")-ValoriaUrbanPlan.City.Mill.Foot).sqrMagnitude<.0001f;
         Vector4 previousDistricts;
         bool previousBoroughs;
         public void SetDistricts(bool barracks, bool granary, bool quarry, int level)

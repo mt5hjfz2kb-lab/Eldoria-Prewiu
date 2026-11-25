@@ -119,7 +119,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             new Prop(0,"ManzanaDelAdarve",UpperCourt,0f,0f,.88f,5),
             new Prop(2,"CasasDeOficio",Keep.Foot,3.62f,2.44f,.87f,5),
             new Prop(2,"FrenteTejedores",Keep.Foot,4.03f,.79f,.84f,5),
-            new Prop(0,"ViviendaDelPostigo",UpperRow,-1.57f,.54f,1f,5),
+            new Prop(0,"ViviendaDelPostigo",UpperRow,-1.49f,.31f,1f,5),
             new Prop(0,"CalleDelPostigo",UpperRow,0,0,1f,5),
             new Prop(0,"ToneleriaDelPostigo",UpperRow,1.79f,-.27f,1f,5),
             new Prop(3,"PortalesDeOficios",WorkshopRow,0,0,1f,5),

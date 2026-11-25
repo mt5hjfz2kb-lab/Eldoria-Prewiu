@@ -212,20 +212,20 @@ class SandboxSourceContracts(unittest.TestCase):
         meadow=content(SCRIPTS / "Modular25DGround.cs")
         landscape=content(SCRIPTS / "Modular25DLandscape.cs")
         capture=content(BASE / "Editor/Modular25DNativeCapture.cs")
-        self.assertIn("var landscape=paths.gameObject.AddComponent<Modular25DLandscape>();",world)
+        self.assertIn("paths.gameObject.AddComponent<Modular25DLandscape>();",world)
         self.assertIn("landscape.Build();",world)
         self.assertNotIn("BuildPaths(paths);",world)
         self.assertNotIn("AddRoadStroke(",world)
         self.assertIn("TextureSize = 512",meadow)
-        self.assertIn("Eldoria olive grass",meadow) if False else None
         self.assertIn("Valoria olive grass",meadow)
         self.assertIn("modular directional ribbon",landscape)
         self.assertIn("new Vector3(p.x,p.y,-.075f)",landscape)
-        self.assertIn('PutFoot("Bastion',landscape)
-        self.assertIn('PutFoot("Sawmill',landscape)
+        self.assertNotIn("PutFoot(",landscape)
         self.assertIn("RoadCount++",landscape)
-        self.assertIn("FootprintCount++",landscape)
-        self.assertIn("landscape.RoadCount!=2||landscape.FootprintCount!=2",capture)
+        terrain=content(BASE / "Resources/ValoriaModular25D/DistrictGround.shader")
+        self.assertIn("timberLine=distanceToLane(millGround",terrain)
+        self.assertIn("ground.HasMillYard",capture)
+        self.assertIn("GetComponentsInChildren<SpriteRenderer>(true).Length!=0",capture)
 
     def test_original_owned_painterly_grass_is_byte_exact_and_tiled(self):
         # Only grass pixels were sampled from the original Eldoria *concept*

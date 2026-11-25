@@ -148,11 +148,11 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(land);
             Assert.That((int)Member(land,"RoadCount"),Is.EqualTo(12),
                 "Five thresholds, the supply road and five neighborhood lanes plus the postern passage");
-            Assert.That((int)Member(land,"FootprintCount"),Is.EqualTo(1));
             var commonGround=all.Single(x=>x && x.GetType().Name=="Modular25DGround");
             Assert.That((bool)Member(commonGround,"HasCivicCourt"),Is.True);
-            Assert.That(land.GetComponentsInChildren<SpriteRenderer>(true).Length,Is.EqualTo(1),
-                "Only the sawmill's work surface remains a separate painted footprint");
+            Assert.That((bool)Member(commonGround,"HasMillYard"),Is.True);
+            Assert.That(land.GetComponentsInChildren<SpriteRenderer>(true),Is.Empty,
+                "Sawmill dust and the keep landing belong to the continuous ground");
             var pathMeshes=land.GetComponentsInChildren<MeshFilter>(false);
             Assert.That(pathMeshes.Length,Is.EqualTo(2),
                 "Both artistic road ribbons must remain separate world meshes");
