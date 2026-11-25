@@ -19,8 +19,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         const int RoadW=256, RoadH=512;
         readonly Dictionary<string,GameObject> approaches=new Dictionary<string,GameObject>();
         readonly List<GameObject> boroughStreets=new List<GameObject>();
+        MeshRenderer gateApproach;
+        Material gateEarth,gatePaving;
         public void SetDistricts(bool military,bool market,bool quarry,int level)
         {
+            // The ribbon over the terrain must age with the ground below it.
+            // Retain the same walk and width as freight starts using the gate.
+            if(gateApproach) gateApproach.sharedMaterial=military||market?gatePaving:gateEarth;
             approaches["barracks"].SetActive(military);
             approaches["granary"].SetActive(market);
             approaches["stoneworks"].SetActive(quarry);
@@ -88,6 +93,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 bool paved = plot == plan.Keep || plot == plan.Barracks;
                 var road=AddRoad(plot.Id+" | acceso",plan.Approach(plot),paved?1.32f:.92f,
                     paved?imperialMat:earthMat,paved);
+                if(plot==plan.Keep)
+                {
+                    gateApproach=road.GetComponent<MeshRenderer>();
+                    gateEarth=earthMat;
+                    gatePaving=imperialMat;
+                    gateApproach.sharedMaterial=gateEarth;
+                }
                 if (plot==plan.Barracks || plot==plan.Granary || plot==plan.Quarry)
                 {
                     approaches.Add(plot.Id,road);
