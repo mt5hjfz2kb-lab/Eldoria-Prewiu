@@ -1,0 +1,57 @@
+{
+  "schema": 2,
+  "run_id": 45693242088,
+  "request_id": "senda-pr195-art-benchmark-v1",
+  "source_run": 43732245691,
+  "started_utc": "2026-11-25T20:15:50Z",
+  "finished_utc": "2026-11-25T20:16:20Z",
+  "utc_day": "2026-11-25",
+  "wall_seconds": 30.0,
+  "workflow_status": "failure",
+  "quality_decision": "pending",
+  "quality_score_before": null,
+  "quality_score_after": null,
+  "quality_evidence_run": null,
+  "calls_recorded": 1,
+  "calls_with_unknown_cost": 0,
+  "estimated_known_usd": "0.0092055",
+  "estimate_complete": true,
+  "billed_usd": null,
+  "billing_status": "unreconciled",
+  "github_billed_usd": null,
+  "pc_electricity_usd": null,
+  "windows_seconds": null,
+  "manual_review_seconds": null,
+  "tariff": "2026-11-25-standard-short",
+  "calls": [
+    {
+      "role": "director",
+      "model": "gpt-6.1-terra",
+      "usage": {
+        "input_tokens": 2565,
+        "input_tokens_details": {
+          "cache_write_tokens": 2562,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 2562
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 1200,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 3765
+      },
+      "utc": "2026-11-25T20:15:50.492871+00:00",
+      "duration_seconds": 29.988,
+      "estimated_usd": "0.0092055",
+      "tariff": "2026-11-25-standard-short",
+      "service_tier": "default",
+      "billed_usd": null,
+      "billing_status": "unreconciled",
+      "state": "reserved",
+      "reservation_usd": "0.15"
+    }
+  ]
+}
