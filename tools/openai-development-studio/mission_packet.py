@@ -107,6 +107,33 @@ class Tests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             p,a=self.packet(pathlib.Path(d));a["source"]["path"]="../secret";p.write_text(json.dumps(a))
             with self.assertRaises(ValueError):load(p)
+    def test_full_review_orchestration_mocked(self):
+        with tempfile.TemporaryDirectory() as d:
+            p,a=self.packet(pathlib.Path(d))
+            a["mode"]="review";p.write_text(json.dumps(a))
+            out=p.parent/"out"
+            def reply(payload,key):
+                return {"status":"completed","model":payload["model"],"output":[{"type":"message","content":[{"type":"output_text","text":"Mocked scope-aware report"}]}],"usage":{"input_tokens":100,"output_tokens":20}}
+            with patch.dict(os.environ,{"OPENAI_API_KEY":"offline-test-only","GITHUB_RUN_ATTEMPT":"1","ELDORIA_AUTH_EVENT":"test"}), \
+                 patch("budget_guard.authorize",return_value=True),patch("studio.request_api",side_effect=reply) as api, \
+                 patch("generate_candidate.generate") as image:
+                result=execute(p,out,True,"test")
+                self.assertEqual(result["roles"],["director","programmer","auditor","coordinator"])
+                self.assertEqual(api.call_count,4);image.assert_not_called()
+                ledger=json.loads((out/"ledger.json").read_text())
+                self.assertEqual(ledger["cap_usd"],"0.70")
+                self.assertEqual(len(ledger["reservations"]),4)
+                self.assertTrue(all(x["state"]=="completed" for x in ledger["reservations"]))
+                self.assertFalse(json.loads((out/"handoff.json").read_text())["native_verified"])
+    def test_failure_stops_downstream_mocked(self):
+        with tempfile.TemporaryDirectory() as d:
+            p,a=self.packet(pathlib.Path(d));a["mode"]="review";p.write_text(json.dumps(a))
+            out=p.parent/"out"
+            with patch.dict(os.environ,{"OPENAI_API_KEY":"offline-test-only","GITHUB_RUN_ATTEMPT":"1","ELDORIA_AUTH_EVENT":"test"}), \
+                 patch("budget_guard.authorize",return_value=True),patch("studio.request_api",side_effect=RuntimeError("mock timeout")) as api:
+                with self.assertRaises(RuntimeError):execute(p,out,True,"test")
+                self.assertEqual(api.call_count,1)
+                self.assertEqual(json.loads((out/"ledger.json").read_text())["reservations"][0]["state"],"reserved")
     def test_no_key(self):
         with tempfile.TemporaryDirectory() as d:
             p,a=self.packet(pathlib.Path(d))
