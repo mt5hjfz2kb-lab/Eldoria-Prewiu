@@ -175,7 +175,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(world==null||world.Hud==null||IsUI(screen))return;
             Vector3 p=camera.ScreenToWorldPoint(new Vector3(screen.x,screen.y,30f));
             if(world.HitSawmill(p)) world.Hud.OpenSawmill();
-            else if (Contains(world.BastionRenderer,p)) world.Hud.OpenStatus();
+            else if (Contains(world.BastionRenderer,p)) world.Hud.OpenBastion();
             else if (Contains(world.BarracksRenderer,p)) world.Hud.OpenDistrict("barracks");
             else if (Contains(world.GranaryRenderer,p)) world.Hud.OpenDistrict("granary");
             else if (Contains(world.StoneworksRenderer,p)) world.Hud.OpenDistrict("stoneworks");

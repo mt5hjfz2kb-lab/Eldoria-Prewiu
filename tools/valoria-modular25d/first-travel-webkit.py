@@ -87,6 +87,8 @@ async def main():
                 await touch(target("Toggle left activities"))
                 await until(lambda:target("Current real construction objective"))
                 await touch(target("Current real construction objective"))
+                await until(lambda:target("VisitBuilding/sawmill"))
+                await touch(target("VisitBuilding/sawmill"))
                 await until(lambda:target("Close sawmill"))
                 await touch(target("Close sawmill"))
                 await until(lambda:target("Sawmill world nameplate"))

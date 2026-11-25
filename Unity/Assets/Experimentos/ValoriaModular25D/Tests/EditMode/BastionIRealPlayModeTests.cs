@@ -235,6 +235,12 @@ namespace Eldoria.Modular25D.Tests
                 .Any(x=>x.text.Contains("BASTIÓN")),Is.True);
             Assert.That(tagMill.GetComponentsInChildren<Text>(true)
                 .Any(x=>x.text.Contains("ASERRADERO")),Is.True);
+            tagKeep.GetComponent<Button>().onClick.Invoke();
+            yield return null;
+            Assert.AreEqual("bastion",Member(ui,"selectedBuilding"));
+            Assert.IsTrue(ui.GetComponentsInChildren<Text>()
+                .Any(t=>t.text.StartsWith("Mejorar a Bastión")));
+            Call(ui,"ClosePanels");
             foreach(var key in new[]{"CormorantGaramond-SemiBold","SourceSans3-Semibold"})
                 Assert.NotNull(Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+key));
             // The game HUD must use authored, border-preserving pieces,

@@ -98,7 +98,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // camera and point only to canonical, currently implemented UI.
             bastionTag=ButtonPlate("Bastion world nameplate",rootTransform,"BASTIÓN · I",
                 slatePlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                Vector2.zero,new Vector2(115f,27f),OpenStatus).GetComponent<RectTransform>();
+                Vector2.zero,new Vector2(115f,27f),OpenBastion).GetComponent<RectTransform>();
             bastionTag.GetComponent<Image>().raycastPadding=new Vector4(-3f,-9f,-3f,-9f);
             bastionTagText=bastionTag.GetComponentInChildren<Text>(true);
             bastionTagText.fontSize=14;
@@ -151,15 +151,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
             objective=ButtonPlate("Current real construction objective",rootTransform,"",
                 null,new Vector2(1f,1f),new Vector2(1f,1f),
-                new Vector2(-12f,-122f),new Vector2(172f,50f),() => { if(cachedSawmillPhase==ParcelBuildingState.BUILT) OpenStatus(); else OpenSawmill(); })
+                new Vector2(-12f,-122f),new Vector2(172f,50f),OpenCouncil)
                 .GetComponent<RectTransform>();
-            // The row shares the drawer's painted surface and remains the real
-            // sawmill shortcut in each construction phase.
+            // The activity drawer is the entry point to the current objective.
             var workshop=Plate("Activity workshop illustration",objective,
                 Modular25DArt.Sawmill(),new Vector2(0f,.5f),new Vector2(0f,.5f),
                 new Vector2(1f,0f),new Vector2(49f,46f));
             workshop.GetComponent<Image>().preserveAspect=true;
-            objectiveText=Label("Aserradero",objective,17,false,WarmWhite,
+            objectiveText=Label("Consejo",objective,17,false,WarmWhite,
                 TextAnchor.MiddleLeft,new Vector2(14f,0f),new Vector2(105f,31f));
             Label("›",objective,21,false,PaleGold,TextAnchor.MiddleRight,
                 new Vector2(77f,0f),new Vector2(18f,32f));
@@ -442,14 +441,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             Eldoria.ReferenceClean.ValoriaTravelCurtain.Travel(Eldoria.ReferenceClean.ValoriaTravelSession.RegionScene);
         }
 
-        public void OpenStatus()
-        {
-            ShowCouncil();
-        }
+        public void OpenBastion() => OpenDistrict("bastion");
 
-        private void ShowCouncil()
+        void OpenCouncil() => ShowCityPanel(null);
+
+        private void ShowCityPanel(string building)
         {
             if(statusSheet==null)return;
+            selectedBuilding = building;
             orderList.anchoredPosition = Vector2.zero;
             if(activityDrawer!=null)activityDrawer.gameObject.SetActive(false);
             activityExpanded=false;
@@ -674,8 +673,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sawmillTagText.color=building==ParcelBuildingState.UNDER_CONSTRUCTION
                     ? WarmWhite : PaleGold;
             }
-            if(objectiveText!=null)
-                objectiveText.text=s.SawmillLevel>0?"Consejo":"Aserradero";
             if(stateSummary!=null)
                 stateSummary.text="Jugador: " +
                     (string.IsNullOrWhiteSpace(s.PlayerName)?"SIN NOMBRE":s.PlayerName.Trim())+

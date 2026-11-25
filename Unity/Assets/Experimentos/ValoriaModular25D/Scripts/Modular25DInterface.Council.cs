@@ -14,6 +14,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             new List<(string, string, string)>();
 
         Text councilTitle;
+        string selectedBuilding;
 
         void InitializeCouncil()
         {
@@ -47,6 +48,35 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         void RefreshCouncil(PlayerState s)
         {
             orders.Clear();
+            if (selectedBuilding == null) AddGuideOrders(s);
+            else AddBuildingOrders(s);
+            RefreshOrderRows();
+        }
+
+        void AddBuildingOrders(PlayerState s)
+        {
+            string selection = selectedBuilding == "barracks" && s.BarracksLevel > 0
+                ? "upgrade-barracks" : selectedBuilding;
+            var offer = gateway.BuildingOffer(selection, s.Revision);
+            if (offer == null) return;
+            councilTitle.text = offer.Name.ToUpperInvariant() + " · " + offer.Level;
+            bool bastion = selectedBuilding == "bastion";
+            var action = offer.Action;
+            stateSummary.text = offer.OperationActive ? offer.State + " · " + offer.Time :
+                !string.IsNullOrEmpty(offer.Requirements) ? offer.Requirements :
+                bastion && offer.Level >= 5 ? "Nivel máximo" : offer.State;
+            string label = offer.Level > 0 ? "Mejorar" : "Construir";
+            if (bastion && offer.Level < 5) label += " a Bastión " + (offer.Level + 1);
+            if (!string.IsNullOrEmpty(offer.Costs) && !offer.OperationActive)
+                label += "\n" + offer.Costs.Replace("Coste de la acción\n", "");
+            orders.Add((label, action != null && action.Enabled ? action.Kind : "", selectedBuilding));
+            if (selectedBuilding == "barracks" && s.BarracksLevel > 0 &&
+                Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
+                orders.Add(("Entrenar tropas", "OpenSystem", "training"));
+        }
+
+        void AddGuideOrders(PlayerState s)
+        {
             var c = s.ChapterThree;
             int level = s.BastionLevel;
             long now = DateTime.UtcNow.Ticks;
@@ -65,28 +95,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 string selection = target == "barracks" && built > 0 ? "upgrade-barracks" : target;
                 var offer = gateway.BuildingOffer(selection,s.Revision);
                 if (offer?.Action == null || !offer.Action.Enabled) return;
-                string price = offer.Costs.Replace("Coste de la acción\n", "");
-                Order((built == 0 ? "Construir " : "Mejorar ") + name + " · " + (built + 1) +
-                    "\n" + price, offer.Action.Kind, offer.Action.Target);
+                Order((built == 0 ? "Construir " : "Mejorar ") + name + " ›", "VisitBuilding", target);
             }
-            string summary = "Bastión " + level;
-            string objective = SliceRules.CurrentObjectiveKey(s);
-            var chapter = s.ChapterProgress;
-            if (level == 1 && !s.JourneyComplete)
-            {
-                if (s.SawmillLevel == 0) summary = "Construye el aserradero";
-                else if (objective == "b1.gather-wood") summary = "Madera recogida · " + chapter.GatheredWood + " / " + SliceContentProfiles.Active.Chapter1GatherWood;
-                else if (objective == "b1.gather-stone") summary = "Piedra recogida · " + chapter.GatheredStone + " / " + SliceContentProfiles.Active.Chapter1GatherStone;
-                else summary = "Despeja la ruta y espera el regreso de Aldric";
-            }
-            if (level < 5)
-            {
-                var next = BastionProgressionCatalog.ForLevel(level + 1);
-                string missing = BastionProgressionCatalog.MissingSummary(s, next);
-                if (level > 1 || s.JourneyComplete) summary = missing.Length > 0 ? missing : "Ascenso disponible";
-                if (BastionProgressionCatalog.RequirementsMet(s, next))
-                    Order("Ascender a Bastión " + next.Level, "AdvanceBastion", "bastion");
-            }
+            string summary = gateway.Session.Read(null, false).Objective;
+            if (level < 5 && BastionProgressionCatalog.RequirementsMet(s, BastionProgressionCatalog.ForLevel(level + 1)))
+                Order("Mejorar el Bastión ›", "VisitBuilding", "bastion");
             long deadline = Math.Max(s.BuildingCompletesUtcTicks, s.BastionUpgradeCompletesUtcTicks);
             if (deadline > now) summary = "Obra en curso · " + TimeSpan.FromTicks(deadline - now).ToString(@"hh\:mm\:ss");
             councilTitle.text = "CONSEJO DE VALORIA";
@@ -161,6 +174,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if ((c.Inventory?.Count ?? 0) > 0) Order("Materiales y manuscritos", "Inventory", "inventory");
                 Order("Tesoros de Valoria", "OpenSystem", "daily");
             }
+        }
+
+        void RefreshOrderRows()
+        {
             orderList.sizeDelta = new Vector2(0f, orders.Count * 50f);
             for (int i = 0; i < orders.Count; i++)
             {
@@ -183,14 +200,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         // The bottom navigation itself stays identical to main.
         public void OpenDistrict(string target)
         {
-            OpenStatus();
+            if (target == "sawmill") OpenSawmill();
+            else ShowCityPanel(target);
         }
 
         void ExecuteOrder(int slot)
         {
             if (slot >= orders.Count) return;
             var order = orders[slot];
-            if (order.command == "Inventory") OpenCanonicalRoom("bag");
+            if (order.command == "VisitBuilding") OpenDistrict(order.target);
+            else if (order.command == "Inventory") OpenCanonicalRoom("bag");
             else if (order.command.Length == 0) return;
             else if (order.command == "OpenSystem") OpenCanonicalRoom(order.target);
             else gateway.Issue(order.command, order.target);

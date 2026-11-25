@@ -19,7 +19,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             public float cameraX,cameraY,halfWidth;
             public long revision;
             public int forestRemaining,quarryRemaining;
-            public string room, activeScene;
+            public string room, activeScene, building;
             public bool travelCurtainVisible, handVisible, sawmillClockVisible;
             public bool journey, lyra, fissure, council, sawmillPanel, drawer, busy;
             public List<Tap> taps = new List<Tap>();
@@ -45,7 +45,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 lyra=s.ChapterThree.LyraRecruited, fissure=s.ChapterThree.FissureClosed,
                 busy=s.BuildingCompletesUtcTicks>0 || s.BastionUpgradeCompletesUtcTicks>0 ||
                      s.RecruitmentCompletesUtcTicks>0 || MarchCapacityRules.ActiveCount(s,DateTime.UtcNow.Ticks)>0,
-                council=statusSheet.gameObject.activeSelf, sawmillPanel=buildingSheet.activeSelf, drawer=activityExpanded
+                building=buildingSheet.activeSelf ? "sawmill" : statusSheet.gameObject.activeSelf ? selectedBuilding : "",
+                council=statusSheet.gameObject.activeSelf && selectedBuilding == null, sawmillPanel=buildingSheet.activeSelf, drawer=activityExpanded
             };
             var buttons = roomHost ? roomHost.GetComponentsInChildren<Button>() : hudCanvas.GetComponentsInChildren<Button>();
             foreach (var b in buttons)

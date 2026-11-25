@@ -105,11 +105,21 @@ async def main():
                 assert state[key]==before[key],(key,before[key],state[key])
             log.append({'reload_level':state['level'],'revision':state['revision']})
         async def council():
-            if not state['council']: await tap('Bastion world nameplate',False)
+            if state['council']: return
+            if state['sawmillPanel']: await tap('Close sawmill',False)
+            elif state.get('building'): await tap('Close state',False)
+            if not state['drawer']: await tap('Toggle left activities',False)
+            await tap('Current real construction objective',False)
             assert state['council']
         async def order(name,seconds=15):
             await council(); rev=state['revision']
-            await tap(name)
+            cmd, target = name.split('/',1)
+            if cmd in ('Build','UpgradeBuilding'):
+                await tap('VisitBuilding/'+target)
+                assert state['building']==target and not state['council'],state
+                await tap('Execute canonical Build command' if target=='sawmill' else name)
+            else:
+                await tap(name)
             await until(lambda:state['revision']>rev,12)
             log.append({'command':name,'revision':state['revision'],'level':state['level']})
             print(log[-1],flush=True)
@@ -266,7 +276,10 @@ async def main():
                     await order(cmd,20)
                 assert state[field]>=need,(field,need,state)
         async def ascend(n,duration):
-            await council();rev=state['revision']
+            await council()
+            await tap('VisitBuilding/bastion')
+            assert state['building']=='bastion' and not state['council'],state
+            rev=state['revision']
             await tap('AdvanceBastion/bastion');await until(lambda:state['revision']>rev and state['busy'])
             log.append({'command':'AdvanceBastion/bastion','target_level':n,'revision':state['revision']})
             await reload();assert state['level']==n-1 and state['busy'],state
@@ -296,7 +309,8 @@ async def main():
             await until(lambda:state['halfWidth']>6.19)
             log.append({'city_entry_half_width':6.04,'pinch_in':near,'pinch_out':state['halfWidth']})
             await tap('Toggle left activities',False);assert state['drawer']
-            await tap('Current real construction objective',False);assert state['sawmillPanel']
+            await tap('Current real construction objective',False);assert state['council']
+            await tap('VisitBuilding/sawmill');assert state['sawmillPanel'] and not state['council']
             await tap('Close sawmill',False)
             await tap('Sawmill world nameplate',False);assert state['sawmillPanel']
             assert state.get('handVisible'),state
