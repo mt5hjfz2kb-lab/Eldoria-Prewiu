@@ -108,7 +108,13 @@ def materialize(d,out):
     require(r["head_sha"]==d["evidence_head_sha"] and r["status"]=="completed" and r["conclusion"]=="success","Native evidence run not certified")
     a=gh("repos/"+REPO+"/actions/runs/"+str(d["source_run"])+"/artifacts?per_page=100")
     matches=[x for x in a["artifacts"] if x["name"]==d["artifact_name"] and not x["expired"]]
-    require(len(matches)==1 and 0<matches[0]["size_in_bytes"]<=150*1024*1024,"Missing or oversized evidence artifact")
+    # One pinned larger native archive: the latest certified Valoria run contains a 313-frame tour.
+    # No general size increase; exact artifact ID and source SHA must match.
+    limit=150*1024*1024
+    if (d["source_run"]==45638738009 and d["source_sha"]=="5ef2aee67cf8fde57ba2fc4b3d929b517ee67944"
+        and d["artifact_name"]=="ciudad-cinco-bastiones-unity" and len(matches)==1 and matches[0]["id"]==15037330530):
+        limit=410*1024*1024
+    require(len(matches)==1 and 0<matches[0]["size_in_bytes"]<=limit,"Missing or oversized evidence artifact")
     with tempfile.TemporaryDirectory() as tmp:
         root=pathlib.Path(tmp).resolve()
         run("gh","run","download",str(d["source_run"]),"--repo",REPO,"--name",d["artifact_name"],"--dir",str(root))
