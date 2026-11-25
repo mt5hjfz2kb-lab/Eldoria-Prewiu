@@ -1132,7 +1132,9 @@ namespace Eldoria.UI.RoyalGold.V2
             trainingOrderChapter.gameObject.SetActive(training);
             trainingIdentityCard.gameObject.SetActive(training);
             var identityPaper=trainingIdentityCard.GetComponent<Image>();
-            if(identityPaper)identityPaper.color=new Color(.91f,.84f,.70f,.86f);
+            bool fieldCaption = training && RoyalGoldV2Hud.UseCoronaArt;
+            if(identityPaper)identityPaper.color=fieldCaption
+                ? new Color(.22f,.26f,.26f,.91f) : new Color(.91f,.84f,.70f,.86f);
             if(training)
             {
                 paneSurfaces[right].enabled=false;
@@ -1140,8 +1142,8 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             summary.color=Ivory;
             status.color=Muted;
-            unitTitle.color=training?new Color(.12f,.10f,.075f):Ivory;
-            unitDetail.color=training?new Color(.22f,.18f,.13f):Muted;
+            unitTitle.color=training && !fieldCaption?new Color(.12f,.10f,.075f):Ivory;
+            unitDetail.color=training && !fieldCaption?new Color(.22f,.18f,.13f):Muted;
             action.transform.SetParent(training?right:footer,false);
             for(int i=0;i<marchMetricCards.Length;i++)
                 marchMetricCards[i].gameObject.SetActive(!training);
@@ -1255,6 +1257,9 @@ namespace Eldoria.UI.RoyalGold.V2
             float titleW=wide?width*(compactLandscape?.185f:.385f):
                 width*.38f;
             float titleY=wide?bodyY+11f:artH*.045f;
+            // Put the field note against the bottom of the yard. Keep the
+            // archery targets and the face unobstructed in portrait.
+            if (sideRoster) titleY=artH-143f;
             float titleHeight=wide?45f:52f;
             float detailY=titleY+titleHeight+5f;
             float detailHeight=wide?91f:64f;

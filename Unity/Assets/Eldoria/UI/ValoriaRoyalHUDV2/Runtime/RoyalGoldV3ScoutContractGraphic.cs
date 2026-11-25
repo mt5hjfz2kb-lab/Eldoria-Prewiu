@@ -94,8 +94,10 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 // The textured paper is a separate sliced Image. Preserve a
                 // distinct live heraldic medallion without painting over it.
-                float cx=x+w*.5f,cy=y+h-22f;
-                float radius=Mathf.Clamp(w*.065f,15f,28f);
+                bool wideContract = RoyalGoldV2Hud.UseCoronaArt && w > h * 2f;
+                float cx = wideContract ? x+w-36f : x+w*.5f;
+                float cy = y+h-22f;
+                float radius=wideContract ? Mathf.Clamp(h*.11f,14f,22f) : Mathf.Clamp(w*.065f,15f,28f);
                 if(BadgeTexture){PaintedEmblem(v,cx,cy,radius+4f);return;}
                 Circle(v,cx,cy,radius+3f,radius+3f,edge,brass);
                 var face=Kind==0?C(.18f,.33f,.50f):Kind==1?C(.22f,.38f,.17f):C(.32f,.18f,.42f);

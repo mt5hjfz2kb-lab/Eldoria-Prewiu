@@ -838,6 +838,31 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!result.Ok && navLabel)navLabel.Put(result.Message);
         }
         static string HeroName(string id)=>id=="aldric+lyra"?"Sir Aldric y Lyra":id=="lyra"?"Lyra":id=="aldric"?"Sir Aldric":"—";
+        static readonly Sprite[] encounterSeals = new Sprite[6];
+        static Sprite EncounterSeal(string target)
+        {
+            int index;
+            switch (target)
+            {
+                case "fissure-valoria": index=0; break;
+                case "hunt-boar": index=1; break;
+                case "hunt-wolf": index=2; break;
+                case "engendro-valoria": index=3; break;
+                case "ash-stalker-valoria": index=4; break;
+                case "corrupt-scout": index=5; break;
+                default: return null;
+            }
+            if (!encounterSeals[index])
+            {
+                var atlas = Resources.Load<Texture2D>("ValoriaModular25D/UI/CoronaBrecha/informes_encuentros");
+                if (!atlas) return null;
+                int side = atlas.height;
+                encounterSeals[index] = Sprite.Create(atlas,new Rect(index*side,0,side,side),
+                    new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
+            }
+            return encounterSeals[index];
+        }
+
         static string TargetName(string id)
         {
             if((id??"").StartsWith("vigilant:",StringComparison.Ordinal)&&
@@ -1072,7 +1097,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     messageDates[i].Put(msg.OccurredAtUtcTicks>0?new DateTime(msg.OccurredAtUtcTicks,DateTimeKind.Utc).ToString("dd/MM HH:mm"):"");
                     string icon=msg.Category=="recompensas"?"mail-reward":msg.Category=="narrativa"?"mail-narrative":
                         msg.Category=="sistema"?"mail-system":msg.Type=="battle"?"mail-battle":"mail-march";
-                    messageIcons[i].sprite=RoyalGoldV41SourceArt.Get(icon);
+                    var encounter = RoyalGoldV2Hud.UseCoronaArt && recordedBattle!=null && msg.Category=="informes"
+                        ? EncounterSeal(recordedBattle.TargetId) : null;
+                    messageIcons[i].sprite=encounter ? encounter : RoyalGoldV41SourceArt.Get(icon);
                 }
             }
             navLabel.Put(total==0?"No hay mensajes":

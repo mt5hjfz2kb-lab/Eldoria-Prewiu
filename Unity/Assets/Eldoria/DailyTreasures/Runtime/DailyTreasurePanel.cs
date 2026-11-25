@@ -2203,6 +2203,24 @@ namespace Eldoria.DailyTreasures
                     // Short 667x375 landscapes still need separate text/icon
                     // space; make small, bounded adjustments rather than shrink
                     // the entire Canvas or blur all text by scaling transforms.
+                    if (portrait && cofferH > 0f)
+                    {
+                        // Each tribute has a readable icon beside its actual payout.
+                        // Keep the entire lower band for the two-resource days.
+                        float iconSide = Mathf.Min(cellW*.30f,cellH*.56f);
+                        float itemY = -cellH*.09f;
+                        float iconX = -cellW*.5f + iconSide*.5f + 10f;
+                        Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,iconX,itemY,iconSide,iconSide);
+                        if (dayArtwork[i]) Place(dayArtwork[i].rectTransform,.5f,.5f,.5f,.5f,
+                            iconX,itemY,iconSide,iconSide);
+                        float textWidth = cellW-iconSide-26f;
+                        Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
+                            (iconSide+10f)*.5f,itemY,textWidth,cellH*.64f);
+                        dayBody[i].alignment=TextAnchor.MiddleLeft;
+                        dayBody[i].fontSize=roomy?17:15;
+                        continue;
+                    }
+                    dayBody[i].alignment=TextAnchor.MiddleCenter;
                     bool tiny=cellH<96f;
                     // Real Unity 1600x900 screenshots showed Day 4 and Day 6
                     // two-line labels painted onto the bottom bronze border.
