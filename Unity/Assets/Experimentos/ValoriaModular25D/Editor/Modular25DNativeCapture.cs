@@ -104,7 +104,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 report.paintedGroundSourceLoaded=true;
                 report.roadAndFootprintKits=true;
                 report.composedSettlementZones=world.SettlementZonesPlaced==4 &&
-                    world.RecoveredPropsPlaced>=15 && ground.HasCivicCourt && landscape.GetComponentsInChildren<SpriteRenderer>(true).Length==1;
+                    world.RecoveredPropsPlaced>=15 && ground.HasCivicCourt && ground.HasMillYard;
                 if(!report.composedSettlementZones)
                     throw new Exception("Semantic four-zone settlement / civic clearing not built");
                 var originalArt=new[]{

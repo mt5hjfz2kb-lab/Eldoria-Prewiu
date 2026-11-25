@@ -147,7 +147,7 @@ half4 frag(Varying i):SV_Target {
  float run=dot(doorDelta,route);
  float gateSide=dot(doorDelta,sideAxis);
  float rough=.10*sin(p.x*3.1+p.y*.47)+.10*sin(p.y*4.6-p.x*.88)+.18*erosion;
- float sill=max(abs(gateSide+.12*run)/1.18,abs(run-.13)/.41);
+ float sill=max(abs(gateSide+.12*run)/max(.3,_Forecourt.z*.44),abs(run-.13)/max(.15,_Forecourt.w*.44));
  float gateWidth=lerp(.82,.43,smoothstep(.15,2.1,run));
  float curve=.19*sin(run*1.6);
  float spine=max(abs(gateSide-curve)/gateWidth,max(-run/.45,(run-1.6)/1.35));
