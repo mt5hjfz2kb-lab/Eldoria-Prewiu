@@ -101,7 +101,7 @@ namespace Eldoria.World4XCanon
                 if(ValoriaIntegratedWorld.P0LazyWorldProbe&&slice.ShouldYield()){yield return null;slice.Resume();}
             }
             Draw(BuildHinterland(), hinterland);
-            var planting=Plant();
+            var planting=Plant(ground,hinterland);
             while(planting.MoveNext())yield return null;
             var layout=JsonUtility.FromJson<Region>(Resources.Load<TextAsset>("World4X/Blender/production-region").text);
             foreach(var b in layout.bridges)
@@ -176,7 +176,7 @@ namespace Eldoria.World4XCanon
             return Mathf.Lerp(Ground(source.x,source.y),hills,Mathf.SmoothStep(0,1,Mathf.Clamp01(distance/720f))*.78f);
         }
         // Spatial batches keep woodland and rocks visible in the same geography at every scale.
-        System.Collections.IEnumerator Plant()
+        System.Collections.IEnumerator Plant(Material groundMaterial, Material borderMaterial)
         {
             var slice=new RegionOneFrameSlice(10);
             var rng=new System.Random(27132);
@@ -229,6 +229,8 @@ namespace Eldoria.World4XCanon
                 }
             }
             PlantBanksAndWoodland(groves);
+            const int coverWidth=512,coverHeight=1024;
+            var canopyCover=new byte[coverWidth*coverHeight];
             for(int bz=-2160;bz<2160;bz+=180)for(int bx=-1274;bx<1274;bx+=182){
                 var batches=new Dictionary<string,List<Vector3>>();
                 foreach(var k in names)batches[k]=new List<Vector3>();
@@ -265,7 +267,10 @@ namespace Eldoria.World4XCanon
                     // Grove art depicts several crowns; sizing it like a single fir
                     // compressed groups into rows of identical miniature silhouettes.
                     float breadth=family=="CityGrove" || family=="PaintedForestGrove" ? 1.75f : 1.14f;
-                    cityTrees[foot]=tree.y*breadth*Mathf.Lerp(.62f,1.41f,core)*Mathf.Lerp(.9f,1.1f,stand);
+                    float crown=tree.y*breadth*Mathf.Lerp(.62f,1.41f,core)*Mathf.Lerp(.9f,1.1f,stand);
+                    cityTrees[foot]=crown;
+                    if(!exterior)
+                        AccumulateCover(canopyCover,coverWidth,coverHeight,px,pz,crown);
                 }
                 // Rock outcrops punctuate clearings. All trees come from the authored stands.
                 for(int n=0;!exterior && n<40;n++){
@@ -298,6 +303,30 @@ namespace Eldoria.World4XCanon
                     Draw(mesh,mats[pair.Key]);
                 }
                 if(ValoriaIntegratedWorld.P0LazyWorldProbe&&slice.ShouldYield()){yield return null;slice.Resume();}
+            }
+            var cover=new Texture2D(coverWidth,coverHeight,TextureFormat.R8,true,true){
+                name="Forest floor from planted crowns",wrapMode=TextureWrapMode.Clamp,
+                filterMode=FilterMode.Trilinear};
+            cover.SetPixelData(canopyCover,0);
+            cover.Apply(true,true);
+            owned.Add(cover);
+            groundMaterial.SetTexture("_CrownCover",cover);
+            borderMaterial.SetTexture("_CrownCover",cover);
+        }
+
+        static void AccumulateCover(byte[] coverage,int width,int height,float x,float z,float crown)
+        {
+            float u=(x/1820f+.5f)*width-.5f,v=(z/3600f+.5f)*height-.5f;
+            float radius=Mathf.Max(2.4f,crown*.28f+1.6f);
+            int minX=Mathf.Max(0,Mathf.FloorToInt(u-radius)),maxX=Mathf.Min(width-1,Mathf.CeilToInt(u+radius));
+            int minY=Mathf.Max(0,Mathf.FloorToInt(v-radius)),maxY=Mathf.Min(height-1,Mathf.CeilToInt(v+radius));
+            float inv=1f/(radius*radius);
+            for(int iy=minY;iy<=maxY;iy++)for(int ix=minX;ix<=maxX;ix++)
+            {
+                float dx=ix-u,dy=iy-v;
+                float weight=Mathf.Max(0f,1f-(dx*dx+dy*dy)*inv);
+                int offset=iy*width+ix;
+                coverage[offset]=(byte)Mathf.Min(255,coverage[offset]+Mathf.RoundToInt(195f*weight*weight));
             }
         }
         // A single batched foreground material shares the painted light across

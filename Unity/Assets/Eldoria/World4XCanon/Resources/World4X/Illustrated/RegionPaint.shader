@@ -1,6 +1,7 @@
 Shader "Eldoria/Region1/Illustrated ground" {
  Properties {
   _FaultPigment("Painted fault arms registered to the relief",2D)="black"{}
+  _CrownCover("Planted crown coverage",2D)="black"{}
   _BeyondMap("Outside charted terrain",Float)=0
   _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0
   _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1)
@@ -20,6 +21,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
  #pragma fragment frag
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
  TEXTURE2D(_FaultPigment); SAMPLER(sampler_FaultPigment);
+ TEXTURE2D(_CrownCover); SAMPLER(sampler_CrownCover);
  TEXTURE2D(_NearFeatures); SAMPLER(sampler_NearFeatures);
  TEXTURE2D(_Region); SAMPLER(sampler_Region); TEXTURE2D(_Weights); SAMPLER(sampler_Weights);
  TEXTURE2D(_Grass); SAMPLER(sampler_Grass); TEXTURE2D(_Earth); SAMPLER(sampler_Earth);
@@ -218,6 +220,16 @@ Shader "Eldoria/Region1/Illustrated ground" {
   grass=lerp(grass,forestFloor,woodEdge*(.44+.18*close));
   half shoulderStone=smoothstep(.36,.88,upland)*(1-woodEdge);
   grass=lerp(grass,lerp(slate,grass,.37),shoulderStone*.55);
+  // Root shade and leaf litter occupy the ground under the actual rendered
+  // trees. Adjacent crowns join; open spaces between stands retain grass.
+  half roots=SAMPLE_TEXTURE2D(_CrownCover,sampler_CrownCover,i.uv).r;
+  half shadeCover=smoothstep(.025,.75,roots+(crowns-.25)*min(roots,.24));
+  half openLand=(1-shadeCover)*(1-canopy*.58);
+  half meadowBands=smoothstep(.26,.65,field+(meadowRange.r-meadowRange.g)*.55);
+  half3 seeded=grass*lerp(half3(.66,.93,.87),half3(1.19,1.04,.67),meadowBands);
+  grass=lerp(grass,seeded,openLand*.90);
+  half3 humus=lerp(sharedEarth*half3(.54,.51,.36),grass*half3(.44,.67,.53),.36);
+  grass=lerp(grass,humus,shadeCover*.89);
   half3 colour=lerp(grass,fracturedSlate,faultWeight*.87);
   // Sample the geological opening on the terrain triangles themselves.
   // A separately tessellated patch clipped into the steep fault walls in
@@ -267,8 +279,8 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // outside the near survey. Work in display pigment before converting once.
   half shoal=saturate(.5+.32*sin(metre.x*.085+metre.y*.062)+.18*(pigment-.5));
   half shelf=lerp(1-smoothstep(.17,.79,district.r),1-smoothstep(.1,3.8+shoal*2.4,shore),local);
-  half3 channel=half3(.167,.276,.266)*(.77+pigment*.30+shoal*.15);
-  half3 shallows=half3(.38,.435,.346)*(.85+pigment*.32);
+  half3 channel=half3(.122,.267,.296)*(.77+pigment*.30+shoal*.15);
+  half3 shallows=half3(.41,.49,.397)*(.85+pigment*.32);
   half3 riverColour=lerp(channel,shallows,shelf*.79);
   half glint=smoothstep(.36,.85,pigment)*lerp(.42,1,close);
   riverColour+=half3(.064,.078,.073)*glint;
@@ -277,7 +289,10 @@ Shader "Eldoria/Region1/Illustrated ground" {
   #endif
   half bank=(1-smoothstep(.15,1.35,abs(shore)))*local*close;
   colour=lerp(colour,lerp(earth,slate,.55),bank*.68);
-  half floodplain=(1-smoothstep(.8,5.9+shoal*3.0,abs(shore)))*local;
+  half floodplain=(1-smoothstep(.35,3.8+shoal*1.95,abs(shore)))*local;
+  half distantBank=smoothstep(.016,.22,district.r)*(1-smoothstep(.36,.86,district.r));
+  half marshEdge=max(floodplain*(1-mask.r),distantBank*.74);
+  colour=lerp(colour,lerp(sharedEarth,grass*half3(.69,.86,.61),.65),marshEdge*.82);
   colour=lerp(colour,lerp(sharedEarth,slate,.34),floodplain*(1-mask.g)*.43);
   colour=lerp(colour,riverColour,mask.r);
   // The geographic mesh is REAL height-based terrain. Shade that geometry
