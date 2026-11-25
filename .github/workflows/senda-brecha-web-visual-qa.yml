@@ -14,6 +14,26 @@ concurrency:
   group: senda-brecha-web-visual-${{ github.ref }}
   cancel-in-progress: true # only obsolete Senda WebGL proofs on this same ref; never cancel Windows
 jobs:
+  inspect-canonical-model:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - name: Inspect exact original approved rig for reusable guard authoring
+        run: |
+          set -eu
+          mkdir -p /tmp/canonical-source
+          curl -fsSL 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944/Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb' -o /tmp/canonical-source/aldric.glb
+          echo 'c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b  /tmp/canonical-source/aldric.glb' | sha256sum -c
+          python3 - <<'PY'
+          import json,struct,pathlib
+          p=pathlib.Path('/tmp/canonical-source/aldric.glb').read_bytes(); n=struct.unpack_from('<I',p,12)[0];d=json.loads(p[20:20+n]);
+          pathlib.Path('/tmp/canonical-source/metadata.json').write_text(json.dumps(d,indent=2));print(json.dumps({'nodes':[(i,x.get('name'),x.get('mesh'),x.get('skin')) for i,x in enumerate(d['nodes'])],'meshes':[(i,x.get('name'),[(y.get('material'),d['accessors'][y['indices']]['count']//3 if 'indices' in y else None) for y in x['primitives']]) for i,x in enumerate(d['meshes'])],'materials':[x.get('name') for x in d['materials']]},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: senda-canonical-model-inspection
+          path: /tmp/canonical-source/
+          retention-days: 7
   real-webgl:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
