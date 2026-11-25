@@ -1,0 +1,86 @@
+name: Eldoria Studio - bounded real Valoria mission
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths:
+      - '.github/workflows/eldoria-openai-studio-mission.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-studio-real-mission
+  cancel-in-progress: false
+jobs:
+  mission:
+    if: >-
+      github.run_attempt == 1 &&
+      github.event.before == 'ca591d07289752b3d735948f272cc37b510dbcb2' &&
+      github.event.head_commit.message == 'Run explicitly authorized five-role Valoria mission once'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Offline budget and payload checks
+        run: |
+          python3 tools/openai-development-studio/studio.py --self-test
+          python3 tools/openai-development-studio/generate_candidate.py --self-test
+          python3 tools/openai-development-studio/mission.py --self-test
+          python3 -m pip install --disable-pip-version-check Pillow==11.3.0
+      - name: Recover actual frozen mobile evidence and source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          mkdir -p /tmp/studio-source /tmp/studio-evidence
+          gh run download 45638738009 --repo "${{ github.repository }}" --name ciudad-region-recorrido --dir /tmp/studio-source
+          python3 tools/openai-development-studio/prepare_evidence.py /tmp/studio-source /tmp/studio-evidence
+          root=https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944
+          curl --fail --silent --show-error "$root/Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DArchitecturalShadow.cs" -o /tmp/studio-evidence/source.cs
+          curl --fail --silent --show-error "$root/docs/valoria-modular-25d/ART_GROUNDING_RULES.md" -o /tmp/studio-evidence/contract.md
+      - name: Authorized five bounded API calls, no arbitrary tools
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python3 tools/openai-development-studio/mission.py --live --city /tmp/studio-evidence/city.jpg --reference /tmp/studio-evidence/reference.jpg --manifest /tmp/studio-evidence/manifest.json --code /tmp/studio-evidence/source.cs --contract /tmp/studio-evidence/contract.md --out /tmp/studio-result
+      - name: Verify alpha and image bounds
+        run: python3 tools/openai-development-studio/validate_sprite.py /tmp/studio-result
+      - name: Upload bounded evidence, including partial failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-studio-mission-${{ github.run_id }}
+          path: /tmp/studio-result/
+          retention-days: 14
+          if-no-files-found: warn
+  blender:
+    needs: mission
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-studio-mission-${{ github.run_id }}
+          path: /tmp/studio-result
+      - name: Install hosted Blender, independent of owner PC
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq blender
+      - name: Native candidate import and save
+        run: blender -b --python-exit-code 1 --python tools/openai-development-studio/blender_candidate.py -- /tmp/studio-result
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-studio-blender-${{ github.run_id }}
+          path: |
+            /tmp/studio-result/candidate.blend
+            /tmp/studio-result/blender-proof.json
+          retention-days: 14
+          if-no-files-found: error
