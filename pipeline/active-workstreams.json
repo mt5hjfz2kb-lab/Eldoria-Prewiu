@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-25T21:44:55.392Z",
+  "updated_at": "2026-11-25T21:50:39.684Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9644,7 +9644,8 @@
         "Unity/Assets/Eldoria/SendaBrecha/**",
         "pipeline/art-production-requests/eldoria-senda-brecha-lane-event-20261115.json",
         ".github/workflows/senda-brecha-web-visual-qa.yml",
-        ".github/workflows/senda-brecha-native.yml"
+        ".github/workflows/senda-brecha-native.yml",
+        ".github/workflows/senda-brecha-material-proof.yml"
       ],
       "base_main_sha": "b3b94857f89bdbe7905af013ec910d4e3658fecc",
       "reason": "Owner explicitly requests preparing standalone lane-battle event from supplied gameplay video; isolate prototype, do not integrate into current iPhone beta or change gameplay economy/saves.",
@@ -9666,8 +9667,8 @@
         "reason": "Owner explicitly instructed P0 to use idle PC. No Actions runs in progress at transfer; Windows process preflight must independently confirm no Unity/Blender before work."
       },
       "user_authorization": "Owner expressly requests continuation with agents until concept quality; preserve PR195 isolation and existing USD 10 benchmark ceiling.",
-      "current_native_run_id": 45703272784,
-      "current_web_run_id": 45704914735
+      "current_native_run_id": 45707272556,
+      "current_web_run_id": 45707635710
     },
     {
       "id": "eldoria-stylized-direction-proof-20261115",
@@ -21103,7 +21104,7 @@
     "authorized_at": "2026-11-25T21:44:55.392Z",
     "mode": "exclusive_one_workstream_at_a_time",
     "current_workstream": "eldoria-senda-brecha-lane-event-20261115",
-    "current_run_id": null,
+    "current_run_id": 45707272556,
     "next_workstream": null,
     "return_to": null,
     "status": "senda_native_normals_reserved",
