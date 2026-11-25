@@ -42,6 +42,7 @@
 <script type="module">
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {buildGuardArmy,updateGuardArmy} from './guard-art.mjs';
 const $=s=>document.getElementById(s), mobile=/iPhone|Android|Mobile/i.test(navigator.userAgent), TEST=new URL(location.href).searchParams.has('test');
 let renderer,scene,camera,clock=performance.now(),last=performance.now(),delta=0,started=false,paused=false,finished=false,stage=0,stepTime=0,elapsed=0,lane=1,sideX=0,soldiers=22,damage=0,armor=0,score=0,gateUsed=false,battleDone=false,noticeUntil=0,elapsedRender=0;
 const waves=[
@@ -62,7 +63,7 @@ const cylinder=(parent,x,y,z,r,depth,color,metal=0)=>mesh(geom(`cylinder:${r}:${
 const cone=(parent,x,y,z,r,h,color)=>mesh(geom(`cone:${r}:${h}`,()=>new THREE.ConeGeometry(r,h,7)),mat(color),parent,x,y,z);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 let squad=[],foes=[],gates=[],projectiles=[],trees=[],runes=[],foeGroup,laneMarker;
-let canonicalReady=false,canonicalError='',heroMixer=null,heroWalk=null,heroAttack=null,heroRoot=null,heroAnimated=false,heroSkins=0,canonicalPieces=0,canonicalSources=[],canonicalTerrain=0,canonicalFoliage=0,enemyCanonical=false,heroAttackTime=0,heroLastTime=0;const portalFX=[],breachFX=[],banners=[];let roadSurface,earthSurface,enemyRoot=null;
+let canonicalReady=false,canonicalError='',heroMixer=null,heroWalk=null,heroAttack=null,heroRoot=null,heroAnimated=false,heroSkins=0,canonicalPieces=0,canonicalSources=[],canonicalTerrain=0,canonicalFoliage=0,enemyCanonical=false,heroAttackTime=0,heroLastTime=0,guardTriangles=0,authoredGuards=0;let guardRigs=[];const portalFX=[],breachFX=[],banners=[];let roadSurface,earthSurface,enemyRoot=null;
 // Shared geometry/materials, articulated limb pivots and distinct faction silhouette.
 const geoCache=new Map();
 function geom(key,create){if(!geoCache.has(key))geoCache.set(key,create());return geoCache.get(key)}
@@ -201,9 +202,9 @@ async function loadTexture(path){
  const t=await new THREE.TextureLoader().loadAsync(CANON+path);t.colorSpace=THREE.SRGBColorSpace;canonicalSources.push(path);return t;
 }
 async function loadCanonicalAssets(){
- const [hero,tower,wall,gate,spawnling,paving,meadow,...pines]=await Promise.all([
+ const [hero,bastion,ruinA,ruinB,spawnling,paving,meadow,...pines]=await Promise.all([
  fetchModel('Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb','c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b'),
- fetchModel(FAMILY+'Valoria_Tower_CohV1.glb'),fetchModel(FAMILY+'Valoria_WallSegment_CohV1.glb'),fetchModel(FAMILY+'Valoria_MainGate_CohV1.glb'),
+ loadTexture('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i.png'),loadTexture('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/ruin_arch_0.png'),loadTexture('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/ruin_arch_1.png'),
  fetchModel('Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/SpawnlingNear.glb'),
  loadTexture('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/DistrictPaving.jpg'),loadTexture('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/BastionMeadow.jpg'),
  ...[0,1,2].map(i=>loadTexture('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/pine_'+i+'.png'))]);
@@ -211,15 +212,18 @@ async function loadCanonicalAssets(){
  const walk=THREE.AnimationClip.findByName(hero.animations,'Aldric_Walk_v1');
  const attack=THREE.AnimationClip.findByName(hero.animations,'Aldric_SwordAttack_v1');
  if(!walk||!attack)throw Error('Original Aldric clips missing');
+ const derived=await buildGuardArmy(hero.scene,walk,attack,squad,foes,fitModel);guardRigs=derived.rigs;guardTriangles=derived.triangles;authoredGuards=guardRigs.length;
  const unit=squad[0];unit.userData.model.visible=false;
  heroRoot=new THREE.Group();heroRoot.name='Sir Aldric — original approved rig';heroRoot.rotation.y=-Math.PI/2;
  heroRoot.add(fitModel(hero.scene,2.40));unit.add(heroRoot);
  heroMixer=new THREE.AnimationMixer(hero.scene);heroWalk=heroMixer.clipAction(walk);heroAttack=heroMixer.clipAction(attack);
  heroWalk.play();heroAttack.setLoop(THREE.LoopRepeat,Infinity);heroMixer.update(.03);heroAnimated=heroWalk.isRunning();
  // Keep the road playable: actual Valoria's skyline is deliberately outside the lanes.
- mountCanonical(gate.scene,8.5,2.8,41,8.5,Math.PI);
- mountCanonical(tower.scene,12.7,2.8,42,10,Math.PI);
- mountCanonical(wall.scene,5.9,2.8,43,5,Math.PI);
+ function landmark(texture,x,y,z,height){
+  const m=new THREE.SpriteMaterial({map:texture,transparent:true,alphaTest:.13,depthWrite:true,color:0xe8e5dd});
+  const sp=new THREE.Sprite(m);sp.center.set(.5,0);sp.position.set(x,y,z);sp.scale.set(height*texture.image.width/texture.image.height,height,1);scene.add(sp);canonicalPieces++;return sp;
+ }
+ landmark(bastion,8,3.0,56,9.5);landmark(ruinA,-5.8,0,22,3.4);landmark(ruinB,5.8,0,29,3.8);
  // Existing painted Valoria terrain textures on actual continuous ground meshes.
  for(const t of [paving,meadow]){t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=4;}
  paving.repeat.set(2.1,37);meadow.repeat.set(27,31);
@@ -278,7 +282,13 @@ function buildValoriaLandscape(){
  }
 }
 
-function makeScene(){scene=new THREE.Scene();scene.background=new THREE.Color(0x344454);scene.fog=new THREE.FogExp2(0x536476,.012);
+function addAtmosphere(){
+ const sky=new THREE.Mesh(new THREE.SphereGeometry(118,24,16),new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,toneMapped:false,
+ vertexShader:'varying vec3 vDir;void main(){vDir=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+ fragmentShader:'varying vec3 vDir;float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);float a=fract(sin(dot(i,vec2(127.1,311.7)))*43758.5453);float b=fract(sin(dot(i+vec2(1.,0.),vec2(127.1,311.7)))*43758.5453);float c=fract(sin(dot(i+vec2(0.,1.),vec2(127.1,311.7)))*43758.5453);float d=fract(sin(dot(i+vec2(1.,1.),vec2(127.1,311.7)))*43758.5453);return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}void main(){vec3 d=normalize(vDir);float h=clamp(d.y*2.+.15,0.,1.);vec3 c=mix(vec3(.45,.51,.56),vec3(.08,.13,.22),h);vec2 p=d.xz*12./(abs(d.y)+.35);float n=noise(p)*.55+noise(p*2.1)*.3+noise(p*5.)*.15;float cloud=smoothstep(.48,.78,n)*smoothstep(-.02,.25,d.y);c=mix(c,vec3(.18,.20,.29),cloud*.85);float glow=pow(max(dot(d,normalize(vec3(-.29,.18,1.))),0.),25.);c+=vec3(.16,.07,.23)*glow;gl_FragColor=vec4(c,1.);}' }));
+ sky.renderOrder=-100;sky.frustumCulled=false;scene.add(sky);
+}
+function makeScene(){scene=new THREE.Scene();scene.background=new THREE.Color(0x344454);scene.fog=new THREE.FogExp2(0x536476,.011);addAtmosphere();
  camera=new THREE.PerspectiveCamera(46,1,.2,150);camera.position.set(0,7.8,-13.7);camera.lookAt(0,1.5,15);
  const sun=new THREE.DirectionalLight(0xffe3bf,2.8);sun.position.set(-11,20,-8);scene.add(sun);
  const fill=new THREE.HemisphereLight(0xa7c8de,0x39302a,1.4);scene.add(fill);scene.add(new THREE.AmbientLight(0xffe9d0,.38));
@@ -382,16 +392,17 @@ function present(t){
  if(laneMarker){laneMarker.position.x=sideX;laneMarker.material.opacity=.28+.10*Math.sin(t*5)}
  for(let i=0;i<squad.length;i++){
  let u=squad[i],active=i<visibleCount;u.visible=active;if(!active)continue;
- let col=(i-1+4)%4,row=Math.floor((i-1)/4);u.position.set(sideX+(i===0?0:(col-1.5)*.48),0,i===0?3.56:2.65-row*.68);u.rotation.z=0;if(i!==0||!heroRoot)animateUnit(u,t,i)}
+ let col=(i-1+3)%3,row=Math.floor((i-1)/3);u.position.set(sideX+(i===0?0:(col-1)*.60),0,i===0?3.76:2.62-row*.69);u.rotation.z=0;if(!u.userData.guard&&(i!==0||!heroRoot))animateUnit(u,t,i)}
  for(const m of portalFX)m.uniforms.t.value=t;
  for(const p of breachFX){p.rotation.y=.1*t+p.userData.phase;p.position.y=p.userData.y+.12*Math.sin(t*1.3+p.userData.phase)}
  if(heroMixer){const dt=Math.max(0,Math.min(.15,t-heroLastTime));heroLastTime=t;const attack=stepTime>=6.4&&stepTime<9&&!battleDone;if(attack&&heroAttack&&!heroAttack.isRunning()){heroWalk.fadeOut(.12);heroAttack.reset().fadeIn(.12).play()}else if(!attack&&heroAttack&&heroAttack.isRunning()){heroAttack.stop();heroWalk.reset().fadeIn(.12).play()}heroMixer.update(dt);heroAnimated=heroWalk.isRunning()||!!heroAttack?.isRunning();heroAttackTime=heroAttack?.time??0}
  let gatez=30-Math.min(1,stepTime/4.15)*26.6;
  for(let i=0;i<gates.length;i++){let g=gates[i];g.group.visible=!gateUsed;g.group.position.set((1-i)*2.12,0,gatez)}
  let enemiesVisible=stepTime>=6.4&&stepTime<=11;let approach=clamp((stepTime-6.4)/2.6,0,1);
- for(let i=0;i<foes.length;i++){let u=foes[i];u.visible=enemiesVisible&&(!battleDone||i%3===0);u.position.set((i%4-1.5)*.93,Math.sin(t*11+i)*.05-(battleDone?.48:0),17.5+Math.floor(i/4)*1.06-6.5*approach);u.rotation.z=battleDone?1.5:0;if(i===0&&enemyRoot){enemyRoot.rotation.z=battleDone?0:.035*Math.sin(t*8);enemyRoot.position.y=battleDone?0:.03*Math.sin(t*8)}else animateUnit(u,t,i,true,battleDone)}
+ for(let i=0;i<foes.length;i++){let u=foes[i];u.visible=enemiesVisible&&(!battleDone||i%3===0);u.position.set((i%4-1.5)*.93,Math.sin(t*11+i)*.05-(battleDone?.48:0),17.5+Math.floor(i/4)*1.06-6.5*approach);u.rotation.z=battleDone?1.5:0;if(i===0&&enemyRoot){enemyRoot.rotation.z=battleDone?0:.035*Math.sin(t*8);enemyRoot.position.y=battleDone?0:.03*Math.sin(t*8)}else if(!u.userData.guard)animateUnit(u,t,i,true,battleDone)}
  for(let i=0;i<projectiles.length;i++){let sh=projectiles[i];sh.visible=enemiesVisible&&!battleDone;
  if(sh.visible){let pos=(t*11+i*.73)%11;sh.position.set(sideX+(i%3-1)*.43,1.2,4+pos*1.35)}}
+ updateGuardArmy(guardRigs,t,stepTime>=6.4&&stepTime<9&&!battleDone);
  const offset=(t*4.3)%100;
  if(scene.userData.roadMap)scene.userData.roadMap.offset.y=-(t*4.3/148)*48;
  for(let i=0;i<trees.length;i++){let node=trees[i],z=((node.original-offset+100)%100)-9;node.tree.position.z=z}
@@ -405,14 +416,14 @@ function loop(now){requestAnimationFrame(loop);let dt=clamp((now-last)/1000,0,.0
  if(Math.floor(now/150)%7===0)hud()}
 async function init(){try{renderer=new THREE.WebGLRenderer({canvas:$('viewport'),alpha:false,antialias:false,powerPreference:'low-power'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.22;
  makeScene();syncGates();resize();addEventListener('resize',resize);
- $('hudcrest').src='https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944/Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/identity_crest.png';
+ $('hudcrest').src=$('crest').src;
  await loadCanonicalAssets();buildRenderBatches();canonicalReady=true;$('loadingArt').textContent='Sir Aldric y los recursos originales de Valoria cargados';$('play').disabled=false;
  $('play').onclick=start;$('again').onclick=start;$('left').onclick=()=>steer(-1);$('right').onclick=()=>steer(1);
  $('pause').onclick=()=>{if(!started)return;paused=!paused;$('pause').textContent=paused?'▶':'Ⅱ';flash(paused?'PAUSA':'EN MARCHA')};
  let touchX=null;$('viewport').addEventListener('pointerdown',e=>{touchX=e.clientX;$('viewport').setPointerCapture(e.pointerId)});$('viewport').addEventListener('pointerup',e=>{if(touchX!==null&&Math.abs(e.clientX-touchX)>29)steer(e.clientX>touchX?1:-1);touchX=null});$('viewport').addEventListener('pointercancel',()=>touchX=null);
  addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='a')steer(-1);if(e.key==='ArrowRight'||e.key==='d')steer(1);if(e.key===' '&&!started)start()});
  $('viewport').addEventListener('webglcontextlost',e=>{e.preventDefault();$('error').style.display='flex';started=false});
- if(TEST)window.__senda3d={start,steer,setSpeed:v=>{speed=clamp(v,0,8)},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;syncGates();hud()},advance:seconds=>{for(let t=0;t<seconds&&started;t+=.05)priorUpdate(Math.min(.05,seconds-t));present(elapsed);renderFrame()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length,gateLabels:gates.map(g=>[g.type,g.value]),screenLaneX:squad[0].position.clone().project(camera).x,gateScreenX:gates.map(g=>g.group.position.clone().project(camera).x),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,batches:renderBatches.length,canonicalReady,canonicalSources,canonicalPieces,canonicalTerrain,canonicalFoliage,enemyCanonical,heroAttackTime,heroSkins,heroAnimated,heroWalkTime:heroWalk?.time??0,canonicalError})};
+ if(TEST)window.__senda3d={start,steer,setSpeed:v=>{speed=clamp(v,0,8)},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;syncGates();hud()},advance:seconds=>{for(let t=0;t<seconds&&started;t+=.05)priorUpdate(Math.min(.05,seconds-t));present(elapsed);renderFrame()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length,gateLabels:gates.map(g=>[g.type,g.value]),screenLaneX:squad[0].position.clone().project(camera).x,gateScreenX:gates.map(g=>g.group.position.clone().project(camera).x),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,batches:renderBatches.length,canonicalReady,canonicalSources,canonicalPieces,guardTriangles,authoredGuards,canonicalTerrain,canonicalFoliage,enemyCanonical,heroAttackTime,heroSkins,heroAnimated,heroWalkTime:heroWalk?.time??0,canonicalError})};
  hud();requestAnimationFrame(loop);
  }catch(e){canonicalError=String(e);console.error('SENDA_3D_INIT',e);$('error').style.display='flex'}}
 let speed=1;
