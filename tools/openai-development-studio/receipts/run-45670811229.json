@@ -1,0 +1,170 @@
+{
+  "schema": 2,
+  "run_id": 45670811229,
+  "request_id": "valoria-five-roles-45670811229",
+  "source_run": 45638738009,
+  "started_utc": "2026-11-25T18:01:18Z",
+  "finished_utc": "2026-11-25T18:02:44Z",
+  "utc_day": "2026-11-25",
+  "wall_seconds": 86.0,
+  "workflow_status": "failure",
+  "quality_decision": "rejected",
+  "quality_score_before": null,
+  "quality_score_after": null,
+  "quality_evidence_run": 45670811229,
+  "calls_recorded": 5,
+  "calls_with_unknown_cost": 0,
+  "estimated_known_usd": "0.0634030",
+  "estimate_complete": true,
+  "billed_usd": null,
+  "billing_status": "unreconciled",
+  "github_billed_usd": null,
+  "pc_electricity_usd": null,
+  "windows_seconds": null,
+  "manual_review_seconds": null,
+  "tariff": "2026-11-25-standard-short",
+  "calls": [
+    {
+      "role": "director",
+      "model": "gpt-6.1-terra",
+      "usage": {
+        "input_tokens": 1523,
+        "input_tokens_details": {
+          "cache_write_tokens": 1520,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 1520
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 501,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 2024
+      },
+      "utc": "2026-11-25T18:01:45.451147+00:00",
+      "duration_seconds": null,
+      "estimated_usd": "0.004408",
+      "tariff": "2026-11-25-standard-short",
+      "service_tier": "standard",
+      "billed_usd": null,
+      "billing_status": "unreconciled",
+      "state": "completed",
+      "reservation_usd": "0.15"
+    },
+    {
+      "role": "artist",
+      "model": "gpt-image-2.6-flare",
+      "usage": {
+        "input_tokens": 525,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 525
+        },
+        "output_tokens": 824,
+        "output_tokens_details": {
+          "image_tokens": 824,
+          "text_tokens": 0
+        },
+        "total_tokens": 1349
+      },
+      "utc": null,
+      "duration_seconds": null,
+      "estimated_usd": "0.027345",
+      "tariff": "2026-11-25-standard-short",
+      "service_tier": "standard",
+      "billed_usd": null,
+      "billing_status": "unreconciled",
+      "state": "completed",
+      "reservation_usd": "0.75"
+    },
+    {
+      "role": "programmer",
+      "model": "gpt-6.2-sol",
+      "usage": {
+        "input_tokens": 2229,
+        "input_tokens_details": {
+          "cache_write_tokens": 2185,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 2185
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 767,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 2996
+      },
+      "utc": "2026-11-25T18:02:09.541401+00:00",
+      "duration_seconds": null,
+      "estimated_usd": "0.0132205",
+      "tariff": "2026-11-25-standard-short",
+      "service_tier": "standard",
+      "billed_usd": null,
+      "billing_status": "unreconciled",
+      "state": "completed",
+      "reservation_usd": "0.20"
+    },
+    {
+      "role": "auditor",
+      "model": "gpt-6.1-terra",
+      "usage": {
+        "input_tokens": 2511,
+        "input_tokens_details": {
+          "cache_write_tokens": 2508,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 2508
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 984,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 3495
+      },
+      "utc": "2026-11-25T18:02:29.855076+00:00",
+      "duration_seconds": null,
+      "estimated_usd": "0.008058",
+      "tariff": "2026-11-25-standard-short",
+      "service_tier": "standard",
+      "billed_usd": null,
+      "billing_status": "unreconciled",
+      "state": "completed",
+      "reservation_usd": "0.15"
+    },
+    {
+      "role": "coordinator",
+      "model": "gpt-6.2-sol",
+      "usage": {
+        "input_tokens": 2107,
+        "input_tokens_details": {
+          "cache_write_tokens": 2055,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 2055
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 513,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 2620
+      },
+      "utc": "2026-11-25T18:02:38.636733+00:00",
+      "duration_seconds": null,
+      "estimated_usd": "0.0103715",
+      "tariff": "2026-11-25-standard-short",
+      "service_tier": "standard",
+      "billed_usd": null,
+      "billing_status": "unreconciled",
+      "state": "completed",
+      "reservation_usd": "0.20"
+    }
+  ]
+}
