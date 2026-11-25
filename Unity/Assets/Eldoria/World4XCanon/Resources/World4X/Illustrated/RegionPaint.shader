@@ -297,9 +297,12 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // outside the near survey. Work in display pigment before converting once.
   half shoal=saturate(.5+.32*sin(metre.x*.085+metre.y*.062)+.18*(pigment-.5));
   half shelf=lerp(1-smoothstep(.17,.79,district.r),1-smoothstep(.1,3.8+shoal*2.4,shore),local);
-  half3 channel=half3(.122,.267,.296)*(.77+pigment*.30+shoal*.15);
-  half3 shallows=half3(.41,.49,.397)*(.85+pigment*.32);
-  half3 riverColour=lerp(channel,shallows,shelf*.79);
+  // At close range the shallows previously picked up the same olive value
+  // as the meadow. Keep amber sediment at the margin and cool the wet shelf.
+  half3 channel=half3(.105,.286,.335)*(.77+pigment*.30+shoal*.15);
+  half3 shallows=lerp(half3(.35,.47,.42),half3(.25,.49,.50),local)
+                 *(.85+pigment*.32);
+  half3 riverColour=lerp(channel,shallows,shelf*lerp(.79,.66,local));
   half glint=smoothstep(.36,.85,pigment)*lerp(.42,1,close);
   riverColour+=half3(.064,.078,.073)*glint;
   #ifndef UNITY_COLORSPACE_GAMMA
