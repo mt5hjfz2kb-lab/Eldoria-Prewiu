@@ -1,0 +1,42 @@
+name: Eldoria Studio - zero-credit source candidate proof
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths:
+      - '.github/workflows/eldoria-openai-studio-source-proof.yml'
+      - 'tools/openai-development-studio/shader_candidate.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-studio-source-proof-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Validate all offline gates
+        run: |
+          python3 tools/openai-development-studio/studio.py --self-test
+          python3 tools/openai-development-studio/generate_candidate.py --self-test
+          python3 tools/openai-development-studio/mission.py --self-test
+          python3 tools/openai-development-studio/budget_guard.py --self-test
+          python3 tools/openai-development-studio/budget_guard.py
+          python3 tools/openai-development-studio/shader_candidate.py --self-test
+      - name: Reversibly apply reviewed programmer proposal to frozen source copy
+        run: |
+          curl --fail --silent --show-error https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944/Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/DistrictGround.shader -o /tmp/frozen-ground.shader
+          python3 tools/openai-development-studio/shader_candidate.py --source /tmp/frozen-ground.shader --out /tmp/mill-yard-proof
+          cat /tmp/mill-yard-proof/mill-yard.patch
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-studio-shader-proof-${{ github.run_id }}
+          path: /tmp/mill-yard-proof/
+          retention-days: 14
+          if-no-files-found: error
