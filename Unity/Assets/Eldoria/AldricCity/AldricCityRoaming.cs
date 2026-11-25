@@ -19,14 +19,14 @@ namespace Eldoria.AldricCity
     /// </summary>
     public sealed class AldricCityRoaming : MonoBehaviour
     {
-        private const string Asset = "Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb";
+        internal const string Asset = "Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb";
         private const string Idle = "Aldric_Idle_v1";
         private const string Walk = "Aldric_Walk_v1";
         private const float Height = 1.85f;
         private const float Speed = 1.05f;
         private const float Radius = 0.26f;
-        private const int ModelBytes = 10140372;
-        private const string ApprovedSha256 = "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b";
+        internal const int ModelBytes = 10140372;
+        internal const string ApprovedSha256 = "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b";
         // Approved GLB cape is behind -X (front +X). glTFast 4+ mirrors X,
         // so the imported anatomical front is -X: +90 maps it onto travel +Z.
         private const float ModelYawCorrection = 90f;
@@ -332,13 +332,13 @@ namespace Eldoria.AldricCity
                 " first_obstruction=" + (firstBlockingCollider ?? "none"));
         }
 
-        private static string Digest(byte[] data)
+        internal static string Digest(byte[] data)
         {
             using (var sha = SHA256.Create())
                 return BitConverter.ToString(sha.ComputeHash(data)).Replace("-", "").ToLowerInvariant();
         }
 
-        private byte[] PrepareRequiredNormalStreams(byte[] approvedSource)
+        internal static byte[] PrepareRequiredNormalStreams(byte[] approvedSource,out string compatibilitySha)
         {
             // The exact approved source has no NORMAL accessors. glTFast6.14.1
             // rejects its normal-mapped body as Position+Tangent. Add ONLY
@@ -366,10 +366,10 @@ namespace Eldoria.AldricCity
             Put(binHeader, originalBinLength + normals.Length); Put(binHeader+4, 0x004e4942);
             Buffer.BlockCopy(approvedSource, originalBinHeader+8, result, binHeader+8, originalBinLength);
             Buffer.BlockCopy(normals, 0, result, binHeader+8+originalBinLength, normals.Length);
-            ImportedCompatibilitySha256 = Digest(result);
-            if (ImportedCompatibilitySha256 != "d64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b")
+            compatibilitySha = Digest(result);
+            if (compatibilitySha != "d64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b")
                 throw new InvalidOperationException("Transient approved normal import identity differs");
-            Debug.Log("ALDRIC_CITY_ORIGINAL_SOURCE_PLUS_NORMAL_STREAMS " + ImportedCompatibilitySha256);
+            Debug.Log("ALDRIC_CITY_ORIGINAL_SOURCE_PLUS_NORMAL_STREAMS " + compatibilitySha);
             return result;
         }
 
@@ -463,7 +463,8 @@ namespace Eldoria.AldricCity
             importFailure = null;
             ownedImport = new GltfImport(logger: new GLTFast.Logging.ConsoleLogger());
             var settings = new ImportSettings { AnimationMethod = AnimationMethod.Legacy };
-            var compatibleBytes = PrepareRequiredNormalStreams(verifiedBytes);
+            var compatibleBytes = PrepareRequiredNormalStreams(verifiedBytes,out var compatibilitySha);
+            ImportedCompatibilitySha256=compatibilitySha;
             if (!await ownedImport.Load(compatibleBytes, importSettings: settings))
                 return RejectImport("glTFast Load rejected exact approved bytes; see importer log");
             if (!this || !host) return RejectImport("scene owner destroyed after loading");

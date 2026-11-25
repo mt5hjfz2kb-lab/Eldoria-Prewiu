@@ -49,7 +49,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                         heroes.CanOpenHero = id => id=="aldric" || id=="lyra" && heroes.CanOpenDestination();
                         var lyra = roomHost.GetComponent<HeroesLyraModel>() ?? roomHost.gameObject.AddComponent<HeroesLyraModel>();
                         lyra.Loaded = heroes.Refresh;
+                        var aldric = roomHost.gameObject.AddComponent<HeroesAldricModel>();
+                        aldric.Loaded = heroes.Refresh;
                         heroes.ReadModelRoot = id => {
+                            if(id=="aldric") return aldric.Request();
                             if (id!="lyra") return null;
                             lyra.Request(); return lyra.Ready ? lyra.ModelRoot : null;
                         };
