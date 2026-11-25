@@ -21,3 +21,6 @@ source=actual_procedural_geometry_and_animation
 
 lease_revision=8
 revision=CANONICAL_VALORIA_ORIGINAL_ASSETS_20261125
+
+lease_revision=10
+revision=APPROVED_ALDRIC_NORMAL_IMPORT_RECOVERY

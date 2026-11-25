@@ -120,10 +120,12 @@ namespace Eldoria.SendaBrecha.Editor
             game.CanonicalPanel=Canonical<Texture2D>("panel_obsidian.png",Full+"UI/CoronaBrechaPremium/panel_obsidian.png");
             game.CanonicalPines=new Texture2D[3];
             for(int i=0;i<3;i++)game.CanonicalPines[i]=Canonical<Texture2D>("pine_"+i+".png",Full+"pine_"+i+".png");
+            Debug.Log("SENDA_CANONICAL_IMPORT status hero="+(bool)game.CanonicalAldric+" paving="+(bool)game.CanonicalPaving+" meadow="+(bool)game.CanonicalMeadow+" crest="+(bool)game.CanonicalCrest+" panel="+(bool)game.CanonicalPanel);
             if(game.CanonicalAldric){
                 var path=AssetDatabase.GetAssetPath(game.CanonicalAldric);
                 foreach(var clip in AssetDatabase.LoadAllAssetsAtPath(path)){
                     if(clip is AnimationClip a){
+                        Debug.Log("SENDA_CANONICAL_CLIP "+a.name+" duration="+a.length);
                         if(a.name=="Aldric_Walk_v1")game.CanonicalWalk=a;
                         if(a.name=="Aldric_SwordAttack_v1")game.CanonicalAttack=a;
                     }

@@ -45,7 +45,7 @@ jobs:
           w=holders[0]
           assert (w['id']=='eldoria-senda-brecha-lane-event-20261115' and
                   w['owner']=='chatgpt-senda-brecha-ios-unity-20261115' and
-                  w['ownership_state']=='claimed' and w['ownership_revision']==8),'Other workstream owns Windows'
+                  w['ownership_state']=='claimed' and w['ownership_revision']==10),'Other workstream owns Windows'
           assert w['branch']=='feature/senda-brecha-lane-event-20261115'
           current=get('git/ref/heads/feature/senda-brecha-lane-event-20261115')['object']['sha']
           assert current==os.environ['GITHUB_SHA'],'Branch moved after native request'
@@ -58,6 +58,20 @@ jobs:
           python3 tools/senda-brecha/tests/unity_3d_contract.py
           test -f Unity/Assets/Eldoria/SendaBrecha/Editor/SendaBrechaNativeProof.cs
           test -f Unity/Assets/Eldoria/SendaBrecha/SendaBrechaPrototype.cs
+      - name: Prepare exact proven normal-only compatibility asset off PC
+        run: |
+          set -eu
+          raw=https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944
+          mkdir -p /tmp/aldric-original
+          curl -fsSL "$raw/Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb" -o /tmp/aldric-original/source.glb
+          curl -fsSL "$raw/Unity/Assets/Eldoria/AldricCity/Resources/AldricImportNormals/normal-import-scene.json" -o /tmp/aldric-original/scene.json
+          curl -fsSL "$raw/Unity/Assets/Eldoria/AldricCity/Resources/AldricImportNormals/normal-stream.bytes" -o /tmp/aldric-original/normal.bytes
+          python3 tools/senda-brecha/native/prepare_aldric_import.py --source /tmp/aldric-original/source.glb --scene /tmp/aldric-original/scene.json --normals /tmp/aldric-original/normal.bytes --out /tmp/aldric-compatible
+      - uses: actions/upload-artifact@v4
+        with:
+          name: senda-aldric-compatible
+          path: /tmp/aldric-compatible/
+          if-no-files-found: error
   native:
     name: isolated-unity-6000-3-23f1-gpu-proof
     needs: preflight
@@ -108,8 +122,12 @@ jobs:
           $owners=@($doc.active | Where-Object { $_.resources -contains 'windows-runner-heavy' })
           if($owners.Count -ne 1 -or $owners[0].id -ne 'eldoria-senda-brecha-lane-event-20261115' -or
              $owners[0].owner -ne 'chatgpt-senda-brecha-ios-unity-20261115' -or
-             $owners[0].ownership_state -ne 'claimed' -or $owners[0].ownership_revision -ne 8){throw 'Windows lease changed; refusing Unity'}
+             $owners[0].ownership_state -ne 'claimed' -or $owners[0].ownership_revision -ne 10){throw 'Windows lease changed; refusing Unity'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native process active; refusing overlap'}
+      - uses: actions/download-artifact@v4
+        with:
+          name: senda-aldric-compatible
+          path: ${{ runner.temp }}/senda-aldric-compatible-${{ github.run_id }}
       - name: Build disposable Unity project with exact original Valoria assets
         id: mini
         shell: powershell
@@ -148,7 +166,10 @@ jobs:
           }
           $hero=Join-Path $assetRoot 'SirAldric_Approved_RiggedAnimated_v1.glb'
           if((Get-Item $hero).Length -ne 10140372 -or (Get-FileHash $hero -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b'){throw 'Original Aldric digest mismatch'}
-          Write-Host 'SENDA_ORIGINAL_ASSETS_PINNED: 12 exact source files'
+          $compatible=Join-Path $env:RUNNER_TEMP ('senda-aldric-compatible-'+$env:GITHUB_RUN_ID+'/SirAldric_Approved_RiggedAnimated_v1.glb')
+          if((Get-FileHash -LiteralPath $compatible -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'd64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b'){throw 'Normal compatibility bytes mismatch'}
+          Copy-Item -LiteralPath $compatible -Destination $hero -Force
+          Write-Host 'SENDA_ORIGINAL_ASSETS_PINNED: exact original verified, only temporary Aldric import adds proven normals'
 
           "mini=$mini" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           Write-Host 'MINI_PROJECT_CREATED: Only SendaBrecha source and builtin Unity; no current beta/source assets.'
@@ -192,4 +213,15 @@ jobs:
           $directory=(Get-Item -LiteralPath $env:MINI -Force)
           if($directory.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Refuse to clean reparse-point mini project'}
           $library=Join-Path $env:MINI 'Library'
-          if(Test-Path -LiteralPath $library){Remove-Item -LiteralPath $library -Recurse -Force}
+          if(Test-Path -LiteralPath $library){
+            # Long paths in disposable PackageCache require extended Win32 path.
+            $full=[IO.Path]::GetFullPath($library)
+            if(-not $full.StartsWith($directory.FullName+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Library outside owned project'}
+            try {Remove-Item -LiteralPath $library -Recurse -Force -ErrorAction Stop}
+            catch {
+              $long='\\?\'+$full
+              [IO.Directory]::Delete($long,$true)
+            }
+            if(Test-Path -LiteralPath $library){throw 'Owned Library remains'}
+            Write-Host 'SENDA_OWN_LIBRARY_REMOVED'
+          }
