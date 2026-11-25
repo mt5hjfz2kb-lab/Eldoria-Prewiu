@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-25T20:22:30.426Z",
+  "updated_at": "2026-11-25T21:13:10.720Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9630,11 +9630,11 @@
       "title": "La Senda de la Brecha — vertical slice arcade por carriles, sin alterar beta",
       "owner": "chatgpt-senda-brecha-ios-unity-20261115",
       "ownership_state": "claimed",
-      "ownership_revision": 7,
+      "ownership_revision": 8,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "STUDIO_BENCHMARK_WEB_NATIVE_VERIFIED_IPHONE_ART_PENDING",
-      "claimed_at": "2026-11-25T20:15:04.759Z",
+      "phase": "CONCEPT_APPROVED_CANONICAL_ART_RUNTIME",
+      "claimed_at": "2026-11-25T21:13:10.720Z",
       "resources": [],
       "scope": [
         "tools/senda-brecha/**",
@@ -9651,7 +9651,7 @@
       "art_approved": false,
       "physical_iphone_verified": false,
       "previous_owner": "chatgpt-senda-brecha-event-20261115",
-      "write_scope_released": true,
+      "write_scope_released": false,
       "last_handoff_at": "2026-11-25T20:34:52.869Z",
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/195",
       "final_source_sha": "c48a7a7041aea18159696a85851bfc7ff2f77331",
@@ -9663,7 +9663,7 @@
         "to": "eldoria-private-beta-i-v-20261107",
         "reason": "Owner explicitly instructed P0 to use idle PC. No Actions runs in progress at transfer; Windows process preflight must independently confirm no Unity/Blender before work."
       },
-      "user_authorization": "Owner approved PR195 benchmark and up to 10 USD additional API experiment; preserve canonical PR, no merge.",
+      "user_authorization": "Owner approved visual concept and requests actual implementation in PR195; no merge, no new API spend in this pass.",
       "current_native_run_id": 45694055440,
       "current_web_run_id": 45695680165
     },
