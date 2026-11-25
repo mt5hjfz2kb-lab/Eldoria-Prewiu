@@ -33,7 +33,7 @@ namespace Eldoria.UI.RoyalGold.V2
             "ValoriaModular25D/UI/CoronaBrecha/arquera" : "training-archer-isolated-v1";
         static string TrainingGroundArt => RoyalGoldV2Hud.UseCoronaArt ?
             "ValoriaModular25D/UI/CoronaBrecha/wallet_inset" : "training-courtyard-layer-v1";
-        RectTransform trainingContact;
+        RectTransform trainingContact, trainingSceneryWindow;
         Image approvedArcher,approvedTroopRow,trainingEnvironment,marchEnvironment;
         RectTransform marchHeadingSurface,marchTroopSurface,marchSummaryBacking,marchStatusBacking;
         RectTransform marchReferencePreview;
@@ -52,7 +52,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public Action HeroesRequested { get; set; }
         public Func<bool> CanOpenHeroes { get; set; }
         RoyalButton heroesButton;
-        Sprite trainingCardPortrait;
+        Sprite trainingCardPortrait, veteranCardPortrait, veteranArcher, recruitArcher;
         readonly RoyalButton[] trainingTierChoices=new RoyalButton[2];
         readonly RoyalText[] trainingTierLabels=new RoyalText[2];
         readonly Image[] trainingTierPortraits=new Image[2];
@@ -172,6 +172,7 @@ namespace Eldoria.UI.RoyalGold.V2
         void OnDestroy()
         {
             if(trainingCardPortrait)Destroy(trainingCardPortrait);
+            if(veteranCardPortrait)Destroy(veteranCardPortrait);
             if(Hud != null)
             {
                 Hud.SelectionChanged -= OnSelection;
@@ -337,6 +338,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 ? "ValoriaModular25D/UI/CoronaBrecha/patio_de_instruccion" : TrainingGroundArt);
             if(RoyalGoldV2Hud.UseCoronaArt)
                 trainingEnvironment.color=Color.white;
+            trainingSceneryWindow=Rect("Bounds of the training yard",root);
+            trainingSceneryWindow.gameObject.AddComponent<RectMask2D>();
+            trainingSceneryWindow.gameObject.SetActive(false);
             trainingEnvironment.rectTransform.SetAsLastSibling();
             var courtyardFit=trainingEnvironment.gameObject.AddComponent<AspectRatioFitter>();
             courtyardFit.aspectMode=AspectRatioFitter.AspectMode.EnvelopeParent;
@@ -386,15 +390,8 @@ namespace Eldoria.UI.RoyalGold.V2
             unitDetail = Text("Unit profile and composition",left,18,Muted);
             // The troop thumbnails must come from genuine isolated alpha art,
             // not the old archer-row screenshot with baked courtyard pixels.
-            var rosterSource=RoyalGoldV41SourceArt.Get(ArcherArt);
-            if(rosterSource)
-            {
-                var area=rosterSource.rect;
-                trainingCardPortrait=Sprite.Create(rosterSource.texture,
-                    new Rect(area.x+area.width*.12f,area.y+area.height*.61f,
-                        area.width*.76f,area.height*.37f),
-                    new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
-            }
+            recruitArcher=RoyalGoldV41SourceArt.Get(ArcherArt);
+            trainingCardPortrait=CropTrainingPortrait(recruitArcher);
             for(int i=0;i<2;i++)
             {
                 int tier=i+1;
@@ -655,6 +652,15 @@ namespace Eldoria.UI.RoyalGold.V2
             else SetFamilyCount(Mathf.Clamp(requested,0,maxCount));
             Refresh();
         }
+        static Sprite CropTrainingPortrait(Sprite source)
+        {
+            if(!source)return null;
+            var area=source.rect;
+            return Sprite.Create(source.texture,
+                new Rect(area.x+area.width*.12f,area.y+area.height*.61f,
+                    area.width*.76f,area.height*.37f),
+                new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
+        }
         void Refresh()
         {
             if (!IsOpen || gateway == null) return;
@@ -684,6 +690,17 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             if(!tier2Unlocked && selectedTier==2)selectedTier=1;
             if(trainingActive)selectedTier=s.PendingRecruitTier==2?2:1;
+            if(training && RoyalGoldV2Hud.UseCoronaArt)
+            {
+                if(tier2Unlocked && !veteranArcher)
+                {
+                    veteranArcher=RoyalGoldV41SourceArt.Get("ValoriaModular25D/UI/CoronaBrecha/arquera_veterana");
+                    veteranCardPortrait=CropTrainingPortrait(veteranArcher);
+                    trainingTierPortraits[1].sprite=veteranCardPortrait;
+                }
+                approvedArcher.sprite=selectedTier==2 && veteranArcher ? veteranArcher : recruitArcher;
+                if(tier2Unlocked)trainingTierPortraits[1].color=Color.white;
+            }
             int minutes=SpeedMinutes(s);
             tierButton.gameObject.SetActive(trainingActive?s.SpeedupOneMinute>0&&s.SpeedupFiveMinutes>0:tier2Unlocked);
             tierLabel.Put(trainingActive?minutes+" MIN · CAMBIAR":"ARQUEROS T"+selectedTier+" · CAMBIAR");
@@ -1293,13 +1310,17 @@ namespace Eldoria.UI.RoyalGold.V2
                 // The courtyard must share the character's viewport. Fitting it
                 // to the entire tall phone put its floor underneath the order,
                 // leaving the otherwise bottom-aligned character in the sky.
-                trainingEnvironment.rectTransform.SetParent(left,false);
-                // The integrated order geometry above is shared on every
-                // orientation; only the scenic courtyard stays inside LEFT.
+                trainingSceneryWindow.SetParent(left,false);
+                trainingSceneryWindow.anchorMin=Vector2.zero;
+                trainingSceneryWindow.anchorMax=Vector2.one;
+                trainingSceneryWindow.offsetMin=trainingSceneryWindow.offsetMax=Vector2.zero;
+                trainingSceneryWindow.gameObject.SetActive(true);
+                trainingEnvironment.rectTransform.SetParent(trainingSceneryWindow,false);
             }
             else
             {
                 trainingEnvironment.rectTransform.SetParent(root,false);
+                trainingSceneryWindow.gameObject.SetActive(false);
                 trainingEnvironment.rectTransform.SetSiblingIndex(Mathf.Max(0,layoutRoot.GetSiblingIndex()-1));
             }
             // Legacy floating boxes deliberately remain disabled. All
@@ -1307,7 +1328,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Explicit stacking retains live controls above source surfaces.
             approvedArcher.rectTransform.SetAsFirstSibling();
             trainingContact.SetAsFirstSibling();
-            if(!wide)trainingEnvironment.rectTransform.SetAsFirstSibling();
+            if(!wide)trainingSceneryWindow.SetAsFirstSibling();
         }
 
 
@@ -1398,7 +1419,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     float artH=leader?slotHeight-labelH-8f:slotHeight-14f;
                     Place(heroPortraitViewports[i],6f,6f,artW,artH);
                     float aspect=source?source.rect.width/Mathf.Max(1f,source.rect.height):1f;
-                    float portraitWidth=Mathf.Min(artW,artH*aspect);
+                    float portraitWidth=leader?Mathf.Max(artW,artH*aspect):Mathf.Min(artW,artH*aspect);
                     Place(approvedHeroes[i].rectTransform,(artW-portraitWidth)*.5f,
                         (artH-portraitWidth/aspect)*.5f,portraitWidth,portraitWidth/aspect);
                     Place(heroSlotLabels[i].rectTransform,leader?6f:artW+12f,
