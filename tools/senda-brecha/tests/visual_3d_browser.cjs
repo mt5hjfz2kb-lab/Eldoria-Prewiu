@@ -7,7 +7,7 @@ const assert=require('node:assert/strict');
  fs.mkdirSync(directory,{recursive:true});
  const browser=await chromium.launch({headless:true,args:['--enable-webgl','--ignore-gpu-blocklist','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  try {
- const checks=[],errors=[];let materialAB=null;
+ const checks=[],errors=[];let materialAB=null,portalAB=null;
  for(const [name,width,height] of [['iphone',390,844],['small',320,700],['landscape',844,390],['desktop',1280,800]]){
   const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1,hasTouch:true});
   page.on('pageerror',e=>errors.push(name+':'+e.message));
@@ -21,7 +21,7 @@ const assert=require('node:assert/strict');
   await page.getByRole('button',{name:'COMENZAR EXPEDICIÓN'}).click();
   await page.waitForTimeout(900);
   const start=await page.evaluate(()=>window.__senda3d.state());
-  assert.equal(start.canonicalPieces,3);assert.equal(start.canonicalSources.length,10);assert.equal(start.canonicalTerrain,2);assert.ok(start.canonicalFoliage>25);assert.equal(start.enemyCanonical,true);assert.equal(start.authoredGuards,22);assert.equal(start.environmentPolish,true);assert.equal(start.slateMaterialActive,true);assert.ok(start.guardTriangles>1000&&start.guardTriangles<=12000,'Derived armor geometry LOD budget');assert.ok(start.heroSkins>0);assert.ok(start.heroAnimated&&start.heroWalkTime>0,'Actual approved Aldric skin and walk clip must render');
+  assert.equal(start.canonicalPieces,3);assert.equal(start.canonicalSources.length,10);assert.equal(start.canonicalTerrain,2);assert.ok(start.canonicalFoliage>25);assert.equal(start.enemyCanonical,true);assert.equal(start.authoredGuards,22);assert.equal(start.environmentPolish,true);assert.equal(start.slateMaterialActive,true);assert.equal(start.studioPortalsActive,true);assert.equal(start.portalMeshProof.width,2.04);assert.equal(start.portalMeshProof.depth,.42);assert.ok(start.portalMeshProof.meshVertices>100);assert.ok(start.guardTriangles>1000&&start.guardTriangles<=12000,'Derived armor geometry LOD budget');assert.ok(start.heroSkins>0);assert.ok(start.heroAnimated&&start.heroWalkTime>0,'Actual approved Aldric skin and walk clip must render');
   assert.equal(start.started,true);assert.equal(start.soldiers,22);
   await page.locator('#left').click();assert.equal((await page.evaluate(()=>window.__senda3d.state())).lane,0);
   await page.evaluate(()=>window.__senda3d.advance(.6));
@@ -45,6 +45,12 @@ const assert=require('node:assert/strict');
     assert.equal(a.stepTime,b.stepTime);assert.equal(a.lane,b.lane);assert.equal(a.soldiers,b.soldiers);
     await page.screenshot({path:path.join(directory,'material-B-studio.png')});
     materialAB={sameFixture:true,drawCallsOriginal:a.drawCalls,drawCallsStudio:b.drawCalls,source:'pinned Studio material',physicalIphoneTested:false};
+    const old=await page.evaluate(()=>{__senda3d.setStudioPortals(false);return __senda3d.state()});assert.equal(old.studioPortalsActive,false);
+    await page.screenshot({path:path.join(directory,'portal-A-procedural.png')});
+    const revised=await page.evaluate(()=>{__senda3d.setStudioPortals(true);return __senda3d.state()});assert.equal(revised.studioPortalsActive,true);
+    assert.equal(old.stepTime,revised.stepTime);assert.equal(old.soldiers,revised.soldiers);assert.deepEqual(old.gateLabels,revised.gateLabels);assert.deepEqual(old.gateScreenX,revised.gateScreenX);assert.ok(revised.drawCalls<350);
+    await page.screenshot({path:path.join(directory,'portal-B-studio.png')});
+    portalAB={sameFixture:true,oldCalls:old.drawCalls,newCalls:revised.drawCalls,mesh:revised.portalMeshProof,artApproved:false};
   }
   await page.evaluate(()=>{window.__senda3d.setPhase(2,7.2);window.__senda3d.advance(.35)});
   await page.screenshot({path:path.join(directory,name+'-battle.png')});
@@ -110,7 +116,7 @@ const assert=require('node:assert/strict');
   await videoPage.screenshot({path:path.join(sequence,String(frame).padStart(3,'0')+'.png')});
  }
  await videoPage.close();
- const result={renderer:'THREE/WebGL',source:'isolated prototype',notUnity:true,notIphonePhysical:true,checks,errors,materialAB,victoryRouteChecked:true,defeatRouteChecked:true,pauseAndReplayChecked:true};
+ const result={renderer:'THREE/WebGL',source:'isolated prototype',notUnity:true,notIphonePhysical:true,checks,errors,materialAB,portalAB,victoryRouteChecked:true,defeatRouteChecked:true,pauseAndReplayChecked:true};
  fs.writeFileSync(path.join(directory,'report.json'),JSON.stringify(result,null,2));
  assert.equal(errors.length,0,JSON.stringify(errors));
  console.log('SENDA_WEB3D_CHROMIUM_PASS '+JSON.stringify(checks));

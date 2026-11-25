@@ -59,6 +59,7 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {buildGuardArmy,updateGuardArmy,correctArms,equipWeapon,orientWeapon} from './guard-art.mjs';
+import {buildStudioPortals,useStudioPortals} from './portal-art.mjs';
 const $=s=>document.getElementById(s), mobile=/iPhone|Android|Mobile/i.test(navigator.userAgent), TEST=new URL(location.href).searchParams.has('test');
 let renderer,scene,camera,clock=performance.now(),last=performance.now(),delta=0,started=false,paused=false,finished=false,stage=0,stepTime=0,elapsed=0,lane=1,sideX=0,soldiers=22,damage=0,armor=0,score=0,gateUsed=false,battleDone=false,noticeUntil=0,elapsedRender=0;
 const waves=[
@@ -79,7 +80,7 @@ const cylinder=(parent,x,y,z,r,depth,color,metal=0)=>mesh(geom(`cylinder:${r}:${
 const cone=(parent,x,y,z,r,h,color)=>mesh(geom(`cone:${r}:${h}`,()=>new THREE.ConeGeometry(r,h,7)),mat(color),parent,x,y,z);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 let squad=[],foes=[],gates=[],projectiles=[],trees=[],runes=[],foeGroup,laneMarker;
-let canonicalReady=false,canonicalError='',heroMixer=null,heroWalk=null,heroAttack=null,heroRoot=null,heroAnimated=false,heroSkins=0,canonicalPieces=0,canonicalSources=[],canonicalTerrain=0,canonicalFoliage=0,enemyCanonical=false,heroAttackTime=0,heroLastTime=0,guardTriangles=0,authoredGuards=0;let guardRigs=[],heroPose=null;const portalFX=[],breachFX=[],banners=[];const lanternFX=[],mistLayers=[];let environmentPolish=false;let roadSurface,earthSurface,enemyRoot=null;let originalRoadMap=null,slateRoadMap=null,slateMaterialActive=false;
+let canonicalReady=false,canonicalError='',heroMixer=null,heroWalk=null,heroAttack=null,heroRoot=null,heroAnimated=false,heroSkins=0,canonicalPieces=0,canonicalSources=[],canonicalTerrain=0,canonicalFoliage=0,enemyCanonical=false,heroAttackTime=0,heroLastTime=0,guardTriangles=0,authoredGuards=0;let guardRigs=[],heroPose=null;const portalFX=[],breachFX=[],banners=[];const lanternFX=[],mistLayers=[];let environmentPolish=false;let roadSurface,earthSurface,enemyRoot=null;let originalRoadMap=null,slateRoadMap=null,slateMaterialActive=false;let portalMeshProof=null,studioPortalsActive=false;
 // Shared geometry/materials, articulated limb pivots and distinct faction silhouette.
 const geoCache=new Map();
 function geom(key,create){if(!geoCache.has(key))geoCache.set(key,create());return geoCache.get(key)}
@@ -193,7 +194,7 @@ function buildGate(index){const group=new THREE.Group();scene.add(group);
  const aura=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTexture(),color:palette.teal,transparent:true,opacity:.28,depthWrite:false,blending:THREE.AdditiveBlending}));aura.position.set(0,.44,-.25);aura.scale.set(2.4,1.6,1);group.add(aura);
  gates.push({group,panel,label,ring,index,inner,aura});return group;}
 function gateColor(type){return type==='Trap'?palette.trap:type==='Power'?0xc5a057:type==='Ward'?0xa277d3:0x47b7a4}
-function setGate(g,type,value){const color=gateColor(type);g.panel.material.uniforms.tint.value.setHex(color);g.ring.material.color.setHex(color);g.inner.material.color.setHex(color);g.aura.material.color.setHex(color);
+function setGate(g,type,value){const color=gateColor(type);g.panel.material.uniforms.tint.value.setHex(color);g.ring.material.color.setHex(color);g.inner.material.color.setHex(color);g.aura.material.color.setHex(color);if(g.studioTrim)g.studioTrim.material.color.setHex(color);
  g.label.texture.dispose();g.label.m.dispose();g.group.remove(g.label.plane);g.label=gateLabel(g.group,type,value);g.label.plane.position.set(0,1.94,-.37);g.type=type;g.value=value;}
 function syncGates(){for(let i=0;i<gates.length;i++){const [type,value]=waves[stage].gates[i];setGate(gates[i],type,value)}}
 
@@ -276,6 +277,7 @@ async function loadCanonicalAssets(){
  const gateMasonry=new THREE.MeshStandardMaterial({map:stoneDetail,bumpMap:stoneDetail,bumpScale:.022,color:0xa69a87,roughness:.92});
  for(const g of gates)g.group.traverse(o=>{if(o.isMesh&&o.material?.isMeshStandardMaterial&&o.material.metalness<.1)o.material=gateMasonry});
  applyRoadMasonryMaterial(stoneDetail);
+ portalMeshProof=await buildStudioPortals(gates,stoneDetail);useStudioPortals(gates,true);studioPortalsActive=true;
  earthSurface.material.map=meadow;earthSurface.material.needsUpdate=true;canonicalTerrain=2;
  // Same painterly tree artwork used by Valoria's 2.5D district, spatially
  // placed, camera-facing vegetation with real depth and moving world positions.
@@ -531,7 +533,7 @@ async function init(){try{renderer=new THREE.WebGLRenderer({canvas:$('viewport')
  let touchX=null;$('viewport').addEventListener('pointerdown',e=>{touchX=e.clientX;$('viewport').setPointerCapture(e.pointerId)});$('viewport').addEventListener('pointerup',e=>{if(touchX!==null&&Math.abs(e.clientX-touchX)>29)steer(e.clientX>touchX?1:-1);touchX=null});$('viewport').addEventListener('pointercancel',()=>touchX=null);
  addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='a')steer(-1);if(e.key==='ArrowRight'||e.key==='d')steer(1);if(e.key===' '&&!started)start()});
  $('viewport').addEventListener('webglcontextlost',e=>{e.preventDefault();$('error').style.display='flex';started=false});
- if(TEST)window.__senda3d={start,steer,setSlateMaterial:on=>{setSlateMaterial(!!on);present(elapsed);renderFrame()},setSpeed:v=>{speed=clamp(v,0,8)},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;syncGates();hud()},advance:seconds=>{for(let t=0;t<seconds&&started;t+=.05)priorUpdate(Math.min(.05,seconds-t));present(elapsed);renderFrame()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length,gateLabels:gates.map(g=>[g.type,g.value]),screenLaneX:squad[0].position.clone().project(camera).x,gateScreenX:gates.map(g=>g.group.position.clone().project(camera).x),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,batches:renderBatches.length,canonicalReady,environmentPolish,slateMaterialActive,canonicalSources,canonicalPieces,guardTriangles,authoredGuards,canonicalTerrain,canonicalFoliage,enemyCanonical,heroAttackTime,heroSkins,heroAnimated,heroWalkTime:heroWalk?.time??0,canonicalError})};
+ if(TEST)window.__senda3d={start,steer,setStudioPortals:on=>{useStudioPortals(gates,!!on);studioPortalsActive=!!on;present(elapsed);renderFrame()},setSlateMaterial:on=>{setSlateMaterial(!!on);present(elapsed);renderFrame()},setSpeed:v=>{speed=clamp(v,0,8)},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;syncGates();hud()},advance:seconds=>{for(let t=0;t<seconds&&started;t+=.05)priorUpdate(Math.min(.05,seconds-t));present(elapsed);renderFrame()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length,gateLabels:gates.map(g=>[g.type,g.value]),screenLaneX:squad[0].position.clone().project(camera).x,gateScreenX:gates.map(g=>g.group.position.clone().project(camera).x),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,batches:renderBatches.length,canonicalReady,environmentPolish,slateMaterialActive,studioPortalsActive,portalMeshProof,canonicalSources,canonicalPieces,guardTriangles,authoredGuards,canonicalTerrain,canonicalFoliage,enemyCanonical,heroAttackTime,heroSkins,heroAnimated,heroWalkTime:heroWalk?.time??0,canonicalError})};
  hud();requestAnimationFrame(loop);
  }catch(e){canonicalError=String(e);console.error('SENDA_3D_INIT',e);$('error').style.display='flex'}}
 let speed=1;
