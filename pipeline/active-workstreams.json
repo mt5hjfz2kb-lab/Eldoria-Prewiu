@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-25T18:53:38.751Z",
+  "updated_at": "2026-11-25T18:58:32.413Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10167,6 +10167,60 @@
         "evidence": "Pruebas de dominio, persistencia, idempotencia, desbloqueos y pruebas Unity cuando se libere el recurso.",
         "handoff": "PR única draft, SHA, pruebas y pendientes exactos."
       }
+    },
+    {
+      "id": "eldoria-openai-development-studio-20261125",
+      "title": "Eldoria Development Studio — bounded native Unity validation",
+      "owner": "chatgpt-studio-economics-v2-20261125",
+      "ownership_state": "claimed",
+      "ownership_revision": 3,
+      "write_scope_released": false,
+      "branch": "pilot/eldoria-openai-development-studio-20261125",
+      "status": "active",
+      "phase": "ECONOMICS_AND_PRODUCTIVITY_V2",
+      "claimed_at": "2026-11-25T18:58:32.413Z",
+      "base_main_sha": "184294f7c723458c3eef5a294944a043681dab55",
+      "user_authorization": "Owner explicitly requested phase two: economic control, reconciliation, model routing, learning and productivity. No new API spend or Windows required for this phase.",
+      "scope": [
+        "tools/openai-development-studio/**",
+        ".github/workflows/eldoria-openai-*.yml"
+      ],
+      "resources": [],
+      "delivery_definition": {
+        "deliverable": "Versioned cost and productivity receipts, invoice reconciliation importer, role routing, evidence-backed reusable learning, tested report workflow.",
+        "evidence": "Historical real token receipts, replayed accounting, offline automated tests, independent invoice data only when supplied.",
+        "handoff": "No gameplay change. Release Studio ownership after validation."
+      },
+      "art_approved": false,
+      "last_native_failure": {
+        "run_id": 45674341806,
+        "stage": "before Unity",
+        "cause": "Frozen source/candidate file hash mismatch on Windows checkout; scratch cleaned, no Unity launched",
+        "corrected": "Exact Git blob + normalized UTF8 text hash, log raw hashes; explicit native request gate"
+      },
+      "current_native_run_id": 45675919389,
+      "current_native_head": "02b8ea3306c5348ca3c0f56f560ad501c170f52e",
+      "last_hosted_request_proof": 45675138084,
+      "previous_owner": "chatgpt-eldoria-studio-native-20261125",
+      "closed_at": "2026-11-25T18:53:38.751Z",
+      "last_native_run": 45675919389,
+      "last_native_head": "02b8ea3306c5348ca3c0f56f560ad501c170f52e",
+      "native_closeout_run": 45679533675,
+      "delivery_head": "233e87dc8a4e2e4337a2fad5dfedc0a01dd3e0c7",
+      "evidence": {
+        "native_frames": 48,
+        "matched_pairs": 16,
+        "exact_reversals": 16,
+        "native_artifact": 15052239345,
+        "pixel_artifact": 15053108122,
+        "cleanup_artifact": 15051869174,
+        "reusable_api_run": 45676636310,
+        "offline_tests": 44,
+        "estimated_api_total_usd": "0.18984725",
+        "api_billing_verified": false,
+        "art_decision": "Reject candidate: imperceptible visual effect; preserve source. No game changes or publication."
+      },
+      "next": "Reuse Studio via requests/<id>.json on existing pilot branch; reclaim same workstream for future native work. No outstanding pilot tasks."
     }
   ],
   "history": [
