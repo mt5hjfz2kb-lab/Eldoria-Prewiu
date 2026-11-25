@@ -23,6 +23,16 @@ function Assert-Lease {
   if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path -LiteralPath $env:UNITY_EDITOR_PATH)){throw 'Unity editor not available'}
 }
 function Digest([string]$path) { (Get-FileHash -Algorithm SHA256 -LiteralPath $path).Hash.ToLowerInvariant() }
+function TextDigest([string]$path) {
+  # Only CRLF normalization is allowed, matching Python read_text on the certified source.
+  $strict=[Text.UTF8Encoding]::new($false,$true)
+  $s=$strict.GetString([IO.File]::ReadAllBytes($path))
+  $s=$s.Replace(([string][char]13+[string][char]10),[string][char]10)
+  if($s.Contains([string][char]13)){throw 'Unexpected lone CR in shader'}
+  $sha=[Security.Cryptography.SHA256]::Create()
+  try {([BitConverter]::ToString($sha.ComputeHash($strict.GetBytes($s)))).Replace('-','').ToLowerInvariant()}
+  finally {$sha.Dispose()}
+}
 Assert-Lease
 New-Item -ItemType Directory -Path $Output -Force | Out-Null
 if((Get-Item $env:RUNNER_TEMP).PSDrive.Free -lt 7GB){throw 'Insufficient scratch disk; no other files deleted'}
@@ -56,11 +66,14 @@ try {
   if($LASTEXITCODE){throw 'Sparse source setup failed'}
   # Reuse only read-only Git objects from the prior exact-source certified scratch if still present.
   # No source, Library, files or Git refs of the other workstream are edited.
-  $donor=Join-Path $env:RUNNER_TEMP 'eldoria-region-modular-45638738009/.git/objects'
-  if(Test-Path -LiteralPath $donor -PathType Container){
+  $donors=@(Join-Path $env:RUNNER_TEMP 'eldoria-region-modular-45638738009/.git/objects')
+  if($env:GITHUB_WORKSPACE){$donors+=Join-Path $env:GITHUB_WORKSPACE '.git/objects'}
+  $donors=@($donors | Where-Object {Test-Path -LiteralPath $_ -PathType Container} | Select-Object -Unique)
+  if($donors.Count){
     $alt=Join-Path $root '.git/objects/info/alternates'
-    [IO.File]::WriteAllText($alt,($donor -replace '\\','/')+[Environment]::NewLine,[Text.UTF8Encoding]::new($false))
-    Write-Host 'READ_ONLY_GIT_OBJECT_REUSE'
+    $lines=@($donors|ForEach-Object{$_ -replace '\\','/'})
+    [IO.File]::WriteAllLines($alt,[string[]]$lines,[Text.UTF8Encoding]::new($false))
+    Write-Host "READ_ONLY_GIT_OBJECT_REUSE stores=$($donors.Count)"
   }
   git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $source
   if($LASTEXITCODE){throw 'Frozen Git fetch failed'}
@@ -75,9 +88,15 @@ try {
   $base='Assets/Experimentos/ValoriaModular25D'
   $shader=Join-Path $project "$base/Resources/ValoriaModular25D/DistrictGround.shader"
   $candidate=Join-Path $Packet 'DistrictGround.candidate.shader'
-  if((Digest $shader) -ne 'f1010a667125f9da262c9b622c03bd228f77aa49e7ccfe9c9c0402a0920f75e9' -or
-     (Digest $candidate) -ne '4e582b25a420383798e3aa4895d1b71b33158f18de0087165b8055adef068785'){
-    throw 'Frozen source or reviewed candidate hash mismatch'
+  $originalRaw=Digest $shader
+  $originalText=TextDigest $shader
+  $candidateRaw=Digest $candidate
+  $gitBlob=(git -C $root rev-parse ($source+':Unity/'+$base+'/Resources/ValoriaModular25D/DistrictGround.shader')).Trim()
+  Write-Host "STUDIO_SHADER_DIGESTS git=$gitBlob originalRaw=$originalRaw originalText=$originalText candidateRaw=$candidateRaw"
+  if($gitBlob -ne 'f172c8cdedf59957a61e35106e6957b582c6e3fb' -or
+     $originalText -ne 'f1010a667125f9da262c9b622c03bd228f77aa49e7ccfe9c9c0402a0920f75e9' -or
+     $candidateRaw -ne '4e582b25a420383798e3aa4895d1b71b33158f18de0087165b8055adef068785'){
+    throw 'Frozen source blob, normalized original or reviewed candidate hash mismatch'
   }
   $cs=[IO.File]::ReadAllText($candidate)
   $old='Shader "Eldoria/Valoria/District ground"'
@@ -112,7 +131,7 @@ try {
   Copy-Item -LiteralPath (Join-Path $Packet 'EldoriaStudioNativeAB.cs') -Destination (Join-Path $project "$base/Editor/EldoriaStudioNativeAB.cs")
   $diff=@(git -C $root diff --name-only)
   if($diff.Count -ne 1 -or $diff[0] -ne "Unity/$base/Scripts/Modular25DGround.cs"){throw ('Unexpected scratch changes: '+($diff -join ','))}
-  [ordered]@{frozen_sha=$source;original_shader_sha256=(Digest $shader);reviewed_shader_sha256=(Digest $candidate);
+  [ordered]@{frozen_sha=$source;original_shader_raw_sha256=$originalRaw;original_shader_sha256=$originalText;original_shader_git_blob=$gitBlob;reviewed_shader_sha256=(Digest $candidate);
     renamed_shader_sha256=(Digest $newShader);only_tracked_change=$diff[0];pilot_sha=$env:GITHUB_SHA;no_game_save=$true} |
     ConvertTo-Json | Set-Content -LiteralPath (Join-Path $Output 'provenance.json') -Encoding utf8
   Assert-Lease
@@ -132,7 +151,7 @@ try {
   if($e.sourceSha -ne $source -or $e.sourceFrames -ne 48 -or $e.engineVersion -ne '6000.3.23f1' -or
      -not $e.nativeWorldRender -or $e.artApproved -ne 'NO'){throw 'Incomplete native result'}
   foreach($f in $e.frames){if((Digest (Join-Path $Output $f.file)) -ne $f.sha256){throw 'Capture hash mismatch'}}
-  if((Digest $shader) -ne 'f1010a667125f9da262c9b622c03bd228f77aa49e7ccfe9c9c0402a0920f75e9'){throw 'Original shader changed'}
+  if((Digest $shader) -ne $originalRaw){throw 'Original shader changed'}
   $cleanExit=$true
   Write-Host 'STUDIO_NATIVE_AB_48_FRAME_VERIFIED'
 } finally {
