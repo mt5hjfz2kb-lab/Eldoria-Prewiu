@@ -61,3 +61,9 @@ El director define criterios y restricciones; el artista produce solo candidatos
 4. Comparar contra referencia y decidir si la modificación realmente mejora Valoria. No promover si falta evidencia. Solo después plantear integración de las herramientas vía PR canónica y nuevos casos de uso.
 
 Fuentes de precios: https://developers.openai.com/api/docs/models y https://developers.openai.com/api/docs/guides/prompt-caching. Las cifras de uso proceden de los recibos API reales, estimación estándar con caché; no de la facturación.
+
+### Verificación Blender concluida
+
+[Job Blender 139408114576, run 45671428903](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45671428903/job/139408114576) terminó correctamente: Blender 5.0.1 guardó un .blend de 889.075 bytes con imagen 997×500 empaquetada; artefacto 15049747863. Importación de referencia en plano con material RGBA, no generación de malla 3D de producción ni prueba de Unity. El archivo conserva un nombre de objeto heredado de la primera misión (Lantern); la fuente del adaptador ya se corrigió a Material_Reference. El contenido real es el suelo candidato, no una linterna. No se promueve.
+
+El único gate nativo no ejecutado es Unity (reserva exclusiva de otro workstream confirmada en main, blob 96d9c0cd0dae1e79e4c9037f71926c438287e323). No se ha reclamado ni interrumpido Windows. Todos los disparadores de gasto de las misiones cerradas permanecen desactivados.
