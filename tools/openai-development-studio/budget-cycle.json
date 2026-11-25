@@ -17,9 +17,18 @@
     {
       "id": "valoria-five-roles-45670811229",
       "reserve_usd": "1.45",
-      "status": "authorized_once",
+      "status": "executed",
       "run_id": 45670811229,
-      "estimated_usd": null
+      "estimated_usd": "0.063403",
+      "quality_result": "Rejected: target drift; alpha gate corrected; no integration"
+    },
+    {
+      "id": "valoria-mill-yard-v2",
+      "reserve_usd": "1.45",
+      "status": "authorized_once",
+      "run_id": "MILL_YARD_V2_ONCE",
+      "estimated_usd": null,
+      "reason": "One explicitly bounded corrective cycle; fixed parent and message, run attempt one only"
     }
   ],
   "policy": {
