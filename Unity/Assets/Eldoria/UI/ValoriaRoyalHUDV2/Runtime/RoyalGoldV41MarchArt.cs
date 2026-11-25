@@ -3,6 +3,38 @@ using UnityEngine.UI;
 
 namespace Eldoria.UI.RoyalGold.V2
 {
+    // One feathered patch of courtyard shadow, projected screen-right
+    // from the boots to match the painted light on the upper-left wall.
+    internal sealed class TrainingGroundContact : MaskableGraphic
+    {
+        protected override void OnPopulateMesh(VertexHelper mesh)
+        {
+            mesh.Clear();
+            Rect r=GetPixelAdjustedRect();
+            const int segments=24;
+            Vector2 origin=r.center-new Vector2(r.width*.16f,0f);
+            mesh.AddVert(origin,new Color32(43,32,28,101),Vector2.zero);
+            for(int ring=1;ring<=2;ring++)
+            {
+                float radius=ring==1?.48f:1f;
+                Color32 shade=new Color32(43,32,28,(byte)(ring==1?54:0));
+                for(int n=0;n<segments;n++)
+                {
+                    float angle=2f*Mathf.PI*n/segments;
+                    Vector2 edge=r.center+new Vector2(r.width*.5f*Mathf.Cos(angle),r.height*.5f*Mathf.Sin(angle));
+                    mesh.AddVert(Vector2.Lerp(origin,edge,radius),shade,Vector2.zero);
+                }
+            }
+            for(int n=0;n<segments;n++)
+            {
+                int a=1+n,b=1+(n+1)%segments;
+                mesh.AddTriangle(0,a,b);
+                mesh.AddTriangle(a,a+segments,b+segments);
+                mesh.AddTriangle(a,b+segments,b);
+            }
+        }
+    }
+
     /// <summary>
     /// Decorative, non-interactive layers for the canonical march preparation.
     /// Uses the existing approved Eldoria frame atlas and native uGUI geometry.
@@ -60,7 +92,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var identity=Layer("March art / real-name enamel ribbon",card,
                 new Color(.029f,.045f,.062f,.85f));
             identity.rectTransform.anchorMin=new Vector2(.035f,.02f);
-            identity.rectTransform.anchorMax=new Vector2(.965f,.39f);
+            identity.rectTransform.anchorMax=new Vector2(.965f,RoyalGoldV2Hud.UseCoronaArt?.245f:.39f);
             identity.rectTransform.offsetMin=identity.rectTransform.offsetMax=Vector2.zero;
             identity.transform.SetSiblingIndex(name.transform.GetSiblingIndex());
 

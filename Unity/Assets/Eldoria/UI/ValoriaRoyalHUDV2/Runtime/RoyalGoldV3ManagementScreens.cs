@@ -33,6 +33,7 @@ namespace Eldoria.UI.RoyalGold.V2
             "ValoriaModular25D/UI/CoronaBrecha/arquera" : "training-archer-isolated-v1";
         static string TrainingGroundArt => RoyalGoldV2Hud.UseCoronaArt ?
             "ValoriaModular25D/UI/CoronaBrecha/wallet_inset" : "training-courtyard-layer-v1";
+        RectTransform trainingContact;
         Image approvedArcher,approvedTroopRow,trainingEnvironment,marchEnvironment;
         RectTransform marchHeadingSurface,marchTroopSurface,marchSummaryBacking,marchStatusBacking;
         RectTransform marchReferencePreview;
@@ -568,6 +569,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 label.alignment=TextAnchor.MiddleCenter;
                 marchMetricValues[i]=label;
             }
+            trainingContact=Rect("Courtyard contact at the archer's boots",left);
+            trainingContact.gameObject.AddComponent<TrainingGroundContact>().raycastTarget=false;
             approvedArcher=RoyalGoldV41SourceArt.Surface(left,ArcherArt);
             approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
             approvedTroopRow=RoyalGoldV41SourceArt.Surface(left,"archer-row");
@@ -659,6 +662,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(s.BastionLevel<2 || s.BarracksLevel<1){Close();return;}
             bool training=CurrentDestination==Destination.Training;
             approvedArcher.gameObject.SetActive(training);
+            trainingContact.gameObject.SetActive(training && RoyalGoldV2Hud.UseCoronaArt);
             bool trainingActive=training && s.RecruitmentCompletesUtcTicks>0;
             bool tier2Unlocked=s.BarracksLevel>=4 && (training || s.Available.ArcherT2>0);
             for(int i=0;i<2;i++)
@@ -1203,6 +1207,9 @@ namespace Eldoria.UI.RoyalGold.V2
             float archerH=Mathf.Min(artH-floorMargin, (wide?width*.51f:width*.65f)*1.5f);
             float archerW=archerH/1.5f;
             Place(approvedArcher.rectTransform,width*(wide?.10f:.09f),artH-archerH-floorMargin,archerW,archerH);
+            float feetX=width*(wide?.10f:.09f)+archerW*.53f;
+            float feetY=artH-floorMargin-archerH*.025f;
+            Place(trainingContact,feetX-archerW*.29f,feetY-archerH*.015f,archerW*.79f,archerH*.038f);
             float rosterW=wide?Mathf.Clamp(width*.15f,156f,180f):184f;
             float rosterH=wide?Mathf.Min(155f,artH*.30f):164f;
             bool sideRoster=RoyalGoldV2Hud.UseCoronaArt && !wide;
@@ -1233,7 +1240,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float titleY=wide?bodyY+11f:artH*.045f;
             float titleHeight=wide?45f:52f;
             float detailY=titleY+titleHeight+5f;
-            float detailHeight=wide?(compactLandscape?91f:91f):104f;
+            float detailHeight=wide?91f:64f;
             Place(unitTitle.rectTransform,titleX,titleY,titleW,titleHeight);
             Place(unitDetail.rectTransform,titleX,detailY,titleW,detailHeight);
             Place(trainingIdentityCard,titleX-11f,titleY-10f,
@@ -1299,6 +1306,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // material is owned by the one continuous order board.
             // Explicit stacking retains live controls above source surfaces.
             approvedArcher.rectTransform.SetAsFirstSibling();
+            trainingContact.SetAsFirstSibling();
             if(!wide)trainingEnvironment.rectTransform.SetAsFirstSibling();
         }
 
@@ -1394,10 +1402,10 @@ namespace Eldoria.UI.RoyalGold.V2
                         Mathf.Clamp(cardHeight*.24f,55f,78f);
                     float apH=cardHeight-nameH-12f,apW=cardW-12f;
                     Place(heroPortraitViewports[i],6f,5f,apW,apH);
-                    float imgW=RoyalGoldV2Hud.UseCoronaArt && !wide ? Mathf.Max(apW,apH*ratio) : Mathf.Min(apW-8f,apH*ratio);
+                    float imgW=RoyalGoldV2Hud.UseCoronaArt && !wide ? Mathf.Min(apW*1.17f,apH*ratio) : Mathf.Min(apW-8f,apH*ratio);
                     float imgH=imgW/Mathf.Max(.1f,ratio);
                     Place(approvedHeroes[i].rectTransform,(apW-imgW)*.5f,
-                        (apH-imgH)*.5f,imgW,imgH);
+                        (apH-imgH)*(wide?.5f:.25f),imgW,imgH);
                     Place(heroSlotLabels[i].rectTransform,6f,apH+7f,
                         cardW-12f,nameH);
                     heroSlotLabels[i].fontSize=wide?20:27;
@@ -1415,7 +1423,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 lw-38f,wide?34f:43f);
             marchTroopChapter.fontSize=wide?22:29;
             marchTroopChapter.gameObject.SetActive(true);
-            float troopPicW=wide?lw*.25f:lw*.23f;
+            float troopPicW=wide?lw*.25f:lw*.30f;
             float picY=troopTop+(wide?46f:53f);
             float picH=Mathf.Max(55f,troopH-(wide?54f:62f));
             Place(approvedTroopRow.rectTransform,13f,picY,troopPicW,picH);
