@@ -21,7 +21,7 @@ const assert=require('node:assert/strict');
   await page.getByRole('button',{name:'COMENZAR EXPEDICIÓN'}).click();
   await page.waitForTimeout(900);
   const start=await page.evaluate(()=>window.__senda3d.state());
-  assert.equal(start.canonicalPieces,3);assert.equal(start.canonicalSources.length,10);assert.equal(start.canonicalTerrain,2);assert.ok(start.canonicalFoliage>25);assert.equal(start.enemyCanonical,true);assert.equal(start.authoredGuards,22);assert.ok(start.guardTriangles>1000&&start.guardTriangles<=12000,'Derived armor geometry LOD budget');assert.ok(start.heroSkins>0);assert.ok(start.heroAnimated&&start.heroWalkTime>0,'Actual approved Aldric skin and walk clip must render');
+  assert.equal(start.canonicalPieces,3);assert.equal(start.canonicalSources.length,10);assert.equal(start.canonicalTerrain,2);assert.ok(start.canonicalFoliage>25);assert.equal(start.enemyCanonical,true);assert.equal(start.authoredGuards,22);assert.equal(start.environmentPolish,true);assert.ok(start.guardTriangles>1000&&start.guardTriangles<=12000,'Derived armor geometry LOD budget');assert.ok(start.heroSkins>0);assert.ok(start.heroAnimated&&start.heroWalkTime>0,'Actual approved Aldric skin and walk clip must render');
   assert.equal(start.started,true);assert.equal(start.soldiers,22);
   await page.locator('#left').click();assert.equal((await page.evaluate(()=>window.__senda3d.state())).lane,0);
   await page.evaluate(()=>window.__senda3d.advance(.6));

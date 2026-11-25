@@ -68,10 +68,10 @@ export async function buildGuardArmy(source,walk,attack,squad,foes,fit){
  const rigs=[];
  for(const hostile of [false,true]){
   const blueprint=cloneSkinned(base);
-  blueprint.traverse(o=>{if(o.isSkinnedMesh&&o.visible){o.material=o.material.clone();o.material.color.multiply(new THREE.Color(hostile?0x97574c:0xaebfcd));if(o.name.includes('Cape_Main'))o.material.color.set(hostile?0x6b3330:0x214e68)}});
+  blueprint.traverse(o=>{if(o.isSkinnedMesh&&o.visible){o.material=o.material.clone();o.material.color.multiply(new THREE.Color(hostile?0xb68578:0xd5e2eb));o.material.metalness=Math.min(o.material.metalness,.30);o.material.roughness=.67;if(o.name.includes('Cape_Main'))o.material.color.set(hostile?0x6b3330:0x214e68)}});
   const head=blueprint.getObjectByName('Eldoria_Aldric_head'),chest=blueprint.getObjectByName('Eldoria_Aldric_chest');
   if(!head||!chest)throw Error('Guard rig bones absent');helm(head,hostile);shield(chest,hostile);equipWeapon(blueprint,false);
-  fit(blueprint,hostile?1.78:1.86);
+  fit(blueprint,hostile?1.91:2.02);
   const units=hostile?foes:squad;
   for(let i=1;i<units.length;i++){
    const u=units[i];u.remove(u.userData.model);
