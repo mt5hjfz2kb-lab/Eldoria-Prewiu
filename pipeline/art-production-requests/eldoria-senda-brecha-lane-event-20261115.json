@@ -6,7 +6,7 @@
   "workstream_id": "eldoria-senda-brecha-lane-event-20261115",
   "asset_or_sector": "La Senda de la Brecha — independent mobile lane-battle 3D scene and original Valoria visual language",
   "profile": "environment_composition",
-  "visual_gate_state": "OWNER_APPROVED_MECHANICS_STUDIO_ART_CANDIDATE_WEB_NATIVE_TESTED_IPHONE_ART_PENDING",
+  "visual_gate_state": "STUDIO_MATERIAL_INTEGRATED_WEB_PASS_NATIVE_ALDRIC_IMPORT_RECOVERED_VISUAL_PARITY_PENDING",
   "ai_authorship_policy": "required",
   "diagnosis": "Owner confirmed 2.5D video displays the intended continuous lane mechanics, but original web demo is procedurally drawn and not native Unity. Create a separate procedural 3D Unity prototype; evaluate real native mobile-aspect captures against video for player legibility and compositional quality. The existing Valoria beta cannot be modified while world iPhone restart P0 remains open.",
   "geometry_gap_proven": false,
@@ -16,7 +16,7 @@
     "authorized_credit_cost": 10,
     "currency": "USD",
     "scope": "additional Studio API benchmark for PR195 only",
-    "estimated_api_cost_usd": 0.09172975,
+    "estimated_api_cost_usd": 0.17544025,
     "invoice_verified": false
   },
   "capabilities": {
@@ -24,7 +24,7 @@
     "unity_native_urp": true,
     "procedural_3d_geometry_provisional": true,
     "original_2d_graphic_design": true,
-    "existing_3d_assets_modified": false,
+    "existing_3d_assets_modified": true,
     "zero_paid_assets": false
   },
   "artist": {
@@ -39,7 +39,7 @@
   "art_approved": false,
   "physical_mobile_tested": false,
   "budget_eur": 0,
-  "notes": "Original generated crest included in WebGL candidate, not a mesh. Native proof uses isolated Built-in pipeline, not integrated URP. No art approval or physical iPhone acceptance. API estimate includes one failed and five successful requests; actual invoice unverified.",
+  "notes": "Original Valoria artwork and Aldric-derived guards in WebGL. Studio-produced seamless slate material verified in actual roadway A/B. Native Built-in proof of prior source recovered with normal-only compatibility asset; latest WebGL composition not yet ported/validated in Unity. No art approval, physical iPhone, or beta promotion. PR195 estimated API total includes failed request; invoice unverified.",
   "studio_benchmark": {
     "runs": [
       45693242088,
@@ -59,6 +59,30 @@
     "native_candidate_pass": true,
     "native_candidate_artifact": 15061830494,
     "native_render_pipeline": "Built-in",
-    "native_frames": 9
+    "native_frames": 9,
+    "latest_polish": {
+      "agent_run": 45707395248,
+      "receipt_archive_run": 45708553234,
+      "material_transfer_run": 45708122329,
+      "environment_run": 45707635710,
+      "web_pass": 45708451082,
+      "web_artifact": 15065569301,
+      "web_source": "ebac2a7c3219dc02d1a28cd3dcd504e7fa3d486b",
+      "web_mobile_draw_calls": 252,
+      "material_ab_draw_calls": [
+        243,
+        243
+      ],
+      "native_recovered_run": 45707272556,
+      "native_artifact": 15065599228,
+      "native_source": "3a8445cf3d527bdc193fb09977f123c4c4fd2114",
+      "native_aldric_skinned_meshes": 10,
+      "native_frames": 9,
+      "native_web_visual_parity": false,
+      "estimated_incremental_usd": 0.0837105,
+      "estimated_total_usd": 0.17544025,
+      "art_approved": false,
+      "physical_iphone_tested": false
+    }
   }
 }
