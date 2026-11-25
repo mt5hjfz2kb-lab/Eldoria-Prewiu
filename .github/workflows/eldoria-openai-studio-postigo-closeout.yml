@@ -3,7 +3,7 @@ on:
   push:
     branches: [pilot/eldoria-openai-development-studio-20261125]
     paths:
-      - 'tools/openai-development-studio/postigo-closeout/45685929688.json'
+      - 'tools/openai-development-studio/postigo-closeout/45685929688-retry.json'
 permissions:
   contents: read
   actions: read
@@ -57,6 +57,12 @@ jobs:
       cancel-in-progress: false
     timeout-minutes: 10
     steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: studio-postigo-native
+          path: ${{ runner.temp }}/postigo-verified-archive-${{ github.run_id }}
+          run-id: 45685929688
+          github-token: ${{ github.token }}
       - name: Remove only the exact owned Postigo scratch after safe exit
         env:
           GH_TOKEN: ${{ github.token }}
@@ -75,7 +81,7 @@ jobs:
           if($run.status -ne 'completed' -or $run.head_sha -ne '630052347439c62b044fa63e22e60bee17a523b0'){throw 'Original run not finished'}
           if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){throw 'Native process still active; do not delete'}
           $root=Join-Path $env:RUNNER_TEMP 'eldoria-studio-postigo-45685929688'
-          $proofRoot=Join-Path $env:RUNNER_TEMP 'eldoria-postigo-evidence-45685929688'
+          $proofRoot=Join-Path $env:RUNNER_TEMP ('postigo-verified-archive-'+$env:GITHUB_RUN_ID)
           $prov=Get-Content -LiteralPath (Join-Path $proofRoot 'provenance.json') -Raw | ConvertFrom-Json
           if($prov.frozen_sha -ne '5ef2aee67cf8fde57ba2fc4b3d929b517ee67944' -or $prov.pilot_sha -ne $run.head_sha){throw 'Owned scratch provenance missing'}
           $sourceHash=$null
