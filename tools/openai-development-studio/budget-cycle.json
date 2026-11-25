@@ -25,10 +25,12 @@
     {
       "id": "valoria-mill-yard-v2",
       "reserve_usd": "1.45",
-      "status": "authorized_once",
-      "run_id": "MILL_YARD_V2_ONCE",
-      "estimated_usd": null,
-      "reason": "One explicitly bounded corrective cycle; fixed parent and message, run attempt one only"
+      "status": "executed",
+      "run_id": 45671428903,
+      "estimated_usd": "0.092618",
+      "reason": "One explicitly bounded corrective cycle; fixed parent and message, run attempt one only",
+      "event_nonce": "MILL_YARD_V2_ONCE",
+      "quality_result": "All five calls and PNG gate passed; visual auditor rejected global material footprint, allowed color/grain reference only; shader candidate conditional."
     }
   ],
   "policy": {
@@ -36,6 +38,8 @@
     "allow_unbounded_tools": false,
     "remaining_requires_review": true,
     "api_invoice_verified": false,
-    "scope": "This repository pilot only; not a global OpenAI hard limit. Reservations cannot be reclaimed on timeout without billing reconciliation."
+    "scope": "This repository pilot only; not a global OpenAI hard limit. Reservations cannot be reclaimed on timeout without billing reconciliation.",
+    "estimated_total_usd": "0.156028",
+    "actual_invoice_verified": false
   }
 }
