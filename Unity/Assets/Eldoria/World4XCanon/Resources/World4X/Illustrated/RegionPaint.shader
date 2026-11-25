@@ -171,7 +171,12 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // Silt accumulates on the broad inside bends and breaks up the waterline
   // at grass-tuft scale. The signed river field remains the channel centre.
   float bankBend=sin(metre.y*.069+sin(metre.x*.041))*.86+sin(metre.x*.151+metre.y*.092)*.39;
-  shore+=bankBend*(1-smoothstep(2.4,5.6,abs(shore)));
+  // Narrow stony runs alternate with broader pools along the same channel.
+  // Keep the crossing aligned with its mapped road and retain the centreline.
+  float bankRun=sin(metre.x*.065+metre.y*.043+1.57*sin(metre.y*.029));
+  float pool=bankRun*(1.72+.41*cos(metre.x*.021));
+  float bridgeClearance=1-smoothstep(.03,.43,features.g);
+  shore+=(bankBend*.55+pool*bridgeClearance)*(1-smoothstep(3.0,5.9,abs(shore)));
   float aa=clamp(fwidth(shore),.32,1.4);
   // Real near-camera captures showed an abrupt, hard teal cut against the
   // approved Valoria grass near the canonical bridge. Blend over the EXISTING
@@ -193,7 +198,11 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half valley=smoothstep(.035,.48,district.r)*(1-mask.r);
   float2 standBend=float2(sin(metre.y*.032+sin(metre.x*.019)),cos(metre.x*.028+metre.y*.011));
   half forestCover=SAMPLE_TEXTURE2D_LOD(_Weights,sampler_Weights,saturate(i.uv+standBend*float2(.009,.004)),2).a;
-  half canopy=smoothstep(.08,.65,lerp(district.a,forestCover,.62));
+  // Feather the pigment beyond the stand with cover sampled across the
+  // slope. Individual trees never acquire an isolated circular ground stamp.
+  half outwardCover=SAMPLE_TEXTURE2D_LOD(_Weights,sampler_Weights,
+      saturate(i.uv-standBend*float2(.013,.007)),3).a;
+  half canopy=smoothstep(.05,.76,district.a*.24+forestCover*.46+outwardCover*.30);
   float reliefHeight=i.world.y-GetObjectToWorldMatrix()._m13;
   half upland=smoothstep(18,76,reliefHeight);
   // Sunlit clearings and cooler drainage hollows follow the continuous land cover.
@@ -232,8 +241,10 @@ Shader "Eldoria/Region1/Illustrated ground" {
   grass=lerp(grass,woodlandSoil,innerStand*.42);
   // Straw-coloured high grasses share the original brush grain. Combine
   // a broad site exposure with the existing hill and drainage measurements.
-  half exposure=saturate(.49+.24*sin(metre.x*.021+1.6*sin(metre.y*.015))
-                   +.18*cos(metre.y*.037-metre.x*.012)+.13*upland-.29*valley);
+  half pastureGrain=dot(meadowRange-meadowGlade,half3(.24,.57,.19));
+  half exposure=saturate(.47+.17*sin(metre.x*.021+2.3*sin(metre.y*.015))
+                   +.13*cos(metre.y*.031-metre.x*.012+standBend.x*1.35)
+                   +.72*pastureGrain+.13*upland-.32*valley);
   half dryField=smoothstep(.34,.77,exposure)*(1-canopy*.82)*(1-mask.r);
   half3 dryPigment=lerp(grass*half3(1.20,1.04,.74),sharedEarth*half3(1.14,1.05,.79),.32);
   grass=lerp(grass,dryPigment,dryField*.79);
