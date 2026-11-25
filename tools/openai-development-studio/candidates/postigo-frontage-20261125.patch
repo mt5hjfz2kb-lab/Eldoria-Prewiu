@@ -1,0 +1,43 @@
+--- a/Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DLandscape.cs
++++ b/Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DLandscape.cs
+@@ -220,7 +220,7 @@
+             return tex;
+         }
+ 
+-        public GameObject AddRoad(string name,Vector2[] control,float width,Material material,bool cobbled)
++        public GameObject AddRoad(string name,Vector2[] control,float width,Material material,bool cobbled,int postigoTreatment=2)
+         {
+             const int Steps=8,Across=9;
+             int samples=(control.Length-1)*Steps+1;
+@@ -261,6 +261,19 @@
+                     // after its redundant access branch was removed. Fade the
+                     // paint longitudinally instead; route points stay exact.
+                     float offset=(u-.5f)*width*wav;
++                    // Local frontage contact, not a new road or independent decal.
++                    if(postigoTreatment==2 && name=="Calle del Postigo")
++                    {
++                        var plan=ValoriaUrbanPlan.City;
++                        Vector2 rel=spine[i]-plan.PostigoLane(0);
++                        float station=rel.x/ValoriaUrbanPlan.PostigoAxis.x;
++                        float cross=rel.y-ValoriaUrbanPlan.PostigoAxis.y*station;
++                        float frontage=(1f-Sm(1.65f,2.65f,Mathf.Abs(station)))*
++                            (1f-Sm(.25f,.65f,Mathf.Abs(cross)));
++                        float side=(u-.5f)*2f;
++                        float extension=side*normal.y>=0f?.55f:.20f;
++                        offset+=side*extension*frontage;
++                    }
+                     int index=i*Across+j;
+                     Vector2 p=spine[i]+normal*offset;
+                     vtx[index]=new Vector3(p.x,p.y,-.075f);
+@@ -278,7 +291,10 @@
+                     float alpha=Mathf.Clamp01(feather*ink);
+                     // The ground at the crossing carries the wear between branches.
+                     // Feather the open cut across the first half metre of each ribbon.
+-                    alpha*=Mathf.Lerp(.04f,1f,Sm(0,.63f,along));
++                    // This branch starts on a connected street, not open meadow.
++                    // Preserve the original feather everywhere else.
++                    if(postigoTreatment==0 || name!="Paso bajo el postigo")
++                        alpha*=Mathf.Lerp(.04f,1f,Sm(0,.63f,along));
+                     alpha*=Mathf.Lerp(.16f,1f,Sm(0,.23f,totalLength-along));
+                     edgeColor[index]=(Color32)new Color(1f,1f,1f,alpha);
+                 }
