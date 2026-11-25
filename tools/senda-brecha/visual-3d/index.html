@@ -33,10 +33,10 @@ const palette={stone:0x514c43,road:0x6b5944,earth:0x333d2e,iron:0x96958d,steel:0
 const mats=new Map();
 function mat(color,metal=0,glow=false){let id=`${color}/${metal}/${glow}`;if(!mats.has(id))mats.set(id,new THREE.MeshStandardMaterial({color,roughness:glow?.25:.85,metalness:metal,emissive:glow?color:0,emissiveIntensity:glow?.42:0}));return mats.get(id)}
 function mesh(geo,material,parent,x,y,z){let obj=new THREE.Mesh(geo,material);obj.position.set(x,y,z);parent.add(obj);return obj}
-const box=(parent,x,y,z,sx,sy,sz,color,metal=0)=>mesh(new THREE.BoxGeometry(sx,sy,sz),mat(color,metal),parent,x,y,z);
-const ball=(parent,x,y,z,r,color,metal=0)=>mesh(new THREE.IcosahedronGeometry(r,1),mat(color,metal),parent,x,y,z);
-const cylinder=(parent,x,y,z,r,depth,color,metal=0)=>mesh(new THREE.CylinderGeometry(r,r,depth,8),mat(color,metal),parent,x,y,z);
-const cone=(parent,x,y,z,r,h,color)=>mesh(new THREE.ConeGeometry(r,h,7),mat(color),parent,x,y,z);
+const box=(parent,x,y,z,sx,sy,sz,color,metal=0)=>mesh(geom(`box:${sx}:${sy}:${sz}`,()=>new THREE.BoxGeometry(sx,sy,sz)),mat(color,metal),parent,x,y,z);
+const ball=(parent,x,y,z,r,color,metal=0)=>mesh(geom(`ball:${r}`,()=>new THREE.IcosahedronGeometry(r,1)),mat(color,metal),parent,x,y,z);
+const cylinder=(parent,x,y,z,r,depth,color,metal=0)=>mesh(geom(`cylinder:${r}:${depth}`,()=>new THREE.CylinderGeometry(r,r,depth,8)),mat(color,metal),parent,x,y,z);
+const cone=(parent,x,y,z,r,h,color)=>mesh(geom(`cone:${r}:${h}`,()=>new THREE.ConeGeometry(r,h,7)),mat(color),parent,x,y,z);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 let squad=[],foes=[],gates=[],projectiles=[],trees=[],runes=[],foeGroup,laneMarker;
 // Shared geometry/materials, articulated limb pivots and distinct faction silhouette.
@@ -158,6 +158,44 @@ function makeScene(){scene=new THREE.Scene();scene.background=new THREE.Color(0x
  for(let i=0;i<3;i++)buildGate(i);
  for(let i=0;i<18;i++){let shaft=cylinder(scene,0,-10,0,.04,.54,0xf0bd7d);shaft.rotation.x=Math.PI/2;shaft.material=mat(0xf0ca80,.5,true);projectiles.push(shaft)}
 }
+// Render repeated opaque geometry in batches while retaining the real logical scene,
+ // limb animation, gate visibility, and simulation. Transparent labels/panels stay separate.
+ const renderBatches=[];
+ const batchFrustum=new THREE.Frustum(),batchPV=new THREE.Matrix4(),batchSphere=new THREE.Sphere();
+ function buildRenderBatches(){
+  const groups=new Map();
+  scene.traverse(o=>{
+   if(!o.isMesh||o.isInstancedMesh||Array.isArray(o.material)||o.material.transparent||o.material.map||!o.material.isMeshStandardMaterial)return;
+   const key=o.geometry.uuid+'/'+o.material.uuid;
+   if(!groups.has(key))groups.set(key,[]);
+   groups.get(key).push(o);
+  });
+  for(const items of groups.values()){
+   if(items.length<2)continue;
+   const first=items[0];if(!first.geometry.boundingSphere)first.geometry.computeBoundingSphere();
+   const proxy=new THREE.InstancedMesh(first.geometry,first.material,items.length);
+   proxy.name='Senda opaque batch';proxy.frustumCulled=false;proxy.count=0;
+   proxy.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+   for(const item of items)item.layers.set(31);
+   scene.add(proxy);renderBatches.push({items,proxy});
+  }
+ }
+ function effectivelyVisible(o){for(let n=o;n;n=n.parent)if(!n.visible)return false;return true}
+ function syncRenderBatches(){
+  scene.updateMatrixWorld(true);camera.updateMatrixWorld();
+  batchPV.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);batchFrustum.setFromProjectionMatrix(batchPV);
+  for(const {items,proxy} of renderBatches){
+   let n=0;
+   for(const item of items){
+    if(!effectivelyVisible(item))continue;
+    batchSphere.copy(item.geometry.boundingSphere).applyMatrix4(item.matrixWorld);
+    if(!batchFrustum.intersectsSphere(batchSphere))continue;
+    proxy.setMatrixAt(n++,item.matrixWorld);
+   }
+   proxy.count=n;proxy.visible=n>0;proxy.instanceMatrix.needsUpdate=true;
+  }
+ }
+ function renderFrame(){syncRenderBatches();renderer.render(scene,camera)}
 function resize(){const w=$('game').clientWidth,h=$('game').clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;
  if(w>h){camera.position.set(0,10,-14);camera.lookAt(0,.2,11);camera.fov=42;}
  else{camera.position.set(0,12,-18);camera.lookAt(0,.3,10.5);camera.fov=46;}
@@ -210,16 +248,16 @@ function present(t){
 function loop(now){requestAnimationFrame(loop);let dt=clamp((now-last)/1000,0,.045);last=now;
  if(document.hidden)return;
  if(started&&!paused&&!finished)update(dt);
- if(!mobile||now-elapsedRender>33){elapsedRender=now;present(elapsed);renderer.render(scene,camera)}
+ if(!mobile||now-elapsedRender>33){elapsedRender=now;present(elapsed);renderFrame()}
  if(Math.floor(now/150)%7===0)hud()}
 function init(){try{renderer=new THREE.WebGLRenderer({canvas:$('viewport'),alpha:false,antialias:false,powerPreference:'low-power'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
- makeScene();syncGates();resize();addEventListener('resize',resize);
+ makeScene();syncGates();buildRenderBatches();resize();addEventListener('resize',resize);
  $('play').onclick=start;$('again').onclick=start;$('left').onclick=()=>steer(-1);$('right').onclick=()=>steer(1);
  $('pause').onclick=()=>{if(!started)return;paused=!paused;$('pause').textContent=paused?'▶':'Ⅱ';flash(paused?'PAUSA':'EN MARCHA')};
  let touchX=null;$('viewport').addEventListener('pointerdown',e=>{touchX=e.clientX;$('viewport').setPointerCapture(e.pointerId)});$('viewport').addEventListener('pointerup',e=>{if(touchX!==null&&Math.abs(e.clientX-touchX)>29)steer(e.clientX>touchX?1:-1);touchX=null});$('viewport').addEventListener('pointercancel',()=>touchX=null);
  addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='a')steer(-1);if(e.key==='ArrowRight'||e.key==='d')steer(1);if(e.key===' '&&!started)start()});
  $('viewport').addEventListener('webglcontextlost',e=>{e.preventDefault();$('error').style.display='flex';started=false});
- if(TEST)window.__senda3d={start,steer,setSpeed:v=>{speed=clamp(v,0,8)},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;syncGates();hud()},advance:seconds=>{for(let t=0;t<seconds&&started;t+=.05)priorUpdate(Math.min(.05,seconds-t));present(elapsed);renderer.render(scene,camera)},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length,gateLabels:gates.map(g=>[g.type,g.value]),screenLaneX:squad[0].position.clone().project(camera).x,gateScreenX:gates.map(g=>g.group.position.clone().project(camera).x),drawCalls:renderer.info.render.calls})};
+ if(TEST)window.__senda3d={start,steer,setSpeed:v=>{speed=clamp(v,0,8)},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;syncGates();hud()},advance:seconds=>{for(let t=0;t<seconds&&started;t+=.05)priorUpdate(Math.min(.05,seconds-t));present(elapsed);renderFrame()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length,gateLabels:gates.map(g=>[g.type,g.value]),screenLaneX:squad[0].position.clone().project(camera).x,gateScreenX:gates.map(g=>g.group.position.clone().project(camera).x),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,batches:renderBatches.length})};
  hud();requestAnimationFrame(loop);
  }catch(e){console.error('SENDA_3D_INIT',e);$('error').style.display='flex'}}
 let speed=1;

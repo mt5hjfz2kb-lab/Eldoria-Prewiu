@@ -40,9 +40,10 @@ const assert=require('node:assert/strict');
   await page.screenshot({path:path.join(directory,name+'-battle.png')});
   const state=await page.evaluate(()=>window.__senda3d.state());
   assert.deepEqual(state.gateLabels,[['Power',45],['Recruit',13],['Trap',9]],'Gate label must match selected stage');
+  assert.ok(state.batches>0,'Repeated geometry must be batched');assert.ok(state.drawCalls<350,'Mobile rendering budget exceeded: '+state.drawCalls);
   await page.evaluate(()=>window.__senda3d.start());
   assert.deepEqual((await page.evaluate(()=>window.__senda3d.state())).gateLabels,[['Recruit',10],['Power',35],['Trap',5]],'Replay resets physical gate labels');
-  checks.push({name,width,height,canvas:true,started:start.started,stage:state.stage,lane:state.lane,statsVisible:!!(await page.locator('#stats').isVisible()),drawCalls:state.drawCalls,screenLaneDirection:true,gateReset:true});
+  checks.push({name,width,height,canvas:true,started:start.started,stage:state.stage,lane:state.lane,statsVisible:!!(await page.locator('#stats').isVisible()),drawCalls:state.drawCalls,triangles:state.triangles,batches:state.batches,screenLaneDirection:true,gateReset:true});
   await page.close();
  }
  // Run complete deterministic live browser routes through the real update loop,
