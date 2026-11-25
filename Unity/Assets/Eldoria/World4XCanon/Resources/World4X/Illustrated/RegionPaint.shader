@@ -168,6 +168,10 @@ Shader "Eldoria/Region1/Illustrated ground" {
                          cityNear*cityPaving.a*.65*_CityFinish);
   // The riverbanks come from the actual signed geographic shoreline.
   float shore=(features.a-.5)*12;
+  // Silt accumulates on the broad inside bends and breaks up the waterline
+  // at grass-tuft scale. The signed river field remains the channel centre.
+  float bankBend=sin(metre.y*.069+sin(metre.x*.041))*.86+sin(metre.x*.151+metre.y*.092)*.39;
+  shore+=bankBend*(1-smoothstep(2.4,5.6,abs(shore)));
   float aa=clamp(fwidth(shore),.32,1.4);
   // Real near-camera captures showed an abrupt, hard teal cut against the
   // approved Valoria grass near the canonical bridge. Blend over the EXISTING
@@ -226,6 +230,13 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half innerStand=smoothstep(.15,.80,standDensity)*(.65+.35*canopy);
   half3 woodlandSoil=lerp(grass,sharedEarth*half3(.85,.91,.77),.48);
   grass=lerp(grass,woodlandSoil,innerStand*.42);
+  // Straw-coloured high grasses share the original brush grain. Combine
+  // a broad site exposure with the existing hill and drainage measurements.
+  half exposure=saturate(.49+.24*sin(metre.x*.021+1.6*sin(metre.y*.015))
+                   +.18*cos(metre.y*.037-metre.x*.012)+.13*upland-.29*valley);
+  half dryField=smoothstep(.34,.77,exposure)*(1-canopy*.82)*(1-mask.r);
+  half3 dryPigment=lerp(grass*half3(1.20,1.04,.74),sharedEarth*half3(1.14,1.05,.79),.32);
+  grass=lerp(grass,dryPigment,dryField*.79);
   half3 colour=lerp(grass,fracturedSlate,faultWeight*.87);
   // Sample the geological opening on the terrain triangles themselves.
   // A separately tessellated patch clipped into the steep fault walls in

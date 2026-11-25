@@ -130,15 +130,21 @@ half4 frag(Varying i):SV_Target {
  // Broad stone landing tapers into the avenue. Its exposed lip stops on either
  // side of the entrance so the approach stays at the same walking level.
  float2 court=(p-_Forecourt.xy)/_Forecourt.zw;
- float edge=abs(court.x)+abs(court.y)*.54;
- float outline=max(edge,abs(court.y));
- half worn=erosion*.075;
- half landing=1-smoothstep(.81,1.14,outline+worn+erosion*.07);
+ // The outer pavers taper along the walking line; surviving stones
+ // follow individual joints rather than a straight courtyard perimeter.
+ float2 gateAxis=_CivicAxis.zw-_Forecourt.xy;
+ float gateT=distanceToLane(p,_Forecourt.xy,_Forecourt.xy+gateAxis*.46);
+ float approachBed=gateT/max(.35,_Forecourt.w*.52);
+ float shoulder=length(float2(court.x+.13*court.y,court.y*.94));
+ float outline=min(shoulder,approachBed+.38);
+ outline+=.17*sin(p.x*2.35+p.y*.89)+.14*sin(p.y*3.1-p.x*.84);
+ half worn=(seam.r-seam.g)*.55+erosion*.21;
+ half landing=1-smoothstep(.55,1.22,outline+worn);
  half margin=(1-smoothstep(.035,.105,abs(outline-.91+worn)))*smoothstep(.25,.51,abs(court.x));
  half front=smoothstep(.1,.9,-court.y);
  half3 laidStone=tex2D(_Paving,float2(.94*p.x+.34*p.y,1.18*p.y-.16*p.x)).rgb;
  half3 flags=lerp(laidStone,dirt,.30)*half3(1.01,.98,.92);
- flags*=1-margin*(.10+.28*front);
+ flags*=1-margin*(.025+.08*front);
  // Foot traffic carries fine stone out of the landing into the grass.
  float tread=distanceToLane(p,_Forecourt.xy,_CivicAxis.zw);
  half fringe=(1-smoothstep(.88,1.43,outline+erosion*.19))*(1-landing);
