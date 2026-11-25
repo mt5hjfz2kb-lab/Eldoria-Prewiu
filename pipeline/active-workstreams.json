@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-25T20:15:04.759Z",
+  "updated_at": "2026-11-25T20:22:30.426Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9633,7 +9633,7 @@
       "ownership_revision": 6,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "STUDIO_BENCHMARK_COMMERCIAL_VISUAL_VERTICAL_SLICE",
+      "phase": "STUDIO_ART_BENCHMARK_NATIVE_AND_WEB_RUNNING",
       "claimed_at": "2026-11-25T20:15:04.759Z",
       "resources": [
         "windows-runner-heavy"
@@ -9665,7 +9665,9 @@
         "to": "eldoria-private-beta-i-v-20261107",
         "reason": "Owner explicitly instructed P0 to use idle PC. No Actions runs in progress at transfer; Windows process preflight must independently confirm no Unity/Blender before work."
       },
-      "user_authorization": "Owner approved PR195 benchmark and up to 10 USD additional API experiment; preserve canonical PR, no merge."
+      "user_authorization": "Owner approved PR195 benchmark and up to 10 USD additional API experiment; preserve canonical PR, no merge.",
+      "current_native_run_id": 45694055440,
+      "current_web_run_id": 45694055403
     },
     {
       "id": "eldoria-stylized-direction-proof-20261115",
@@ -10259,7 +10261,9 @@
         "candidate_sha256": "1631d06cfe223da43b099013cce128c8c0e4f11b344315a96fe18ade92ba4439",
         "source_tests": 4,
         "art_approved": false
-      }
+      },
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Studio coordinates API, accounting, and review only; generated art and native geometry governed by the canonical Senda art-production request."
     }
   ],
   "history": [
@@ -20981,7 +20985,7 @@
     "authorized_at": "2026-11-25T20:15:04.759Z",
     "mode": "exclusive_one_workstream_at_a_time",
     "current_workstream": "eldoria-senda-brecha-lane-event-20261115",
-    "current_run_id": null,
+    "current_run_id": 45694055440,
     "next_workstream": null,
     "return_to": null,
     "status": "senda_studio_benchmark_reserved",
