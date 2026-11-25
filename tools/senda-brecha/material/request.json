@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "source_run": 45707395248,
+  "artifact_id": 15065212591,
+  "source_sha256": "81220ac1c7a76ad8481fd2f29f3d13fb8f298f4a8d1e0079b58e3bfa891af34e",
+  "scope": "Prepare and commit only original Studio surface material candidate and provenance; no API spend or game scene changes.",
+  "approved": true
+}
