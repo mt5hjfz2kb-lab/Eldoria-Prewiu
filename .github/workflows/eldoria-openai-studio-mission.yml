@@ -14,8 +14,8 @@ jobs:
   mission:
     if: >-
       github.run_attempt == 1 &&
-      github.event.before == 'ca591d07289752b3d735948f272cc37b510dbcb2' &&
-      github.event.head_commit.message == 'Run explicitly authorized five-role Valoria mission once'
+      github.event.before == '9dd923a0c5df26b38e1e17a2dfa42fbafe1ba029' &&
+      github.event.head_commit.message == 'Run bounded corrective MILL_YARD mission once'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -29,6 +29,8 @@ jobs:
           python3 tools/openai-development-studio/studio.py --self-test
           python3 tools/openai-development-studio/generate_candidate.py --self-test
           python3 tools/openai-development-studio/mission.py --self-test
+          python3 tools/openai-development-studio/budget_guard.py --self-test
+          python3 tools/openai-development-studio/budget_guard.py
           python3 -m pip install --disable-pip-version-check Pillow==11.3.0
       - name: Recover actual frozen mobile evidence and source
         env:
@@ -39,13 +41,17 @@ jobs:
           gh run download 45638738009 --repo "${{ github.repository }}" --name ciudad-region-recorrido --dir /tmp/studio-source
           python3 tools/openai-development-studio/prepare_evidence.py /tmp/studio-source /tmp/studio-evidence
           root=https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944
-          curl --fail --silent --show-error "$root/Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DArchitecturalShadow.cs" -o /tmp/studio-evidence/source.cs
+          curl --fail --silent --show-error "$root/Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/DistrictGround.shader" -o /tmp/studio-evidence/source.cs
+          curl --fail --silent --show-error "$root/Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DGround.cs" -o /tmp/ground.cs
+          printf "\n// Modular25DGround.cs lines 80-128:\n" >> /tmp/studio-evidence/source.cs
+          sed -n '80,128p' /tmp/ground.cs >> /tmp/studio-evidence/source.cs
           curl --fail --silent --show-error "$root/docs/valoria-modular-25d/ART_GROUNDING_RULES.md" -o /tmp/studio-evidence/contract.md
       - name: Authorized five bounded API calls, no arbitrary tools
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ELDORIA_AUTH_EVENT: MILL_YARD_V2_ONCE
         run: |
-          python3 tools/openai-development-studio/mission.py --live --city /tmp/studio-evidence/city.jpg --reference /tmp/studio-evidence/reference.jpg --manifest /tmp/studio-evidence/manifest.json --code /tmp/studio-evidence/source.cs --contract /tmp/studio-evidence/contract.md --out /tmp/studio-result
+          python3 tools/openai-development-studio/mission.py --live --authorization valoria-mill-yard-v2 --city /tmp/studio-evidence/city.jpg --reference /tmp/studio-evidence/reference.jpg --manifest /tmp/studio-evidence/manifest.json --code /tmp/studio-evidence/source.cs --contract /tmp/studio-evidence/contract.md --out /tmp/studio-result
       - name: Verify alpha and image bounds
         run: python3 tools/openai-development-studio/validate_sprite.py /tmp/studio-result
       - name: Upload bounded evidence, including partial failure
