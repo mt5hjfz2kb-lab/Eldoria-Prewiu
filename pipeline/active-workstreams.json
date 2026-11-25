@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-25T22:02:21.606Z",
+  "updated_at": "2026-11-25T22:58:00.056Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9628,14 +9628,16 @@
     {
       "id": "eldoria-senda-brecha-lane-event-20261115",
       "title": "La Senda de la Brecha — vertical slice arcade por carriles, sin alterar beta",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 11,
+      "owner": "chatgpt-senda-brecha-ios-unity-20261115",
+      "ownership_state": "claimed",
+      "ownership_revision": 12,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "STUDIO_WEB_MATERIAL_VERIFIED_NATIVE_ALDRIC_RECOVERED_VISUAL_PARITY_OPEN",
-      "claimed_at": "2026-11-25T21:44:55.392Z",
-      "resources": [],
+      "phase": "NATIVE_SKINNED_GUARDS_AND_MATERIAL_PARITY",
+      "claimed_at": "2026-11-25T22:58:00.051Z",
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "tools/senda-brecha/**",
         "docs/events/senda-brecha/**",
@@ -9652,7 +9654,7 @@
       "art_approved": false,
       "physical_iphone_verified": false,
       "previous_owner": "chatgpt-senda-brecha-ios-unity-20261115",
-      "write_scope_released": true,
+      "write_scope_released": false,
       "last_handoff_at": "2026-11-25T22:02:21.606Z",
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/195",
       "final_source_sha": "ebac2a7c3219dc02d1a28cd3dcd504e7fa3d486b",
@@ -21111,14 +21113,14 @@
   },
   "resource_rotation": {
     "resource": "windows-runner-heavy",
-    "authorized_by": "Owner requested actual continuation; no other active Windows work.",
+    "authorized_by": "Owner requested continued actual development on PR195; no production merge.",
     "authorized_at": "2026-11-25T21:44:55.392Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": null,
+    "current_workstream": "eldoria-senda-brecha-lane-event-20261115",
     "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "available_after_verified_senda_native_cleanup",
+    "status": "senda_native_parity_reserved",
     "rules": [
       "Isolated native proof, same PR, no beta or main gameplay change.",
       "Check live lease and idle processes. No cancellation of other work."
