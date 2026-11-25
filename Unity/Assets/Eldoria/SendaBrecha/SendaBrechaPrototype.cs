@@ -61,7 +61,15 @@ namespace Eldoria.SendaBrecha
         public bool ShowOverlay = true;
         // Original imported Eldoria art; references assigned by the isolated scene editor.
         public GameObject CanonicalAldric, CanonicalTower, CanonicalWall, CanonicalGate, CanonicalSpawnling;
-        public AnimationClip CanonicalWalk, CanonicalAttack;
+        public AnimationClip CanonicalWalk, CanonicalAttack, GuardWalk, GuardAttack;
+        public GameObject CanonicalGuard;
+        public Texture2D StudioSlate, CanonicalBastion, CanonicalRuinA, CanonicalRuinB;
+        public int NativeGuardRigs {get;private set;}
+        public int GuardTriangles {get;private set;}
+        public bool SlateInstalled {get;private set;}
+        private GameObject[] guardModels, enemyGuards;
+        private Material scrollingRoad;
+        private readonly Dictionary<Material,Material> guardTint=new Dictionary<Material,Material>();
         public Texture2D CanonicalPaving, CanonicalMeadow, CanonicalCrest, CanonicalPanel;
         public Texture2D[] CanonicalPines;
         public int CanonicalArchitectureCount {get; private set;}
@@ -89,7 +97,7 @@ namespace Eldoria.SendaBrecha
         private int shotCursor;
         private bool initialized;
         private float sessionSpeed = 1f;
-        private readonly Color night = new Color(.25f, .32f, .40f);
+        private readonly Color night = new Color(.17f, .22f, .31f);
         private Transform[][] soldierLimbs, enemyLimbs;
         private Transform[] laneMarkers;
         private UnityEngine.Mesh taperedMesh;
@@ -201,18 +209,19 @@ namespace Eldoria.SendaBrecha
             sun.transform.SetParent(world,false);
             var light = sun.AddComponent<Light>();
             light.type=LightType.Directional; light.color=new Color(.91f,.82f,.75f);
-            light.intensity=1.50f;
+            light.intensity=1.25f;
+            var cool=Empty("Sky rim",world,Vector3.zero);var fill=cool.gameObject.AddComponent<Light>();fill.type=LightType.Directional;fill.color=new Color(.65f,.76f,1);fill.intensity=.42f;cool.rotation=Quaternion.Euler(32,140,0);
             sun.transform.rotation=Quaternion.Euler(51,-37,0);
             var rimObject = new GameObject("Rift fill");rimObject.transform.SetParent(world,false);
             var rim=rimObject.AddComponent<Light>();rim.type=LightType.Point;
             rim.color=new Color(.43f,.25f,.68f);rim.range=13;rim.intensity=2.1f;
             rimObject.transform.position=new Vector3(0,5,32);
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight=new Color(.57f,.61f,.64f);
+            RenderSettings.ambientLight=new Color(.43f,.46f,.50f);
             RenderSettings.fog=true;
             RenderSettings.fogColor=night;
             RenderSettings.fogMode=FogMode.ExponentialSquared;
-            RenderSettings.fogDensity=.013f;
+            RenderSettings.fogDensity=.016f;
         }
         // Shared tapered geometry (one reusable mesh) and deterministic textured
         // materials replace the flat primitive-demo look. No external art or gameplay dependencies.
@@ -271,10 +280,11 @@ namespace Eldoria.SendaBrecha
         {
             Color rock=new Color(.34f,.32f,.27f);
             roadTexture=GroundTexture(true);earthTexture=GroundTexture(false);
-            var floor=Mesh("Forest floor",PrimitiveType.Cube,parent,new Vector3(0,-.48f,22),new Vector3(80,.9f,125),new Color(.91f,.94f,.83f));
+            var floor=Mesh("Forest floor",PrimitiveType.Cube,parent,new Vector3(0,-.48f,22),new Vector3(80,.9f,125),new Color(.57f,.66f,.56f));
             var road=Mesh("Worn slate roadway",PrimitiveType.Cube,parent,new Vector3(0,-.11f,23),new Vector3(7.7f,.24f,124),new Color(.95f,.92f,.88f));
             TextureSurface(floor,CanonicalMeadow ? CanonicalMeadow : earthTexture,new Vector2(24,38));
-            TextureSurface(road,CanonicalPaving ? CanonicalPaving : roadTexture,new Vector2(2.1f,37));
+            TextureSurface(road,StudioSlate ? StudioSlate : (CanonicalPaving ? CanonicalPaving : roadTexture),new Vector2(1.4f,21.45f));
+            scrollingRoad=road.GetComponent<MeshRenderer>().sharedMaterial;SlateInstalled=StudioSlate!=null;
             foreach(int side in new[]{-1,1})
                 Mesh("Stone verge",PrimitiveType.Cube,parent,new Vector3(side*4.0f,-.04f,23),new Vector3(.45f,.23f,124),new Color(.36f,.31f,.25f));
             var features=new List<Transform>();var markers=new List<Transform>();
@@ -283,7 +293,7 @@ namespace Eldoria.SendaBrecha
             for(int i=0;i<44;i++)foreach(int side in new[]{-1,1})
                 markers.Add(Mesh("Inset lane separator "+i,PrimitiveType.Cube,parent,new Vector3(side*1.075f,.026f,i*2.4f-9),new Vector3(.07f,.014f,.78f),new Color(.62f,.54f,.37f)).transform);
             laneMarkers=markers.ToArray();
-            for(int i=0;i<54;i++)
+            for(int i=0;i<54 && !StudioSlate;i++)
             {
                 float z=-5f+i*2.25f,x=((i*17)%23/23f-.5f)*6.5f;
                 var stone=Mesh("Worn uneven paving "+i,PrimitiveType.Cube,parent,new Vector3(x,.025f,z),new Vector3(.40f+(i%4)*.15f,.021f,.24f+(i%3)*.10f),i%3==0?new Color(.40f,.35f,.29f):new Color(.27f,.25f,.21f));
@@ -388,10 +398,10 @@ namespace Eldoria.SendaBrecha
         {
             var rocky=Empty("Valoria rocky escarpment",parent,Vector3.zero);
             for(int i=0;i<12;i++){
-                var rock=Mesh("Stratified ridge",PrimitiveType.Sphere,rocky,new Vector3(8+i*1.65f,1.1f+(i%3)*.4f,41+(i%4)*3.8f),new Vector3(8.8f,8.8f+(i%4)*1.2f,13.2f),new Color(.31f,.32f,.30f));
+                var rock=Mesh("Stratified ridge",PrimitiveType.Sphere,rocky,new Vector3(-8-i*1.1f,.7f+(i%3)*.14f,45+(i%4)*3.2f),new Vector3(7.2f,4.9f+(i%4)*.36f,10f),new Color(.31f,.32f,.30f));
                 rock.transform.localRotation=Quaternion.Euler(i*3,i*31,0);
             }
-            var fissure=Empty("Brecha geological outcrop",parent,new Vector3(-10,0,43));
+            var fissure=Empty("Brecha geological outcrop",parent,new Vector3(10,0,43));
             for(int i=0;i<9;i++){
                 var r=Taper("Fractured bedrock",fissure,new Vector3(-3+i*.72f,1.5f+(i%3)*.37f,(i%4)*.6f),new Vector3(1.8f,4.4f+(i%4)*.7f,2),new Color(.19f,.19f,.25f));
                 r.transform.localRotation=Quaternion.Euler(0,i*29,(i-4)*7);
@@ -431,6 +441,53 @@ namespace Eldoria.SendaBrecha
             wrapper.localRotation=Quaternion.Euler(0,yaw,0);
             return model;
         }
+        private bool Landmark(string name,Texture2D tex,Vector3 foot,float height)
+        {
+            if(!tex)return false;
+            var g=GameObject.CreatePrimitive(PrimitiveType.Quad);g.name=name;g.transform.SetParent(world,false);
+            g.transform.localPosition=foot+Vector3.up*height*.5f;g.transform.localScale=new Vector3(height*tex.width/tex.height,height,1);
+            var shader=Shader.Find("Sprites/Default");if(!shader)throw new InvalidOperationException("Valoria sprite material unavailable");
+            var mat=new Material(shader){mainTexture=tex,color=new Color(.76f,.80f,.84f,1)};canonicalMaterials.Add(mat);g.GetComponent<MeshRenderer>().sharedMaterial=mat;
+            var c=g.GetComponent<Collider>();if(c){if(UnityEngine.Application.isPlaying)Destroy(c);else DestroyImmediate(c);}return true;
+        }
+        private static Transform Bone(GameObject model,string name)
+        {
+            foreach(var t in model.GetComponentsInChildren<Transform>(true))if(t.name==name)return t;
+            throw new InvalidOperationException("Rig bone absent "+name);
+        }
+        private GameObject CreateGuard(Transform root,bool hostile)
+        {
+            foreach(Transform child in root)child.gameObject.SetActive(false);
+            var g=FitCanonical(CanonicalGuard,root,hostile?1.91f:2.02f,Vector3.zero,hostile?-90:90);
+            foreach(var skin in g.GetComponentsInChildren<SkinnedMeshRenderer>(true)){
+                skin.updateWhenOffscreen=true;
+                if(hostile){var ms=skin.sharedMaterials;for(int i=0;i<ms.Length;i++){
+                    if(!guardTint.TryGetValue(ms[i],out var tinted)){tinted=new Material(ms[i]);canonicalMaterials.Add(tinted);string prop=tinted.HasProperty("_BaseColor")?"_BaseColor":"_Color";if(tinted.HasProperty(prop))tinted.SetColor(prop,tinted.GetColor(prop)*new Color(.85f,.55f,.46f));guardTint.Add(ms[i],tinted);}ms[i]=tinted;
+                }skin.sharedMaterials=ms;}
+            }
+            var head=Bone(g,"Eldoria_Aldric_head");var chest=Bone(g,"Eldoria_Aldric_chest");var hand=Bone(g,"Eldoria_Aldric_weapon_R_socket");
+            var iron=hostile?new Color(.36f,.24f,.23f):new Color(.39f,.46f,.53f);var gold=new Color(.70f,.53f,.30f);
+            Mesh("Closed guard helm",PrimitiveType.Sphere,head,new Vector3(-.012f,.042f,0),new Vector3(.20f,.24f,.20f),iron,.35f);
+            Mesh("Dark visor",PrimitiveType.Cube,head,new Vector3(-.108f,.025f,0),new Vector3(.015f,.026f,.14f),new Color(.09f,.12f,.15f));
+            var shield=Empty("Valorian shield",chest,new Vector3(.215f,-.11f,0));shield.localRotation=Quaternion.Euler(0,90,0);
+            Mesh("Shield border",PrimitiveType.Cube,shield,Vector3.zero,new Vector3(.27f,.37f,.025f),gold,.45f);
+            Mesh("Shield enamel",PrimitiveType.Cube,shield,new Vector3(0,0,-.016f),new Vector3(.235f,.32f,.017f),hostile?new Color(.44f,.15f,.13f):new Color(.09f,.25f,.34f));
+            Mesh("Heraldic keep",PrimitiveType.Cube,shield,new Vector3(0,.02f,-.028f),new Vector3(.04f,.09f,.008f),gold,.45f);
+            for(int i=0;i<3;i++)Mesh("Keep merlon",PrimitiveType.Cube,shield,new Vector3((i-1)*.03f,.081f,-.029f),new Vector3(.018f,.025f,.008f),gold,.45f);
+            var spear=Empty("Guard spear",hand,Vector3.zero);
+            Mesh("Ash shaft",PrimitiveType.Cylinder,spear,new Vector3(0,.25f,0),new Vector3(.018f,.405f,.018f),new Color(.36f,.25f,.16f));
+            Taper("Iron spearhead",spear,new Vector3(0,.74f,0),new Vector3(.062f,.15f,.032f),new Color(.67f,.73f,.77f),.45f);
+            NativeGuardRigs++;return g;
+        }
+        private void SampleGuard(GameObject g,bool fighting,int index)
+        {
+            var clip=fighting?GuardAttack:GuardWalk;clip.SampleAnimation(g,(Elapsed+index*.083f)%Mathf.Max(.01f,clip.length));
+            // Avoid accumulation: these offsets apply to the sampled pose only when animated tracks exist.
+            // Keep the original rig unchanged; weapon remains attached to the hand.
+            var spear=Bone(g,"Guard spear");
+            if(!fighting)spear.rotation=Quaternion.FromToRotation(Vector3.up,new Vector3(0,1,.20f).normalized);
+            else spear.localRotation=Quaternion.Euler(0,0,7);
+        }
         private void InstallCanonicalModels()
         {
             if(CanonicalAldric){
@@ -445,9 +502,19 @@ namespace Eldoria.SendaBrecha
                 enemyModel=FitCanonical(CanonicalSpawnling,enemies[0].transform,2.25f,Vector3.zero,180);
                 CanonicalEnemyInstalled=enemyModel!=null;
             }
-            if(FitCanonical(CanonicalGate,world,8.5f,new Vector3(-8.5f,2.8f,41),180))CanonicalArchitectureCount++;
-            if(FitCanonical(CanonicalTower,world,10,new Vector3(-12.7f,2.8f,42),180))CanonicalArchitectureCount++;
-            if(FitCanonical(CanonicalWall,world,5,new Vector3(-5.9f,2.8f,43),180))CanonicalArchitectureCount++;
+            guardModels=new GameObject[soldierBodies.Length];enemyGuards=new GameObject[enemies.Length];
+            if(CanonicalGuard&&GuardWalk&&GuardAttack){
+                foreach(var skin in CanonicalGuard.GetComponentsInChildren<SkinnedMeshRenderer>(true))for(int i=0;i<skin.sharedMesh.subMeshCount;i++)GuardTriangles+=(int)skin.sharedMesh.GetIndexCount(i)/3;
+                if(GuardTriangles<1000||GuardTriangles>12000)throw new InvalidOperationException("Native guard triangle budget exceeded");
+                for(int i=1;i<soldierBodies.Length;i++)guardModels[i]=CreateGuard(soldierBodies[i],false);
+                for(int i=1;i<enemies.Length;i++)enemyGuards[i]=CreateGuard(enemies[i].transform,true);
+            }
+            if(Landmark("Original painted Bastion",CanonicalBastion,new Vector3(-10.4f,3,46),11))CanonicalArchitectureCount++;
+            else if(FitCanonical(CanonicalGate,world,8.5f,new Vector3(-8.5f,2.8f,41),180))CanonicalArchitectureCount++;
+            if(Landmark("Valoria ruins west",CanonicalRuinA,new Vector3(5.5f,0,13),5))CanonicalArchitectureCount++;
+            else if(FitCanonical(CanonicalTower,world,10,new Vector3(-12.7f,2.8f,42),180))CanonicalArchitectureCount++;
+            if(Landmark("Valoria ruins east",CanonicalRuinB,new Vector3(-5.5f,0,23),4.6f))CanonicalArchitectureCount++;
+            else if(FitCanonical(CanonicalWall,world,5,new Vector3(-5.9f,2.8f,43),180))CanonicalArchitectureCount++;
         }
         private UnityEngine.Mesh ArchMesh(float start,float finish,float inner,float outer,float depth)
         {
@@ -483,7 +550,7 @@ namespace Eldoria.SendaBrecha
             Mesh("Gate inscription dark plaque",PrimitiveType.Cube,parent,new Vector3(0,1.92f,-.31f),new Vector3(1.75f,.85f,.055f),new Color(.09f,.17f,.20f));
             var inscription=Empty("Actual numbered gate label",parent,new Vector3(0,1.94f,-.36f));
             var text=inscription.gameObject.AddComponent<TextMesh>();
-            text.text="+10";text.fontSize=90;text.characterSize=.025f;
+            text.text="+10";text.fontSize=100;text.characterSize=.033f;
             text.anchor=TextAnchor.MiddleCenter;text.alignment=TextAlignment.Center;
             text.color=new Color(.99f,.94f,.80f);
         }
@@ -576,6 +643,7 @@ namespace Eldoria.SendaBrecha
         {
             if(!initialized)return;
             float scroll=Elapsed*2.8f;
+            if(scrollingRoad){string property=scrollingRoad.HasProperty("_BaseMap")?"_BaseMap":"_MainTex";scrollingRoad.SetTextureOffset(property,new Vector2(0,-Mathf.Repeat(scroll/124f*21.45f,1)));}
             for(int i=0;i<laneMarkers.Length;i++){var mark=laneMarkers[i];var pos=mark.localPosition;pos.z=(((i/2)*2.4f-scroll)%105.6f+105.6f)%105.6f-9;mark.localPosition=pos;}
             for(int i=0;i<environment.Length;i++)
             {
@@ -589,17 +657,18 @@ namespace Eldoria.SendaBrecha
                 bool visible=i<VisibleSoldiers;
                 soldierActors[i].SetActive(visible);
                 if(!visible)continue;
-                int column=(i+3)%4,row=(i-1)/4;
-                float laneX=i==0?0:(column-1.5f)*.48f;
-                float z=i==0?3.56f:2.65f-row*.68f;
+                int column=(i+2)%3,row=(i-1)/3;
+                float laneX=i==0?0:(column-1)*.77f+(row%2)*.045f;
+                float z=i==0?3.76f:2.62f-row*.88f;
                 soldierBodies[i].localPosition=new Vector3(movingX+laneX,0,z);
                 if(i==0&&heroModel){var clip=StageTime>=FightStart&&StageTime<FightResolve&&!FightCompleted?CanonicalAttack:CanonicalWalk;clip.SampleAnimation(heroModel,Elapsed%Mathf.Max(.01f,clip.length));CanonicalAnimationSampled=true;}
+                else if(guardModels[i])SampleGuard(guardModels[i],StageTime>=FightStart&&StageTime<FightResolve&&!FightCompleted,i);
                 else AnimateRig(soldierLimbs[i],Elapsed,i,false);
             }
             bool running=State==Phase.Running || State==Phase.Intro || State==Phase.Paused;
             for(int i=0;i<portals.Length;i++)
             {
-                float gateZ=31f-Mathf.Clamp01(StageTime/GateCrossing)*27.3f;
+                float gateZ=25.1f-Mathf.Clamp01(StageTime/GateCrossing)*21.7f;
                 portals[i].SetActive(running&&!GateTaken);
                 portals[i].transform.localPosition=new Vector3((i-1)*2.15f,0,gateZ);
                 var gate=Waves[Mathf.Clamp(Stage,0,Waves.Length-1)].Gates[i];
@@ -623,7 +692,7 @@ namespace Eldoria.SendaBrecha
                     float z=19f+(i/4)*1.15f-8f*enemyTravel;
                     enemies[i].transform.localPosition=new Vector3(x,dying?-.5f:0,z);
                     enemies[i].transform.localEulerAngles=dying?new Vector3(0,0,65):Vector3.zero;
-                    if(i==0&&enemyModel){enemyModel.transform.parent.localRotation=Quaternion.Euler(0,180,dying?0:3*Mathf.Sin(Elapsed*8));}else AnimateRig(enemyLimbs[i],Elapsed,i,dying);
+                    if(i==0&&enemyModel){enemyModel.transform.parent.localRotation=Quaternion.Euler(0,180,dying?0:3*Mathf.Sin(Elapsed*8));}else if(enemyGuards[i]){if(!dying)SampleGuard(enemyGuards[i],true,i);}else AnimateRig(enemyLimbs[i],Elapsed,i,dying);
                 }
             }
             fireClock+=State==Phase.Running?Time.deltaTime:0;

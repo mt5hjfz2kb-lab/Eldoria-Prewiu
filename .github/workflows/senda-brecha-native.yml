@@ -45,7 +45,7 @@ jobs:
           w=holders[0]
           assert (w['id']=='eldoria-senda-brecha-lane-event-20261115' and
                   w['owner']=='chatgpt-senda-brecha-ios-unity-20261115' and
-                  w['ownership_state']=='claimed' and w['ownership_revision']==10),'Other workstream owns Windows'
+                  w['ownership_state']=='claimed' and w['ownership_revision']==12),'Other workstream owns Windows'
           assert w['branch']=='feature/senda-brecha-lane-event-20261115'
           current=get('git/ref/heads/feature/senda-brecha-lane-event-20261115')['object']['sha']
           assert current==os.environ['GITHUB_SHA'],'Branch moved after native request'
@@ -67,6 +67,8 @@ jobs:
           curl -fsSL "$raw/Unity/Assets/Eldoria/AldricCity/Resources/AldricImportNormals/normal-import-scene.json" -o /tmp/aldric-original/scene.json
           curl -fsSL "$raw/Unity/Assets/Eldoria/AldricCity/Resources/AldricImportNormals/normal-stream.bytes" -o /tmp/aldric-original/normal.bytes
           python3 tools/senda-brecha/native/prepare_aldric_import.py --source /tmp/aldric-original/source.glb --scene /tmp/aldric-original/scene.json --normals /tmp/aldric-original/normal.bytes --out /tmp/aldric-compatible
+          npm install --no-save --prefix /tmp/senda-meshopt meshoptimizer@0.22.0
+          NODE_PATH=/tmp/senda-meshopt/node_modules node tools/senda-brecha/native/prepare_guard_lod.cjs /tmp/aldric-compatible
       - uses: actions/upload-artifact@v4
         with:
           name: senda-aldric-compatible
@@ -122,7 +124,7 @@ jobs:
           $owners=@($doc.active | Where-Object { $_.resources -contains 'windows-runner-heavy' })
           if($owners.Count -ne 1 -or $owners[0].id -ne 'eldoria-senda-brecha-lane-event-20261115' -or
              $owners[0].owner -ne 'chatgpt-senda-brecha-ios-unity-20261115' -or
-             $owners[0].ownership_state -ne 'claimed' -or $owners[0].ownership_revision -ne 10){throw 'Windows lease changed; refusing Unity'}
+             $owners[0].ownership_state -ne 'claimed' -or $owners[0].ownership_revision -ne 12){throw 'Windows lease changed; refusing Unity'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native process active; refusing overlap'}
       - uses: actions/download-artifact@v4
         with:
@@ -157,7 +159,7 @@ jobs:
           $paths=@('Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb',
               ($family+'Valoria_MainGate_CohV1.glb'),($family+'Valoria_Tower_CohV1.glb'),($family+'Valoria_WallSegment_CohV1.glb'),
               'Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/SpawnlingNear.glb',
-              ($valoria+'DistrictPaving.jpg'),($valoria+'BastionMeadow.jpg'),($valoria+'pine_0.png'),($valoria+'pine_1.png'),($valoria+'pine_2.png'),
+              ($valoria+'bastion_i.png'),($valoria+'ruin_arch_0.png'),($valoria+'ruin_arch_1.png'),($valoria+'DistrictPaving.jpg'),($valoria+'BastionMeadow.jpg'),($valoria+'pine_0.png'),($valoria+'pine_1.png'),($valoria+'pine_2.png'),
               ($valoria+'UI/CoronaBrechaPremium/identity_crest.png'),($valoria+'UI/CoronaBrechaPremium/panel_obsidian.png'))
           foreach($relative in $paths){
             $dest=Join-Path $assetRoot ([IO.Path]::GetFileName($relative))
@@ -169,6 +171,13 @@ jobs:
           $compatible=Join-Path $env:RUNNER_TEMP ('senda-aldric-compatible-'+$env:GITHUB_RUN_ID+'/SirAldric_Approved_RiggedAnimated_v1.glb')
           if((Get-FileHash -LiteralPath $compatible -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'd64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b'){throw 'Normal compatibility bytes mismatch'}
           Copy-Item -LiteralPath $compatible -Destination $hero -Force
+          $guard=Join-Path (Split-Path $compatible) 'Valoria_Guard_Rigged_LOD.glb'
+          $proof=Get-Content -LiteralPath (Join-Path (Split-Path $guard) 'guard-lod-proof.json') -Raw | ConvertFrom-Json
+          if((Get-FileHash -LiteralPath $guard -Algorithm SHA256).Hash.ToLowerInvariant() -ne $proof.derivedSha256 -or $proof.triangles -gt 12000 -or $proof.skinJoints -ne 26){throw 'Guard derivative mismatch'}
+          Copy-Item -LiteralPath $guard -Destination $assetRoot
+          $slate=Join-Path $env:GITHUB_WORKSPACE 'tools/senda-brecha/visual-3d/art/senda-worn-slate.png'
+          if((Get-FileHash -LiteralPath $slate -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'd61cc7c6a9b171d7168d0385c89f52f44364ca895f425c042c3a292bdadfb4d5'){throw 'Studio slate mismatch'}
+          Copy-Item -LiteralPath $slate -Destination $assetRoot
           Write-Host 'SENDA_ORIGINAL_ASSETS_PINNED: exact original verified, only temporary Aldric import adds proven normals'
 
           "mini=$mini" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
@@ -189,7 +198,7 @@ jobs:
           $report=Join-Path $out 'proof.json'
           if(-not(Test-Path -LiteralPath $report)){throw 'Real Unity proof report absent; Editor exit alone is not success'}
           $p=Get-Content $report -Raw | ConvertFrom-Json
-          if($p.originalAldricSkins -lt 1 -or $p.originalArchitecture -ne 3 -or $p.originalFoliage -lt 25 -or !$p.originalEnemy -or !$p.originalAnimationSampled -or $p.capturedPng -ne 9 -or !$p.positiveGateChangesVisibleActors -or !$p.victoryRouteChecked -or !$p.defeatRouteChecked -or
+          if($p.nativeGuardRigs -ne 24 -or $p.guardTriangles -lt 1000 -or $p.guardTriangles -gt 12000 -or !$p.slateInstalled -or $p.originalAldricSkins -lt 1 -or $p.originalArchitecture -ne 3 -or $p.originalFoliage -lt 25 -or !$p.originalEnemy -or !$p.originalAnimationSampled -or $p.capturedPng -ne 9 -or !$p.positiveGateChangesVisibleActors -or !$p.victoryRouteChecked -or !$p.defeatRouteChecked -or
              $p.result -ne 'VictoryAndDefeatNativeSimulationPass' -or $p.mainSceneModified -or $p.artApproved -or $p.physicalIphoneTested){throw 'Exact event native proof contract failed'}
           $png=@(Get-ChildItem -LiteralPath $out -Filter '*.png')
           if($png.Count -ne 9){throw "Expected 9 independent GPU PNG images, got $($png.Count)"}
