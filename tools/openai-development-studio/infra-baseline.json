@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "scope": "Pilot API and native Unity operations only, excluding unrelated and development/test CI. Job occupancy from GitHub Actions, not billed minutes or electricity.",
+  "runs": [
+    {
+      "run_id": 45670034719,
+      "jobs": [
+        {
+          "job_id": 139402488657,
+          "name": "offline",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "started_at": "2026-11-25T17:56:48Z",
+          "completed_at": "2026-11-25T17:56:55Z",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 139402579902,
+          "name": "smoke",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "started_at": "2026-11-25T17:56:57Z",
+          "completed_at": "2026-11-25T17:57:06Z",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "run_id": 45670811229,
+      "jobs": [
+        {
+          "job_id": 139405236747,
+          "name": "mission",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "started_at": "2026-11-25T18:01:21Z",
+          "completed_at": "2026-11-25T18:02:43Z",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 139406113032,
+          "name": "blender",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "started_at": "2026-11-25T18:02:43Z",
+          "completed_at": "2026-11-25T18:02:43Z",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "run_id": 45671428903,
+      "jobs": [
+        {
+          "job_id": 139407446915,
+          "name": "mission",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "started_at": "2026-11-25T18:04:55Z",
+          "completed_at": "2026-11-25T18:05:57Z",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 139408114576,
+          "name": "blender",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "started_at": "2026-11-25T18:06:00Z",
+          "completed_at": "2026-11-25T18:09:59Z",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "run_id": 45676636310,
+      "jobs": [
+        {
+          "job_id": 139425806617,
+          "name": "review",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "started_at": "2026-11-25T18:35:06Z",
+          "completed_at": "2026-11-25T18:36:14Z",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "run_id": 45674341806,
+      "jobs": [
+        {
+          "job_id": 139417730817,
+          "name": "prepare",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "started_at": "2026-11-25T18:21:42Z",
+          "completed_at": "2026-11-25T18:21:48Z",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 139417816621,
+          "name": "unity",
+          "labels": [
+            "self-hosted",
+            "windows",
+            "unity-6000-3-23f1"
+          ],
+          "started_at": "2026-11-25T18:21:50Z",
+          "completed_at": "2026-11-25T18:29:20Z",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 139422388645,
+          "name": "pixel-proof",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "started_at": "2026-11-25T18:29:20Z",
+          "completed_at": "2026-11-25T18:29:20Z",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "run_id": 45675919389,
+      "jobs": [
+        {
+          "job_id": 139423297269,
+          "name": "prepare",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "started_at": "2026-11-25T18:30:54Z",
+          "completed_at": "2026-11-25T18:31:05Z",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 139423435098,
+          "name": "unity",
+          "labels": [
+            "self-hosted",
+            "windows",
+            "unity-6000-3-23f1"
+          ],
+          "started_at": "2026-11-25T18:31:07Z",
+          "completed_at": "2026-11-25T18:48:44Z",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 139433883584,
+          "name": "pixel-proof",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "started_at": "2026-11-25T18:48:46Z",
+          "completed_at": "2026-11-25T18:48:59Z",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "run_id": 45679533675,
+      "jobs": [
+        {
+          "job_id": 139436062283,
+          "name": "evidence",
+          "labels": [
+            "ubuntu-latest"
+          ],
+          "started_at": "2026-11-25T18:52:28Z",
+          "completed_at": "2026-11-25T18:52:43Z",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 139436218785,
+          "name": "cleanup",
+          "labels": [
+            "self-hosted",
+            "windows",
+            "unity-6000-3-23f1"
+          ],
+          "started_at": "2026-11-25T18:52:44Z",
+          "completed_at": "2026-11-25T18:52:56Z",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}

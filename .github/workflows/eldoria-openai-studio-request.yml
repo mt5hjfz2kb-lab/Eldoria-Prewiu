@@ -104,4 +104,6 @@ jobs:
       - name: Persist sanitized immutable report; no OpenAI credentials in this job
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 tools/openai-development-studio/publish_receipts.py /tmp/receipts
+        run: |
+          python3 tools/openai-development-studio/productivity.py snapshot --run "$GITHUB_RUN_ID" --out "/tmp/receipts/infra-run-$GITHUB_RUN_ID.json"
+          python3 tools/openai-development-studio/publish_receipts.py /tmp/receipts

@@ -47,4 +47,19 @@ class Tests(unittest.TestCase):
             self.assertEqual(b["days"][0]["status"],"provisional")
             p.write_text("day,project,cost,currency\n2026-11-25,eldoria,0.0002,EUR\n")
             with self.assertRaises(ValueError):reconcile([r],p,"eldoria","day","project","cost","currency","2026-11-25","2026-11-26","2026-11-26")
+    def test_measured_resources(self):
+        from productivity import resources
+        root=Path(__file__).parent
+        r=resources(json.loads((root/"infra-baseline.json").read_text())["runs"])
+        self.assertEqual(r["github_hosted_seconds"],512)
+        self.assertEqual(r["self_hosted_windows_seconds"],1519)
+        self.assertIsNone(r["github_billed_usd"])
+    def test_quality_decisions(self):
+        from productivity import apply_decisions
+        records=[{"run_id":1,"quality_decision":"pending"}]
+        d={"run_id":1,"decision":"accepted","evidence_run":2,"criterion":"Native validated","quality_score_before":None,"quality_score_after":None}
+        self.assertEqual(apply_decisions(records,[d])[0]["quality_decision"],"accepted")
+        self.assertEqual(records[0]["quality_decision"],"pending")
+        with self.assertRaises(ValueError):apply_decisions(records,[{**d,"evidence_run":None}])
+        with self.assertRaises(ValueError):apply_decisions(records,[d,d])
 if __name__=="__main__":unittest.main(verbosity=2)

@@ -8,10 +8,17 @@ BASE="tools/openai-development-studio/receipts"
 def publish(path):
     r=read(path)
     rid=r["run_id"]
-    if type(rid) is not int or rid<=0 or path.name!=f"run-{rid}.json" or r["schema"]!=2:
-        raise ValueError("Receipt identity")
-    if r["billing_status"]!="unreconciled" or r["billed_usd"] is not None:raise ValueError("Unexpected billing information")
-    if any("response" in c or "prompt" in c for c in r["calls"]):raise ValueError("Unexpected private content")
+    if type(rid) is not int or rid<=0:raise ValueError("Receipt identity")
+    if path.name==f"infra-run-{rid}.json":
+        from productivity import resources
+        if set(r)!={"run_id","jobs"}:raise ValueError("Invalid resource schema")
+        for job in r["jobs"]:
+            if set(job)!={"job_id","name","labels","started_at","completed_at","conclusion"}:raise ValueError("Invalid resource job")
+        resources([r])
+    else:
+        if path.name!=f"run-{rid}.json" or r["schema"]!=2:raise ValueError("Receipt identity")
+        if r["billing_status"]!="unreconciled" or r["billed_usd"] is not None:raise ValueError("Unexpected billing information")
+        if any("response" in c or "prompt" in c for c in r["calls"]):raise ValueError("Unexpected private content")
     raw=path.read_bytes()
     if len(raw)>100000:raise ValueError("Receipt too large")
     endpoint=f"repos/{REPO}/contents/{BASE}/{path.name}"
@@ -30,6 +37,6 @@ def publish(path):
     raise RuntimeError("Receipt publication failed; artifact retained")
 if __name__=="__main__":
     p=argparse.ArgumentParser();p.add_argument("directory");a=p.parse_args()
-    paths=sorted(Path(a.directory).glob("run-*.json"))
+    paths=sorted(Path(a.directory).glob("run-*.json"))+sorted(Path(a.directory).glob("infra-run-*.json"))
     if not paths:raise ValueError("No receipts")
     for f in paths:publish(f)
