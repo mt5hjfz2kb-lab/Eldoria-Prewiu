@@ -1,0 +1,13 @@
+# Postigo — intervención real a partir del Studio V2
+
+Estado de esta revisión: código candidato construido, no incorporado al juego; verificación nativa en curso. No es aprobación artística.
+
+- Diagnóstico de origen: run 45683014884 (cuatro roles, 69 s, 0,038709675 USD estimados); fuente 5ef2aee67cf8fde57ba2fc4b3d929b517ee67944.
+- Parche de producción exacto: [candidates/postigo-frontage-20261125.patch](../candidates/postigo-frontage-20261125.patch). SHA-256 de fuente LF fe19f3274135efdcc0766f64e372a61fb0f5b0e066e901dc1a21ec79a2d67c38; candidato 1631d06cfe223da43b099013cce128c8c0e4f11b344315a96fe18ade92ba4439. Aplicación y reversión con git apply comprobadas localmente y coinciden con ambos hashes.
+- B: conserva geometría de la calle y restituye opacidad de inicio del paso bajo el arco. C: B más ampliación asimétrica del pavimento existente hacia las fachadas; S: sombra del arco desactivada únicamente para diagnóstico, no candidato de producción.
+- Pruebas de fuente 4/4, run 45685929688 (preparación). Comprobación independiente de la fórmula geométrica con coordenadas reales: 49 filas de 9 vértices, 20 filas afectadas, 160 vértices modificados, 768 triángulos no invertidos ni degenerados en A y C; centro de las 49 filas idéntico. Extensión máxima 0,55 unidades hacia la fachada y 0,20 hacia el lado opuesto. Esta prueba no sustituye Unity.
+- Tiempo medido en GitHub: primer commit de implementación 40 s después de reclamar el trabajo; solicitud corregida 144 s después. No incluye razonamiento previo y no es comparación con un flujo sin agentes.
+- Run nativo: [45685929688](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45685929688). Primer preflight 45685805585 rechazó contenido omitido del registro grande; se corrigió lectura del blob y no llegó a Windows. El script de cierre original puede fallar tras capturar por reutilización de la variable proof; corregido en commit c5aa2b86f3664a7338e5d30e61328a94a45bf2b1 para ejecuciones futuras. Si el defecto afecta al run original, comprobar logs, manifiesto y hashes archivados antes de decidir; no declarar PASS del wrapper.
+- No nuevas llamadas API: coste incremental OpenAI de esta implementación 0 USD, gasto acumulado estimado 0,228557225 USD. La factura real y electricidad siguen sin verificar.
+
+Cierre requerido: comparar A/B/C/S/R en las cámaras reales, verificar regresión B1 y trayectoria del mensajero, revisar resultado visual (no contar píxeles como calidad), comprobar limpieza y liberar solo reserva propia. No modificar la rama experimental ni main del juego si el resultado no justifica promoción.
