@@ -1,12 +1,12 @@
 """Apply the exact reviewed MILL_YARD proposal to a copy; no generated code execution."""
 import argparse,difflib,hashlib,json,math,pathlib,sys,unittest
-OLD="""  half woodDust=(1-smoothstep(.04,.50,timberLine+.18*erosion))*millYard;
-  half3 workEarth=lerp(crushedEarth,crushedEarth*half3(1.37,1.22,.91),woodDust);
-  ground=lerp(ground,lerp(workEarth,ground,.23+.15*blades),millYard*.84);"""
-NEW="""  half packedWear=millYard*lerp(.68,1.0,smoothstep(.28,.72,millYard+.22*erosion));
-  half woodDust=(1-smoothstep(.05,.40,timberLine+.18*erosion))*millYard;
-  half3 workEarth=lerp(crushedEarth,crushedEarth*half3(1.30,1.19,.94),woodDust);
-  ground=lerp(ground,lerp(workEarth,ground,.23+.15*blades),packedWear*.84);"""
+OLD=""" half woodDust=(1-smoothstep(.04,.50,timberLine+.18*erosion))*millYard;
+ half3 workEarth=lerp(crushedEarth,crushedEarth*half3(1.37,1.22,.91),woodDust);
+ ground=lerp(ground,lerp(workEarth,ground,.23+.15*blades),millYard*.84);"""
+NEW=""" half packedWear=millYard*lerp(.68,1.0,smoothstep(.28,.72,millYard+.22*erosion));
+ half woodDust=(1-smoothstep(.05,.40,timberLine+.18*erosion))*millYard;
+ half3 workEarth=lerp(crushedEarth,crushedEarth*half3(1.30,1.19,.94),woodDust);
+ ground=lerp(ground,lerp(workEarth,ground,.23+.15*blades),packedWear*.84);"""
 def replace(source):
     if source.count(OLD)!=1 or NEW in source:
         raise ValueError("Exact frozen shader block not found or already modified; no write")
