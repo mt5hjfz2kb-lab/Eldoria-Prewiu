@@ -6,22 +6,26 @@
   "workstream_id": "eldoria-senda-brecha-lane-event-20261115",
   "asset_or_sector": "La Senda de la Brecha — independent mobile lane-battle 3D scene and original Valoria visual language",
   "profile": "environment_composition",
-  "visual_gate_state": "OWNER_APPROVED_2D_MECHANIC_VIDEO_NATIVE_UNITY_3D_NOT_YET_TESTED",
+  "visual_gate_state": "OWNER_APPROVED_MECHANICS_STUDIO_ART_CANDIDATE_WEB_TESTED_NATIVE_RECHECK_PENDING",
   "ai_authorship_policy": "required",
   "diagnosis": "Owner confirmed 2.5D video displays the intended continuous lane mechanics, but original web demo is procedurally drawn and not native Unity. Create a separate procedural 3D Unity prototype; evaluate real native mobile-aspect captures against video for player legibility and compositional quality. The existing Valoria beta cannot be modified while world iPhone restart P0 remains open.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
-    "approved": false,
-    "authorized_credit_cost": 0
+    "approved": true,
+    "authorized_credit_cost": 10,
+    "currency": "USD",
+    "scope": "additional Studio API benchmark for PR195 only",
+    "estimated_api_cost_usd": 0.09172975,
+    "invoice_verified": false
   },
   "capabilities": {
     "existing_qualified_donor_assets": true,
     "unity_native_urp": true,
     "procedural_3d_geometry_provisional": true,
-    "original_2d_graphic_design": false,
+    "original_2d_graphic_design": true,
     "existing_3d_assets_modified": false,
-    "zero_paid_assets": true
+    "zero_paid_assets": false
   },
   "artist": {
     "design": "Adult dark medieval atmosphere with Valoria's steel blue, aged gold, weathered slate and restrained violet fissure. A visible running army in physical 3D perspective, touch lateral movement, portals integrated in roadway, foes, projectiles, actual visual growth and losses. Avoid copied characters, UI, Snow terrain and commercial game's asset language.",
@@ -35,5 +39,17 @@
   "art_approved": false,
   "physical_mobile_tested": false,
   "budget_eur": 0,
-  "notes": "Route only; no art has been approved. Existing link is external read-only HTML prototype, tested by remote desktop browser but not iPhone. New Unity primitive models are test proxies, not approved new character meshes."
+  "notes": "Original generated crest included in WebGL candidate, not a mesh. Native proof uses isolated Built-in pipeline, not integrated URP. No art approval or physical iPhone acceptance. API estimate includes one failed and five successful requests; actual invoice unverified.",
+  "studio_benchmark": {
+    "runs": [
+      45693242088,
+      45693467813
+    ],
+    "receipt_archive_run": 45694172796,
+    "baseline_native_run": 43732245691,
+    "web_candidate_pass": 45694564134,
+    "optimized_web_run": 45695680165,
+    "native_candidate_run": 45694055440,
+    "estimated_cost_usd": 0.09172975
+  }
 }
