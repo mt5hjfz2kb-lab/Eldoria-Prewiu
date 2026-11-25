@@ -620,11 +620,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 image.Apply();
                 var pixels=image.GetPixels32();
                 var colors=new HashSet<int>();
+                int magentaPixels=0, sampledPixels=0;
                 for(int i=0;i<pixels.Length;i+=Math.Max(1,pixels.Length/2048))
                 {
                     var c=pixels[i];
                     colors.Add((c.r<<16)|(c.g<<8)|c.b);
+                    sampledPixels++;
+                    if(c.r>230 && c.g<40 && c.b>230)magentaPixels++;
                 }
+                if(magentaPixels*100>sampledPixels)
+                    throw new Exception("City terrain shader failed to render in "+name+
+                        ": "+magentaPixels+"/"+sampledPixels+" sampled pixels are magenta.");
                 if(colors.Count<12)throw new Exception("Native image is blank: "+name+" unique="+colors.Count);
                 var bytes=image.EncodeToPNG();
                 var path=Path.Combine(folder,name+".png");

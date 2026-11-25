@@ -150,10 +150,10 @@ half4 frag(Varying i):SV_Target {
  float sill=max(abs(gateSide+.12*run)/max(.3,_Forecourt.z*.44),abs(run-.13)/max(.15,_Forecourt.w*.44));
  float gateWidth=lerp(.82,.43,smoothstep(.15,2.1,run));
  float curve=.19*sin(run*1.6);
- float spine=max(abs(gateSide-curve)/gateWidth,max(-run/.45,(run-1.6)/1.35));
+ float gateSpine=max(abs(gateSide-curve)/gateWidth,max(-run/.45,(run-1.6)/1.35));
  float2 sideEnd=gate+float2(-1.6,-.54);
  float service=distanceToLane(p,gate+float2(-.37,-.23),sideEnd)/.40;
- float outline=min(sill,min(spine,service+.18));
+ float outline=min(sill,min(gateSpine,service+.18));
  half worn=rough+.23*(seam.r-seam.g);
  half landing=1-smoothstep(.45,1.34,outline+worn);
  half3 laidStone=tex2D(_Paving,float2(.94*p.x+.34*p.y,1.18*p.y-.16*p.x)).rgb;
