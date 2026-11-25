@@ -11,6 +11,7 @@ from unittest.mock import patch
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
+import economics
 
 URL = "https://api.openai.com/v1/responses"
 MODELS = {"gpt-6-luna": (0.1, 0.5), "gpt-6.1-terra": (1.0, 5.0), "gpt-6.2-sol": (2.0, 10.0)}
@@ -93,18 +94,17 @@ def report(role, payload, manifest, result):
     if not isinstance(i, int) or not isinstance(o, int) or min(i,o) < 0:
         raise RuntimeError("La API no devolvió medición válida")
     a,b = MODELS[payload["model"]]
-    details=usage.get("input_tokens_details",{}) or {}
-    cached=details.get("cached_tokens",0)
-    writes=details.get("cache_write_tokens",0)
-    long_writes=(details.get("cache_write_tokens_details",{}) or {}).get("ttl_12h_tokens",0)
-    if not all(isinstance(v,int) and v>=0 for v in (cached,writes,long_writes)) or cached+writes>i or long_writes>writes:
-        raise RuntimeError("Invalid cache usage breakdown")
-    cached_rate=a*(0.1 if payload["model"]=="gpt-6-luna" else 0.05)
-    with_cache=((i-cached-writes)*a+cached*cached_rate+(writes-long_writes)*a*1.25+long_writes*a*2.5+o*b)/1_000_000
-    return {"role":role, "model_requested":payload["model"], "model_returned":result.get("model"),
+    tier=result.get("service_tier") or "standard"
+    actual_model=result.get("model") or payload["model"]
+    try:
+        cost=economics.estimate(actual_model,usage,tier)
+    except (KeyError,ValueError,TypeError) as exc:
+        raise RuntimeError("Unpriced or invalid usage receipt; stop") from exc
+    return {"role":role, "model_requested":payload["model"], "model_returned":actual_model,
             "utc":datetime.now(timezone.utc).isoformat(), "evidence":manifest, "usage":usage,
-            "estimated_usd_standard_uncached":round((i*a+o*b)/1_000_000, 6),
-            "estimated_usd_standard_with_cache":round(with_cache,8),
+            "estimated_usd_standard_uncached":round((i*a+o*b)/1_000_000,6),
+            "estimated_usd_standard_with_cache":float(cost),"cost_estimate_usd":str(cost),
+            "service_tier":tier,"tariff":economics.RATES["version"],
             "billing_verified":False, "art_approved":False, "response":text}
 
 def main():

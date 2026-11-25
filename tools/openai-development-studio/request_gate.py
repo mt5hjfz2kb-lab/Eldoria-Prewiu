@@ -9,6 +9,7 @@ import budget_guard
 import mission
 import mission_packet
 import studio
+import routing
 
 REPO="mt5hjfz2kb-lab/Eldoria-Prewiu"
 PREFIX="tools/openai-development-studio/"
@@ -56,8 +57,7 @@ def validate_request(d):
         require(isinstance(d.get(k),str) and 1<=len(d[k])<=2000,"Invalid "+k)
     if d["mode"]=="art_candidate":
         require(isinstance(d.get("asset_brief"),str) and 1<=len(d["asset_brief"])<=1200,"Explicit asset brief required")
-    slots=["director","programmer","auditor","coordinator"]
-    if d["mode"]=="art_candidate":slots.append("artist")
+    slots=[r["role"] for r in routing.plan(d["mode"],d.get("routing_profile","standard"))]
     return sum((mission.RESERVES[s] for s in slots),Decimal(0))
 def authorization(d,raw,previous,current,day,attempt):
     cap=validate_request(d)
@@ -128,6 +128,7 @@ def materialize(d,out):
             refs.append({"path":dest.name,"sha256":sha256(raw)})
     packet={k:d[k] for k in ("schema","target_id","source_sha","source_run","objective","scope","acceptance","mode")}
     if "asset_brief" in d:packet["asset_brief"]=d["asset_brief"]
+    packet["routing_profile"]=d.get("routing_profile","standard")
     packet.update(source={"path":path.name,"sha256":sha256(data)},images=refs)
     p=out/"packet.json";p.write_text(json.dumps(packet,ensure_ascii=False,indent=2),encoding="utf-8")
     mission_packet.execute(p,None,False)

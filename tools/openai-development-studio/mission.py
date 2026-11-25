@@ -5,6 +5,7 @@ from unittest.mock import patch
 import studio
 import generate_candidate as art
 import budget_guard
+import economics
 import datetime as dt
 
 D=Decimal
@@ -58,25 +59,32 @@ def textfile(path, value):
     pathlib.Path(path).write_text(value,encoding="utf-8")
     return str(path)
 
-def ask(role, model, evidence, images, ledger, slot, out, instructions=None):
+def ask(role, model, evidence, images, ledger, slot, out, instructions=None, effort=None):
     payload, manifest=studio.make_payload(role,model,evidence,images)
     if instructions: payload["instructions"]=instructions
+    if effort is not None:
+        if effort not in ("none","low","medium") or (model=="gpt-6.2-sol" and effort=="none"):raise ValueError("Unsupported reasoning effort")
+        payload["reasoning"]={"effort":effort}
     row=ledger.reserve(slot)
-    result=studio.report(role,payload,manifest,studio.request_api(payload,os.environ.get("OPENAI_API_KEY")))
-    ledger.complete(row,result["estimated_usd_standard_with_cache"],result["usage"])
-    write_json(out/(slot+".json"),result)
-    print(slot, "API_RESPONSE_OK_WITH_CACHE", result["estimated_usd_standard_with_cache"], flush=True)
-    return result["response"]
+    row.update(model=model,utc=dt.datetime.now(dt.timezone.utc).isoformat(),reasoning=payload["reasoning"]["effort"])
+    ledger.save();started=time.monotonic()
+    try:
+        raw=studio.request_api(payload,os.environ.get("OPENAI_API_KEY"))
+        row.update(usage=raw.get("usage"),model=raw.get("model") or model,service_tier=raw.get("service_tier") or "standard")
+        ledger.save()
+        result=studio.report(role,payload,manifest,raw)
+        result["duration_seconds"]=round(time.monotonic()-started,3)
+        row["duration_seconds"]=result["duration_seconds"]
+        write_json(out/(slot+".json"),result)
+        ledger.complete(row,result["cost_estimate_usd"],result["usage"])
+        print(slot, "API_RESPONSE_OK_WITH_CACHE", result["cost_estimate_usd"], flush=True)
+        return result["response"]
+    finally:
+        row["duration_seconds"]=round(time.monotonic()-started,3);ledger.save()
 
 def image_cost(usage):
-    if not isinstance(usage,dict): return None
-    # Official Flare standard rates, uncached; report unknown if token breakdown is absent.
-    det=usage.get("input_tokens_details")
-    out=usage.get("output_tokens")
-    if not isinstance(det,dict) or not isinstance(out,int): return None
-    a,b=det.get("text_tokens"),det.get("image_tokens")
-    if not isinstance(a,int) or not isinstance(b,int) or min(a,b,out)<0: return None
-    return (D(a)*5+D(b)*8+D(out)*30)/D(1000000)
+    try:return economics.estimate("gpt-image-2.6-flare",usage)
+    except (KeyError,ValueError,TypeError):return None
 
 def run(args):
     out=pathlib.Path(args.out); out.mkdir(parents=True,exist_ok=False)
