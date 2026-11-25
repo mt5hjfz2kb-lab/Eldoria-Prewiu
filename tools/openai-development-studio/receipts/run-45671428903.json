@@ -1,0 +1,170 @@
+{
+  "schema": 2,
+  "run_id": 45671428903,
+  "request_id": "valoria-mill-yard-v2",
+  "source_run": 45638738009,
+  "started_utc": "2026-11-25T18:04:53Z",
+  "finished_utc": "2026-11-25T18:10:00Z",
+  "utc_day": "2026-11-25",
+  "wall_seconds": 307.0,
+  "workflow_status": "success",
+  "quality_decision": "rejected",
+  "quality_score_before": null,
+  "quality_score_after": null,
+  "quality_evidence_run": 45679533675,
+  "calls_recorded": 5,
+  "calls_with_unknown_cost": 0,
+  "estimated_known_usd": "0.0926180",
+  "estimate_complete": true,
+  "billed_usd": null,
+  "billing_status": "unreconciled",
+  "github_billed_usd": null,
+  "pc_electricity_usd": null,
+  "windows_seconds": null,
+  "manual_review_seconds": null,
+  "tariff": "2026-11-25-standard-short",
+  "calls": [
+    {
+      "role": "director",
+      "model": "gpt-6.1-terra",
+      "usage": {
+        "input_tokens": 3981,
+        "input_tokens_details": {
+          "cache_write_tokens": 3978,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 3978
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 565,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 4546
+      },
+      "utc": "2026-11-25T18:05:16.840889+00:00",
+      "duration_seconds": null,
+      "estimated_usd": "0.0078005",
+      "tariff": "2026-11-25-standard-short",
+      "service_tier": "standard",
+      "billed_usd": null,
+      "billing_status": "unreconciled",
+      "state": "completed",
+      "reservation_usd": "0.15"
+    },
+    {
+      "role": "artist",
+      "model": "gpt-image-2.6-flare",
+      "usage": {
+        "input_tokens": 534,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 534
+        },
+        "output_tokens": 1449,
+        "output_tokens_details": {
+          "image_tokens": 1449,
+          "text_tokens": 0
+        },
+        "total_tokens": 1983
+      },
+      "utc": null,
+      "duration_seconds": null,
+      "estimated_usd": "0.04614",
+      "tariff": "2026-11-25-standard-short",
+      "service_tier": "standard",
+      "billed_usd": null,
+      "billing_status": "unreconciled",
+      "state": "completed",
+      "reservation_usd": "0.75"
+    },
+    {
+      "role": "programmer",
+      "model": "gpt-6.2-sol",
+      "usage": {
+        "input_tokens": 5319,
+        "input_tokens_details": {
+          "cache_write_tokens": 5275,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 5275
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 696,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 6015
+      },
+      "utc": "2026-11-25T18:05:33.435632+00:00",
+      "duration_seconds": null,
+      "estimated_usd": "0.0202355",
+      "tariff": "2026-11-25-standard-short",
+      "service_tier": "standard",
+      "billed_usd": null,
+      "billing_status": "unreconciled",
+      "state": "completed",
+      "reservation_usd": "0.20"
+    },
+    {
+      "role": "auditor",
+      "model": "gpt-6.1-terra",
+      "usage": {
+        "input_tokens": 5365,
+        "input_tokens_details": {
+          "cache_write_tokens": 5362,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 5362
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 542,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 5907
+      },
+      "utc": "2026-11-25T18:05:47.182716+00:00",
+      "duration_seconds": null,
+      "estimated_usd": "0.0094155",
+      "tariff": "2026-11-25-standard-short",
+      "service_tier": "standard",
+      "billed_usd": null,
+      "billing_status": "unreconciled",
+      "state": "completed",
+      "reservation_usd": "0.15"
+    },
+    {
+      "role": "coordinator",
+      "model": "gpt-6.2-sol",
+      "usage": {
+        "input_tokens": 1873,
+        "input_tokens_details": {
+          "cache_write_tokens": 1821,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 1821
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 437,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 2310
+      },
+      "utc": "2026-11-25T18:05:55.275046+00:00",
+      "duration_seconds": null,
+      "estimated_usd": "0.0090265",
+      "tariff": "2026-11-25-standard-short",
+      "service_tier": "standard",
+      "billed_usd": null,
+      "billing_status": "unreconciled",
+      "state": "completed",
+      "reservation_usd": "0.20"
+    }
+  ]
+}
