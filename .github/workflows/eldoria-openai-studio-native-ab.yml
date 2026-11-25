@@ -1,0 +1,115 @@
+name: Eldoria Studio - native Unity MILL_YARD A/B
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths:
+      - '.github/workflows/eldoria-openai-studio-native-ab.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-studio-native-ab
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.run_attempt == 1 && github.event.before == 'c553bbfff6398ee6005e988c635c2b1c74a7810b' && github.event.head_commit.message == 'Execute owner-authorized native Unity Studio A/B once'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Freeze reviewed candidate and native adapter
+        run: |
+          set -eu
+          curl -fsSL https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944/Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/DistrictGround.shader -o /tmp/ground.shader
+          python3 tools/openai-development-studio/shader_candidate.py --self-test
+          python3 tools/openai-development-studio/shader_candidate.py --source /tmp/ground.shader --out /tmp/studio-packet
+          cp tools/openai-development-studio/unity/native-ab.ps1 /tmp/studio-packet/
+          cp tools/openai-development-studio/unity/Editor/EldoriaStudioNativeAB.cs /tmp/studio-packet/
+          sha256sum /tmp/studio-packet/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: studio-native-packet
+          path: /tmp/studio-packet/
+          retention-days: 14
+          if-no-files-found: error
+  unity:
+    needs: prepare
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    concurrency:
+      group: eldoria-modular25d-exclusive-unity-native
+      cancel-in-progress: false
+    timeout-minutes: 80
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: studio-native-packet
+          path: ${{ runner.temp }}/eldoria-studio-packet-${{ github.run_id }}
+      - name: Native camera A/B and exact reversal in disposable project
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $packet=Join-Path $env:RUNNER_TEMP ('eldoria-studio-packet-'+$env:GITHUB_RUN_ID)
+          $output=Join-Path $env:RUNNER_TEMP ('eldoria-studio-evidence-'+$env:GITHUB_RUN_ID)
+          & (Join-Path $packet 'native-ab.ps1') -Packet $packet -Output $output
+      - name: Preserve actual native frames and diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-native-unity-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-studio-evidence-${{ github.run_id }}/
+          retention-days: 14
+          if-no-files-found: warn
+  pixel-proof:
+    needs: unity
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: studio-native-unity-${{ github.run_id }}
+          path: native
+      - name: Verify paired captures, quantify actual pixel deltas, prepare contact sheets
+        run: |
+          python3 -m pip install --disable-pip-version-check Pillow==11.3.0
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          from PIL import Image,ImageChops,ImageDraw
+          root=Path("native");out=Path("review");out.mkdir()
+          m=json.loads((root/"native-evidence.json").read_text(encoding="utf-8-sig"))
+          assert m["sourceFrames"]==48 and m["engineVersion"]=="6000.3.23f1"
+          cleanup=json.loads((root/"cleanup.json").read_text(encoding="utf-8-sig"))
+          assert cleanup["native_pass"] and cleanup["scratch_removed"]
+          rows=[]
+          for stage in (1,5):
+            for view in ("home","mill","mill-hd","travel-0","travel-1","travel-2","travel-3","travel-4"):
+              a,b,r=[root/f"b{stage}-{v}-{view}.png" for v in ("A","B","R")]
+              assert a.read_bytes()==r.read_bytes(),"reversal mismatch"
+              ia,ib=[Image.open(p).convert("RGB") for p in (a,b)]
+              diff=ImageChops.difference(ia,ib); bbox=diff.getbbox()
+              mask=diff.convert("L").point(lambda x:255 if x>2 else 0)
+              count=mask.histogram()[255]
+              row={"stage":stage,"view":view,"size":ia.size,"changed_pixels_luma_gt_2":count,
+                   "changed_fraction_luma_gt_2":count/(ia.width*ia.height),"diff_bounds":bbox,"reversal_exact":True}
+              rows.append(row)
+              if view=="mill-hd": assert bbox is not None,"no native pixel effect"
+              if view in ("home","mill","mill-hd"):
+                pair=Image.new("RGB",(ia.width*2,ia.height+30),(24,24,24))
+                pair.paste(ia,(0,30));pair.paste(ib,(ia.width,30))
+                d=ImageDraw.Draw(pair);d.text((8,8),"A - original",fill="white");d.text((ia.width+8,8),"B - candidate",fill="white")
+                pair.save(out/f"b{stage}-{view}-AB.png")
+          (out/"pixel-proof.json").write_text(json.dumps({"rows":rows,"art_approved":False,"gameplay_test":False},indent=2))
+          print("STUDIO_PIXEL_AB_AND_REVERSAL_PASS",json.dumps(rows))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: studio-native-review-${{ github.run_id }}
+          path: review/
+          retention-days: 14
+          if-no-files-found: error
