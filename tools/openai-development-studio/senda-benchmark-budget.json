@@ -25,6 +25,13 @@
       "reason": "Five roles complete; source and two authentic native frames verified. No artistic approval.",
       "estimated_usd": "0.08252425",
       "result_artifact_id": 15059288552
+    },
+    {
+      "id": "senda-concept-polish-v3",
+      "reserve_usd": "1.45",
+      "status": "authorized_once",
+      "run_id": "senda-concept-polish-v3",
+      "reason": "Owner explicitly requested agents to improve real scene; same previous $10 ceiling, first $5 tranche. One texture candidate and four independent reports."
     }
   ],
   "estimated_total_usd": "0.09172975",
