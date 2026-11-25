@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "historic-b1-camera-dry-20261125",
+  "live": false,
+  "approved_public_game_evidence": true,
+  "mode": "review",
+  "target_id": "BASTION_I_CAMERA",
+  "source_sha": "e681fda70aaa985dc62a928e4c9c6a0c63628cd5",
+  "evidence_head_sha": "e681fda70aaa985dc62a928e4c9c6a0c63628cd5",
+  "source_run": 44713811420,
+  "artifact_name": "eldoria-mod25d-genuine-unity-44713811420",
+  "source_path": "Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DCameraInput.cs",
+  "source_sha256": "cb82d710fc095790873f0cbee02b4c10768b95bde0d84b25c9e2673a48c7708a",
+  "manifest": "evidence.json",
+  "frames": [
+    "01-available-390x844.png",
+    "08-sawmill-built-390x844.png"
+  ],
+  "objective": "Validate reusable request transport against two genuine historical Bastion I camera frames.",
+  "scope": "Dry-run only; no API call, no native write, no judgment of current Valoria from historical evidence.",
+  "acceptance": "Exact source and both native frame hashes, successful certified run, no API cost."
+}
