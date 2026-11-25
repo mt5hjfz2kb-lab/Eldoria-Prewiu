@@ -31,6 +31,30 @@ function shield(chest,hostile){
  const top=new THREE.Mesh(new THREE.BoxGeometry(.083,.025,.006),crest.material);top.position.set(0,.067,.026);pivot.add(top);
  for(let i=0;i<3;i++){const bit=new THREE.Mesh(new THREE.BoxGeometry(.017,.024,.006),crest.material);bit.position.set((i-1)*.029,.09,.026);pivot.add(bit)}
 }
+const qLeft=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1,0,0),-Math.PI*35/180);
+const qRight=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1,0,0),Math.PI*35/180);
+const iLeft=qLeft.clone().invert(),iRight=qRight.clone().invert();
+export function correctArms(rig,undo=false){
+ if(!rig.left||!rig.right)return;
+ if(undo&&rig.poseCorrected){rig.left.quaternion.multiply(iLeft);rig.right.quaternion.multiply(iRight);rig.poseCorrected=false;}
+ if(!undo&&!rig.poseCorrected){rig.left.quaternion.multiply(qLeft);rig.right.quaternion.multiply(qRight);rig.poseCorrected=true;}
+}
+export function equipWeapon(model,hero=false){
+ const socket=model.getObjectByName('Eldoria_Aldric_weapon_R_socket');if(!socket)return;
+ const wood=new THREE.MeshStandardMaterial({color:0x5b402b,roughness:.78}),iron=new THREE.MeshStandardMaterial({color:0xa4aab0,roughness:.39,metalness:.72}),gold=new THREE.MeshStandardMaterial({color:0xb99b63,roughness:.42,metalness:.55});
+ const weapon=new THREE.Group();weapon.name=hero?'Valorian expedition sword':'Guard spear';socket.add(weapon);
+ if(hero){
+  const blade=new THREE.Mesh(new THREE.BoxGeometry(.028,.38,.009),iron);blade.position.y=.24;weapon.add(blade);
+  const point=new THREE.Mesh(new THREE.ConeGeometry(.018,.055,4),iron);point.position.y=.457;weapon.add(point);
+  const guard=new THREE.Mesh(new THREE.BoxGeometry(.12,.023,.022),gold);guard.position.y=.05;weapon.add(guard);
+  const grip=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.12,8),wood);grip.position.y=-.02;weapon.add(grip);
+ }else{
+  const shaft=new THREE.Mesh(new THREE.CylinderGeometry(.009,.009,.81,8),wood);shaft.position.y=.25;weapon.add(shaft);
+  const socketBand=new THREE.Mesh(new THREE.CylinderGeometry(.014,.013,.055,8),gold);socketBand.position.y=.66;weapon.add(socketBand);
+  const blade=new THREE.Mesh(new THREE.ConeGeometry(.031,.15,4),iron);blade.position.y=.74;weapon.add(blade);
+ }
+ weapon.rotation.z=.12;
+}
 export async function buildGuardArmy(source,walk,attack,squad,foes,fit){
  await MeshoptSimplifier.ready;if(!MeshoptSimplifier.supported)throw Error('Mesh simplifier unavailable');
  const base=cloneSkinned(source),kept=[];let triangles=0;
@@ -46,7 +70,7 @@ export async function buildGuardArmy(source,walk,attack,squad,foes,fit){
   const blueprint=cloneSkinned(base);
   blueprint.traverse(o=>{if(o.isSkinnedMesh&&o.visible){o.material=o.material.clone();o.material.color.multiply(new THREE.Color(hostile?0x97574c:0xaebfcd));if(o.name.includes('Cape_Main'))o.material.color.set(hostile?0x6b3330:0x214e68)}});
   const head=blueprint.getObjectByName('Eldoria_Aldric_head'),chest=blueprint.getObjectByName('Eldoria_Aldric_chest');
-  if(!head||!chest)throw Error('Guard rig bones absent');helm(head,hostile);shield(chest,hostile);
+  if(!head||!chest)throw Error('Guard rig bones absent');helm(head,hostile);shield(chest,hostile);equipWeapon(blueprint,false);
   fit(blueprint,hostile?1.78:1.86);
   const units=hostile?foes:squad;
   for(let i=1;i<units.length;i++){
@@ -63,6 +87,6 @@ export function updateGuardArmy(rigs,t,fighting){
  for(const g of rigs){
    if(!g.unit.visible)continue;
    if(fighting!==g.attackActive){g.attackActive=fighting;if(fighting){g.walk.stop();g.attack.reset().play()}else{g.attack.stop();g.walk.reset().play()}}
-   const dt=Math.max(0,Math.min(.20,t-g.lastTime));g.lastTime=t;g.mixer.update(dt);
+   const dt=Math.max(0,Math.min(.20,t-g.lastTime));g.lastTime=t;correctArms(g,true);g.mixer.update(dt);correctArms(g,false);
  }
 }
