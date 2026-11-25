@@ -18,14 +18,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             var output=Environment.GetEnvironmentVariable("ELDORIA_STUDIO_OUTPUT");
             if(string.IsNullOrEmpty(output) || !Directory.Exists(output))
                 throw new InvalidOperationException("Explicit isolated output required");
-            if(Application.unityVersion!="6000.3.23f1")
+            if(UnityEngine.Application.unityVersion!="6000.3.23f1")
                 throw new InvalidOperationException("Wrong Unity version");
             var shaderA=Resources.Load<Shader>("ValoriaModular25D/DistrictGround");
             var shaderB=Resources.Load<Shader>("ValoriaModular25D/StudioDistrictGroundCandidate");
             if(!shaderA || !shaderB || shaderA==shaderB || ShaderUtil.ShaderHasError(shaderA) ||
                 ShaderUtil.ShaderHasError(shaderB)) throw new Exception("Native shader import error");
             var report=new Modular25DNativeCapture.Evidence{
-                engine="Unity",engineVersion=Application.unityVersion,sourceSha=Source,
+                engine="Unity",engineVersion=UnityEngine.Application.unityVersion,sourceSha=Source,
                 sourceBranch="Frozen actual Valoria source; Studio scratch only",
                 scenePath=Modular25DEditorTasks.ScenePath,mode="Paired native GPU render; same scene and camera; no player saves",
                 generatedAtUtc=DateTime.UtcNow.ToString("o")
