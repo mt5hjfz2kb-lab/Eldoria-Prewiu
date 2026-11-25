@@ -1151,7 +1151,9 @@ namespace Eldoria.HeroesUI
                 // approved illustrated bust must be FIT inside the aperture.
                 // Applying cover to both enlarged Aldric's face to a cropped
                 // forehead at 1600x900; the two sources are not interchangeable.
-                float imageW=fullBody?Mathf.Max(w,h*ratio):
+                bool paintedGuardian = slot==0 && sprite.texture.name=="aldric_guardian";
+                bool cover = fullBody || paintedGuardian;
+                float imageW=cover?Mathf.Max(w,h*ratio):
                     Mathf.Max(Mathf.Min(w,h*ratio),w*.64f);
                 float imageH=imageW/ratio;
                 // The previous centered bust cropped Aldric above his
@@ -1159,7 +1161,7 @@ namespace Eldoria.HeroesUI
                 // A portrait photograph is not an ornamental texture: keep
                 // his identity, hairline and face entirely in the visible
                 // upper aperture, while lower armour may crop naturally.
-                float top=fullBody?-(imageH-h)*(w>h?.12f:.27f):
+                float top=cover?-(imageH-h)*(w>h?.12f:.27f):
                     imageH>h?-Mathf.Min(6f,(imageH-h)*.06f):
                     (h-imageH)*.5f;
                 Place(image.rectTransform,(w-imageW)*.5f,top,imageW,imageH);
@@ -1180,7 +1182,7 @@ namespace Eldoria.HeroesUI
                             hideFlags=HideFlags.DontSave};
                         hallPortraitPaintMaterial.SetFloat("_Strength",.12f);
                     }
-                    if(slot==0){
+                    if(slot==0 && !paintedGuardian){
                         if(!hallAldricMatteMaterial){
                             hallAldricMatteMaterial=new Material(hallPortraitPaintMaterial){
                                 name="Eldoria / authored Aldric soft-edge stage",
@@ -1192,7 +1194,7 @@ namespace Eldoria.HeroesUI
                         image.material=hallAldricMatteMaterial;
                     }else image.material=hallPortraitPaintMaterial;
                 }
-                if(slot==0){
+                if(slot==0 && !paintedGuardian){
                     // Aldric's genuine illustrated bust has an originally
                     // baked bright sky. This separate feathered material stage
                     // eliminates the visibly pasted rectangular photo edge

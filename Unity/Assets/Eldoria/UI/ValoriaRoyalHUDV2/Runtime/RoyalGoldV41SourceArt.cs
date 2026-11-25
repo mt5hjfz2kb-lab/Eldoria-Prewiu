@@ -13,6 +13,11 @@ namespace Eldoria.UI.RoyalGold.V2
         public static Sprite HeroPortrait(string id)
         {
             if(id=="aldric"){
+                if (RoyalGoldV2Hud.UseCoronaArt)
+                {
+                    var painted = Get("ValoriaModular25D/UI/CoronaBrecha/aldric_guardian");
+                    if (painted) return painted;
+                }
                 const string aldricKey="canonical-aldric-dialogue-portrait";
                 if(sprites.TryGetValue(aldricKey,out var existing))return existing;
                 var face=Resources.Load<Texture2D>("UI/AldricDialogue/aldric_neutral");

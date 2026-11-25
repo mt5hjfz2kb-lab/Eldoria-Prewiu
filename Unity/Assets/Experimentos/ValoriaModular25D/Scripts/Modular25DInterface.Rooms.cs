@@ -41,7 +41,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                         var heroes = roomHost.GetComponent<HeroesApprovedDestination>() ?? roomHost.gameObject.AddComponent<HeroesApprovedDestination>();
                         heroes.Initialize(safe,() => {
                             var s = gateway.Snapshot();
-                            return new[]{ ValoriaIntegratedWorld.ReadCanonicalHero(s,"aldric"),
+                            var guardian = ValoriaIntegratedWorld.ReadCanonicalHero(s,"aldric");
+                            var portrait = RoyalGoldV41SourceArt.HeroPortrait("aldric");
+                            if (portrait) guardian.Portrait = portrait;
+                            return new[]{ guardian,
                                 ValoriaIntegratedWorld.ReadCanonicalHero(s,"lyra") };
                         },Resources.Load<Font>("ValoriaModular25D/UI/Fonts/CormorantGaramond-SemiBold"),
                             Resources.Load<Font>("ValoriaModular25D/UI/Fonts/SourceSans3-Semibold"));
