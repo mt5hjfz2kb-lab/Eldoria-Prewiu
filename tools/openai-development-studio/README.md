@@ -1,4 +1,20 @@
-# Eldoria Development Studio — piloto aislado
+# Eldoria Development Studio — piloto operativo
+
+## Estado vigente — cierre 25-11-2026
+
+**Piloto de desarrollo validado de extremo a extremo, con el candidato artístico descartado y el PC liberado al cerrar el registro canónico.** La ruta de encargos reutilizables en GitHub se ha probado con la API real; la generación de imagen se ha probado en la misión fija, Blender ha guardado un material de referencia nativo y Unity ha renderizado el shader candidato en una copia de Valoria. No se ha modificado ni publicado el juego. No equivale a agentes con acceso arbitrario a código ni a un sistema artístico autónomo de producción.
+
+- **Unity:** [45675919389](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45675919389), job Unity exitoso, 6000.3.23f1, 48 capturas de la escena real, 16 pares A/B y 16 restauraciones byte a byte idénticas a A. Artefacto 15052239345, SHA fuente 5ef2aee67cf8fde57ba2fc4b3d929b517ee67944. El primer ensayo Windows no abrió Unity por CRLF, corregido comprobando SHA del blob y SHA-256 del contenido normalizado, sin relajar el hash bruto del candidato. Se corrigió también la escritura LF del fichero de alternates Git para futuros ensayos.
+- **Revisión y limpieza:** [45679533675](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45679533675), ambos jobs exitosos. El primer postprocesado falló solo porque la carpeta temporal permanecía tras salir del Editor; se recuperaron las 48 imágenes originales sin volver a renderizar y se verificaron todos los hashes y restauraciones. Artefacto comparativo 15053108122; prueba de eliminación de la carpeta propia y ausencia de procesos nativos 15051869174. No se borraron otras carpetas.
+- **Decisión artística:** RECHAZAR la promoción del cambio MILL_YARD. Tras inspeccionar los pares reales de Bastión I y V, no se aprecia una mejora de integración relevante. El porcentaje de píxeles con diferencia de luminancia mayor que 2/255 fue 0,0814% y 0,0746% respectivamente en las vistas HD, y 0,0055% y 0,0052% en las vistas de entrada. Es un indicador de magnitud del efecto, no una puntuación estética. Conservar el original; no gastar otra ronda en microajustes de este shader. No afirmar ART_APPROVED, ni pruebas PlayMode, ni iPhone físico.
+- **API:** 15 solicitudes reales en total, estimación acumulada 0,18984725 USD; 3,61 USD reservados y cerrados de los 5 USD autorizados. 1,39 USD sin reservar. Ninguna solicitud nueva durante la validación de Unity. La facturación exacta no se ha consultado. [Misión fija cinco perfiles](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45671428903) y [encargo reutilizable cuatro perfiles](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45676636310).
+- **Uso habitual:** el chat responsable puede presentar nuevos encargos de análisis y propuestas mediante `requests/<id>.json` en esta rama, con evidencia nativa verificable y reserva previa si usa API. Para operaciones Unity nuevas se debe definir y verificar un adaptador determinista, reclamar el lease y usar el mecanismo de solicitud explícita. El adaptador actual se limita al shader revisado; la ruta genérica de generación de imágenes aún no se ha probado con una solicitud real. La rama Studio es el punto de entrada operativo; no se requiere instalar Codex ni otra clave. No se han fusionado cambios a main.
+
+Siguiente uso de mayor valor: auditar pantallas y defectos funcionales reales; priorizar propuestas de impacto global, ejecutar pruebas baratas sin Windows antes de una compilación, y comparar resultados en cámara real. Registrar tiempo, coste y aceptación para determinar si el flujo mejora productividad. Los modelos no sustituyen pruebas jugables ni revisiones de calidad.
+
+---
+
+## Historial del piloto (estados anteriores, no vigentes)
 
 Estado: conexión mínima real verificada el 25-11-2026; calidad de los perfiles y generación de imágenes pendientes de prueba real. No requiere Codex ni Unity. No modifica el juego, no publica, no realiza llamadas automáticas ni usa Windows. Solo Python 3 estándar.
 
