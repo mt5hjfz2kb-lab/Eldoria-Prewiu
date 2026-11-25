@@ -3,7 +3,7 @@ on:
   push:
     branches: [pilot/eldoria-openai-development-studio-20261125]
     paths:
-      - '.github/workflows/eldoria-openai-studio-senda-polish.yml'
+      - 'tools/openai-development-studio/senda-polish-closeout.json'
 permissions:
   contents: read
   actions: read
@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   benchmark:
-    if: github.run_attempt == 1 && github.event.before == '8c062a1564b84bb84b9ddfd24f3fe28642c77815' && github.event.head_commit.message == 'Run owner-authorized Senda concept polish once'
+    if: ${{ false }} # paid mission completed; no automatic repetitions
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -73,3 +73,33 @@ jobs:
           path: /tmp/senda-economics/
           retention-days: 30
           if-no-files-found: warn
+
+  archive:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Archive actual sanitized economics receipt without OpenAI access
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/senda-receipts
+          gh run download 45707395248 --repo "$GITHUB_REPOSITORY" --name senda-polish-economics-45707395248 --dir /tmp/senda-receipts
+          python3 - <<'PY'
+          import json
+          from decimal import Decimal
+          from pathlib import Path
+          r=json.loads(Path('/tmp/senda-receipts/run-45707395248.json').read_text())
+          assert r['calls_recorded']==5 and r['estimate_complete'] and r['billed_usd'] is None
+          assert Decimal(r['estimated_known_usd'])==Decimal('.08371050')
+          PY
+          python3 tools/openai-development-studio/publish_receipts.py /tmp/senda-receipts
