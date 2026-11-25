@@ -1,17 +1,17 @@
-name: Senda | verified one-time slate material transfer
+name: Senda | verified portal contour and material transfer
 on:
   push:
     branches: [feature/senda-brecha-lane-event-20261115]
-    paths: ['tools/senda-brecha/material/request.json']
+    paths: ['tools/senda-brecha/material/portal-request.json']
 permissions:
   contents: read
   actions: read
 concurrency:
-  group: senda-slate-material-transfer
+  group: senda-portal-material-transfer
   cancel-in-progress: false
 jobs:
   prepare:
-    if: github.run_attempt == 1 && github.event.before == '914c3b7acf8b3e200ea2ad4c874636109ef9493f' && github.event.head_commit.message == 'Prepare verified Studio slate material once'
+    if: github.run_attempt == 1 && github.event.before == 'fa444bfad5f2754281343d599eeda090e77db2b8' && github.event.head_commit.message == 'Prepare verified Valoria portal contour once'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -20,20 +20,20 @@ jobs:
           persist-credentials: false
           sparse-checkout: |
             tools/senda-brecha/material
-      - name: Recover verified generated material, repair periodic edges
+      - name: Recover actual generated PNG and create physical extrusion outline
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh api repos/$GITHUB_REPOSITORY/actions/runs/45707395248 --jq '.conclusion' | grep -x success
-          gh api repos/$GITHUB_REPOSITORY/actions/artifacts/15065212591 --jq '.name' | grep -x senda-polish-result-45707395248
-          gh run download 45707395248 --repo "$GITHUB_REPOSITORY" --name senda-polish-result-45707395248 --dir /tmp/studio-slate
-          python3 -m pip install --disable-pip-version-check Pillow==11.3.0 numpy==2.2.6
-          python3 tools/senda-brecha/material/prepare_slate_material.py /tmp/studio-slate/candidate.png /tmp/senda-material
+          gh api repos/$GITHUB_REPOSITORY/actions/runs/45718046144 --jq '.conclusion' | grep -x success
+          gh api repos/$GITHUB_REPOSITORY/actions/artifacts/15070712509 --jq '.name' | grep -x senda-portal-result-45718046144
+          gh run download 45718046144 --repo "$GITHUB_REPOSITORY" --name senda-portal-result-45718046144 --dir /tmp/senda-portal
+          python3 -m pip install --disable-pip-version-check Pillow==11.3.0 numpy==2.2.6 opencv-python-headless==4.12.0.88
+          python3 tools/senda-brecha/material/prepare_portal_mesh.py /tmp/senda-portal/candidate.png /tmp/senda-portal-out
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-senda-slate
-          path: /tmp/senda-material/
+          name: verified-senda-portal
+          path: /tmp/senda-portal-out/
           if-no-files-found: error
   archive:
     needs: prepare
@@ -51,21 +51,21 @@ jobs:
             tools/senda-brecha
       - uses: actions/download-artifact@v4
         with:
-          name: verified-senda-slate
-          path: /tmp/senda-material
-      - name: Commit only exact material and provenance on PR195 branch
+          name: verified-senda-portal
+          path: /tmp/senda-portal-out
+      - name: Commit only exact portal texture and contour to existing PR
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           dir=tools/senda-brecha/visual-3d/art
           mkdir -p "$dir"
-          for n in senda-worn-slate.png senda-worn-slate.provenance.json; do
+          for n in senda-valoria-portal.png senda-valoria-portal.mesh.json; do
             test ! -e "$dir/$n"
-            cp "/tmp/senda-material/$n" "$dir/$n"
+            cp "/tmp/senda-portal-out/$n" "$dir/$n"
             git add "$dir/$n"
           done
           test "$(git diff --cached --name-only | wc -l)" = 2
           git config user.name 'eldoria-studio-material'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -m "Archive verified Studio slate surface candidate"
+          git commit -m "Archive verified Valoria portal texture and physical contour"
           git push origin HEAD:refs/heads/feature/senda-brecha-lane-event-20261115
