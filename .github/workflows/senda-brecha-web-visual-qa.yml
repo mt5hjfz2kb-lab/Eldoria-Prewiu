@@ -12,7 +12,7 @@ permissions:
   contents: read
 concurrency:
   group: senda-brecha-web-visual-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true # only obsolete Senda WebGL proofs on this same ref; never cancel Windows
 jobs:
   real-webgl:
     runs-on: ubuntu-24.04
