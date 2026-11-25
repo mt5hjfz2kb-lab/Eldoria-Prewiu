@@ -50,6 +50,11 @@
     "web_candidate_pass": 45694564134,
     "optimized_web_run": 45695680165,
     "native_candidate_run": 45694055440,
-    "estimated_cost_usd": 0.09172975
+    "estimated_cost_usd": 0.09172975,
+    "optimized_web_pass": true,
+    "optimized_web_artifact": 15060296973,
+    "optimized_web_source": "1ebfadaf2a6f86335d44130712a40c4c7751384e",
+    "mobile_draw_calls_before": 1060,
+    "mobile_draw_calls_after": 118
   }
 }
