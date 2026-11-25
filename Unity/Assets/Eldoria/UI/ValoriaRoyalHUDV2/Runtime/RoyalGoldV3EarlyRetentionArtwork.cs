@@ -345,14 +345,25 @@ namespace Eldoria.UI.RoyalGold.V2
                 float r=Mathf.Clamp(separation*.31f,3,16);
                 if(boss)r*=1.36f;
                 else if(!current && !cleared)r*=.72f;
-                if(!boss && !current && !cleared)
+                if(!boss && !current && (!cleared || RoyalGoldV2Hud.UseCoronaArt))
                 {
                     // Low wayside stones sit in the road plane. Keep the tall
                     // bronze seals for the selected encounter and guardians.
                     float stone=Mathf.Max(4f,r*.93f);
                     var foot=nodes[i]+Vector2.down*(stone*.20f);
                     Disc(vh,foot,stone+2.2f,new Color(.095f,.10f,.11f,.93f),.63f);
-                    Disc(vh,nodes[i],stone,new Color(.56f,.55f,.46f),.58f);
+                    Disc(vh,nodes[i],stone,cleared?new Color(.25f,.37f,.28f):new Color(.56f,.55f,.46f),.58f);
+                    if(cleared)
+                    {
+                        // A pale inscription follows the horizontal face of the waystone.
+                        // Preserve the check shape as well as a distinct patinated colour.
+                        var joint=nodes[i]+new Vector2(-stone*.12f,-stone*.19f);
+                        var metal=new Color(.84f,.90f,.59f,1);
+                        float weight=Mathf.Max(1.25f,stone*.24f);
+                        Line(vh,nodes[i]+new Vector2(-stone*.53f,stone*.15f),joint,weight,metal);
+                        Line(vh,joint,nodes[i]+new Vector2(stone*.52f,stone*.29f),weight,metal);
+                        continue;
+                    }
                     Line(vh,nodes[i]+new Vector2(-stone*.55f,stone*.20f),
                         nodes[i]+new Vector2(stone*.34f,stone*.33f),
                         Mathf.Max(1f,stone*.17f),new Color(.84f,.79f,.62f));
