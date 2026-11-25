@@ -6,7 +6,7 @@
   "workstream_id": "eldoria-senda-brecha-lane-event-20261115",
   "asset_or_sector": "La Senda de la Brecha — independent mobile lane-battle 3D scene and original Valoria visual language",
   "profile": "environment_composition",
-  "visual_gate_state": "OWNER_APPROVED_MECHANICS_STUDIO_ART_CANDIDATE_WEB_TESTED_NATIVE_RECHECK_PENDING",
+  "visual_gate_state": "OWNER_APPROVED_MECHANICS_STUDIO_ART_CANDIDATE_WEB_NATIVE_TESTED_IPHONE_ART_PENDING",
   "ai_authorship_policy": "required",
   "diagnosis": "Owner confirmed 2.5D video displays the intended continuous lane mechanics, but original web demo is procedurally drawn and not native Unity. Create a separate procedural 3D Unity prototype; evaluate real native mobile-aspect captures against video for player legibility and compositional quality. The existing Valoria beta cannot be modified while world iPhone restart P0 remains open.",
   "geometry_gap_proven": false,
@@ -55,6 +55,10 @@
     "optimized_web_artifact": 15060296973,
     "optimized_web_source": "1ebfadaf2a6f86335d44130712a40c4c7751384e",
     "mobile_draw_calls_before": 1060,
-    "mobile_draw_calls_after": 118
+    "mobile_draw_calls_after": 118,
+    "native_candidate_pass": true,
+    "native_candidate_artifact": 15061830494,
+    "native_render_pipeline": "Built-in",
+    "native_frames": 9
   }
 }
