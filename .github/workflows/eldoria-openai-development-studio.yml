@@ -28,6 +28,9 @@ jobs:
             tools/openai-development-studio
       - run: python3 tools/openai-development-studio/studio.py --self-test
       - run: python3 tools/openai-development-studio/generate_candidate.py --self-test
+      - run: python3 tools/openai-development-studio/mission.py --self-test
+      - run: python3 tools/openai-development-studio/budget_guard.py --self-test
+      - run: python3 -m py_compile tools/openai-development-studio/prepare_evidence.py tools/openai-development-studio/validate_sprite.py tools/openai-development-studio/blender_candidate.py
       - run: python3 tools/openai-development-studio/studio.py smoke --out /tmp/eldoria-api-dry.json
   smoke:
     if: github.run_attempt == 1 && github.event_name == 'workflow_dispatch' && inputs.live_smoke == true
