@@ -333,7 +333,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 {
                     firstBuildGuide = Plate("Guía de la primera obra",sawmillTag,hand,new Vector2(.68f,.18f),
                         new Vector2(.21f,.86f),Vector2.zero,new Vector2(74f,74f));
-                    firstBuildGuide.GetComponent<Image>().preserveAspect = true;
+                    var guideImage = firstBuildGuide.GetComponent<Image>();
+                    guideImage.preserveAspect = true;
+                    guideImage.raycastTarget = false;
                     var edge=firstBuildGuide.gameObject.AddComponent<Shadow>();
                     edge.effectColor=new Color(.085f,.06f,.055f,.90f);
                     edge.effectDistance=new Vector2(1.7f,-2.1f);
@@ -496,7 +498,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     activityExpanded ? objective : sawmillTag.gameObject.activeInHierarchy ? sawmillTag : activityHandle;
                 if(firstBuildGuide.parent != target) firstBuildGuide.SetParent(target,false);
                 if(firstBuildGuide.gameObject.activeSelf != show) firstBuildGuide.gameObject.SetActive(show);
-                if(show) firstBuildGuide.anchoredPosition = new Vector2(2f,-2f-3f*Mathf.Sin(Time.unscaledTime*3f));
+                if (show)
+                {
+                    // Approach the parcel label from above; its building sits below it.
+                    bool parcel = target == sawmillTag;
+                    Vector2 anchor = parcel ? new Vector2(.76f,.86f) : new Vector2(.68f,.18f);
+                    firstBuildGuide.anchorMin = firstBuildGuide.anchorMax = anchor;
+                    firstBuildGuide.localRotation = parcel ? Quaternion.Euler(0f,0f,85f) : Quaternion.identity;
+                    float pulse = 3f * Mathf.Sin(Time.unscaledTime * 3f);
+                    firstBuildGuide.anchoredPosition = new Vector2(2f, parcel ? 3f + pulse : -2f - pulse);
+                }
             }
             if (roomHost && roomIsOpen != null && !roomIsOpen()) CloseCanonicalRoom();
             if (Screen.width != lastWidth || Screen.height != lastHeight ||
