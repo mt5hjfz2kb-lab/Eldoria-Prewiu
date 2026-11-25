@@ -55,6 +55,16 @@ export function equipWeapon(model,hero=false){
  }
  weapon.rotation.z=.12;
 }
+// Keep the actual weapon socket attached to the hand. A walk animation must
+// not tilt a spear sideways through neighboring units. In combat it follows the hand.
+const parentQ=new THREE.Quaternion(),weaponQ=new THREE.Quaternion(),up=new THREE.Vector3(0,1,0),direction=new THREE.Vector3();
+export function orientWeapon(rig,fighting){
+ const w=rig.weapon;if(!w||!w.parent)return;
+ if(fighting){w.rotation.set(0,0,.12);return}
+ direction.set(0,rig.hero?.32:1,rig.hostile?-.20:.20).normalize();
+ weaponQ.setFromUnitVectors(up,direction);
+ w.parent.getWorldQuaternion(parentQ);w.quaternion.copy(parentQ.invert()).multiply(weaponQ);
+}
 export async function buildGuardArmy(source,walk,attack,squad,foes,fit){
  await MeshoptSimplifier.ready;if(!MeshoptSimplifier.supported)throw Error('Mesh simplifier unavailable');
  const base=cloneSkinned(source),kept=[];let triangles=0;
@@ -78,7 +88,7 @@ export async function buildGuardArmy(source,walk,attack,squad,foes,fit){
    const model=cloneSkinned(blueprint),pivot=new THREE.Group();pivot.rotation.y=-Math.PI/2;u.add(pivot);pivot.add(model);
    const mixer=new THREE.AnimationMixer(model),w=mixer.clipAction(walk),a=mixer.clipAction(attack);w.play();
    const left=model.getObjectByName('Eldoria_Aldric_upperarm_L'),right=model.getObjectByName('Eldoria_Aldric_upperarm_R');
-   rigs.push({unit:u,mixer,walk:w,attack:a,attackActive:false,lastTime:0,left,right});u.userData.guard=true;
+   rigs.push({unit:u,mixer,walk:w,attack:a,attackActive:false,lastTime:0,left,right,weapon:model.getObjectByName('Guard spear'),hostile,hero:false});u.userData.guard=true;
   }
  }
  return {rigs,triangles};
@@ -87,6 +97,6 @@ export function updateGuardArmy(rigs,t,fighting){
  for(const g of rigs){
    if(!g.unit.visible)continue;
    if(fighting!==g.attackActive){g.attackActive=fighting;if(fighting){g.walk.stop();g.attack.reset().play()}else{g.attack.stop();g.walk.reset().play()}}
-   const dt=Math.max(0,Math.min(.20,t-g.lastTime));g.lastTime=t;correctArms(g,true);g.mixer.update(dt);correctArms(g,false);
+   const dt=Math.max(0,Math.min(.20,t-g.lastTime));g.lastTime=t;correctArms(g,true);g.mixer.update(dt);correctArms(g,false);orientWeapon(g,fighting);
  }
 }
