@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "cycle": {
+    "starts": "2026-11-25",
+    "ends_exclusive": "2026-12-17",
+    "pilot_cap_usd": "5.00",
+    "automatic_reset": false
+  },
+  "reservations": [
+    {
+      "id": "connectivity-45670034719",
+      "reserve_usd": "0.01",
+      "status": "executed",
+      "run_id": 45670034719,
+      "estimated_usd": "0.000007"
+    },
+    {
+      "id": "valoria-five-roles-45670811229",
+      "reserve_usd": "1.45",
+      "status": "authorized_once",
+      "run_id": 45670811229,
+      "estimated_usd": null
+    }
+  ],
+  "policy": {
+    "allow_automatic_retries": false,
+    "allow_unbounded_tools": false,
+    "remaining_requires_review": true,
+    "api_invoice_verified": false,
+    "scope": "This repository pilot only; not a global OpenAI hard limit. Reservations cannot be reclaimed on timeout without billing reconciliation."
+  }
+}
