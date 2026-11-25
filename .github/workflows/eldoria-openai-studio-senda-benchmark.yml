@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   benchmark:
-    if: github.run_attempt == 1 && github.event.before == 'e400d40f69d4479e4ff8a551edab66c17a3fdccd' && github.event.head_commit.message == 'Run owner-authorized PR195 Studio benchmark once'
+    if: github.run_attempt == 1 && github.event.before == '70585f3a37fe4179cfa0748a9a6952ab3db945a5' && github.event.head_commit.message == 'Run corrective bounded PR195 Studio benchmark once'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -36,20 +36,24 @@ jobs:
         id: live
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ELDORIA_AUTH_EVENT: senda-pr195-art-benchmark-v1
+          ELDORIA_AUTH_EVENT: senda-pr195-art-benchmark-v2
         run: |
           set -eu
           date -u +%Y-%m-%dT%H:%M:%SZ > /tmp/senda-start
           cd tools/openai-development-studio
           cp senda-benchmark-budget.json budget-cycle.json
-          python3 mission_packet.py --packet /tmp/senda-packet/packet.json --out /tmp/senda-result --live --authorization senda-pr195-art-benchmark-v1
+          python3 - <<'PY'
+          import studio,mission_packet
+          studio.MAX_OUTPUT=2200
+          mission_packet.execute("/tmp/senda-packet/packet.json","/tmp/senda-result",True,"senda-pr195-art-benchmark-v2")
+          PY
       - name: Cost receipt even on failure
         if: always() && steps.live.outcome != 'skipped'
         env:
           LIVE_STATUS: ${{ steps.live.outcome }}
         run: |
           mkdir -p /tmp/senda-economics
-          python3 tools/openai-development-studio/intervention_report.py collect --root /tmp/senda-result --run "$GITHUB_RUN_ID" --request senda-pr195-art-benchmark-v1 --started "$(cat /tmp/senda-start)" --finished "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --source-run 43732245691 --status "$LIVE_STATUS" --out "/tmp/senda-economics/run-$GITHUB_RUN_ID.json"
+          python3 tools/openai-development-studio/intervention_report.py collect --root /tmp/senda-result --run "$GITHUB_RUN_ID" --request senda-pr195-art-benchmark-v2 --started "$(cat /tmp/senda-start)" --finished "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --source-run 43732245691 --status "$LIVE_STATUS" --out "/tmp/senda-economics/run-$GITHUB_RUN_ID.json"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

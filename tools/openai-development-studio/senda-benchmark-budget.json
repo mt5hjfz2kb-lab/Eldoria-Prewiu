@@ -12,8 +12,17 @@
     {
       "id": "senda-pr195-art-benchmark-v1",
       "reserve_usd": "1.45",
+      "status": "failed_reserved",
+      "run_id": 45693242088,
+      "estimated_usd": "0.0092055",
+      "reason": "Director exhausted 1200 output tokens; actual usage received; downstream not called."
+    },
+    {
+      "id": "senda-pr195-art-benchmark-v2",
+      "reserve_usd": "1.45",
       "status": "authorized_once",
-      "run_id": "senda-pr195-art-benchmark-v1"
+      "run_id": "senda-pr195-art-benchmark-v2",
+      "reason": "One explicit corrective call chain; concise reports and 2200 token maximum; no automatic retry."
     }
   ]
 }
