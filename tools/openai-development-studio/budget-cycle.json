@@ -46,10 +46,13 @@
     {
       "id": "valoria-b5-street-integration-review-20261125",
       "reserve_usd": "0.70",
-      "status": "authorized_once",
-      "run_id": "valoria-b5-street-integration-review-20261125",
+      "status": "executed",
+      "run_id": 45683014884,
       "request_sha256": "61d56c4a1d0be8f7b6f4d83f77887143b58b51593223ba0f8048169cfedfbc9f",
-      "reason": "Owner requested real next phase; use existing pilot authorization and current certified public Valoria evidence only."
+      "reason": "Owner requested real next phase; use existing pilot authorization and current certified public Valoria evidence only.",
+      "estimated_usd": "0.038709675",
+      "result_artifact_id": 15055362108,
+      "quality_result": "Diagnostic accepted for the two supplied native frames only; cause and proposed visual correction unproven. No production writes. Economy coordination retained independent auditor's reservations."
     }
   ],
   "policy": {
@@ -58,7 +61,7 @@
     "remaining_requires_review": true,
     "api_invoice_verified": false,
     "scope": "This repository pilot only; not a global OpenAI hard limit. Reservations cannot be reclaimed on timeout without billing reconciliation.",
-    "estimated_total_usd": "0.18984755",
+    "estimated_total_usd": "0.228557225",
     "actual_invoice_verified": false,
     "estimate_tariff": "2026-11-25-standard-short"
   }

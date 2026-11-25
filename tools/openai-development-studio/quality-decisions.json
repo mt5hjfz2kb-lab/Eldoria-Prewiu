@@ -1,5 +1,14 @@
 {
   "schema": 1,
   "note": "Append only evidence-backed independent review decisions; no automatic artistic approval. Historical decisions already recorded in immutable receipts.",
-  "decisions": []
+  "decisions": [
+    {
+      "run_id": 45683014884,
+      "decision": "technical_only",
+      "evidence_run": 45683014884,
+      "criterion": "Independent auditor corroborates weak street/frontage continuity in the Postigo frame, explicitly rejects an unproven grass gap and zero-pixel criterion. Source trace confirms separate road ribbons and shadow order; no implemented or visually validated change.",
+      "quality_score_before": null,
+      "quality_score_after": null
+    }
+  ]
 }

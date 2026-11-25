@@ -1,5 +1,9 @@
 # Eldoria Development Studio — piloto operativo
 
+## Primera aplicación real de V2 — 25-11-2026
+
+[Revisión urbana Bastión V](reviews/valoria-b5-street-integration-20261125.md): perfil económico validado con 4 llamadas reales, 69 s, 0,038709675 USD estimados, informe y recibo archivados automáticamente. Diagnóstico local corroborado, corrección gráfica pendiente de prueba y no aplicada. Acumulado 19 llamadas, 0,228557225 USD estimados. La exportación de costes recibida no contiene importes; no se ha publicado ni conciliado. Ninguna modificación de juego ni uso de Windows.
+
 ## Fase 2 — contabilidad y productividad V2 (25-11-2026)
 
 Estado: implementación y recuperación histórica de 15 llamadas verificadas; registro permanente en esta rama. No se ha hecho ninguna llamada OpenAI adicional durante esta fase. El saldo y la factura de OpenAI no se han consultado.
