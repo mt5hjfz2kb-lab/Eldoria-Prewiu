@@ -13,8 +13,14 @@
     {
       "id": "senda-portal-production-v1",
       "reserve_usd": "1.45",
-      "status": "authorized_once",
-      "run_id": "senda-portal-production-v1"
+      "status": "executed",
+      "run_id": 45718046144,
+      "estimated_usd": "0.07706800",
+      "result_artifact_id": 15070712509,
+      "quality_result": "Auditor rejected direct cladding due to contour mismatch; actual alpha inspection confirms transparent aperture. Independent physical extrusion adaptation required. No art approval."
     }
-  ]
+  ],
+  "estimated_total_usd": "0.07706800",
+  "cumulative_pr195_estimated_usd": "0.25250825",
+  "billing_verified": false
 }
