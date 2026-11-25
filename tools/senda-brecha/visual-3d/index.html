@@ -26,6 +26,9 @@
 #loadingArt{font-size:11px;color:#e1c89b;margin:8px 0}
 #play:disabled{opacity:.65;cursor:wait}
 @media(max-height:530px){#hudcrest{display:none}#eyebrow,#hud h1,#chapter{padding-left:0}#hud{max-width:540px;padding:6px 10px 12px}#stats .statIcon{display:none}#stats>span{padding:4px}#round{margin-top:4px}#stats{margin-top:4px}#stats b{font-size:14px}}
+#stats>span{background:#132832 url('https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944/Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/panel_obsidian.png') center/100% 100%;border-color:#b69c63}
+#hudcrest{height:58px;width:44px}
+#foot .arrow,#pause{background:#182b35 url('https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944/Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/panel_obsidian.png') center/100% 100%}
 </style>
 </head>
 <body><main id="game"><canvas id="viewport" aria-label="Recorrido 3D de La Senda de la Brecha"></canvas><div id="vignette"></div>
@@ -59,7 +62,7 @@ const cylinder=(parent,x,y,z,r,depth,color,metal=0)=>mesh(geom(`cylinder:${r}:${
 const cone=(parent,x,y,z,r,h,color)=>mesh(geom(`cone:${r}:${h}`,()=>new THREE.ConeGeometry(r,h,7)),mat(color),parent,x,y,z);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 let squad=[],foes=[],gates=[],projectiles=[],trees=[],runes=[],foeGroup,laneMarker;
-let canonicalReady=false,canonicalError='',heroMixer=null,heroWalk=null,heroAttack=null,heroRoot=null,heroAnimated=false,heroSkins=0,canonicalPieces=0,canonicalSources=[],heroLastTime=0;const portalFX=[],breachFX=[],banners=[];
+let canonicalReady=false,canonicalError='',heroMixer=null,heroWalk=null,heroAttack=null,heroRoot=null,heroAnimated=false,heroSkins=0,canonicalPieces=0,canonicalSources=[],canonicalTerrain=0,canonicalFoliage=0,enemyCanonical=false,heroAttackTime=0,heroLastTime=0;const portalFX=[],breachFX=[],banners=[];let roadSurface,earthSurface,enemyRoot=null;
 // Shared geometry/materials, articulated limb pivots and distinct faction silhouette.
 const geoCache=new Map();
 function geom(key,create){if(!geoCache.has(key))geoCache.set(key,create());return geoCache.get(key)}
@@ -71,7 +74,7 @@ function soldier(enemy=false,leader=false){
  const sphere=(p,x,y,z,sx,sy,sz,c,m=0)=>bodyMesh(p,'ico',()=>new THREE.IcosahedronGeometry(1,1),c,x,y,z,sx,sy,sz,m);
  const taper=(p,x,y,z,rt,rb,h,c,m=0)=>bodyMesh(p,'cyl'+rt+':'+rb+':'+h,()=>new THREE.CylinderGeometry(rt,rb,h,8),c,x,y,z,1,1,1,m);
  const plate=(p,x,y,z,sx,sy,sz,c,m=0)=>bodyMesh(p,'box',()=>new THREE.BoxGeometry(1,1,1),c,x,y,z,sx,sy,sz,m);
- let shadow=mesh(geom('unit-shadow',()=>new THREE.CircleGeometry(.49,16)),new THREE.MeshBasicMaterial({color:0x111511,transparent:true,opacity:.48,depthWrite:false}),unit,0,.018,0);shadow.rotation.x=-Math.PI/2;shadow.scale.set(1,1.35,1);
+ let shadow=mesh(geom('unit-shadow',()=>new THREE.CircleGeometry(.49,16)),new THREE.MeshBasicMaterial({color:0x111511,transparent:true,opacity:.48,depthWrite:false}),unit,0,.064,0);shadow.rotation.x=-Math.PI/2;shadow.scale.set(1,1.35,1);
  const legs=[],arms=[];
  for(let sign of [-1,1]){
    let leg=joint(model,sign*.16,.69,0);legs.push(leg);
@@ -194,10 +197,16 @@ function mountCanonical(model,x,y,z,height,yaw=0){
  const wrapper=new THREE.Group();wrapper.name='Original Valoria architecture';wrapper.position.set(x,y,z);wrapper.rotation.y=yaw;
  wrapper.add(fitModel(model,height));scene.add(wrapper);canonicalPieces++;return wrapper;
 }
+async function loadTexture(path){
+ const t=await new THREE.TextureLoader().loadAsync(CANON+path);t.colorSpace=THREE.SRGBColorSpace;canonicalSources.push(path);return t;
+}
 async function loadCanonicalAssets(){
- const [hero,tower,wall,gate]=await Promise.all([
+ const [hero,tower,wall,gate,spawnling,paving,meadow,...pines]=await Promise.all([
  fetchModel('Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb','c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b'),
- fetchModel(FAMILY+'Valoria_Tower_CohV1.glb'),fetchModel(FAMILY+'Valoria_WallSegment_CohV1.glb'),fetchModel(FAMILY+'Valoria_MainGate_CohV1.glb')]);
+ fetchModel(FAMILY+'Valoria_Tower_CohV1.glb'),fetchModel(FAMILY+'Valoria_WallSegment_CohV1.glb'),fetchModel(FAMILY+'Valoria_MainGate_CohV1.glb'),
+ fetchModel('Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/SpawnlingNear.glb'),
+ loadTexture('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/DistrictPaving.jpg'),loadTexture('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/BastionMeadow.jpg'),
+ ...[0,1,2].map(i=>loadTexture('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/pine_'+i+'.png'))]);
  hero.scene.traverse(o=>{if(o.isSkinnedMesh)heroSkins++});if(!heroSkins)throw Error('Aldric skin missing');
  const walk=THREE.AnimationClip.findByName(hero.animations,'Aldric_Walk_v1');
  const attack=THREE.AnimationClip.findByName(hero.animations,'Aldric_SwordAttack_v1');
@@ -208,9 +217,27 @@ async function loadCanonicalAssets(){
  heroMixer=new THREE.AnimationMixer(hero.scene);heroWalk=heroMixer.clipAction(walk);heroAttack=heroMixer.clipAction(attack);
  heroWalk.play();heroAttack.setLoop(THREE.LoopRepeat,Infinity);heroMixer.update(.03);heroAnimated=heroWalk.isRunning();
  // Keep the road playable: actual Valoria's skyline is deliberately outside the lanes.
- mountCanonical(gate.scene,12,2.8,45,9.2,Math.PI);
- mountCanonical(tower.scene,17,2.8,45,11.5,Math.PI);
- mountCanonical(wall.scene,9,2.8,47,5.6,Math.PI);
+ mountCanonical(gate.scene,8.5,2.8,41,8.5,Math.PI);
+ mountCanonical(tower.scene,12.7,2.8,42,10,Math.PI);
+ mountCanonical(wall.scene,5.9,2.8,43,5,Math.PI);
+ // Existing painted Valoria terrain textures on actual continuous ground meshes.
+ for(const t of [paving,meadow]){t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=4;}
+ paving.repeat.set(2.1,37);meadow.repeat.set(27,31);
+ roadSurface.material.map=paving;roadSurface.material.needsUpdate=true;scene.userData.roadMap=paving;
+ earthSurface.material.map=meadow;earthSurface.material.needsUpdate=true;canonicalTerrain=2;
+ // Same painterly tree artwork used by Valoria's 2.5D district, spatially
+ // placed, camera-facing vegetation with real depth and moving world positions.
+ const foliageMaterials=pines.map(t=>new THREE.SpriteMaterial({map:t,color:0xe2dfd6,alphaTest:.16,transparent:true,depthWrite:true}));
+ for(let i=0;i<trees.length;i++){
+  const n=trees[i];if(!n.tree.isGroup)continue;
+  n.tree.clear();
+  const sp=new THREE.Sprite(foliageMaterials[i%3]);sp.center.set(.5,0);sp.scale.set(2.7+(i%5)*.25,4.7+(i%5)*.32,1);sp.position.y=.02;n.tree.add(sp);
+  const shadow=mesh(geom('treecontact',()=>new THREE.CircleGeometry(.76,16)),new THREE.MeshBasicMaterial({color:0x19221b,transparent:true,opacity:.38,depthWrite:false}),n.tree,0,.012,0);shadow.rotation.x=-Math.PI/2;shadow.scale.set(1.3,.9,1);canonicalFoliage++;
+ }
+ // One actual world creature replaces the enemy leader proxy; remaining
+ // enemy guards retain articulated rigs. No duplicated named heroes.
+ const enemy=foes[0];enemy.userData.model.visible=false;
+ enemyRoot=new THREE.Group();enemyRoot.name='Eldoria world Spawnling';enemyRoot.add(fitModel(spawnling.scene,2.25));enemy.add(enemyRoot);enemyCanonical=true;
 }
 function buildValoriaLandscape(){
  // Real scene depth: terraced bedrock, forest silhouettes, banners and a fissure
@@ -251,15 +278,15 @@ function buildValoriaLandscape(){
  }
 }
 
-function makeScene(){scene=new THREE.Scene();scene.background=new THREE.Color(0x344454);scene.fog=new THREE.FogExp2(0x344454,.018);
- camera=new THREE.PerspectiveCamera(46,1,.2,150);camera.position.set(0,12,-18);camera.lookAt(0,.3,10.5);
+function makeScene(){scene=new THREE.Scene();scene.background=new THREE.Color(0x344454);scene.fog=new THREE.FogExp2(0x536476,.012);
+ camera=new THREE.PerspectiveCamera(46,1,.2,150);camera.position.set(0,7.8,-13.7);camera.lookAt(0,1.5,15);
  const sun=new THREE.DirectionalLight(0xffe3bf,2.8);sun.position.set(-11,20,-8);scene.add(sun);
- const fill=new THREE.HemisphereLight(0xa7c8de,0x39302a,1.4);scene.add(fill);
+ const fill=new THREE.HemisphereLight(0xa7c8de,0x39302a,1.4);scene.add(fill);scene.add(new THREE.AmbientLight(0xffe9d0,.38));
  const rift=new THREE.PointLight(0x9660c2,22,16);rift.position.set(-6,3,38);scene.add(rift);
  // Continually scrolling physical roadway; camera is fixed to reduce WebGL memory.
  const earth=groundTexture(false),stone=groundTexture(true);earth.repeat.set(35,38);stone.repeat.set(2.5,38);scene.userData.roadMap=stone;
- const ground=mesh(new THREE.PlaneGeometry(160,150),new THREE.MeshStandardMaterial({map:earth,roughness:1}),scene,0,-.01,30);ground.rotation.x=-Math.PI/2;
- const road=mesh(new THREE.PlaneGeometry(7.6,148),new THREE.MeshStandardMaterial({map:stone,roughness:.94}),scene,0,.045,34);road.rotation.x=-Math.PI/2;
+ const ground=mesh(new THREE.PlaneGeometry(160,150),new THREE.MeshStandardMaterial({map:earth,roughness:1}),scene,0,-.01,30);ground.rotation.x=-Math.PI/2;earthSurface=ground;
+ const road=mesh(new THREE.PlaneGeometry(7.6,148),new THREE.MeshStandardMaterial({map:stone,roughness:.94}),scene,0,.045,34);road.rotation.x=-Math.PI/2;roadSurface=road;
  // Repeated, subtle inset markers are real geometry. Clearly separate the three lanes.
  for(let k=0;k<45;k++)for(let side of [-1,1]){let m=box(scene,side*1.06,.058,k*2.8-12,.047,.016,.73,0xa89970);runes.push(m)}
  for(let i=0;i<12;i++){let z=i*12-3;for(let side of [-1,1]){
@@ -320,8 +347,8 @@ function makeScene(){scene=new THREE.Scene();scene.background=new THREE.Color(0x
  }
  function renderFrame(){syncRenderBatches();renderer.render(scene,camera)}
 function resize(){const w=$('game').clientWidth,h=$('game').clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;
- if(w>h){camera.position.set(0,10,-14);camera.lookAt(0,.2,11);camera.fov=42;}
- else{camera.position.set(0,12,-18);camera.lookAt(0,.3,10.5);camera.fov=46;}
+ if(w>h){camera.position.set(0,8,-14);camera.lookAt(0,1.2,12);camera.fov=45;}
+ else{camera.position.set(0,7.8,-13.7);camera.lookAt(0,1.5,15);camera.fov=49;}
  camera.updateProjectionMatrix()}
 function hud(){if(!renderer)return;
  $('chapter').textContent=waves[stage].name;$('roundlabel').textContent=`TRAMO ${stage+1}/6`;
@@ -358,11 +385,11 @@ function present(t){
  let col=(i-1+4)%4,row=Math.floor((i-1)/4);u.position.set(sideX+(i===0?0:(col-1.5)*.48),0,i===0?3.56:2.65-row*.68);u.rotation.z=0;if(i!==0||!heroRoot)animateUnit(u,t,i)}
  for(const m of portalFX)m.uniforms.t.value=t;
  for(const p of breachFX){p.rotation.y=.1*t+p.userData.phase;p.position.y=p.userData.y+.12*Math.sin(t*1.3+p.userData.phase)}
- if(heroMixer){const dt=Math.max(0,Math.min(.15,t-heroLastTime));heroLastTime=t;const attack=stepTime>=6.4&&stepTime<9&&!battleDone;if(attack&&heroAttack&&!heroAttack.isRunning()){heroWalk.fadeOut(.12);heroAttack.reset().fadeIn(.12).play()}else if(!attack&&heroAttack&&heroAttack.isRunning()){heroAttack.stop();heroWalk.reset().fadeIn(.12).play()}heroMixer.update(dt);heroAnimated=heroWalk.isRunning()||!!heroAttack?.isRunning()}
+ if(heroMixer){const dt=Math.max(0,Math.min(.15,t-heroLastTime));heroLastTime=t;const attack=stepTime>=6.4&&stepTime<9&&!battleDone;if(attack&&heroAttack&&!heroAttack.isRunning()){heroWalk.fadeOut(.12);heroAttack.reset().fadeIn(.12).play()}else if(!attack&&heroAttack&&heroAttack.isRunning()){heroAttack.stop();heroWalk.reset().fadeIn(.12).play()}heroMixer.update(dt);heroAnimated=heroWalk.isRunning()||!!heroAttack?.isRunning();heroAttackTime=heroAttack?.time??0}
  let gatez=30-Math.min(1,stepTime/4.15)*26.6;
  for(let i=0;i<gates.length;i++){let g=gates[i];g.group.visible=!gateUsed;g.group.position.set((1-i)*2.12,0,gatez)}
  let enemiesVisible=stepTime>=6.4&&stepTime<=11;let approach=clamp((stepTime-6.4)/2.6,0,1);
- for(let i=0;i<foes.length;i++){let u=foes[i];u.visible=enemiesVisible&&(!battleDone||i%3===0);u.position.set((i%4-1.5)*.93,Math.sin(t*11+i)*.05-(battleDone?.48:0),17.5+Math.floor(i/4)*1.06-6.5*approach);u.rotation.z=battleDone?1.5:0;animateUnit(u,t,i,true,battleDone)}
+ for(let i=0;i<foes.length;i++){let u=foes[i];u.visible=enemiesVisible&&(!battleDone||i%3===0);u.position.set((i%4-1.5)*.93,Math.sin(t*11+i)*.05-(battleDone?.48:0),17.5+Math.floor(i/4)*1.06-6.5*approach);u.rotation.z=battleDone?1.5:0;if(i===0&&enemyRoot){enemyRoot.rotation.z=battleDone?0:.035*Math.sin(t*8);enemyRoot.position.y=battleDone?0:.03*Math.sin(t*8)}else animateUnit(u,t,i,true,battleDone)}
  for(let i=0;i<projectiles.length;i++){let sh=projectiles[i];sh.visible=enemiesVisible&&!battleDone;
  if(sh.visible){let pos=(t*11+i*.73)%11;sh.position.set(sideX+(i%3-1)*.43,1.2,4+pos*1.35)}}
  const offset=(t*4.3)%100;
@@ -376,16 +403,16 @@ function loop(now){requestAnimationFrame(loop);let dt=clamp((now-last)/1000,0,.0
  if(started&&!paused&&!finished)update(dt);
  if(!mobile||now-elapsedRender>33){elapsedRender=now;present(elapsed);renderFrame()}
  if(Math.floor(now/150)%7===0)hud()}
-async function init(){try{renderer=new THREE.WebGLRenderer({canvas:$('viewport'),alpha:false,antialias:false,powerPreference:'low-power'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
+async function init(){try{renderer=new THREE.WebGLRenderer({canvas:$('viewport'),alpha:false,antialias:false,powerPreference:'low-power'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.22;
  makeScene();syncGates();resize();addEventListener('resize',resize);
- $('hudcrest').src=$('crest').src;
+ $('hudcrest').src='https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944/Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/identity_crest.png';
  await loadCanonicalAssets();buildRenderBatches();canonicalReady=true;$('loadingArt').textContent='Sir Aldric y los recursos originales de Valoria cargados';$('play').disabled=false;
  $('play').onclick=start;$('again').onclick=start;$('left').onclick=()=>steer(-1);$('right').onclick=()=>steer(1);
  $('pause').onclick=()=>{if(!started)return;paused=!paused;$('pause').textContent=paused?'▶':'Ⅱ';flash(paused?'PAUSA':'EN MARCHA')};
  let touchX=null;$('viewport').addEventListener('pointerdown',e=>{touchX=e.clientX;$('viewport').setPointerCapture(e.pointerId)});$('viewport').addEventListener('pointerup',e=>{if(touchX!==null&&Math.abs(e.clientX-touchX)>29)steer(e.clientX>touchX?1:-1);touchX=null});$('viewport').addEventListener('pointercancel',()=>touchX=null);
  addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='a')steer(-1);if(e.key==='ArrowRight'||e.key==='d')steer(1);if(e.key===' '&&!started)start()});
  $('viewport').addEventListener('webglcontextlost',e=>{e.preventDefault();$('error').style.display='flex';started=false});
- if(TEST)window.__senda3d={start,steer,setSpeed:v=>{speed=clamp(v,0,8)},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;syncGates();hud()},advance:seconds=>{for(let t=0;t<seconds&&started;t+=.05)priorUpdate(Math.min(.05,seconds-t));present(elapsed);renderFrame()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length,gateLabels:gates.map(g=>[g.type,g.value]),screenLaneX:squad[0].position.clone().project(camera).x,gateScreenX:gates.map(g=>g.group.position.clone().project(camera).x),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,batches:renderBatches.length,canonicalReady,canonicalSources,canonicalPieces,heroSkins,heroAnimated,heroWalkTime:heroWalk?.time??0,canonicalError})};
+ if(TEST)window.__senda3d={start,steer,setSpeed:v=>{speed=clamp(v,0,8)},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;syncGates();hud()},advance:seconds=>{for(let t=0;t<seconds&&started;t+=.05)priorUpdate(Math.min(.05,seconds-t));present(elapsed);renderFrame()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length,gateLabels:gates.map(g=>[g.type,g.value]),screenLaneX:squad[0].position.clone().project(camera).x,gateScreenX:gates.map(g=>g.group.position.clone().project(camera).x),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,batches:renderBatches.length,canonicalReady,canonicalSources,canonicalPieces,canonicalTerrain,canonicalFoliage,enemyCanonical,heroAttackTime,heroSkins,heroAnimated,heroWalkTime:heroWalk?.time??0,canonicalError})};
  hud();requestAnimationFrame(loop);
  }catch(e){canonicalError=String(e);console.error('SENDA_3D_INIT',e);$('error').style.display='flex'}}
 let speed=1;
