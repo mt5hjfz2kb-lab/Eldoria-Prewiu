@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "cycle": {
+    "starts": "2026-11-25",
+    "ends_exclusive": "2026-12-17",
+    "pilot_cap_usd": "5.00",
+    "automatic_reset": false
+  },
+  "authorized_additional_ceiling_usd": "10.00",
+  "first_tranche_reserved_usd": "4.35",
+  "scope": "Second tranche of existing $10 PR195 authorization. Single portal asset intervention, no automatic renewal.",
+  "reservations": [
+    {
+      "id": "senda-portal-production-v1",
+      "reserve_usd": "1.45",
+      "status": "authorized_once",
+      "run_id": "senda-portal-production-v1"
+    }
+  ]
+}
