@@ -1,5 +1,9 @@
 # Eldoria Development Studio — piloto operativo
 
+## Primera intervención con código real y Unity — 25-11-2026
+
+[Resultado Postigo](reviews/postigo-frontage-delivery-20261125.md): código concreto, 45 capturas Unity verificadas y 8 restauraciones exactas, ruta de mensajero y estados de B1 comprobados. Mejora local pequeña, no salto artístico. Parche conservado sin incorporar a versión jugable. 0 llamadas de pago adicionales; coste acumulado estimado 0,228557225 USD. Cierre [45688957980](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45688957980) verde, scratch eliminado/verificado. No se ha demostrado ahorro global de desarrollo; concentrar Studio en defectos funcionales medibles y agrupar cambios gráficos de mayor impacto.
+
 ## Primera aplicación real de V2 — 25-11-2026
 
 [Revisión urbana Bastión V](reviews/valoria-b5-street-integration-20261125.md): perfil económico validado con 4 llamadas reales, 69 s, 0,038709675 USD estimados, informe y recibo archivados automáticamente. Diagnóstico local corroborado, corrección gráfica pendiente de prueba y no aplicada. Acumulado 19 llamadas, 0,228557225 USD estimados. La exportación de costes recibida no contiene importes; no se ha publicado ni conciliado. Ninguna modificación de juego ni uso de Windows.

@@ -1,0 +1,37 @@
+{
+  "run_id": 45685805585,
+  "jobs": [
+    {
+      "job_id": 139457990683,
+      "name": "prepare",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "started_at": "2026-11-25T19:30:11Z",
+      "completed_at": "2026-11-25T19:30:17Z",
+      "conclusion": "failure"
+    },
+    {
+      "job_id": 139458072765,
+      "name": "unity",
+      "labels": [
+        "self-hosted",
+        "windows",
+        "unity-6000-3-23f1"
+      ],
+      "started_at": "2026-11-25T19:30:17Z",
+      "completed_at": "2026-11-25T19:30:17Z",
+      "conclusion": "skipped"
+    },
+    {
+      "job_id": 139458072820,
+      "name": "review",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "started_at": "2026-11-25T19:30:17Z",
+      "completed_at": "2026-11-25T19:30:17Z",
+      "conclusion": "skipped"
+    }
+  ]
+}
