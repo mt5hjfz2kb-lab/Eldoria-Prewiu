@@ -12,10 +12,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   mission:
-    if: >-
-      github.run_attempt == 1 &&
-      github.event.before == '9dd923a0c5df26b38e1e17a2dfa42fbafe1ba029' &&
-      github.event.head_commit.message == 'Run bounded corrective MILL_YARD mission once'
+    # Closed authorization. New live mission requires a new explicit budget reservation.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
