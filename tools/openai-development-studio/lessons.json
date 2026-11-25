@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "lessons": [
+    {
+      "id": "L001",
+      "status": "verified",
+      "targets": [
+        "all"
+      ],
+      "rule": "A successful API response is not proof of a useful improvement. Require actual target evidence; do not auto-promote.",
+      "evidence_run": 45671428903
+    },
+    {
+      "id": "L002",
+      "status": "verified",
+      "targets": [
+        "art_candidate",
+        "MILL_YARD"
+      ],
+      "rule": "Keep the same explicit target across artist, programmer and auditor. Do not paste a generated terrain reference over a continuous shader-driven ground.",
+      "evidence_run": 45670811229
+    },
+    {
+      "id": "L003",
+      "status": "verified",
+      "targets": [
+        "art_candidate"
+      ],
+      "rule": "Inspect real PNG alpha and shape; near-opaque alpha can be 254. Reject visual drift independently of technical pass.",
+      "evidence_run": 45671428903
+    },
+    {
+      "id": "L004",
+      "status": "verified",
+      "targets": [
+        "MILL_YARD"
+      ],
+      "rule": "The previous local mill shader candidate produced negligible visible impact in matched Unity captures. Preserve original; do not repeat micro-adjustments without a materially new hypothesis.",
+      "evidence_run": 45679533675
+    },
+    {
+      "id": "L005",
+      "status": "verified",
+      "targets": [
+        "all"
+      ],
+      "rule": "Compare same camera, source SHA and fixture; distinguish technical verification, subjective quality and gameplay evidence. Prefer cheap source tests before native Windows.",
+      "evidence_run": 45679533675
+    },
+    {
+      "id": "L006",
+      "status": "verified",
+      "targets": [
+        "all"
+      ],
+      "rule": "Keep timeout reservations and stop downstream calls when usage is missing. Never treat uncertain cost as zero.",
+      "evidence_run": 45676636310
+    }
+  ]
+}

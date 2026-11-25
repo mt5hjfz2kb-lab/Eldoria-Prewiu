@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "version": "2026-11-25-standard-short",
+  "currency": "USD",
+  "unit": "per_million_tokens",
+  "scope": "Standard, short context, global processing only; no tools, audio, regional surcharge, fast/ultrafast or batch",
+  "source": [
+    "https://developers.openai.com/api/docs/models",
+    "https://developers.openai.com/api/docs/pricing",
+    "https://developers.openai.com/api/docs/guides/prompt-caching",
+    "https://developers.openai.com/api/docs/models/gpt-image-2.6-flare"
+  ],
+  "text": {
+    "gpt-6-luna": [
+      "0.10",
+      "0.01",
+      "0.125",
+      "0.25",
+      "0.50"
+    ],
+    "gpt-6.1-terra": [
+      "1",
+      "0.05",
+      "1.25",
+      "2.50",
+      "5"
+    ],
+    "gpt-6.2-sol": [
+      "2",
+      "0.10",
+      "2.50",
+      "5",
+      "10"
+    ],
+    "gpt-6.2-astra": [
+      "8",
+      "0.40",
+      "10",
+      "20",
+      "40"
+    ]
+  },
+  "images": {
+    "gpt-image-2.6-flare": [
+      "5",
+      "1.25",
+      "8",
+      "2",
+      "30"
+    ]
+  }
+}
