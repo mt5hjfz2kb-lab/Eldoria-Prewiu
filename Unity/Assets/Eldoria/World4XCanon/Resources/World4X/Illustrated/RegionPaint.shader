@@ -220,16 +220,12 @@ Shader "Eldoria/Region1/Illustrated ground" {
   grass=lerp(grass,forestFloor,woodEdge*(.44+.18*close));
   half shoulderStone=smoothstep(.36,.88,upland)*(1-woodEdge);
   grass=lerp(grass,lerp(slate,grass,.37),shoulderStone*.55);
-  // Root shade and leaf litter occupy the ground under the actual rendered
-  // trees. Adjacent crowns join; open spaces between stands retain grass.
-  half roots=SAMPLE_TEXTURE2D(_CrownCover,sampler_CrownCover,i.uv).r;
-  half shadeCover=smoothstep(.025,.75,roots+(crowns-.25)*min(roots,.24));
-  half openLand=(1-shadeCover)*(1-canopy*.58);
-  half meadowBands=smoothstep(.26,.65,field+(meadowRange.r-meadowRange.g)*.55);
-  half3 seeded=grass*lerp(half3(.66,.93,.87),half3(1.19,1.04,.67),meadowBands);
-  grass=lerp(grass,seeded,openLand*.90);
-  half3 humus=lerp(sharedEarth*half3(.54,.51,.36),grass*half3(.44,.67,.53),.36);
-  grass=lerp(grass,humus,shadeCover*.89);
+  // Read a stand-sized footprint so a solitary tree cannot stamp a circle
+  // onto the grass. The existing meadow pigment still controls fine detail.
+  half standDensity=SAMPLE_TEXTURE2D_LOD(_CrownCover,sampler_CrownCover,i.uv,3).r;
+  half innerStand=smoothstep(.15,.80,standDensity)*(.65+.35*canopy);
+  half3 woodlandSoil=lerp(grass,sharedEarth*half3(.85,.91,.77),.48);
+  grass=lerp(grass,woodlandSoil,innerStand*.42);
   half3 colour=lerp(grass,fracturedSlate,faultWeight*.87);
   // Sample the geological opening on the terrain triangles themselves.
   // A separately tessellated patch clipped into the steep fault walls in
