@@ -49,6 +49,38 @@ public static class EldoriaStudioCandidateImport
         }
         finally { UnityEngine.Object.DestroyImmediate(go); }
     }
+    public static void RunShader()
+    {
+        var source = Environment.GetEnvironmentVariable("ELDORIA_STUDIO_SHADER");
+        var proof = Environment.GetEnvironmentVariable("ELDORIA_STUDIO_UNITY_PROOF");
+        if (string.IsNullOrWhiteSpace(source) || !File.Exists(source) ||
+            string.IsNullOrWhiteSpace(proof) || File.Exists(proof))
+            throw new InvalidOperationException("Explicit reviewed shader and new proof path required");
+        if (AssetDatabase.IsValidFolder(Root))
+            throw new InvalidOperationException("Candidate root already exists; no overwrite");
+        AssetDatabase.CreateFolder("Assets", "EldoriaStudioCandidate");
+        var path = Root + "/DistrictGroundCandidate.shader";
+        File.Copy(source, Path.Combine(Application.dataPath, "EldoriaStudioCandidate", "DistrictGroundCandidate.shader"), false);
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+        var shader = AssetDatabase.LoadAssetAtPath<Shader>(path);
+        if (shader == null || ShaderUtil.ShaderHasError(shader))
+            throw new InvalidOperationException("Native shader import reported errors");
+        var material = new Material(shader);
+        try {
+            if (!material.HasProperty("_Soil") || !material.HasProperty("_MainTex"))
+                throw new InvalidOperationException("Expected ground material properties missing");
+        } finally { UnityEngine.Object.DestroyImmediate(material); }
+        File.WriteAllText(proof, JsonUtility.ToJson(new ShaderProof {
+            unityVersion = Application.unityVersion, shaderName = shader.name,
+            importWithoutReportedErrors = true, artApproved = false,
+            gameRendered = false, importedIntoGame = false
+        }, true));
+        Debug.Log("STUDIO_NATIVE_SHADER_IMPORT_PASS: isolated import, not a render or art approval");
+    }
+    [Serializable] class ShaderProof {
+        public string unityVersion, shaderName;
+        public bool importWithoutReportedErrors, artApproved, gameRendered, importedIntoGame;
+    }
     [Serializable] class Proof {
         public string unityVersion, prefabPath;
         public float spriteWidth, spriteHeight;
