@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-25T18:19:45.948Z",
+  "updated_at": "2026-11-25T18:31:24.155Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10193,7 +10193,16 @@
         "evidence": "Unity version, exact frozen source and candidate hashes, camera-matched PNG and regression results, safe scratch cleanup; no artistic auto-approval.",
         "handoff": "Release PC after safe native exit, record evidence and pending integration decisions."
       },
-      "art_approved": false
+      "art_approved": false,
+      "last_native_failure": {
+        "run_id": 45674341806,
+        "stage": "before Unity",
+        "cause": "Frozen source/candidate file hash mismatch on Windows checkout; scratch cleaned, no Unity launched",
+        "corrected": "Exact Git blob + normalized UTF8 text hash, log raw hashes; explicit native request gate"
+      },
+      "current_native_run_id": 45675919389,
+      "current_native_head": "02b8ea3306c5348ca3c0f56f560ad501c170f52e",
+      "last_hosted_request_proof": 45675138084
     }
   ],
   "history": [
@@ -20625,10 +20634,10 @@
     "authorized_at": "2026-11-25T18:19:45.948Z",
     "mode": "exclusive_one_workstream_at_a_time",
     "current_workstream": "eldoria-openai-development-studio-20261125",
-    "current_run_id": null,
+    "current_run_id": 45675919389,
     "next_workstream": null,
     "return_to": null,
-    "status": "reserved_studio_native_ab_rev1",
+    "status": "studio_native_ab_recovery_running",
     "rules": [
       "Check actual runner processes before Unity; never cancel or interfere with other jobs.",
       "Only isolated frozen source and Studio pilot scope; no main gameplay, beta release, or API spending.",
