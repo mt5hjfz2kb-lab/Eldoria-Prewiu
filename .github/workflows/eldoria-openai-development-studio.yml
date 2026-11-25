@@ -1,0 +1,52 @@
+name: Eldoria OpenAI Development Studio - isolated pilot
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths:
+      - 'tools/openai-development-studio/**'
+      - '.github/workflows/eldoria-openai-development-studio.yml'
+  workflow_dispatch:
+    inputs:
+      live_smoke:
+        description: 'Authorize exactly one low-cost OpenAI API request'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-openai-development-studio-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - run: python3 tools/openai-development-studio/studio.py --self-test
+      - run: python3 tools/openai-development-studio/studio.py smoke --out /tmp/eldoria-api-dry.json
+  smoke:
+    if: github.event_name == 'workflow_dispatch' && inputs.live_smoke == true
+    needs: offline
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Single opt-in API request
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python3 tools/openai-development-studio/studio.py smoke --live --out /tmp/eldoria-api-proof.json
+      - name: Safe connectivity proof only
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-openai-smoke-${{ github.run_id }}
+          path: /tmp/eldoria-api-proof.json
+          retention-days: 7
+          if-no-files-found: error
