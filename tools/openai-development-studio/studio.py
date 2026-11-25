@@ -93,9 +93,18 @@ def report(role, payload, manifest, result):
     if not isinstance(i, int) or not isinstance(o, int) or min(i,o) < 0:
         raise RuntimeError("La API no devolvió medición válida")
     a,b = MODELS[payload["model"]]
+    details=usage.get("input_tokens_details",{}) or {}
+    cached=details.get("cached_tokens",0)
+    writes=details.get("cache_write_tokens",0)
+    long_writes=(details.get("cache_write_tokens_details",{}) or {}).get("ttl_12h_tokens",0)
+    if not all(isinstance(v,int) and v>=0 for v in (cached,writes,long_writes)) or cached+writes>i or long_writes>writes:
+        raise RuntimeError("Invalid cache usage breakdown")
+    cached_rate=a*(0.1 if payload["model"]=="gpt-6-luna" else 0.05)
+    with_cache=((i-cached-writes)*a+cached*cached_rate+(writes-long_writes)*a*1.25+long_writes*a*2.5+o*b)/1_000_000
     return {"role":role, "model_requested":payload["model"], "model_returned":result.get("model"),
             "utc":datetime.now(timezone.utc).isoformat(), "evidence":manifest, "usage":usage,
             "estimated_usd_standard_uncached":round((i*a+o*b)/1_000_000, 6),
+            "estimated_usd_standard_with_cache":round(with_cache,8),
             "billing_verified":False, "art_approved":False, "response":text}
 
 def main():
@@ -145,6 +154,10 @@ class Tests(unittest.TestCase):
         self.assertEqual(a["estimated_usd_standard_uncached"],0.00002)
         self.assertFalse(a["billing_verified"])
         self.assertFalse(a["art_approved"])
+    def test_cache_write_cost(self):
+        p,m=make_payload("smoke","gpt-6-luna")
+        r={"status":"completed","output":[{"type":"message","content":[{"type":"output_text","text":"ELDORIA_API_OK"}]}],"usage":{"input_tokens":100,"output_tokens":20,"input_tokens_details":{"cache_write_tokens":100,"cached_tokens":0,"cache_write_tokens_details":{"ttl_12h_tokens":0}}}}
+        self.assertEqual(report("smoke",p,m,r)["estimated_usd_standard_with_cache"],0.0000225)
     def test_failed_result(self):
         p,m=make_payload("smoke","gpt-6-luna")
         with self.assertRaises(RuntimeError): report("smoke",p,m,{"status":"incomplete"})
