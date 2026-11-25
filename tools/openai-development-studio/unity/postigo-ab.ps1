@@ -113,9 +113,9 @@ try {
     throw 'Owned scratch Unity process exceeded bounded runtime'
   }
   if($p.ExitCode -ne 0){Get-Content -LiteralPath $log -Tail 120;throw "Unity failed $($p.ExitCode)"}
-  $proof=Join-Path $Output 'native-evidence.json'
-  if(-not(Test-Path -LiteralPath $proof)){throw 'Missing native evidence'}
-  $e=Get-Content -LiteralPath $proof -Raw | ConvertFrom-Json
+  $nativeManifest=Join-Path $Output 'native-evidence.json'
+  if(-not(Test-Path -LiteralPath $nativeManifest)){throw 'Missing native evidence'}
+  $e=Get-Content -LiteralPath $nativeManifest -Raw | ConvertFrom-Json
   if($e.sourceSha -ne $source -or $e.sourceFrames -ne 45 -or $e.engineVersion -ne '6000.3.23f1' -or
      -not $e.nativeWorldRender -or $e.artApproved -ne 'NO'){throw 'Incomplete native result'}
   foreach($f in $e.frames){if((Digest (Join-Path $Output $f.file)) -ne $f.sha256){throw 'Capture hash mismatch'}}
