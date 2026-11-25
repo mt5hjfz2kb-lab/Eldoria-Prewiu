@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "postigo-frontage-20261125",
+  "target": "POSTIGO_FRONTAGE",
+  "source_sha": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+  "approved_native_execution": true,
+  "workstream_id": "eldoria-openai-development-studio-20261125",
+  "owner": "chatgpt-studio-postigo-delivery-20261125",
+  "revision": 7,
+  "reason": "Actual Studio-derived road correction; three diagnostic variants and control, no new paid calls."
+}
