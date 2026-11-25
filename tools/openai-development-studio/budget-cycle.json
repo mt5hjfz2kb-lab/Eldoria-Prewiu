@@ -42,6 +42,14 @@
       "estimated_usd": "0.03381925",
       "result_artifact_id": 15051423806,
       "quality_result": "Four real responses completed; director and independent auditor confirmed readability in historical native frames, proposed reversible 5% zoom only as untested; no game edit or art approval."
+    },
+    {
+      "id": "valoria-b5-street-integration-review-20261125",
+      "reserve_usd": "0.70",
+      "status": "authorized_once",
+      "run_id": "valoria-b5-street-integration-review-20261125",
+      "request_sha256": "61d56c4a1d0be8f7b6f4d83f77887143b58b51593223ba0f8048169cfedfbc9f",
+      "reason": "Owner requested real next phase; use existing pilot authorization and current certified public Valoria evidence only."
     }
   ],
   "policy": {
