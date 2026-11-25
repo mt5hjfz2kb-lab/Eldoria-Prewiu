@@ -31,6 +31,14 @@
       "reason": "One explicitly bounded corrective cycle; fixed parent and message, run attempt one only",
       "event_nonce": "MILL_YARD_V2_ONCE",
       "quality_result": "All five calls and PNG gate passed; visual auditor rejected global material footprint, allowed color/grain reference only; shader candidate conditional."
+    },
+    {
+      "id": "historic-b1-camera-review-20261125",
+      "reserve_usd": "0.70",
+      "status": "authorized_once",
+      "run_id": "historic-b1-camera-review-20261125",
+      "request_sha256": "acb42d221b755aa0cbbc41bcfeb8a901a8daff94517b7cb9bf02e72166b6ecc6",
+      "reason": "Live verification of reusable read-only four-role workflow, within existing authorized $5 pilot cap; genuine historical public native evidence only."
     }
   ],
   "policy": {
