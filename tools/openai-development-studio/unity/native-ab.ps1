@@ -3,7 +3,10 @@ param([Parameter(Mandatory=$true)][string]$Packet,
 $ErrorActionPreference='Stop'
 $source='5ef2aee67cf8fde57ba2fc4b3d929b517ee67944'
 $ident='eldoria-openai-development-studio-20261125'
-$owner='chatgpt-eldoria-studio-native-20261125'
+$request=Get-Content -LiteralPath (Join-Path $Packet 'native-request.json') -Raw | ConvertFrom-Json
+if($request.workstream_id -ne $ident -or $request.source_sha -ne $source -or $request.approved_native_execution -ne $true -or $request.candidate_sha256 -ne '4e582b25a420383798e3aa4895d1b71b33158f18de0087165b8055adef068785'){throw 'Native request mismatch'}
+$owner=[string]$request.owner
+$revision=[int]$request.revision
 $root=Join-Path $env:RUNNER_TEMP ('eldoria-studio-native-'+$env:GITHUB_RUN_ID)
 function Assert-Lease {
   $h=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json'}
@@ -14,7 +17,7 @@ function Assert-Lease {
   $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
   $held=@($reg.active | Where-Object {@($_.resources) -contains 'windows-runner-heavy'})
   if($held.Count -ne 1 -or $held[0].id -ne $ident -or $held[0].owner -ne $owner -or
-    $held[0].ownership_revision -ne 1 -or $held[0].ownership_state -ne 'claimed' -or
+    $held[0].ownership_revision -ne $revision -or $held[0].ownership_state -ne 'claimed' -or
     $reg.resource_rotation.current_workstream -ne $ident){throw 'Studio exclusive lease no longer valid'}
   if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){throw 'Another native process active; never interrupt it'}
   if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path -LiteralPath $env:UNITY_EDITOR_PATH)){throw 'Unity editor not available'}
