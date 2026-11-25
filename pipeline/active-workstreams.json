@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-25T19:12:31.373Z",
+  "updated_at": "2026-11-25T19:17:12.181Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10166,73 +10166,6 @@
         "deliverable": "Implementación aislada del núcleo de estadísticas, prestigio, colecciones y clasificación; integración real condicionada por titularidad y autoridad de servidor.",
         "evidence": "Pruebas de dominio, persistencia, idempotencia, desbloqueos y pruebas Unity cuando se libere el recurso.",
         "handoff": "PR única draft, SHA, pruebas y pendientes exactos."
-      }
-    },
-    {
-      "id": "eldoria-openai-development-studio-20261125",
-      "title": "Eldoria Development Studio — bounded native Unity validation",
-      "owner": "chatgpt-studio-real-valoria-review-20261125",
-      "ownership_state": "claimed",
-      "ownership_revision": 5,
-      "write_scope_released": false,
-      "branch": "pilot/eldoria-openai-development-studio-20261125",
-      "status": "active",
-      "phase": "FIRST_REAL_V2_PRODUCTION_REVIEW",
-      "claimed_at": "2026-11-25T19:12:31.373Z",
-      "base_main_sha": "184294f7c723458c3eef5a294944a043681dab55",
-      "user_authorization": "Owner supplied cost CSV and requested next phase: apply Studio to real Eldoria work; existing pilot cap $5; no production changes without verified evidence.",
-      "scope": [
-        "tools/openai-development-studio/**",
-        ".github/workflows/eldoria-openai-*.yml"
-      ],
-      "resources": [],
-      "delivery_definition": {
-        "deliverable": "Reconcile CSV if possible; one economical read-only review of current certified Valoria Bastion V urban integration, actionable reviewed source-grounded findings and measured cost.",
-        "evidence": "Current experimental head and verified native captures; immutable receipt, quality decision, no promotion of untested proposals.",
-        "handoff": "Release Studio ownership, preserve other branches and PC."
-      },
-      "art_approved": false,
-      "last_native_failure": {
-        "run_id": 45674341806,
-        "stage": "before Unity",
-        "cause": "Frozen source/candidate file hash mismatch on Windows checkout; scratch cleaned, no Unity launched",
-        "corrected": "Exact Git blob + normalized UTF8 text hash, log raw hashes; explicit native request gate"
-      },
-      "current_native_run_id": 45675919389,
-      "current_native_head": "02b8ea3306c5348ca3c0f56f560ad501c170f52e",
-      "last_hosted_request_proof": 45675138084,
-      "previous_owner": "chatgpt-studio-economics-v2-20261125",
-      "closed_at": "2026-11-25T19:06:02.443Z",
-      "last_native_run": 45675919389,
-      "last_native_head": "02b8ea3306c5348ca3c0f56f560ad501c170f52e",
-      "native_closeout_run": 45679533675,
-      "delivery_head": "841295b96c44c9c30e8d8c757ed5b34acf01d52f",
-      "evidence": {
-        "native_frames": 48,
-        "matched_pairs": 16,
-        "exact_reversals": 16,
-        "native_artifact": 15052239345,
-        "pixel_artifact": 15053108122,
-        "cleanup_artifact": 15051869174,
-        "reusable_api_run": 45676636310,
-        "offline_tests": 44,
-        "estimated_api_total_usd": "0.18984725",
-        "api_billing_verified": false,
-        "art_decision": "Reject candidate: imperceptible visual effect; preserve source. No game changes or publication."
-      },
-      "next": "Reuse V2 reports and routing on future bounded requests; reconcile privately with official CSV when supplied.",
-      "phase2_evidence": {
-        "historical_backfill_run": 45681283119,
-        "final_ci_run": 45681700141,
-        "tests_passed": 54,
-        "api_calls_added": 0,
-        "historical_calls": 15,
-        "estimated_api_total_usd": "0.18984755",
-        "billing_verified": false,
-        "persistent_receipts": 4,
-        "github_hosted_seconds_selected": 512,
-        "self_hosted_windows_seconds_selected": 1519,
-        "limitations": "No official cost CSV; new routing profiles and future paid report path tested offline, not with additional live spend. Real productivity savings not measured."
       }
     }
   ],
@@ -20691,6 +20624,85 @@
         "github_hosted_seconds_selected": 512,
         "self_hosted_windows_seconds_selected": 1519,
         "limitations": "No official cost CSV; new routing profiles and future paid report path tested offline, not with additional live spend. Real productivity savings not measured."
+      }
+    },
+    {
+      "id": "eldoria-openai-development-studio-20261125",
+      "title": "Eldoria Development Studio — bounded native Unity validation",
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 6,
+      "write_scope_released": true,
+      "branch": "pilot/eldoria-openai-development-studio-20261125",
+      "status": "completed",
+      "phase": "REAL_V2_REVIEW_VERIFIED",
+      "claimed_at": "2026-11-25T19:12:31.373Z",
+      "base_main_sha": "184294f7c723458c3eef5a294944a043681dab55",
+      "user_authorization": "Owner supplied cost CSV and requested next phase: apply Studio to real Eldoria work; existing pilot cap $5; no production changes without verified evidence.",
+      "scope": [
+        "tools/openai-development-studio/**",
+        ".github/workflows/eldoria-openai-*.yml"
+      ],
+      "resources": [],
+      "delivery_definition": {
+        "deliverable": "Reconcile CSV if possible; one economical read-only review of current certified Valoria Bastion V urban integration, actionable reviewed source-grounded findings and measured cost.",
+        "evidence": "Current experimental head and verified native captures; immutable receipt, quality decision, no promotion of untested proposals.",
+        "handoff": "Release Studio ownership, preserve other branches and PC."
+      },
+      "art_approved": false,
+      "last_native_failure": {
+        "run_id": 45674341806,
+        "stage": "before Unity",
+        "cause": "Frozen source/candidate file hash mismatch on Windows checkout; scratch cleaned, no Unity launched",
+        "corrected": "Exact Git blob + normalized UTF8 text hash, log raw hashes; explicit native request gate"
+      },
+      "current_native_run_id": 45675919389,
+      "current_native_head": "02b8ea3306c5348ca3c0f56f560ad501c170f52e",
+      "last_hosted_request_proof": 45675138084,
+      "previous_owner": "chatgpt-studio-real-valoria-review-20261125",
+      "closed_at": "2026-11-25T19:17:12.181Z",
+      "last_native_run": 45675919389,
+      "last_native_head": "02b8ea3306c5348ca3c0f56f560ad501c170f52e",
+      "native_closeout_run": 45679533675,
+      "delivery_head": "a08d2976207f50f50b99f63047736f1b6ee7d7f2",
+      "evidence": {
+        "native_frames": 48,
+        "matched_pairs": 16,
+        "exact_reversals": 16,
+        "native_artifact": 15052239345,
+        "pixel_artifact": 15053108122,
+        "cleanup_artifact": 15051869174,
+        "reusable_api_run": 45676636310,
+        "offline_tests": 44,
+        "estimated_api_total_usd": "0.18984725",
+        "api_billing_verified": false,
+        "art_decision": "Reject candidate: imperceptible visual effect; preserve source. No game changes or publication."
+      },
+      "next": "Apply the documented Postigo diagnostic A/B in the canonical Valoria workstream; preserve existing source ownership. New API reservations must respect remaining pilot cap.",
+      "phase2_evidence": {
+        "historical_backfill_run": 45681283119,
+        "final_ci_run": 45681700141,
+        "tests_passed": 54,
+        "api_calls_added": 0,
+        "historical_calls": 15,
+        "estimated_api_total_usd": "0.18984755",
+        "billing_verified": false,
+        "persistent_receipts": 4,
+        "github_hosted_seconds_selected": 512,
+        "self_hosted_windows_seconds_selected": 1519,
+        "limitations": "No official cost CSV; new routing profiles and future paid report path tested offline, not with additional live spend. Real productivity savings not measured."
+      },
+      "phase3_evidence": {
+        "source_run": 45638738009,
+        "api_run": 45683014884,
+        "final_ci": 45683596285,
+        "live_calls": 4,
+        "estimated_cost_usd": "0.038709675",
+        "total_estimated_usd": "0.228557225",
+        "api_elapsed_seconds": 69,
+        "diagnosis": "accepted with reserves; actual artistic change not implemented",
+        "billing_verified": false,
+        "reason": "Export contains only time buckets; no amounts."
       }
     }
   ],
