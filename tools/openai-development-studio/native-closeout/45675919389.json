@@ -1,0 +1,6 @@
+{
+  "source_run": 45675919389,
+  "artifact": 15052239345,
+  "approved_cleanup": true,
+  "scope": "Exact owned scratch only; no native render, no OpenAI calls"
+}
