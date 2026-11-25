@@ -1,0 +1,57 @@
+{
+  "schema": 2,
+  "run_id": 45670034719,
+  "request_id": "connectivity-45670034719",
+  "source_run": null,
+  "started_utc": "2026-11-25T17:56:45Z",
+  "finished_utc": "2026-11-25T17:57:06Z",
+  "utc_day": "2026-11-25",
+  "wall_seconds": 21.0,
+  "workflow_status": "success",
+  "quality_decision": "not_applicable",
+  "quality_score_before": null,
+  "quality_score_after": null,
+  "quality_evidence_run": null,
+  "calls_recorded": 1,
+  "calls_with_unknown_cost": 0,
+  "estimated_known_usd": "0.0000073",
+  "estimate_complete": true,
+  "billed_usd": null,
+  "billing_status": "unreconciled",
+  "github_billed_usd": null,
+  "pc_electricity_usd": null,
+  "windows_seconds": null,
+  "manual_review_seconds": null,
+  "tariff": "2026-11-25-standard-short",
+  "calls": [
+    {
+      "role": "smoke",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 28,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cache_write_tokens_details": {
+            "ttl_12h_tokens": 0,
+            "ttl_30m_tokens": 0
+          },
+          "cached_tokens": 0
+        },
+        "output_tokens": 9,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 37
+      },
+      "utc": "2026-11-25T17:57:02.965929+00:00",
+      "duration_seconds": null,
+      "estimated_usd": "0.0000073",
+      "tariff": "2026-11-25-standard-short",
+      "service_tier": "standard",
+      "billed_usd": null,
+      "billing_status": "unreconciled",
+      "state": "completed",
+      "reservation_usd": "0.01"
+    }
+  ]
+}
