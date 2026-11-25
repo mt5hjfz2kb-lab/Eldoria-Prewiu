@@ -20,9 +20,13 @@
     {
       "id": "senda-pr195-art-benchmark-v2",
       "reserve_usd": "1.45",
-      "status": "authorized_once",
-      "run_id": "senda-pr195-art-benchmark-v2",
-      "reason": "One explicit corrective call chain; concise reports and 2200 token maximum; no automatic retry."
+      "status": "executed",
+      "run_id": 45693467813,
+      "reason": "Five roles complete; source and two authentic native frames verified. No artistic approval.",
+      "estimated_usd": "0.08252425",
+      "result_artifact_id": 15059288552
     }
-  ]
+  ],
+  "estimated_total_usd": "0.09172975",
+  "billing_verified": false
 }
