@@ -89,14 +89,14 @@ const assert=require('node:assert/strict');
  await videoPage.goto('http://127.0.0.1:8769/tools/senda-brecha/visual-3d/index.html?test',{waitUntil:'domcontentloaded',timeout:90000});
  await videoPage.waitForFunction(()=>window.__senda3d&&window.__senda3d.state().hasWebGL,undefined,{timeout:30000});
  await videoPage.getByRole('button',{name:'COMENZAR EXPEDICIÓN'}).click();
- await videoPage.evaluate(()=>window.__senda3d.setSpeed(4));
+ await videoPage.evaluate(()=>window.__senda3d.setSpeed(0));
  // 80 software-rendered PNGs made the Chromium job exceed its practical GPU budget.
  // Four real viewports already test intro, gates, combat and added recruits;
  // the clip needs only a representative dozen frames, not 80 redundant renders.
  for(let frame=0;frame<12;frame++){
   if(frame===2) await videoPage.locator('#left').click();
   if(frame===9) await videoPage.locator('#right').click();
-  await videoPage.waitForTimeout(50);
+  await videoPage.evaluate(()=>window.__senda3d.advance(.32));
   await videoPage.screenshot({path:path.join(sequence,String(frame).padStart(3,'0')+'.png')});
  }
  await videoPage.close();
