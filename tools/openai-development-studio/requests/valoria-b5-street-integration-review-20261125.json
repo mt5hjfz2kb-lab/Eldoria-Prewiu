@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "valoria-b5-street-integration-review-20261125",
+  "live": true,
+  "approved_public_game_evidence": true,
+  "mode": "review",
+  "routing_profile": "economy",
+  "target_id": "BASTION_V_STREET_INTEGRATION",
+  "source_sha": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+  "evidence_head_sha": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+  "source_run": 45638738009,
+  "artifact_name": "ciudad-cinco-bastiones-unity",
+  "source_path": "Unity/Assets/Experimentos/ValoriaModular25D/Scripts/ValoriaUrbanPlan.cs",
+  "source_sha256": "75cc3afeab8b438e1e52e7a3ce37e4d781419128f74abf8dbf7ebd40e3e5a0a7",
+  "manifest": "evidence.json",
+  "frames": [
+    "stage-5-calle-mayor.png",
+    "stage-5-postigo.png"
+  ],
+  "objective": "Real production review of current Bastion V: identify the highest-impact remaining street/frontage integration defect, using these two genuine close native camera frames and the exact urban-plan source. Deliver a source-specific actionable intervention and measurable acceptance criteria. Evaluate whether the town reads as a continuous medieval settlement, not pasted artwork. Write reports in Spanish.",
+  "scope": "Read-only. Preserve the existing approved modular 2.5D method, building locations, playable routes, game mechanics and city identity. No new mechanics, no micro-adjustment of the rejected MILL_YARD shader, no production writes or asset generation. Distinguish visible evidence from code hypotheses. Only judge the two supplied cameras, not all of Valoria. If exact fix cannot be established from this file, name the missing source and necessary test rather than guessing.",
+  "acceptance": "A single prioritized defect corroborated by an independent auditor, precise references to visible geometry and existing source symbols, a bounded reversible proposal and test plan. Explicitly distinguish accepted diagnostic findings from untested artistic changes. Economy coordinator must preserve the independent auditor's reservations. Measure actual cost and response time; no fabricated quality score or savings."
+}
