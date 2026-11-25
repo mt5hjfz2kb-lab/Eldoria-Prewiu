@@ -938,11 +938,11 @@ namespace Eldoria.DailyTreasures
                 bool newCycle=daily.CycleDay==7 && upcoming==1 && reward.IsValid;
                 bool collected=!newCycle && daily.CycleDay>0 && i+1<=daily.CycleDay;
                 dayHead[i].text="DÍA "+(i+1)+(collected?"  OK":next?"  HOY":"");
-                dayHead[i].color=next?Ivory:Gold;
+                dayHead[i].color=next?Ivory:collected?Muted:Gold;
                 if(dayBack[i].sprite)
                     dayBack[i].color=next?Color.white:
                         collected?new Color(.62f,.62f,.59f,1f):
-                        new Color(.83f,.80f,.75f,1f);
+                        new Color(.60f,.65f,.68f,1f);
                 else
                     dayBack[i].color=next?new Color(.42f,.29f,.16f,1f):
                         collected?new Color(.15f,.18f,.15f,1f):
@@ -2835,7 +2835,7 @@ namespace Eldoria.DailyTreasures
                 var skipRect=(RectTransform)skipButton.transform;
                 skipRect.anchoredPosition=new Vector2(
                     skipRect.anchoredPosition.x,
-                    -60f+(openingH-sceneH)*.5f);
+                    (portrait?-12f:-60f)+(openingH-sceneH)*.5f);
             }
             bool compactLandscape=!portrait && paidH<365f;
             float y=Mathf.Lerp(portrait?64f:42f,

@@ -349,9 +349,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(i>0)separation=Mathf.Min(separation,Vector2.Distance(nodes[i],nodes[i-1]));
                 if(i<24)separation=Mathf.Min(separation,Vector2.Distance(nodes[i],nodes[i+1]));
                 float r=Mathf.Clamp(separation*.31f,3,16);
-                if(boss)r*=1.3f;
+                if(boss)r*=1.36f;
+                else if(!current && !cleared)r*=.72f;
                 var gold=new Color(.78f,.63f,.39f,1);
-                var dark=new Color(.12f,.15f,.17f,.92f);
+                var dark=current?new Color(.60f,.33f,.08f,1):cleared?new Color(.12f,.30f,.24f,1):new Color(.16f,.19f,.22f,1);
                 // Stone-mounted stage seal, not a floating UI dot. The
                 // bottom-offset dark lip casts onto its actual map position;
                 // top-left gold catches the sunset of the approved painting.
@@ -364,7 +365,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     Disc(vh,nodes[i],r+9,new Color(1f,.50f,.05f,.20f));
                     Disc(vh,nodes[i],r+5,new Color(1f,.70f,.12f,.75f));
                 }
-                Disc(vh,nodes[i],r+2,boss?gold:new Color(.48f,.40f,.30f,1));
+                Disc(vh,nodes[i],r+2,boss||current?gold:new Color(.64f,.60f,.49f,1));
                 Disc(vh,nodes[i],r,dark);
                 if(cleared){
                     Line(vh,nodes[i]+new Vector2(-r*.5f,0),nodes[i]+new Vector2(-r*.1f,-r*.4f),3,new Color(.45f,.93f,.27f,1));

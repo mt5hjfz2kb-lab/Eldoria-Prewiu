@@ -101,7 +101,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 Vector2.zero,new Vector2(115f,27f),OpenStatus).GetComponent<RectTransform>();
             bastionTag.GetComponent<Image>().raycastPadding=new Vector4(-3f,-9f,-3f,-9f);
             bastionTagText=bastionTag.GetComponentInChildren<Text>(true);
-            bastionTagText.fontSize=12;
+            bastionTagText.fontSize=14;
             bastionTagText.color=PaleGold;
             // Building nameplates are wayfinding, NOT a second enormous
             // turquoise Build CTA. The actual action stays in the real modal.
@@ -117,7 +117,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 Vector2.zero,new Vector2(115f,27f),OpenSawmill).GetComponent<RectTransform>();
             sawmillTag.GetComponent<Image>().raycastPadding=new Vector4(-3f,-9f,-3f,-9f);
             sawmillTagText=sawmillTag.GetComponentInChildren<Text>(true);
-            sawmillTagText.fontSize=12;
+            sawmillTagText.fontSize=14;
             sawmillTagText.color=PaleGold;
             sawmillTagText.rectTransform.anchoredPosition=new Vector2(12f,0f);
             sawmillTagText.rectTransform.sizeDelta=new Vector2(100f,30f);
@@ -354,7 +354,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             inner.sprite = activityPanelPlate;
             inner.color = Color.white;
             inner.type = Image.Type.Sliced;
-            frame.GetComponent<Image>().color = Eldoria.UI.RoyalGold.V2.CoronaFinish.Brass;
+            frame.GetComponent<Image>().enabled = false;
             var scene=Resources.Load<Texture2D>("DailyTreasureCeremonies/bastion_stage");
             if(scene)
             {
@@ -789,15 +789,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var caption=rect.GetComponentInChildren<Text>(true);
             if(caption!=null)
             {
-                caption.fontSize=11;
+                caption.fontSize=13;
                 caption.alignment=TextAnchor.MiddleCenter;
                 caption.rectTransform.anchoredPosition=
                     new Vector2(0f,-cell.width*.5f-9f);
                 caption.rectTransform.sizeDelta=new Vector2(cell.width+8f,16f);
                 caption.horizontalOverflow=HorizontalWrapMode.Wrap;
                 caption.resizeTextForBestFit=true;
-                caption.resizeTextMinSize=9;
-                caption.resizeTextMaxSize=11;
+                caption.resizeTextMinSize=11;
+                caption.resizeTextMaxSize=13;
             }
         }
 
@@ -1017,10 +1017,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     var number=i==0?woodValue:i==1?stoneValue:foodValue;
                     if(number!=null)
                     {
-                        number.rectTransform.anchoredPosition=new Vector2(-12f,0f);
+                        number.rectTransform.anchoredPosition=new Vector2(-8f,0f);
                         number.rectTransform.sizeDelta=new Vector2(
-                            Mathf.Clamp(chipWidth-d-19f,22f,46f),31f);
-                        number.fontSize=chipWidth<82f?14:16;
+                            Mathf.Clamp(chipWidth-d-13f,24f,52f),31f);
+                        number.fontSize=chipWidth<82f?16:18;
                         number.resizeTextMaxSize=number.fontSize;
                     }
                 }

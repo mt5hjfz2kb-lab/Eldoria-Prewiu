@@ -644,12 +644,12 @@ namespace Eldoria.UI.RoyalGold.V2
                     paper.gameObject.AddComponent<CanvasRenderer>();
                     var paperImage=paper.gameObject.AddComponent<Image>();
                     paperImage.sprite=scoutParchmentSprite;
-                    if(RoyalGoldV2Hud.UseCoronaArt) paperImage.color=new Color(.83f,.85f,.79f);
+                    if(RoyalGoldV2Hud.UseCoronaArt) paperImage.color=new Color(.73f,.78f,.73f);
                     paperImage.type=Image.Type.Sliced;
                     paperImage.fillCenter=true;
                     // Source margins/curls are in pixels. Keep them compact
                     // rather than consuming most of a short portrait row.
-                    paperImage.pixelsPerUnitMultiplier=3f;
+                    paperImage.pixelsPerUnitMultiplier=RoyalGoldV2Hud.UseCoronaArt?5f:3f;
                     paperImage.raycastTarget=false;
                     Stretch(paper);
                     paper.SetAsFirstSibling();
@@ -811,7 +811,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     ceremonyResult=EarlyRetentionRules.ScoutDiscoveryText(order)+"\n"+
                         EarlyRetentionRules.ScoutRewardText(order.Kind);
                 }
-                victoryTitle.Put(discovered?"HALLAZGO REGISTRADO":
+                victoryTitle.Put(kind=="ScoutClaim"?"HALLAZGO REGISTRADO":
                     "EXPLORADORES EN CAMINO");
                 victoryTitle.color=Gold;
                 victoryDetail.Put(discovered?EarlyRetentionRules.ScoutDiscoveryTitle(order)+"\n"+
@@ -1049,7 +1049,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // instead of leaving a long dark strip before the battle button.
             // Scouts retains three full-size readable contracts beneath its map.
             float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-760f):
-                portrait?Mathf.Clamp(ph-988f,220f,880f):
+                portrait?Mathf.Clamp(ph-(RoyalGoldV2Hud.UseCoronaArt?810f:988f),220f,1090f):
                 ph-155f;
             // The landscape remains dominant, but the enemy and all real
             // stats get sufficient room in a proper illustrated card.
@@ -1339,7 +1339,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // The approved quest-board cards occupy the actual manuscript,
             // not three tiny 95-point rows floating at the top of a phone.
             // Scale all three naturally with their destination's usable height.
-            float head=portrait?44f:8f; // The destination title already identifies the board.
+            float head=portrait && RoyalGoldV2Hud.UseCoronaArt?8f:portrait?44f:8f; // The destination title already identifies the board.
             float spacing=Mathf.Clamp((ih-head-12f)/3f,65f,330f);
             for(int i=0;i<3;i++)
             {
@@ -1377,9 +1377,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     TL(cell,12f,head+i*spacing,iw-24f,spacing-5f);
                     float cellW=iw-24f;
-                    float titleTop=portrait?34f:13f;
+                    float titleTop=portrait?12f:13f;
                     TL(scoutTitles[i].rectTransform,32f,titleTop,cellW-64f,portrait?62f:36f);
-                    float detailTop=portrait?106f:54f;
+                    float detailTop=portrait?72f:54f;
                     float imageW=portrait?128f:70f;
                     float imageH=portrait?98f:50f;
                     TL(scoutThumbnails[i].rectTransform,32f,detailTop,imageW,imageH);
