@@ -324,6 +324,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             {
                 districtClock = Plate("Plazo de la obra", hudCanvas.transform, slatePlate,
                     new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(158f,38f));
+                districtClock.GetComponent<Image>().color=new Color(.61f,.66f,.73f,1f);
                 districtClockText = Label("", districtClock, 17, false, WarmWhite, TextAnchor.MiddleCenter,
                     Vector2.zero, new Vector2(148f,32f));
                 districtClock.gameObject.SetActive(false);
@@ -333,6 +334,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     firstBuildGuide = Plate("Guía de la primera obra",sawmillTag,hand,new Vector2(.68f,.18f),
                         new Vector2(.21f,.86f),Vector2.zero,new Vector2(74f,74f));
                     firstBuildGuide.GetComponent<Image>().preserveAspect = true;
+                    var edge=firstBuildGuide.gameObject.AddComponent<Shadow>();
+                    edge.effectColor=new Color(.085f,.06f,.055f,.90f);
+                    edge.effectDistance=new Vector2(1.7f,-2.1f);
                     firstBuildGuide.gameObject.SetActive(false);
                 }
             }
@@ -374,8 +378,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
             foreach (var text in inner.transform.parent.GetComponentsInChildren<Text>(true))
             {
-                text.font=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+(text.name=="Opening question"
-                    ? "CormorantGaramond-SemiBold" : "SourceSans3-Semibold")) ?? text.font;
+                var typeface=text.name=="Opening question" ? Eldoria.UI.RoyalGold.V2.CoronaFinish.HeadingFont :
+                    Eldoria.UI.RoyalGold.V2.CoronaFinish.BodyFont;
+                if(typeface)text.font=typeface;
                 text.color = WarmWhite;
                 if (text.name == "Opening question") text.color = PaleGold;
             }
@@ -1149,7 +1154,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             art.type=Image.Type.Simple;
             art.preserveAspect=true;
             var word=control.GetComponentInChildren<Text>();
-            word.fontSize=11;
+            var dockTypeface=Eldoria.UI.RoyalGold.V2.CoronaFinish.BodyFont;
+            if(dockTypeface)word.font=dockTypeface;
+            word.fontSize=13;
             word.color=WarmWhite;
             word.alignment=TextAnchor.MiddleCenter;
             word.rectTransform.anchoredPosition=new Vector2(0f,-30f);
@@ -1201,8 +1208,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             rect.anchoredPosition = at;
             rect.sizeDelta = size;
             var label = go.GetComponent<Text>();
-            var fontName = inscription ? "CormorantGaramond-SemiBold" : "SourceSans3-Semibold";
-            label.font = Resources.Load<Font>("ValoriaModular25D/UI/Fonts/" + fontName);
+            label.font = inscription ? Eldoria.UI.RoyalGold.V2.CoronaFinish.HeadingFont :
+                Eldoria.UI.RoyalGold.V2.CoronaFinish.BodyFont;
             if (label.font == null)
                 label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             label.text = content;

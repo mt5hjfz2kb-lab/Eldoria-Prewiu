@@ -12,6 +12,11 @@ namespace Eldoria.UI.RoyalGold.V2
         public static readonly Color32 Ivory=new Color32(250,239,213,255);
         public static readonly Color32 Muted=new Color32(201,205,192,255);
         public static readonly Color32 Brass=new Color32(192,159,106,255);
+        private static Font headingFont, bodyFont;
+        public static Font HeadingFont => headingFont ? headingFont :
+            (headingFont=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/CormorantGaramond-SemiBold"));
+        public static Font BodyFont => bodyFont ? bodyFont :
+            (bodyFont=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/SourceSans3-Semibold"));
     }
 
     /// <summary>
@@ -60,13 +65,11 @@ namespace Eldoria.UI.RoyalGold.V2
         private string lastDetails = "";
         private readonly string[] councilKeys = {"production","defense","civil"};
         private readonly string[] councilNames = {"PRODUCCIÓN\n+260 madera\n+180 piedra","DEFENSA\n+220 piedra\n+100 poder","VIDA CIVIL\n+180 madera\n+280 comida"};
-        private static Font chronicleFont, coronaHeadingFont, coronaBodyFont;
+        private static Font chronicleFont;
         private static Font ChronicleFont => chronicleFont ? chronicleFont :
             (chronicleFont = Resources.Load<Font>("EldoriaRetention/reference-serif"));
-        internal static Font CoronaHeadingFont => coronaHeadingFont ? coronaHeadingFont :
-            (coronaHeadingFont = Resources.Load<Font>("ValoriaModular25D/UI/Fonts/CormorantGaramond-SemiBold"));
-        internal static Font CoronaBodyFont => coronaBodyFont ? coronaBodyFont :
-            (coronaBodyFont = Resources.Load<Font>("ValoriaModular25D/UI/Fonts/SourceSans3-Semibold"));
+        internal static Font CoronaHeadingFont => CoronaFinish.HeadingFont;
+        internal static Font CoronaBodyFont => CoronaFinish.BodyFont;
         private static readonly Color Ivory = new Color(.945f, .913f, .852f);
         private static readonly Color Muted = new Color(.775f, .76f, .715f);
         private static readonly Color Gold = new Color(.886f, .73f, .45f);
