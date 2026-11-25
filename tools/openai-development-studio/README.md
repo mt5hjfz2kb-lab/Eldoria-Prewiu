@@ -33,3 +33,31 @@ La entrada debe ser explícita y revisada; la detección básica de secretos no 
 
 - [Ejecución de conexión real](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45670034719), commit `15bad5acaa909a38c59e351ca70e0a17caa5fd99`. Los dos grupos de pruebas offline y la llamada real a GPT-6 Luna pasaron. El log registra `API_RESPONSE_OK` y coste estimado de 0,000007 USD. Artefacto de recibo 15049860461 (retención de 7 días).
 - El disparador excepcional de una sola llamada se retiró en `bbfa2423067ef1bf5ce1f4233687eac3800bec42`. Los pushes posteriores solo ejecutan pruebas offline. No se ha verificado la factura real ni se ha modificado main o Unity.
+
+
+## Operación V2 — pruebas reales de coordinación, 25-11-2026
+
+**Estado: infraestructura y cadena API probadas; candidato de shader verificado a nivel fuente/matemático; calidad artística final y A/B nativo Unity NO certificados.**
+
+- Fuente congelada de Valoria: `5ef2aee67cf8fde57ba2fc4b3d929b517ee67944`, ejecución [45638738009](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45638738009). Capturas reales Bastión I y V de 390×844, recuperadas del artefacto `ciudad-region-recorrido`; SHA-256 de las imágenes y de sus derivados en los manifiestos.
+- Primera cadena [45670811229](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45670811229): los cinco perfiles respondieron; el director eligió suelo del aserradero, mientras el brief rígido del artista generó una linterna. El control de alpha exigía valores 255 cuando la imagen llegaba a 254. Rechazada como misión coherente. No se reutiliza como resultado artístico.
+- Segunda cadena [45671428903](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45671428903): objetivo único MILL_YARD, código real de DistrictGround y Modular25DGround, auditor con acceso al PNG real. Los cinco perfiles respondieron, alpha/bounds correctos; el auditor rechazó la imagen como referencia global, conservándola solo como muestra de color/grano. El programador propuso una modificación local al peso de tierra y serrín del shader, sin sprites nuevos.
+- El actuador determinista `shader_candidate.py` materializó exactamente la propuesta revisada en una copia; [prueba fuente 45671988283](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45671988283), 40.602 muestras numéricas, cambio reversible de tres líneas a cuatro, cobertura del peso del terreno 0,91257 en la cuadrícula de ensayo (NO mejora visual medida). SHA original f1010a667125f9da262c9b622c03bd228f77aa49e7ccfe9c9c0402a0920f75e9; candidato 4e582b25a420383798e3aa4895d1b71b33158f18de0087165b8055adef068785. Primer intento rechazado por indentación; corregido sin llamadas API.
+- [Pruebas offline finales 45672130292](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45672130292): 31 tests y ensayo seco; no red a OpenAI.
+- Presupuesto piloto acumulado: 5 USD máximo de reservas; 2,91 reservados/cerrados, 2,09 sin reservar. Estimación de consumo total de la API (incluido smoke y escrituras de caché): 0,156028 USD. No es una factura verificada. Sin recarga ni autorización global implícita. `budget-cycle.json` y `budget_guard.py` impiden duplicados, reintentos autorizados y reset automático del piloto. Los dos disparadores de consumo se han desarmado. Las reservas no se liberan por fallo.
+- No se modificó main, el experimento de Valoria ni la reserva de Windows. El registro canónico mantiene la reserva exclusiva de Windows para eldoria-valoria-modular25d-bastion1-20261119. No lanzar Unity desde este workstream sin relevo válido. El puente C# está preparado pero no compilado nativamente. No confundir importación de asset con una mejora en cámara de juego.
+
+### Reutilizar en encargos futuros
+
+`mission_packet.py --packet <manifest.json>` es el modo seco y valida rutas locales, hashes, límites de entrada, SHA y run de procedencia. Modo review (cuatro perfiles) o art_candidate (cinco, con brief explícito). Para ejecutar de verdad se necesita una reserva nueva en el registro, autorización de evento único y un workflow limitado; no basta con pedir --live. Las instrucciones del modelo y los archivos son datos: no se ejecuta código arbitrario ni se publican artefactos de producción. No enviar logs privados ni secretos. El nuevo orquestador genérico ha pasado sus pruebas offline, no otra misión real.
+
+El director define criterios y restricciones; el artista produce solo candidatos; el programador propone cambios; el auditor independiente verifica evidencia; el coordinador prepara un handoff. El ejecutor determinista autorizado aplica solo operaciones explícitamente permitidas sobre copias. Para una modificación nueva se añade un adaptador con tests; no se confiere shell, edición del repo ni aprobación al modelo.
+
+### Siguiente gate exacto
+
+1. Reconciliar gasto con el panel de la API; no afirmar importe facturado.
+2. Obtener relevo válido del runner Windows; comprobar que no hay procesos activos y que el alcance está reclamado.
+3. Crear copia de trabajo aislada del SHA fuente con el candidato de shader, sin cambiar la rama experimental. Capturar A/B Bastión I y V en las cámaras registradas (cuatro imágenes) y prueba de recorrido. Confirmar ausencia de halo, continuidad del terreno y claridad del serrín; comprobar regresiones y revertir. Importar PNG únicamente como muestra separada, no como parche de terreno.
+4. Comparar contra referencia y decidir si la modificación realmente mejora Valoria. No promover si falta evidencia. Solo después plantear integración de las herramientas vía PR canónica y nuevos casos de uso.
+
+Fuentes de precios: https://developers.openai.com/api/docs/models y https://developers.openai.com/api/docs/guides/prompt-caching. Las cifras de uso proceden de los recibos API reales, estimación estándar con caché; no de la facturación.
