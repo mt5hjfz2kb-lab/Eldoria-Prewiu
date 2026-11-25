@@ -72,7 +72,7 @@ try {
   if($donors.Count){
     $alt=Join-Path $root '.git/objects/info/alternates'
     $lines=@($donors|ForEach-Object{$_ -replace '\\','/'})
-    [IO.File]::WriteAllLines($alt,[string[]]$lines,[Text.UTF8Encoding]::new($false))
+    [IO.File]::WriteAllText($alt,($lines -join [string][char]10)+[string][char]10,[Text.UTF8Encoding]::new($false))
     Write-Host "READ_ONLY_GIT_OBJECT_REUSE stores=$($donors.Count)"
   }
   git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $source
