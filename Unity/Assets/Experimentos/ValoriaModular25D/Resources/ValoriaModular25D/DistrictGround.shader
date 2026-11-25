@@ -93,17 +93,23 @@ half4 frag(Varying i):SV_Target {
  // Only widen the paving opposite a built frontage. At the well the street
  // opens sideways into the existing crossing, with a short, worn lower edge.
  float doors=smoothstep(.22,.47,station)*(1-smoothstep(.78,1.0,station));
- float occupied=side<0 ? 1 : _Built.x;
+ float occupied=side<0 ? _Built.y : _Built.x;
  float width=lerp(.81,1.02,station)+doors*occupied*1.04;
  // In the mature street the stone is concentrated in the carriageway.
  // Door aprons are registered to the two diagonal facades separately.
  width=lerp(width,lerp(.63,.78,station),_Boroughs);
- float crossEdge=abs(side)-width+erosion*.23;
+ // Early traffic follows the gate and the mill. Stone stays near the sill;
+ // the wider dressed avenue develops as the two working districts open.
+ float avenueUse=max(_Built.x,_Built.y);
+ width=lerp(.54+.15*station,width,avenueUse);
+ float grassVerge=(1-avenueUse)*(.13*sin(alongStreet*2.7)+.09*reliefBend);
+ float crossEdge=abs(side)-width+erosion*.23+grassVerge;
  float endEdge=max(-alongStreet-.22,alongStreet-axisLength-.38)+erosion*.22;
  half street=1-smoothstep(-.13,.19,max(crossEdge,endEdge));
  half kerb=(1-smoothstep(.035,.12,abs(abs(side)-.79)+.025*erosion))
            *smoothstep(.26,.65,alongStreet)*(1-smoothstep(axisLength-.57,axisLength,alongStreet));
- half3 gravel=lerp(dirt*.81,seam*half3(.90,.90,.86),.56);
+ half stoneShare=lerp(.20,.56,max(avenueUse,1-smoothstep(.15,1.30,alongStreet)));
+ half3 gravel=lerp(dirt*.86,seam*half3(.90,.90,.86),stoneShare);
  // Shared thresholds and service courts take the shape of the occupied
  // block. Beyond the last house the original meadow takes over.
  // Three staggered thresholds share the postern lane. Leave meadow behind the row.
