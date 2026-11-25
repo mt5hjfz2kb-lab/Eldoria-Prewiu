@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source_run": 45707395248,
+  "source_artifact": 15065212591,
+  "source_sha256": "81220ac1c7a76ad8481fd2f29f3d13fb8f298f4a8d1e0079b58e3bfa891af34e",
+  "derived_sha256": "d61cc7c6a9b171d7168d0385c89f52f44364ca895f425c042c3a292bdadfb4d5",
+  "dimensions": [
+    1024,
+    1024
+  ],
+  "alpha_extrema": [
+    255,
+    255
+  ],
+  "edge_mean_abs_before": [
+    9.997395833333334,
+    10.813802083333334
+  ],
+  "edge_mean_abs_after": [
+    0.0,
+    0.0
+  ],
+  "repair_pixels_each_side": 24,
+  "interior_unchanged": true,
+  "scope": "surface albedo only",
+  "art_approved": false
+}
