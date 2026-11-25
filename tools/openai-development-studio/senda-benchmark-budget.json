@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "cycle": {
+    "starts": "2026-11-25",
+    "ends_exclusive": "2026-12-17",
+    "pilot_cap_usd": "5.00",
+    "automatic_reset": false
+  },
+  "authorized_additional_ceiling_usd": "10.00",
+  "scope": "Separate first $5 tranche of owner-approved $10 maximum; not a global billing limit. PR195 only; reserve $1.45 for first mission.",
+  "reservations": [
+    {
+      "id": "senda-pr195-art-benchmark-v1",
+      "reserve_usd": "1.45",
+      "status": "authorized_once",
+      "run_id": "senda-pr195-art-benchmark-v1"
+    }
+  ]
+}
