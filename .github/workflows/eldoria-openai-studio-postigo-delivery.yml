@@ -3,7 +3,7 @@ on:
   push:
     branches: [pilot/eldoria-openai-development-studio-20261125]
     paths:
-      - 'tools/openai-development-studio/postigo-requests/postigo-frontage-20261125.json'
+      - 'tools/openai-development-studio/postigo-requests/postigo-frontage-retry-20261125.json'
 permissions:
   contents: read
   actions: read
@@ -27,26 +27,25 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -eu
-          test "$(git diff --name-status HEAD^ HEAD)" = "$(printf 'A\ttools/openai-development-studio/postigo-requests/postigo-frontage-20261125.json')"
+          test "$(git diff --name-status HEAD^ HEAD)" = "$(printf 'A\ttools/openai-development-studio/postigo-requests/postigo-frontage-retry-20261125.json')"
           python3 - <<'PY'
           import json,subprocess,base64
           from pathlib import Path
-          p=Path("tools/openai-development-studio/postigo-requests/postigo-frontage-20261125.json")
+          p=Path("tools/openai-development-studio/postigo-requests/postigo-frontage-retry-20261125.json")
           r=json.loads(p.read_text())
           assert r["source_sha"]=="5ef2aee67cf8fde57ba2fc4b3d929b517ee67944" and r["revision"]==7 and r["approved_native_execution"] is True
           assert r["owner"]=="chatgpt-studio-postigo-delivery-20261125" and r["target"]=="POSTIGO_FRONTAGE"
           m=json.loads(subprocess.check_output(["gh","api","repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main"]))
-          if "content" in m: data=json.loads(base64.b64decode(m["content"]))
-          else:
-            b=json.loads(subprocess.check_output(["gh","api","repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/"+m["sha"]]))
-            data=json.loads(base64.b64decode(b["content"]))
+          b=json.loads(subprocess.check_output(["gh","api","repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/"+m["sha"]]))
+          assert b["sha"]==m["sha"] and b["encoding"]=="base64"
+          data=json.loads(base64.b64decode(b["content"]))
           h=[x for x in data["active"] if "windows-runner-heavy" in x.get("resources",[])]
           assert len(h)==1 and h[0]["id"]==r["workstream_id"] and h[0]["owner"]==r["owner"] and h[0]["ownership_revision"]==r["revision"] and data["resource_rotation"]["current_workstream"]==r["workstream_id"]
           PY
           curl -fsSL https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/5ef2aee67cf8fde57ba2fc4b3d929b517ee67944/Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DLandscape.cs -o /tmp/landscape.cs
           python3 tools/openai-development-studio/postigo_candidate.py --self-test
           python3 tools/openai-development-studio/postigo_candidate.py --source /tmp/landscape.cs --out /tmp/postigo-packet
-          cp tools/openai-development-studio/postigo-requests/postigo-frontage-20261125.json /tmp/postigo-packet/native-request.json
+          cp tools/openai-development-studio/postigo-requests/postigo-frontage-retry-20261125.json /tmp/postigo-packet/native-request.json
           cp tools/openai-development-studio/unity/postigo-ab.ps1 tools/openai-development-studio/unity/Editor/EldoriaStudioPostigoAB.cs /tmp/postigo-packet/
           sha256sum /tmp/postigo-packet/*
       - uses: actions/upload-artifact@v4
