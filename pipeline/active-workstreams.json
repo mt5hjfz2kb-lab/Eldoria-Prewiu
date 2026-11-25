@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-25T21:13:10.720Z",
+  "updated_at": "2026-11-25T21:18:22.059Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9633,9 +9633,11 @@
       "ownership_revision": 8,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "CONCEPT_APPROVED_CANONICAL_ART_RUNTIME",
+      "phase": "CONCEPT_CANONICAL_NATIVE_AND_WEB",
       "claimed_at": "2026-11-25T21:13:10.720Z",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "tools/senda-brecha/**",
         "docs/events/senda-brecha/**",
@@ -20992,14 +20994,14 @@
   },
   "resource_rotation": {
     "resource": "windows-runner-heavy",
-    "authorized_by": "Owner approved PR195 production benchmark; no other native jobs active.",
-    "authorized_at": "2026-11-25T20:15:04.759Z",
+    "authorized_by": "Owner requested actual concept implementation; isolated Unity validation using free runner.",
+    "authorized_at": "2026-11-25T21:18:22.058Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": null,
+    "current_workstream": "eldoria-senda-brecha-lane-event-20261115",
     "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "available",
+    "status": "senda_canonical_native_reserved",
     "rules": [
       "Only one owned isolated source clone; do not touch other native processes.",
       "No paid API calls; no beta publication.",
