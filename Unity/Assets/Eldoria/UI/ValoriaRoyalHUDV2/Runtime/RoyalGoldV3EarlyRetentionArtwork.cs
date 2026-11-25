@@ -212,13 +212,13 @@ namespace Eldoria.UI.RoyalGold.V2
     {
         public int Cleared, Chapter=1;
         Color Tint(Color c)=>new Color(c.r*color.r,c.g*color.g,c.b*color.b,c.a*color.a);
-        void Disc(VertexHelper vh,Vector2 center,float radius,Color tint)
+        void Disc(VertexHelper vh,Vector2 center,float radius,Color tint,float height=1f)
         {
             int k=vh.currentVertCount;
             vh.AddVert(center,Tint(tint),Vector2.zero);
             for(int i=0;i<=8;i++){
                 float a=i*Mathf.PI*2/8f;
-                vh.AddVert(center+new Vector2(Mathf.Cos(a),Mathf.Sin(a))*radius,
+                vh.AddVert(center+new Vector2(Mathf.Cos(a),Mathf.Sin(a)*height)*radius,
                     Tint(tint),Vector2.zero);
                 if(i>0)vh.AddTriangle(k,k+i,k+i+1);
             }
@@ -283,7 +283,10 @@ namespace Eldoria.UI.RoyalGold.V2
             if(visibleRoad.Count<2)return rectTransform.rect.center;
             float length=0;
             for(int i=1;i<visibleRoad.Count;i++)length+=Vector2.Distance(visibleRoad[i-1],visibleRoad[i]);
-            float target=length*(Mathf.Clamp(stage,1,25)-1)/24f;
+            float progression=(Mathf.Clamp(stage,1,25)-1)/24f;
+            // Pacing is measured on the painted climbing road. Distance
+            // between markers compresses as that road recedes into the valley.
+            float target=length*progression*(1.28f-.28f*progression);
             for(int i=1;i<visibleRoad.Count;i++)
             {
                 float segment=Vector2.Distance(visibleRoad[i-1],visibleRoad[i]);
@@ -297,17 +300,8 @@ namespace Eldoria.UI.RoyalGold.V2
             vh.Clear();var b=rectTransform.rect;
             if(b.width<110||b.height<65)return;
             var nodes=new Vector2[25];
-            float marginX=Mathf.Min(26,b.width*.10f),marginY=Mathf.Min(19,b.height*.12f);
-            float dx=(b.width-marginX*2)/4f,dy=(b.height-marginY*2)/4f;
-            float weaveX=Mathf.Min(8f,dx*.12f),weaveY=Mathf.Min(6f,dy*.12f);
-            for(int step=0;step<25;step++){
-                int row=step/5,col=step%5;
-                if(row%2==1)col=4-col;
-                // The route remains 25 deterministic real steps; subtle
-                // offsets make it read as a winding campaign trail rather
-                // than a regimented five-by-five spreadsheet grid.
+            for(int step=0;step<25;step++)
                 nodes[step]=StagePosition(step+1);
-            }
             for(int step=0;step<24;step++)
             {
                 var a=nodes[step];var end=nodes[step+1];
@@ -351,6 +345,19 @@ namespace Eldoria.UI.RoyalGold.V2
                 float r=Mathf.Clamp(separation*.31f,3,16);
                 if(boss)r*=1.36f;
                 else if(!current && !cleared)r*=.72f;
+                if(!boss && !current && !cleared)
+                {
+                    // Low wayside stones sit in the road plane. Keep the tall
+                    // bronze seals for the selected encounter and guardians.
+                    float stone=Mathf.Max(4f,r*.93f);
+                    var foot=nodes[i]+Vector2.down*(stone*.20f);
+                    Disc(vh,foot,stone+2.2f,new Color(.095f,.10f,.11f,.93f),.63f);
+                    Disc(vh,nodes[i],stone,new Color(.56f,.55f,.46f),.58f);
+                    Line(vh,nodes[i]+new Vector2(-stone*.55f,stone*.20f),
+                        nodes[i]+new Vector2(stone*.34f,stone*.33f),
+                        Mathf.Max(1f,stone*.17f),new Color(.84f,.79f,.62f));
+                    continue;
+                }
                 var gold=new Color(.78f,.63f,.39f,1);
                 var dark=current?new Color(.60f,.33f,.08f,1):cleared?new Color(.12f,.30f,.24f,1):new Color(.16f,.19f,.22f,1);
                 // Stone-mounted stage seal, not a floating UI dot. The

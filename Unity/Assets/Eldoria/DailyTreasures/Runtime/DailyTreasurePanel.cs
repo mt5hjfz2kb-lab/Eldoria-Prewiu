@@ -2453,6 +2453,10 @@ namespace Eldoria.DailyTreasures
             if(eventStage && stage.SideBySide)
                 Place((RectTransform)skipButton.transform,
                     .5f,1f,.5f,1f,stage.SceneX,-66f,100f,45f);
+            else if(portrait && chestReward && !eventStage)
+                // The close action occupies the upper right throughout the reveal.
+                Place((RectTransform)skipButton.transform,
+                    0f,1f,0f,1f,12f,-12f,100f,45f);
             else
                 Place((RectTransform)skipButton.transform,
                     1f,1f,1f,1f,-10f,-60f,100f,45f);
