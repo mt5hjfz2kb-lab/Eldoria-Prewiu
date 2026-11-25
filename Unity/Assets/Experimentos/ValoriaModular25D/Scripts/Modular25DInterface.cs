@@ -500,13 +500,26 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if(firstBuildGuide.gameObject.activeSelf != show) firstBuildGuide.gameObject.SetActive(show);
                 if (show)
                 {
-                    // Approach the parcel label from above; its building sits below it.
                     bool parcel = target == sawmillTag;
-                    Vector2 anchor = parcel ? new Vector2(.76f,.86f) : new Vector2(.68f,.18f);
+                    // The mill is west of the keep. Place the palm over the open field
+                    // while its fingertip stays anchored to the mill label. On the left
+                    // screen edge mirror it onto the visible side of the same target.
+                    bool fromWest = false;
+                    if (parcel)
+                    {
+                        Vector2 westTip = RectTransformUtility.WorldToScreenPoint(null,
+                            target.TransformPoint(new Vector2(target.rect.xMin+target.rect.width*.24f,
+                                target.rect.yMax)));
+                        float clearance = firstBuildGuide.rect.width*hudCanvas.scaleFactor;
+                        fromWest = westTip.x-Screen.safeArea.xMin >= clearance;
+                    }
+                    Vector2 anchor = parcel ? new Vector2(fromWest?.24f:.76f,.86f) : new Vector2(.68f,.18f);
                     firstBuildGuide.anchorMin = firstBuildGuide.anchorMax = anchor;
-                    firstBuildGuide.localRotation = parcel ? Quaternion.Euler(0f,0f,85f) : Quaternion.identity;
+                    firstBuildGuide.localScale = new Vector3(fromWest?-1f:1f,1f,1f);
+                    firstBuildGuide.localRotation = parcel ?
+                        Quaternion.Euler(0f,0f,fromWest?-85f:85f) : Quaternion.identity;
                     float pulse = 3f * Mathf.Sin(Time.unscaledTime * 3f);
-                    firstBuildGuide.anchoredPosition = new Vector2(2f, parcel ? 3f + pulse : -2f - pulse);
+                    firstBuildGuide.anchoredPosition = new Vector2(fromWest?-2f:2f, parcel ? 3f + pulse : -2f - pulse);
                 }
             }
             if (roomHost && roomIsOpen != null && !roomIsOpen()) CloseCanonicalRoom();
