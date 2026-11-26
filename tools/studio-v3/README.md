@@ -18,3 +18,6 @@ Run `node tools/studio-v3/replay.mjs` in a checkout that has the pinned V2 commi
 
 ## Pending
 Attach V2 role/economics and explicit budget gates, with no automatic paid retries. Use a paired real product task against a single agent, identical validation and blind quality review. Unity/Blender adapters require their own isolated execution and resource lease. Permanent lessons require evidence and independent curation. No measured productivity or artistic gains yet.
+
+## Verified evidence and offline role transport
+The [first actual Node CI run](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45887151636) passed 19 tests and replayed two deliberate defects followed by a pivot on actual pinned V2 files, preserving six existing lessons. The exact proof is archived in `evidence/node-replay-20261126.json`. The new role bridge binds typed external output to a request digest, role identity, target, source and attempt, then sends it to the same executor. It accepts only offline fixture/archived role output and retains a receipt trail; it cannot call the API or authenticate a model by itself. A trusted V2 adapter with an explicit budget authorization is still required for live calls. New regression coverage rejects previously exhausted strategies and contradictory quality audits.

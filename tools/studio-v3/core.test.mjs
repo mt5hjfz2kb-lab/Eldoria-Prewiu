@@ -34,3 +34,17 @@ function testsuite(digest,base){
  ]
 }
 for(const [name,fn] of testsuite(s=>createHash("sha256").update(s,"utf8").digest("hex"),"1657b2caa6b1a955319538ce3a8b2906398599b3"))test(name,fn);
+
+test("a rejected strategy stays excluded after a second strategy fails",async()=>{
+ const digest=s=>createHash("sha256").update(s,"utf8").digest("hex");
+ const src={"a.json":"1"},spec={schema:1,id:"pivot-regression",mode:"offline",budget_usd:0,source_sha:"1657b2caa6b1a955319538ce3a8b2906398599b3",target:"T",objective:"Reach 9",max_attempts:6,quality_required:false,required_checks:["value"],producer:"p",auditor:"a",files:[{path:"a.json",digest:digest("1")}]};
+ const seq=[["aa","2"],["aa","3"],["bb","4"],["bb","5"],["aa","9"],["cc","9"]];
+ let i=0;const r=await runMission(spec,src,{digest,propose:()=>{const [strategy,after]=seq[i++];return {target:"T",producer:"p",strategy,operations:[{path:"a.json",before:"1",after}]}},validate:({files,candidate_digest})=>[{id:"value",pass:files["a.json"]==="9",candidate_digest,evidence:"Compared actual candidate"}],audit:({candidate_digest})=>({reviewer:"a",candidate_digest,decision:"accept",reason:"Verified",quality:"not_assessed"}),checkpoint:async()=>{}});
+ if(!r.accepted||r.rows[4].outcome!=="rejected_proposal"||r.rows[5].strategy!=="cc")throw Error("Previously rejected strategy reused");
+});
+test("optional quality gate cannot accept an explicit failed quality audit",async()=>{
+ const digest=s=>createHash("sha256").update(s,"utf8").digest("hex");
+ const src={"a.json":"1"},spec={schema:1,id:"quality-regression",mode:"offline",budget_usd:0,source_sha:"1657b2caa6b1a955319538ce3a8b2906398599b3",target:"T",objective:"Reach 2",max_attempts:1,quality_required:false,required_checks:["value"],producer:"p",auditor:"a",files:[{path:"a.json",digest:digest("1")}]};
+ const r=await runMission(spec,src,{digest,propose:()=>({target:"T",producer:"p",strategy:"xx",operations:[{path:"a.json",before:"1",after:"2"}]}),validate:({candidate_digest})=>[{id:"value",pass:true,candidate_digest,evidence:"Actual check"}],audit:({candidate_digest})=>({reviewer:"a",candidate_digest,decision:"accept",reason:"Contradictory audit",quality:"fail"}),checkpoint:async()=>{}});
+ if(r.accepted||r.rows[0].outcome!=="quality_reject")throw Error("Explicit failed quality accepted");
+});

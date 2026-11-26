@@ -21,7 +21,7 @@ jobs:
           sparse-checkout: tools/studio-v3
           fetch-depth: 1
       - name: Test exact candidate core with SHA-256
-        run: node --test tools/studio-v3/core.test.mjs
+        run: node --test tools/studio-v3/core.test.mjs tools/studio-v3/role-bridge.test.mjs
       - name: Fetch pinned public V2 commit
         run: git fetch --no-tags --depth=1 origin 1657b2caa6b1a955319538ce3a8b2906398599b3
       - name: Replay rejection, pivot, independent checks and scratch persistence

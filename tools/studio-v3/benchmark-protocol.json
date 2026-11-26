@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "status": "design_only_not_run",
+  "id": "corona-paired-art-impact-trial-v3",
+  "candidate_target": "Preparación de marchas (or an explicitly frozen alternative)",
+  "scope": "Visual presentation only, no gameplay, economy, saves, source ownership or publishing changes",
+  "baseline_requirements": [
+    "Exact immutable SHA",
+    "Same authentic Unity screenshots and camera/viewport",
+    "Same approved reference and constraints",
+    "Same QA and blind quality rubric"
+  ],
+  "arms": [
+    {
+      "method": "single",
+      "description": "One agent designs and implements"
+    },
+    {
+      "method": "studio",
+      "description": "Director/producer, controlled executor, validator, independent auditor and correction loop"
+    }
+  ],
+  "controls": {
+    "time_budget_seconds": null,
+    "budget_usd": null,
+    "max_attempts": null,
+    "require_equivalent_constraints": true,
+    "blind_quality_review": true,
+    "block_if_unverified_evidence": true
+  },
+  "measurements": [
+    "Accepted candidate",
+    "Quality score before/after with rubric and evidence",
+    "Actual elapsed time",
+    "Real API and runner cost (unknown stays null)",
+    "Regressions",
+    "Human interventions",
+    "Repeated trials"
+  ],
+  "stop_conditions": [
+    "Time/budget exhausted",
+    "Real critical regression",
+    "Unable to verify source/evidence",
+    "Quality criterion met"
+  ],
+  "promotion": "Never automatic; separate native quality gate and workstream owner decision",
+  "note": "Must freeze real baseline and authorize any live spend before execution. No claimed trial result."
+}

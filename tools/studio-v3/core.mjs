@@ -53,7 +53,7 @@ function verifyAudit(s,a,d){
  req(obj(a)&&a.reviewer===s.auditor&&a.candidate_digest===d&&["accept","reject"].includes(a.decision)&&typeof a.reason==="string"&&a.reason.trim().length>0&&a.reason.length<=2000,"Invalid independent audit");
  req(["pass","fail","not_assessed"].includes(a.quality),"Invalid quality status");
  if(s.quality_required&&a.decision==="accept")req(a.quality==="pass"&&Array.isArray(a.evidence_refs)&&a.evidence_refs.length>0&&a.evidence_refs.every(x=>typeof x==="string"&&x.trim().length>0),"Quality acceptance requires evidence");
- return a.decision==="accept"&&(!s.quality_required||a.quality==="pass")
+ return a.decision==="accept"&&a.quality!=="fail"&&(!s.quality_required||a.quality==="pass")
 }
 
 async function runMission(input,source,adapters){
@@ -67,7 +67,7 @@ async function runMission(input,source,adapters){
    p=await adapters.propose(clone({spec:s,baseline,previous,required_pivot_from:pivot,lessons}));
    req(obj(p)&&p.producer===s.producer,"Unexpected producer");
    if(typeof p.strategy==="string")row.strategy=p.strategy;
-   req(pivot===null||p.strategy!==pivot,"Repeated ineffective strategy: pivot required");
+   req((failures.get(p.strategy)??0)<2,"Repeated ineffective strategy: pivot required");
    const files=applyProposal(s,baseline,p);
    d=digest(canonical(files));row.candidate_digest=d;req(!seen.has(d),"Candidate already evaluated");seen.add(d);
    phase="validation";
