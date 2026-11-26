@@ -841,12 +841,12 @@ namespace Eldoria.UI.RoyalGold.V2
                     "DEFENSA\n"+power.Defense,
                     "VIDA\n"+power.Health
                 };
+                // The 62a8a6e real 390x844 capture revealed a readability
+                // regression in the rich-text manuscript: labels became tiny.
+                // Restore the previous verified plain text path and its authored
+                // 31-unit portrait font sizing. No metric or command is changed.
                 for(int i=0;i<marchMetricValues.Length;i++)
-                {
-                    if(RoyalGoldV2Hud.UseCoronaArt)
-                        CoronaFinish.PresentMetric(marchMetricValues[i],liveMetric[i],root.rect.height>root.rect.width);
-                    else marchMetricValues[i].Put(liveMetric[i]);
-                }
+                    marchMetricValues[i].Put(liveMetric[i]);
                 int occupied=MarchCapacityRules.ActiveCount(s,utcTicks());
                 // Keep every authoritative value in compact landscape but
                 // condense the labels into three legible lines. The former
