@@ -168,6 +168,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     Need(locked&&!locked.interactable,"Third hero remains locked "+fixture+"/"+mode);
                     if(pilot)
                     {
+                        var portraitViews=manager.VisibleRoot.GetComponentsInChildren<RectTransform>(false).Where(r=>r.name=="Hero portrait viewport").ToArray();
+                        Defect(portraitViews.Length==3&&portraitViews.All(r=>r.GetComponentsInChildren<Image>(false).Any(i=>i.enabled&&i.sprite&&i.name.StartsWith("Approved source /",StringComparison.Ordinal))),"An original hero portrait/silhouette is hidden "+fixture);
                         var visible=manager.VisibleRoot.GetComponentsInChildren<Text>(false);
                         var values=visible.Where(x=>x.name.StartsWith("March / live metric ")).ToArray();
                         var labels=visible.Where(x=>x.name.StartsWith("Studio / real metric label ")).ToArray();

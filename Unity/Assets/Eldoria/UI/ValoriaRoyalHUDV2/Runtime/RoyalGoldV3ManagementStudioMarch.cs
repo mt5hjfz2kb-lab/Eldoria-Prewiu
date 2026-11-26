@@ -41,8 +41,9 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             if(!r)return;
             foreach(var g in r.GetComponentsInChildren<Graphic>(true))
-                if(g.name.StartsWith("March art /",StringComparison.Ordinal) ||
-                   g.name.StartsWith("Approved source /",StringComparison.Ordinal))
+                // Only decorative helper layers. Approved source Images
+                // include the actual hero portraits and must never be hidden.
+                if(g.name.StartsWith("March art /",StringComparison.Ordinal))
                     HideStudioGraphic(g);
         }
         void StudioText(RoyalText t,int size,Color color,TextAnchor alignment,bool headingFont=false)
@@ -66,7 +67,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 img=r.gameObject.AddComponent<Image>();img.raycastTarget=false;
                 studioPlates[key]=img;
             }
-            img.gameObject.SetActive(true);img.color=colour;
+            img.gameObject.SetActive(true);img.color=quiet?new Color(.89f,.94f,.95f,colour.a):colour;
             img.sprite=quiet?Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/secondary_quiet"):null;
             img.type=img.sprite&&img.sprite.border.sqrMagnitude>0?Image.Type.Sliced:Image.Type.Simple;
             img.preserveAspect=false;
@@ -157,7 +158,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(card,14+i*(cardW+cardGap),cardTop,cardW,cardH);
                 HideDecorations(card);
                 StudioPlate("hero slot "+i,card,1,1,cardW-2,cardH-2,i==0?new Color32(31,57,64,255):StudioInk);
-                float captionH=78f,artW2=cardW-12,artH2=cardH-captionH-10;
+                float captionH=90f,artW2=cardW-12,artH2=cardH-captionH-10;
                 Place(heroPortraitViewports[i],6,6,artW2,artH2);
                 var sprite=approvedHeroes[i].sprite;
                 float ar=sprite?sprite.rect.width/sprite.rect.height:1f;
