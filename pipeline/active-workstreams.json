@@ -10347,18 +10347,19 @@
       "write_scope_released": false,
       "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
       "status": "active",
-      "phase": "V3_BOUNDED_EXECUTION_AND_CORRECTION",
+      "phase": "V3_OFFLINE_NATIVE_NODE_VALIDATION",
       "claimed_at": "2026-11-26T19:46:00Z",
       "base_main_sha": "58ec6108b9fdb23d2ee2505ab17c8c19662ba37a",
       "base_studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
       "user_authorization": "Owner approved V3 roadmap: autonomous execution, independent evaluation, corrective cycles, evidence-based learning; distinct from active Corona art missions. No new API spend, Unity runner, deployment or merge.",
       "scope": [
-        "tools/studio-v3/**"
+        "tools/studio-v3/**",
+        ".github/workflows/studio-v3-offline.yml"
       ],
       "resources": [],
       "delivery_definition": {
         "deliverable": "Isolated executable V3 core with bounded declarative edits, verified evidence, rejection/retry/pivot, reproducible local tests and baseline-vs-studio benchmark contract.",
-        "evidence": "Actual source changes in scratch and tests; no live model autonomy or artistic gain claims without controlled live experiment.",
+        "evidence": "Actual source changes in scratch and tests; no live model autonomy or artistic gain claims without controlled live experiment. GitHub-hosted read-only offline Node CI using pinned actual V2 input; no API secret, paid model or Windows runner.",
         "handoff": "Preserve V2/Corona owner and budgets; no main game modifications; release only own scope after validation."
       },
       "art_approved": false
