@@ -36,7 +36,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
         static bool uiOnlyNativeCamera;
         [Serializable] sealed class Frame {public string file,sha256,fixture,variant;public int width,height;public bool actualCamera,playMode;public int t1,t2,selectedQuantity,selectedTier;public string selectedHero;public long revision;public string[] metrics;}
         [Serializable] sealed class Control {public string frame,name;public float width,height;public bool interactable,hit;public string topHit;}
-        [Serializable] sealed class Report {public string sourceSha,harnessSha,engine,engineVersion,prefabPath,assetSha;public bool actualPrefab,actualGateway,artApproved,physicalIphone,fullBrowserJourney,uiOnlyNativeCamera;public int excludedRenderers,excludedCanvases;public Frame[] frames;public Control[] controls;public string[] checks,defects;}
+        [Serializable] sealed class Report {public string sourceSha,harnessSha,engine,engineVersion,prefabPath,assetSha,gallerySha,contactSha;public bool actualPrefab,actualGateway,artApproved,physicalIphone,fullBrowserJourney,uiOnlyNativeCamera;public int excludedRenderers,excludedCanvases;public Frame[] frames;public Control[] controls;public string[] checks,defects;}
         sealed class Clock:IClock {public long UtcTicks{get;set;}=new DateTime(2026,11,26,12,0,0,DateTimeKind.Utc).Ticks;}
         sealed class Memory:IStateStore {public PlayerState Stored;public PlayerState Load()=>Stored;public void Save(PlayerState s){Stored=s;}}
         static IEnumerator routine;
@@ -149,6 +149,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             if(EventSystem.current==null)new GameObject("Native actual event system",typeof(EventSystem));
             var originalAsset=Path.Combine(UnityEngine.Application.dataPath,"Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/march_command_table.png");
             Need(File.Exists(originalAsset)&&Digest(File.ReadAllBytes(originalAsset))=="a42b20c2ca7bd57a8b09d95a7442ccc81bb33c9f23f2e1869112b10e4071cab7","Exact original studio artist material imported");
+            var galleryAsset=Path.Combine(Path.GetDirectoryName(originalAsset),"march_command_gallery.png");
+            var contactAsset=Path.Combine(Path.GetDirectoryName(originalAsset),"march_gallery_contact.png");
+            Need(File.Exists(galleryAsset)&&Digest(File.ReadAllBytes(galleryAsset))==Environment.GetEnvironmentVariable("MARCH_R4_GALLERY_SHA"),"Exact graded source gallery imported");
+            Need(File.Exists(contactAsset)&&Digest(File.ReadAllBytes(contactAsset))==Environment.GetEnvironmentVariable("MARCH_R4_CONTACT_SHA"),"Exact independent contact alpha imported");
             foreach(bool mixed in new[]{false,true})
             {
                 foreach(bool pilot in new[]{false,true})
@@ -198,6 +202,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     Need(locked&&!locked.interactable,"Third hero remains locked "+fixture+"/"+mode);
                     if(pilot)
                     {
+                        var independentLayers=manager.VisibleRoot.GetComponentsInChildren<Image>(false);
+                        Defect(independentLayers.Any(i=>i.name=="Studio / gallery environment"&&i.sprite&&i.enabled),"Actual R4 continuous gallery missing "+fixture);
+                        Defect(independentLayers.Count(i=>i.name.StartsWith("Studio / gallery contact ",StringComparison.Ordinal)&&i.sprite&&i.enabled)==3,"Three independent hero contact layers missing "+fixture);
+                        Defect(independentLayers.Any(i=>i.name=="Studio / troop contact"&&i.sprite&&i.enabled),"Independent troop contact missing "+fixture);
                         var portraitViews=manager.VisibleRoot.GetComponentsInChildren<RectTransform>(false).Where(r=>r.name=="Hero portrait viewport").ToArray();
                         Defect(portraitViews.Length==3&&portraitViews.All(r=>r.GetComponentsInChildren<Image>(false).Any(i=>i.enabled&&i.sprite&&i.name.StartsWith("Approved source /",StringComparison.Ordinal))),"An original hero portrait/silhouette is hidden "+fixture);
                         var visible=manager.VisibleRoot.GetComponentsInChildren<Text>(false);
@@ -271,7 +279,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 Need(!manager.VisibleRoot.GetComponentsInChildren<Text>(false).Any(t=>t.name.StartsWith("Studio / real metric label ")),"Landscape retains original metric path");
                 room.SetActive(false);Object.Destroy(room);cam.targetTexture=null;target.Release();Object.Destroy(target);yield return null;
             }
-            var report=new Report{sourceSha=Source,harnessSha=Environment.GetEnvironmentVariable("MARCH_STUDIO_HARNESS_SHA")??Source,engine="Unity",engineVersion=UnityEngine.Application.unityVersion,prefabPath=SessionState.GetString(Flag+"Prefab",""),assetSha=Digest(File.ReadAllBytes(originalAsset)),
+            var report=new Report{sourceSha=Source,harnessSha=Environment.GetEnvironmentVariable("MARCH_STUDIO_HARNESS_SHA")??Source,engine="Unity",engineVersion=UnityEngine.Application.unityVersion,prefabPath=SessionState.GetString(Flag+"Prefab",""),assetSha=Digest(File.ReadAllBytes(originalAsset)),gallerySha=Digest(File.ReadAllBytes(galleryAsset)),contactSha=Digest(File.ReadAllBytes(contactAsset)),
                 actualPrefab=true,actualGateway=true,artApproved=false,physicalIphone=false,fullBrowserJourney=false,
                 uiOnlyNativeCamera=uiOnlyNativeCamera,excludedRenderers=excludedRenderers,excludedCanvases=excludedCanvases,
                 frames=Frames.ToArray(),controls=Controls.ToArray(),checks=Checks.ToArray(),defects=Defects.ToArray()};

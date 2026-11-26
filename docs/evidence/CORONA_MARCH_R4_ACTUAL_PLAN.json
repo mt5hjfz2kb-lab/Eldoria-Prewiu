@@ -1,0 +1,22 @@
+{
+  "run": 45907960440,
+  "artifact": 15159060997,
+  "plan": {
+    "leader_share": 0.46,
+    "hero_fraction": 0.35,
+    "stage_tone": "warm_stone",
+    "portrait_rim": "thin_brass",
+    "lessons": "R3 organiza mejor pero aún reduce al líder y la tropa y encadena cajas. Bastión aporta un lugar continuo, objetos independientes, pivotes, profundidad y sombras de contacto bajo luz compartida. Whiteout Survival y Call of Dragons orientan la jerarquía, no la copia de IP.",
+    "stage_brief": "Create one original painted 1536×1024 horizontal background for the HERO ZONE only: a quiet corner of a bastion command room, not a full screen. Warm cream stone, aged wood and slate metal, with a subtle turquoise accent. A physical ledge or table runs along the lower edge, viewed in coherent shallow perspective. Warm light enters from the upper left; cool blue-violet shadows share its direction. Keep the middle calm and uncluttered for separately mounted real hero dossiers. Architecture is the focal environment; restrained supporting details remain subordinate. No characters, portraits, text, numbers, card frames, controls, false silhouettes, UI or fake grid. Do not paint contact shadows for the dossiers into the background; these are independent alpha assets. Preserve aspect ratio and verify the visible crop; do not 9-slice the illustration.",
+    "hero_composition": "Asignar al líder el 46% del ancho útil de las tres posiciones y reservar el 35% de la altura operativa a la zona de héroes. Situar los dos laterales más atrás sin estrecharlos hasta perder legibilidad. Montar los retratos originales con sus fondos integrados como retablos físicos separados, con borde de latón fino, pies anclados a la repisa y sombras alpha independientes; conservar la tercera posición bloqueada y su control real. No recortar personas sin alpha genuino.",
+    "troop_composition": "Banda compacta bajo la escena, con arte original de tropa más grande y tier visible. Mantener cambiar, cantidad, edición, menos, más y deslizador como controles reales; sin alterar reglas ni inventar datos.",
+    "metric_composition": "Resumen de seis métricas en dos columnas, con agrupación tipográfica y menos recuadros; conservar etiquetas, valores y estados canónicos legibles. Mantener el CTA existente y todas las acciones, con objetivos táctiles reales de al menos 44 px en 390×844; paisaje sin cambios.",
+    "acceptance": "Refutar la propuesta si en capturas nativas y móviles reales, incluidos estados y recorte, faltan acciones o datos, algún objetivo mide menos de 44 px, el líder o la tropa siguen sin destacar, o la composición parece collage. Comprobar perspectiva, luz y sombras de contacto, entrada y persistencia reales, y contrastar guías y hashes de assets con source.json; compilar por sí solo no valida. No se afirma ningún resultado todavía."
+  },
+  "review": {
+    "verdict": "reject",
+    "reason": "La piedra, la madera y los metales pertenecen a una familia fantástica compatible con R3 y Bastión I, pero el entorno resulta demasiado ornamentado para servir de fondo tranquilo. El gran estandarte central, los arcos y los detalles compiten con los retratos y reducen el espacio negativo. La repisa es física y su perspectiva general es coherente; la luz cálida superior izquierda convive, sin embargo, con una segunda fuente intensa a la derecha.",
+    "risks": "Los retratos reales podrían parecer superpuestos en vez de apoyados, especialmente si sus fondos e iluminación no encajan con la escena. El fuego introduce sombras adicionales y el recorte móvil puede perder la repisa o acentuar la saturación visual. No se observan textos, controles falsos ni retratos pintados; la originalidad no puede verificarse solo con esta evidencia.",
+    "placement": "Únicamente detrás de la zona de héroes, con retratos, pies y sombras de contacto como assets independientes. Requiere una versión más despejada y pruebas de integración y recorte; esto no aprueba la interfaz final."
+  }
+}

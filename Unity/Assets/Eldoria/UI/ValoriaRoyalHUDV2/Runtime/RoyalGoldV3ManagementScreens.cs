@@ -782,6 +782,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
             }
             approvedTroopRow.gameObject.SetActive(!training);
+            if(!training&&studioMarchActive)PutStudioTroopArt();
             percentModeButton.gameObject.SetActive(!training);
             percentModeLabel.Put(percentMode?"EDITAR POR %":"EDITAR CANTIDAD");
             unitDetail.Put(training?(selectedTier==2?"Desbloqueados por Cuartel IV":"Unidad inicial del reino"):
@@ -876,6 +877,11 @@ namespace Eldoria.UI.RoyalGold.V2
                         "\nNIVEL HÉROE  "+MarchCapacityRules.HeroLevel(s,selectedHero)+
                         " · MARCHAS ACTIVAS  "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
                         "\nYA PREPARADOS  "+(s.MarchConfigured?s.PreparedTroops.Total:0));
+                if(studioMarchActive)
+                {
+                    FitStudioText(status,29,26);
+                    FitStudioText(unitDetail,30,26);
+                }
                 bool allowed=MarchCapacityRules.CanStart(s,utcTicks()) && troops.Total>0 &&
                     MarchCapacityRules.Fits(troops,s.Available,capacity);
                 foreach(var hero in heroSlots)if(!MarchCapacityRules.HeroAvailable(s,hero))allowed=false;
