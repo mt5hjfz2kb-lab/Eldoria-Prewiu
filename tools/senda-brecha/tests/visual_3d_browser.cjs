@@ -7,7 +7,7 @@ const assert=require('node:assert/strict');
  fs.mkdirSync(directory,{recursive:true});
  const browser=await chromium.launch({headless:true,args:['--enable-webgl','--ignore-gpu-blocklist','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  try {
- const checks=[],errors=[];let materialAB=null,portalAB=null,breachAB=null,ruinAB=null,forestAB=null;
+ const checks=[],errors=[];let materialAB=null,portalAB=null,breachAB=null,ruinAB=null,forestAB=null,laneMotionProof=null;
  for(const [name,width,height] of [['iphone',390,844],['small',320,700],['landscape',844,390],['desktop',1280,800]]){
   const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1,hasTouch:true});
   page.on('pageerror',e=>errors.push(name+':'+e.message));
@@ -86,6 +86,24 @@ const assert=require('node:assert/strict');
  assert.equal(await routePage.evaluate(()=>__senda3d.state().stepTime),beforePause,'Pause must freeze time');
  await routePage.locator('#pause').click();
  await routePage.evaluate(()=>__senda3d.setSpeed(0));
+ // Drive the actual rendered runtime under a deterministic clock, and use
+ // a real pointer gesture to ensure response before lifting the finger.
+ await routePage.evaluate(()=>__senda3d.start());
+ const vp=routePage.locator('#viewport');const bounds=await vp.boundingBox();
+ await routePage.mouse.move(bounds.x+bounds.width*.55,bounds.y+bounds.height*.55);
+ await routePage.mouse.down();await routePage.mouse.move(bounds.x+bounds.width*.40,bounds.y+bounds.height*.55);
+ assert.equal(await routePage.evaluate(()=>__senda3d.state().lane),0,'Swipe must select before pointerup');
+ await routePage.mouse.up();assert.equal(await routePage.evaluate(()=>__senda3d.state().lane),0);
+ const samples=[];
+ for(let i=0;i<12;i++){await routePage.evaluate(()=>__senda3d.advance(.025));const z=await routePage.evaluate(()=>__senda3d.state());samples.push({seconds:(i+1)*.025,x:z.sideX,velocity:z.lateralVelocity});}
+ assert.ok(samples[0].x>0&&samples[0].x<.5,'No teleport on first frame');
+ assert.ok(samples.at(-1).x>2.08&&samples.every((s,i)=>s.x<=2.12001&&(!i||s.x>=samples[i-1].x-1e-6)),'Smooth bounded lane settling');
+ await routePage.locator('#right').click();await routePage.evaluate(()=>__senda3d.advance(.075));
+ const beforeReverse=await routePage.evaluate(()=>__senda3d.state());await routePage.locator('#left').click();
+ const atReverse=await routePage.evaluate(()=>__senda3d.state());assert.equal(beforeReverse.sideX,atReverse.sideX);assert.equal(beforeReverse.lateralVelocity,atReverse.lateralVelocity);
+ await routePage.evaluate(()=>__senda3d.advance(.35));const settled=await routePage.evaluate(()=>__senda3d.state());assert.ok(settled.sideX>2.08);
+ await routePage.locator('#pause').click();const frozen=await routePage.evaluate(()=>__senda3d.state());await routePage.evaluate(()=>__senda3d.advance(.2));assert.equal((await routePage.evaluate(()=>__senda3d.state())).sideX,frozen.sideX);await routePage.locator('#pause').click();
+ laneMotionProof={samples,reversalContinuous:true,swipeBeforeRelease:true,pauseFrozen:true,frameRatePhysicalVerified:false};
  const playRoute=async (route)=>{
    await routePage.evaluate(()=>__senda3d.start());
    for(const target of route){
@@ -127,7 +145,7 @@ const assert=require('node:assert/strict');
   await videoPage.screenshot({path:path.join(sequence,String(frame).padStart(3,'0')+'.png')});
  }
  await videoPage.close();
- const result={renderer:'THREE/WebGL',source:'isolated prototype',notUnity:true,notIphonePhysical:true,checks,errors,materialAB,portalAB,breachAB,ruinAB,forestAB,victoryRouteChecked:true,defeatRouteChecked:true,pauseAndReplayChecked:true};
+ const result={renderer:'THREE/WebGL',source:'isolated prototype',notUnity:true,notIphonePhysical:true,checks,errors,materialAB,portalAB,breachAB,ruinAB,forestAB,laneMotionProof,victoryRouteChecked:true,defeatRouteChecked:true,pauseAndReplayChecked:true};
  fs.writeFileSync(path.join(directory,'report.json'),JSON.stringify(result,null,2));
  assert.equal(errors.length,0,JSON.stringify(errors));
  console.log('SENDA_WEB3D_CHROMIUM_PASS '+JSON.stringify(checks));

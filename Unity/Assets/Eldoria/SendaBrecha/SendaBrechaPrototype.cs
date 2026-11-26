@@ -99,7 +99,10 @@ namespace Eldoria.SendaBrecha
         private GameObject[] shots;
         private Transform[] environment;
         private readonly Dictionary<int, Material> materials = new Dictionary<int, Material>();
-        private float movingX;
+        private float movingX, lateralVelocity;
+        private bool swipeConsumed;
+        public float VisualLaneX => movingX;
+        public float LateralVelocity => lateralVelocity;
         private float fireClock;
         private float uiFlash;
         private Vector2 swipeStart;
@@ -627,7 +630,7 @@ namespace Eldoria.SendaBrecha
         {
             Initialize();
             State = Phase.Running;Stage=0;Lane=1;Soldiers=22;Power=0;Wards=0;Score=0;Elapsed=0;StageTime=0;
-            movingX=0;fireClock=0;GateTaken=false;FightCompleted=false;LastEvent="Comienza la expedición";
+            movingX=0;lateralVelocity=0;swipeConsumed=false;fireClock=0;GateTaken=false;FightCompleted=false;LastEvent="Comienza la expedición";
             RefreshWorld();
         }
         public void Steer(int direction)
@@ -653,12 +656,14 @@ namespace Eldoria.SendaBrecha
             if(Input.touchCount>0)
             {
                 Touch touch=Input.GetTouch(0);
-                if(touch.phase==TouchPhase.Began) swipeStart=touch.position;
-                if(touch.phase==TouchPhase.Ended)
+                if(touch.phase==TouchPhase.Began){swipeStart=touch.position;swipeConsumed=false;}
+                if((touch.phase==TouchPhase.Moved||touch.phase==TouchPhase.Ended)&&!swipeConsumed)
                 {
-                    float distance=touch.position.x-swipeStart.x;
-                    if(Mathf.Abs(distance)>40f) Steer(distance>0?1:-1);
+                    Vector2 distance=touch.position-swipeStart;
+                    if(Mathf.Abs(distance.x)>=Mathf.Clamp(Screen.width*.055f,18f,45f)&&Mathf.Abs(distance.x)>Mathf.Abs(distance.y)*1.2f)
+                    {swipeConsumed=true;Steer(distance.x>0?1:-1);}
                 }
+                if(touch.phase==TouchPhase.Canceled)swipeConsumed=true;
             }
             if (State==Phase.Running) Step(Time.deltaTime);
             else RefreshWorld();
@@ -668,7 +673,13 @@ namespace Eldoria.SendaBrecha
         {
             if(State!=Phase.Running || delta<0 || delta>1f) return;
             Elapsed+=delta;StageTime+=delta;
-            movingX=Mathf.Lerp(movingX,(Lane-1)*2.15f,Mathf.Clamp01(delta*9f));
+            // Exact critically damped solution shared with WebGL (mirrored world X).
+            const float omega=22f,limit=2.15f;
+            float target=(Lane-1)*limit,e=movingX-target,k=lateralVelocity+omega*e,q=Mathf.Exp(-omega*delta);
+            movingX=target+(e+k*delta)*q;lateralVelocity=(lateralVelocity-omega*k*delta)*q;
+            if(movingX>limit){movingX=limit;lateralVelocity=Mathf.Min(0,lateralVelocity);}
+            if(movingX< -limit){movingX=-limit;lateralVelocity=Mathf.Max(0,lateralVelocity);}
+            if(Mathf.Abs(movingX-target)<.002f&&Mathf.Abs(lateralVelocity)<.035f){movingX=target;lateralVelocity=0;}
             if (StageTime>=GateCrossing && !GateTaken) ApplyGate();
             if (StageTime>=FightResolve && !FightCompleted) ResolveFight();
             if (StageTime>=WaveLength)
@@ -732,6 +743,8 @@ namespace Eldoria.SendaBrecha
                 float charge=StageTime>=FightStart&&!FightCompleted?Mathf.Clamp01((StageTime-FightStart)/1.6f)*.7f:0;
                 float z=(i==0?3.76f:2.62f-row*.88f)+charge;
                 soldierBodies[i].localPosition=new Vector3(movingX+laneX,0,z);
+                float lean=Mathf.Clamp(-lateralVelocity*.012f,-.12f,.12f)*Mathf.Rad2Deg*(i==0?1f:.84f);
+                soldierBodies[i].localRotation=Quaternion.Euler(0,Mathf.Clamp(lateralVelocity*.013f,-.14f,.14f)*Mathf.Rad2Deg,lean);
                 if(i==0&&heroModel){var clip=StageTime>=FightStart&&StageTime<FightResolve&&!FightCompleted?CanonicalAttack:CanonicalWalk;clip.SampleAnimation(heroModel,Elapsed%Mathf.Max(.01f,clip.length));CanonicalAnimationSampled=true;}
                 else if(guardModels[i])SampleGuard(guardModels[i],StageTime>=FightStart&&StageTime<FightResolve&&!FightCompleted,i);
                 else AnimateRig(soldierLimbs[i],Elapsed,i,false);

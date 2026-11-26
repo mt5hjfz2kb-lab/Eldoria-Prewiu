@@ -203,7 +203,7 @@ jobs:
           $report=Join-Path $out 'proof.json'
           if(-not(Test-Path -LiteralPath $report)){throw 'Real Unity proof report absent; Editor exit alone is not success'}
           $p=Get-Content $report -Raw | ConvertFrom-Json
-          if(!$p.studioBreachInstalled -or !$p.studioRuinInstalled -or $p.movingVergeCount -lt 21 -or $p.studioPortalCount -ne 3 -or $p.actorShadowCasters -lt 11 -or $p.nativeGuardRigs -ne 24 -or $p.guardTriangles -lt 1000 -or $p.guardTriangles -gt 12000 -or !$p.slateInstalled -or $p.originalAldricSkins -lt 1 -or $p.originalArchitecture -ne 3 -or $p.originalFoliage -lt 25 -or !$p.originalEnemy -or !$p.originalAnimationSampled -or $p.capturedPng -ne 9 -or !$p.positiveGateChangesVisibleActors -or !$p.victoryRouteChecked -or !$p.defeatRouteChecked -or
+          if(!$p.laneMotionChecked -or !$p.studioBreachInstalled -or !$p.studioRuinInstalled -or $p.movingVergeCount -lt 21 -or $p.studioPortalCount -ne 3 -or $p.actorShadowCasters -lt 11 -or $p.nativeGuardRigs -ne 24 -or $p.guardTriangles -lt 1000 -or $p.guardTriangles -gt 12000 -or !$p.slateInstalled -or $p.originalAldricSkins -lt 1 -or $p.originalArchitecture -ne 3 -or $p.originalFoliage -lt 25 -or !$p.originalEnemy -or !$p.originalAnimationSampled -or $p.capturedPng -ne 9 -or !$p.positiveGateChangesVisibleActors -or !$p.victoryRouteChecked -or !$p.defeatRouteChecked -or
              $p.result -ne 'VictoryAndDefeatNativeSimulationPass' -or $p.mainSceneModified -or $p.artApproved -or $p.physicalIphoneTested){throw 'Exact event native proof contract failed'}
           $png=@(Get-ChildItem -LiteralPath $out -Filter '*.png')
           if($png.Count -ne 9){throw "Expected 9 independent GPU PNG images, got $($png.Count)"}

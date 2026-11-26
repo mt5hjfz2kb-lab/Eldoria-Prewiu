@@ -33,3 +33,6 @@ lease_revision=12
 
 revision=VALORIA_NATIVE_PORTAL_FIX_AND_MOVING_ROADSIDE_20261126
 lease_revision=12
+
+revision=RESPONSIVE_LANE_MOTION_20261126
+lease_revision=12

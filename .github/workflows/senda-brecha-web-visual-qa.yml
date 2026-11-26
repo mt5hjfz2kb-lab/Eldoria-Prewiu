@@ -48,6 +48,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Verify frame-independent lane motion
+        run: node tools/senda-brecha/tests/lane_motion_test.mjs
       - name: Install isolated Chromium (no Unity/Windows reservation)
         run: |
           mkdir -p "$RUNNER_TEMP/senda-node"

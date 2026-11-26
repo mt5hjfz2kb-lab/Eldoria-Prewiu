@@ -34,7 +34,8 @@ namespace Eldoria.SendaBrecha.Editor
             public bool originalEnemy, originalAnimationSampled;
             public bool positiveGateChangesVisibleActors;
             public bool victoryRouteChecked;
-            public bool defeatRouteChecked;
+            public bool defeatRouteChecked,laneMotionChecked;
+            public float laneFirst25ms,laneAfter300ms;
             public int finalSoldiers;
             public int totalStages;
             public string result;
@@ -186,7 +187,14 @@ namespace Eldoria.SendaBrecha.Editor
                 SaveCapture(game.SceneCamera,output,"01-intro-390x844.png",390,844);
                 // The initial prototype incorrectly showed 14 actors at 22 virtual troops,
                 // so recruiting did not visibly grow the army. This regression must fail.
-                game.Begin();
+                game.Begin();game.Steer(-1);game.Step(.025f);float first25=Mathf.Abs(game.VisualLaneX);
+                Need(first25>0&&first25<.5f,"Lane motion cannot teleport");
+                for(int i=0;i<11;i++)game.Step(.025f);float after300=Mathf.Abs(game.VisualLaneX);
+                Need(after300>2.11f&&after300<=2.151f,"Lane must settle smoothly within .30 seconds");
+                game.Steer(1);game.Step(.075f);float beforeReverse=game.VisualLaneX,velocity=game.LateralVelocity;game.Steer(-1);
+                Need(game.VisualLaneX==beforeReverse&&game.LateralVelocity==velocity,"Reversal must preserve position and velocity");
+                game.TogglePause();game.Step(.2f);Need(game.VisualLaneX==beforeReverse,"Pause must freeze motion");game.TogglePause();
+                game.Begin();Need(game.VisualLaneX==0&&game.LateralVelocity==0,"Replay resets lane motion");
                 int initialVisualCount=game.VisibleSoldiers;
                 game.SetLane(0);Advance(game,4.5f);
                 Need(game.GateTaken && game.Soldiers==32 && game.VisibleSoldiers>initialVisualCount,
@@ -237,7 +245,7 @@ namespace Eldoria.SendaBrecha.Editor
                     mainSceneModified=false,physicalIphoneTested=false,artApproved=false,
                     studioBreachInstalled=game.NativeBreachInstalled,studioRuinInstalled=game.NativeRuinInstalled,movingVergeCount=game.MovingVergeCount,studioPortalCount=game.StudioPortalCount,actorShadowCasters=game.ActorShadowCasters,nativeGuardRigs=game.NativeGuardRigs,guardTriangles=game.GuardTriangles,slateInstalled=game.SlateInstalled,originalAldricSkins=game.CanonicalSkinCount,originalArchitecture=game.CanonicalArchitectureCount,originalFoliage=game.CanonicalFoliageCount,originalEnemy=game.CanonicalEnemyInstalled,originalAnimationSampled=game.CanonicalAnimationSampled,
                     capturedPng=9,finalSoldiers=victorySoldiers,totalStages=6,
-                    positiveGateChangesVisibleActors=true,victoryRouteChecked=true,defeatRouteChecked=true,
+                    positiveGateChangesVisibleActors=true,victoryRouteChecked=true,defeatRouteChecked=true,laneMotionChecked=true,laneFirst25ms=first25,laneAfter300ms=after300,
                     result="VictoryAndDefeatNativeSimulationPass"
                 };
                 File.WriteAllText(Path.Combine(output,"proof.json"),JsonUtility.ToJson(report,true));
