@@ -6,7 +6,7 @@
   "workstream_id": "eldoria-senda-brecha-lane-event-20261115",
   "asset_or_sector": "La Senda de la Brecha — independent mobile lane-battle 3D scene and original Valoria visual language",
   "profile": "environment_composition",
-  "visual_gate_state": "STUDIO_MATERIAL_INTEGRATED_WEB_PASS_NATIVE_ALDRIC_IMPORT_RECOVERED_VISUAL_PARITY_PENDING",
+  "visual_gate_state": "WEB_REAL_AB_PASS_NATIVE_RETRY_RUNNING_ART_APPROVAL_PENDING",
   "ai_authorship_policy": "required",
   "diagnosis": "Owner confirmed 2.5D video displays the intended continuous lane mechanics, but original web demo is procedurally drawn and not native Unity. Create a separate procedural 3D Unity prototype; evaluate real native mobile-aspect captures against video for player legibility and compositional quality. The existing Valoria beta cannot be modified while world iPhone restart P0 remains open.",
   "geometry_gap_proven": false,
@@ -16,7 +16,7 @@
     "authorized_credit_cost": 10,
     "currency": "USD",
     "scope": "additional Studio API benchmark for PR195 only",
-    "estimated_api_cost_usd": 0.17544025,
+    "estimated_api_cost_usd": 0.40873925,
     "invoice_verified": false
   },
   "capabilities": {
@@ -39,7 +39,7 @@
   "art_approved": false,
   "physical_mobile_tested": false,
   "budget_eur": 0,
-  "notes": "Original Valoria artwork and Aldric-derived guards in WebGL. Studio-produced seamless slate material verified in actual roadway A/B. Native Built-in proof of prior source recovered with normal-only compatibility asset; latest WebGL composition not yet ported/validated in Unity. No art approval, physical iPhone, or beta promotion. PR195 estimated API total includes failed request; invoice unverified.",
+  "notes": "Commercial pass: actual Studio portal extrusion, geological Breach, roadside ruined arch and scrolling road verified in WebGL four viewports. Native previous 24 guard proof passed; new native failed due to Unity MaterialPropertyBlock field initialization and was corrected. No physical iPhone or commercial art approval.",
   "studio_benchmark": {
     "runs": [
       45693242088,
@@ -83,6 +83,67 @@
       "estimated_total_usd": 0.17544025,
       "art_approved": false,
       "physical_iphone_tested": false
+    },
+    "commercial_pass_20261126": {
+      "web_source": "2a8d89f82d96dc9988825ad5e6f116f1de5a4af4",
+      "web_run": 45773424569,
+      "web_artifact": 15094169758,
+      "draw_calls": [
+        263,
+        264,
+        293,
+        286
+      ],
+      "material_ab": [
+        245,
+        245
+      ],
+      "portal_ab": [
+        258,
+        245
+      ],
+      "breach_ab": [
+        249,
+        245
+      ],
+      "ruin_ab": [
+        245,
+        245
+      ],
+      "agent_runs": [
+        45771904456,
+        45772954576
+      ],
+      "archive_runs": [
+        45772461103,
+        45773603330
+      ],
+      "asset_transfers": [
+        45772142038,
+        45773175299
+      ],
+      "agent_calls": 10,
+      "incremental_cost_estimated_usd": 0.156231,
+      "total_pr195_estimated_usd": 0.40873925,
+      "billing_verified": false,
+      "forest_experiment": {
+        "source": "7a23066ada8c136d913b3ea30b49f9d9b83f2c4d",
+        "run": 45774107976,
+        "status": "pending"
+      },
+      "native_failure": {
+        "run": 45772645407,
+        "artifact": 15095840244,
+        "reason": "Unity disallows MaterialPropertyBlock allocation from MonoBehaviour constructor; native field initialization aborted and material dictionary null",
+        "cleanup": "success"
+      },
+      "native_retry": {
+        "source": "0eb325e2c1bcb8db35f5088a7fd32cf87a757bcc",
+        "run": 45774255290,
+        "status": "pending"
+      },
+      "art_approved": false,
+      "physical_iphone_verified": false
     }
   }
 }
