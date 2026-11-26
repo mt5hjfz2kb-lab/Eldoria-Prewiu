@@ -361,8 +361,42 @@ async def main():
                     await page.set_viewport_size({'width':390,'height':844})
                     await fresh();await fresh();await page.wait_for_timeout(300)
                     assert landscape_ok,('Landscape lost room or exit',name)
-                    await tap(back,False)
-                    await until(lambda:not state.get('room'))
+                    # After orientation changes, Unity/CanvasScaler may publish
+                    # the old logical hit rectangle before the next resize settles.
+                    # Observe stable layout across three new game telemetry frames,
+                    # then dispatch a real touch to the currently visible control.
+                    # Never fake closing a room or change its command.
+                    previous=None
+                    stable=0
+                    deadline=time.monotonic()+25
+                    while time.monotonic()<deadline:
+                        await fresh()
+                        target=find(back)
+                        box=await page.locator('canvas').bounding_box()
+                        if target and box and state.get('room')==name:
+                            sample=(round(target['x'],4),round(target['y'],4),round(box['width'],2),round(box['height'],2))
+                            stable=stable+1 if sample==previous else 1
+                            previous=sample
+                            if stable>=3:break
+                    if stable<3:
+                        await page.screenshot(path=OUT/f'failure-{name}-layout.png')
+                        (OUT/f'failure-{name}.json').write_text(json.dumps({'state':state,'log':log,'errors':errors},ensure_ascii=False,indent=2))
+                        raise RuntimeError(f'Unstable restored room exit: {name}')
+                    for attempt in range(2):
+                        if not state.get('room'):break
+                        if state.get('room')!=name:
+                            raise RuntimeError(f'Unexpected destination on exit from {name}: {state}')
+                        await tap(back,False)
+                        try:
+                            await until(lambda:not state.get('room'),timeout=12 if attempt==0 else 35)
+                            break
+                        except RuntimeError:
+                            log.append({'room_exit_touch_timeout':name,'attempt':attempt+1,'dpr':os.environ.get('VALORIA_DPR','1')})
+                            await page.screenshot(path=OUT/f'failure-{name}-exit-{attempt+1}.png')
+                            (OUT/f'failure-{name}-exit-{attempt+1}.json').write_text(json.dumps({'state':state,'log':log,'errors':errors},ensure_ascii=False,indent=2))
+                            if attempt==1:raise
+                            await fresh()
+                    assert not state.get('room'),('Room did not close via actual touch',name)
                     log.append({'room_traversed':name,'level':state['level']})
                     return True
                 await travel_round_trip()

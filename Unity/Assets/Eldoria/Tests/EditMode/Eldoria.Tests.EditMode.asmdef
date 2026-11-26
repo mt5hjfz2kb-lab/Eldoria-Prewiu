@@ -9,7 +9,8 @@
     "Eldoria.RoyalGold.V2",
     "Eldoria.RoyalGold.Core",
     "Eldoria.RoyalGold.Bindings",
-    "Unity.ugui"
+    "Unity.ugui",
+    "Eldoria.RoyalGold.UI"
   ],
   "optionalUnityReferences": [
     "TestAssemblies"

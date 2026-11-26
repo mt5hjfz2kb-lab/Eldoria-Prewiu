@@ -440,7 +440,7 @@ jobs:
   final-art-audit:
     needs: [unity, mobile-journey]
     if: >-
-      ${{ github.run_attempt == 1 && github.event.before == 'e9c10e61469560c3ddeaf36d9139e0e133b2444e' && github.event.head_commit.message == 'Corona: validate structural candidate and measure visual delta' }}
+      ${{ github.run_attempt == 1 && github.event.before == '3617241a8a2c82a1482a30d943d1fee542751578' && github.event.head_commit.message == 'Corona: fix actual compilation dependency and retry orientation proof' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -483,6 +483,14 @@ jobs:
           receipt=json.load(open('plan/plan-reservation.json'))
           assert receipt['state']=='completed' and receipt['no_retry']
           PY
+      - name: Confirm previous audit was skipped before using its single unused reservation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for id in 45813873347 45815809905; do
+            gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/jobs" --jq '.jobs[] | select(.name=="final-art-audit") | .conclusion' | grep -x skipped
+          done
       - name: Actual independent visual evaluation, remaining reserved 0.05 USD
         env:
           GH_TOKEN: ${{ github.token }}
