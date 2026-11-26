@@ -1,0 +1,5 @@
+# Actual auxiliary evidence and corrections
+
+The five real paired 390x844 WebGL views in [run 45837717094](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45837717094) (artifact 15126077699) compare original 5ef2aee with 3486754. They are matching stages, not fixed cameras. Council B1/B2 and bastion/ barracks panels show the title meeting decorative crest, small action text, repetitive rune buttons, and unused space in one-action views. Sawmill is already more coherent; preserve the actual illustrated preview. The follow-up uses the artist-authored quiet plate for Council rows, a differentiated action plate for building actions, adaptive compact cards, readable inset heading and larger action text. No changes to order list generation, callback, canonical commands, costs, progression or save state. Pending actual render.
+
+The new workflow uses the same exclusive Windows lease and same full native and WebGL tests, with no paid agent calls. Existing agent reservations belong to the previous source-pinned runs and must not be duplicated. No art approval inferred from code or technical success.

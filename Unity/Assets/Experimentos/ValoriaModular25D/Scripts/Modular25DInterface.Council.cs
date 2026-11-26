@@ -15,20 +15,22 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         Text councilTitle;
         string selectedBuilding;
+        float statusSheetMaxHeight = 440f;
+        Sprite councilQuietPlate;
 
         void InitializeCouncil()
         {
             var header = stateSummary.rectTransform;
             header.anchorMin = header.anchorMax = new Vector2(.5f, 1f);
             header.pivot = new Vector2(.5f, 1f);
-            header.anchoredPosition = new Vector2(0f, -39f);
+            header.anchoredPosition = new Vector2(0f, -61f);
             header.sizeDelta = new Vector2(268f, 43f);
             stateSummary.alignment = TextAnchor.MiddleCenter;
             var view = Plate("Órdenes disponibles", statusSheet, null, Vector2.zero,
                 Vector2.zero, Vector2.zero, Vector2.zero);
             view.anchorMax = Vector2.one;
             view.offsetMin = new Vector2(18f, 17f);
-            view.offsetMax = new Vector2(-18f, -88f);
+            view.offsetMax = new Vector2(-18f, -110f);
             view.GetComponent<Image>().color = Color.clear;
             view.GetComponent<Image>().raycastTarget = true;
             view.gameObject.AddComponent<RectMask2D>();
@@ -178,7 +180,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         void RefreshOrderRows()
         {
-            orderList.sizeDelta = new Vector2(0f, orders.Count * 50f);
+            // Presentation only: a compact building card uses its actual action count;
+            // the full Council remains scrollable. Keep the original order/handlers.
+            bool buildingCard = selectedBuilding != null;
+            float pitch = buildingCard ? 70f : 58f;
+            float rowHeight = pitch - 6f;
+            float wantedHeight = buildingCard ? 130f + pitch * Mathf.Max(1, orders.Count) : statusSheetMaxHeight;
+            statusSheet.sizeDelta = new Vector2(statusSheet.sizeDelta.x, Mathf.Min(statusSheetMaxHeight, wantedHeight));
+            orderList.sizeDelta = new Vector2(0f, orders.Count * pitch);
+            if (councilQuietPlate == null) councilQuietPlate = NeedCorona("secondary_quiet");
             for (int i = 0; i < orders.Count; i++)
             {
                 if (i == orderRows.Count)
@@ -191,7 +201,22 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 }
                 orderRows[i].gameObject.SetActive(true);
                 orderRows[i].interactable = orders[i].command.Length > 0;
-                orderRows[i].GetComponentInChildren<Text>().text = orders[i].caption;
+                var row = orderRows[i];
+                var rect = row.GetComponent<RectTransform>();
+                rect.anchoredPosition = new Vector2(0f, -pitch*i);
+                rect.sizeDelta = new Vector2(Mathf.Max(140f, statusSheet.sizeDelta.x - 58f), rowHeight);
+                var image = row.GetComponent<Image>();
+                image.sprite = buildingCard ? actionPlate : councilQuietPlate;
+                image.type = image.sprite.border.sqrMagnitude > 0 ? Image.Type.Sliced : Image.Type.Simple;
+                image.preserveAspect = false;
+                var caption = row.GetComponentInChildren<Text>();
+                caption.text = orders[i].caption;
+                caption.fontSize = buildingCard ? 17 : 16;
+                caption.color = WarmWhite;
+                caption.resizeTextForBestFit = true;
+                caption.resizeTextMinSize = 12;
+                caption.resizeTextMaxSize = caption.fontSize;
+                caption.rectTransform.sizeDelta = new Vector2(rect.sizeDelta.x - 22f, rowHeight - 12f);
             }
             for (int i = orders.Count; i < orderRows.Count; i++) orderRows[i].gameObject.SetActive(false);
         }

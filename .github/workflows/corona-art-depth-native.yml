@@ -1,0 +1,466 @@
+name: Valoria - final artistic depth correction proof
+on:
+  push:
+    branches: [candidate/corona-art-depth-followup-20261126]
+    paths: ['.github/workflows/corona-art-depth-native.yml']
+permissions:
+  contents: read
+  actions: read
+# GitHub concurrency preserves one running + one pending; a new candidate
+# replaces a pending baseline. Always prioritize the latest baseline proof,
+# then queue isolated A/B after baseline completion.
+jobs:
+  # The SHA itself exposes the real Actions run ID via GitHub commit statuses.
+  # This allows evidence review without guessing run numbers or GitHub UI state.
+  announce-run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      statuses: write
+      contents: read
+    steps:
+      - name: Record this source-pinned Unity run as pending
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request
+          repo=os.environ["GITHUB_REPOSITORY"]
+          url="https://github.com/"+repo+"/actions/runs/"+os.environ["GITHUB_RUN_ID"]
+          body=json.dumps({"state":"pending","context":"eldoria/corona-art-depth-proof",
+                           "target_url":url,
+                           "description":"Waiting for real Unity and WebGL evidence"}).encode()
+          req=urllib.request.Request("https://api.github.com/repos/"+repo+"/statuses/"+os.environ["GITHUB_SHA"],
+              method="POST",data=body,headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
+              "Accept":"application/vnd.github+json","Content-Type":"application/json"})
+          with urllib.request.urlopen(req,timeout=25) as response:
+              print("Eldoria native Actions run",response.status,url)
+          PY
+  verify-packaging:
+    runs-on: windows-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/valoria-modular25d
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Models
+          persist-credentials: false
+      - name: Check HUD ribbon mathematical layout (not visual acceptance)
+        run: python tools/valoria-modular25d/test-corona-ribbon.py
+      - name: Check legacy texture staging against every real donor and compare geometry bytes
+        run: python tools/valoria-modular25d/pack-hidden-geography.py Unity --combined-player --donors-only
+  preflight:
+    needs: verify-packaging
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      allowed: ${{steps.check.outputs.allowed}}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{github.token}}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,json,base64,urllib.request
+          repo=os.environ["GITHUB_REPOSITORY"]
+          ident="eldoria-valoria-modular25d-bastion1-20261119"
+          def gh(endpoint):
+            req=urllib.request.Request("https://api.github.com/repos/"+repo+"/"+endpoint,
+                headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],"Accept":"application/vnd.github+json"})
+            with urllib.request.urlopen(req,timeout=35) as f:return json.load(f)
+          meta=gh("contents/pipeline/active-workstreams.json?ref=main")
+          blob=gh("git/blobs/"+meta["sha"])
+          assert blob["sha"]==meta["sha"] and blob["encoding"]=="base64"
+          state=json.loads(base64.b64decode(blob["content"]))
+          leases=[x for x in state["active"] if "windows-runner-heavy" in x.get("resources",[])]
+          branch=gh("git/ref/heads/"+os.environ["GITHUB_REF_NAME"])
+          ok=(len(leases)==1 and leases[0]["id"]==ident and
+             leases[0].get("ownership_revision")==16 and leases[0].get("ownership_state")=="claimed" and
+             leases[0].get("owner")=="chatgpt-corona-brecha-commercial-20261126" and
+             state.get("resource_rotation",{}).get("current_workstream")==ident and
+             branch["object"]["sha"]==os.environ["GITHUB_SHA"])
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write("allowed="+str(ok).lower()+"\n")
+          if not ok:
+            raise SystemExit("MOD25D_NATIVE_NOT_CERTIFIED: live owner/revision/branch/Windows lease mismatch")
+          print("MOD25D_NATIVE_LEASE_PASS")
+          PY
+  unity:
+    concurrency:
+      group: eldoria-modular25d-exclusive-unity-native
+      cancel-in-progress: false
+    needs: preflight
+    if: needs.preflight.outputs.allowed == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 150
+    steps:
+      - name: Recheck owner, Windows process safety and installed Unity
+        shell: powershell
+        env:
+          GH_TOKEN: ${{github.token}}
+        run: |
+          $ErrorActionPreference='Stop'
+          $api="https://api.github.com/repos/$env:GITHUB_REPOSITORY/"
+          $h=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json'}
+          $meta=Invoke-RestMethod -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main') -Headers $h
+          $blob=Invoke-RestMethod -Uri ($api+'git/blobs/'+$meta.sha) -Headers $h
+          if($blob.sha -ne $meta.sha){throw 'Registry changed unexpectedly'}
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
+          $held=@($reg.active|Where-Object{@($_.resources) -contains 'windows-runner-heavy'})
+          $id='eldoria-valoria-modular25d-bastion1-20261119'
+          if($held.Count -ne 1 -or $held[0].id -ne $id -or $held[0].ownership_revision -ne 16 -or
+             $held[0].owner -ne 'chatgpt-corona-brecha-commercial-20261126' -or
+             $reg.resource_rotation.current_workstream -ne $id){throw 'Lease not ours'}
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
+            throw 'Existing Windows native process: refuse interference'}
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){
+            throw 'Unity editor executable unavailable'}
+          # Do not clean another run's project, Unity cache or Library.
+          if((Get-Item $env:RUNNER_TEMP).PSDrive.Free -lt 7GB){throw 'Insufficient scratch disk'}
+          Write-Host 'SAFE_NATIVE_PC_AND_OWNER_PASS'
+      - name: Restore GitHub Desktop Git to PATH for Unity Package Manager
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $paths=@(Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object{Test-Path $_})
+            if(-not $paths.Count){throw 'No installed Git; do not download software'}
+            $dir=Split-Path $paths[0]
+            $env:PATH="$dir;$env:PATH"
+          } else {$dir=Split-Path $git.Source}
+          Add-Content -Path $env:GITHUB_PATH -Value $dir
+          git --version
+      - name: Materialize source-pinned isolated Unity project without modifying main
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:RUNNER_TEMP ('eldoria-region-modular-'+$env:GITHUB_RUN_ID)
+          if(Test-Path $root){throw 'Refuse to overwrite existing scratch'}
+          git init -q $root
+          git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          $includes=@('/docs/evidence/valoria-layered-construction-20261016/playable-entry-v3/complete-playerstate-before-reset.json','/tools/valoria-modular25d/','/tools/bastion-iii/author-frontier.py',
+           '/Unity/Assets/Experimentos/ValoriaModular25D/',
+           '/Unity/Assets/Experimentos/ValoriaModular25D.meta','/Unity/Assets/Experimentos.meta',
+           '/Unity/Assets/Eldoria/','/Unity/Assets/Eldoria.meta',
+           '/Unity/Assets/EmaceArt/Slavic World Free/Meshes/','/Unity/Assets/EmaceArt/Slavic World Free/Materials/',
+           '/Unity/Assets/EmaceArt/Slavic World Free/Texture/','/Unity/Assets/EmaceArt/Slavic World Free/URP_Support/','/Unity/Assets/EmaceArt/Slavic World Free/Prefabs/Village/Building/Shed/',
+           '/Unity/Assets/Holotna/','/Unity/Assets/Holotna.meta','/Unity/Assets/StreamingAssets/','/Unity/Assets/StreamingAssets.meta',
+           '/Unity/Assets/Plugins/','/Unity/Assets/Plugins.meta',
+           '/Unity/Assets/DefaultVolumeProfile.asset',
+           '/Unity/Assets/UniversalRenderPipelineGlobalSettings.asset',
+           '/Unity/Packages/','/Unity/ProjectSettings/')
+          git -C $root sparse-checkout set --no-cone @includes
+          if($LASTEXITCODE){throw 'Sparse checkout setup failed'}
+          git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Git fetch failed'}
+          # Windows schannel can drop a promisor-blob response near the end
+          # of an otherwise correct sparse checkout (run 44545156060).
+          # Retry only this RUN's own scratch checkout. Never reuse, delete
+          # or touch another workstream's Git/Unity folders.
+          git -C $root config http.version HTTP/1.1
+          $checkoutOk=$false
+          for($attempt=1;$attempt -le 3;$attempt++){
+            git -C $root checkout -q --detach $env:GITHUB_SHA
+            if($LASTEXITCODE -eq 0){$checkoutOk=$true;break}
+            Write-Warning ('Transient promisor-blob checkout failure; same SHA retry '+$attempt)
+            Start-Sleep -Seconds (4*$attempt)
+          }
+          if(-not $checkoutOk -or (git -C $root rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){
+            throw 'SHA-pinned checkout unresolved after bounded retries'}
+          foreach($p in @('Unity/Packages/manifest.json','Unity/ProjectSettings/ProjectVersion.txt',
+           'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i.png',
+           'Unity/Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity',
+           'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DNativeCapture.cs')){
+             if(-not(Test-Path (Join-Path $root $p))){throw "Missing SHA-pinned Unity input $p"}
+          }
+          "MOD25D_SOURCE=$root"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "MOD25D_CHECKOUT_PINNED $env:GITHUB_SHA"
+      - name: Validate Corona shared UI contract in Unity EditMode
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $results=Join-Path $env:RUNNER_TEMP ('corona-contract-'+$env:GITHUB_RUN_ID+'.xml')
+          $log=Join-Path $env:RUNNER_TEMP ('corona-contract-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-projectPath',$project,'-runTests','-testPlatform','EditMode','-testFilter','Eldoria.Tests.CoronaPresentationContractTests','-testResults',$results,'-logFile',$log)
+          $editor=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $editor.WaitForExit(1800000)){ $editor.Kill(); throw 'Corona EditMode timed out' }
+          if($editor.ExitCode -ne 0 -or -not(Test-Path $results)){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Corona contract failed'}
+          [xml]$report=Get-Content $results -Raw
+          $run=$report.'test-run'
+          if([int]$run.total -lt 8 -or [int]$run.failed -ne 0 -or [int]$run.passed -lt 8){throw 'Corona contract incomplete or failing'}
+      - name: Upload Corona contract evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: corona-contract-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/corona-contract-${{ github.run_id }}.xml
+            ${{ runner.temp }}/corona-contract-${{ github.run_id }}.log
+          if-no-files-found: ignore
+      - name: Capture the alternative study at the exact candidate revision
+        shell: powershell
+        run: |
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('urban-comparison-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,'-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.ValoriaUrbanComparison.Capture','-logFile',$log)
+          $editor=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($editor.ExitCode){Get-Content $log -Tail 100;throw "Urban A/B capture failed"}
+      - name: Render actual Unity camera frames and validate canonical build + file reload
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('mod25d-native-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,
+            '-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.Modular25DNativeCapture.Capture',
+            '-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2400000)){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 240}
+            throw 'Scratch Unity capture timed out'}
+          if($p.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 260}
+            throw ('Unity native capture FAILED '+$p.ExitCode)}
+          $out=Join-Path $project 'Artifacts/ValoriaModular25D/Native'
+          $manifest=Join-Path $out 'evidence.json'
+          if(-not(Test-Path $manifest)){throw 'Missing real Unity evidence'}
+          $e=Get-Content $manifest -Raw|ConvertFrom-Json
+          if($e.engine -ne 'Unity' -or $e.engineVersion -ne '6000.3.23f1' -or
+             $e.sourceSha -ne $env:GITHUB_SHA -or $e.sourceFrames -lt 42 -or
+             -not $e.nativeWorldRender -or -not $e.gatewayBuild -or -not $e.savedAndReloaded -or
+             -not $e.historicSchema1Restored -or -not $e.noDoublePayment -or -not $e.continuousTerrainPresent -or
+             -not $e.roadAndFootprintKits -or
+             -not $e.paintedGroundSourceLoaded -or
+             $e.originalArtResourcesLoaded -lt 14 -or
+             $e.artApproved -ne 'NO' -or $e.physicalIphone -ne 'NOT_TESTED'){
+            throw 'Incomplete original-source QA; do not claim Unity/PlayMode approval'}
+          foreach($x in $e.frames){
+            $p=Join-Path $out $x.file
+            if(-not(Test-Path $p) -or (Get-Item $p).Length -lt 5000){throw ('Missing frame '+$x.file)}
+            if((Get-FileHash -Algorithm SHA256 $p).Hash.ToLowerInvariant() -ne $x.sha256){
+              throw ('Altered frame '+$x.file)}
+          }
+          Write-Host 'UNITY_REAL_SAVED_SCENE_42_FRAMES_AND_GATEWAY_PASS'
+          Get-Content $manifest -Head 28
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ciudad-cinco-bastiones-unity
+          path: |
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/stage-*.png
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/urban-*
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/district-tour-*.png
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/district-close-*.png
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/plano-urbano.json
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/evidence.json
+      - name: Native integrated scene, identical routes and fixed-camera art A/B
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $out=Join-Path $project 'Artifacts/RegionModular'
+          New-Item -ItemType Directory -Force $out|Out-Null
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(!$blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          $python=@(Get-ChildItem (Split-Path $blender) -Filter python.exe -File -Recurse |
+            Where-Object {$_.FullName -match '[\\/]python[\\/]bin[\\/]python.exe$'})
+          if($python.Count -ne 1){throw 'Blender bundled Python executable unresolved'}
+          "MOD25D_PYTHON=$($python[0].FullName)" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          & $blender --background --python-exit-code 1 --python (Join-Path $env:MOD25D_SOURCE 'tools/bastion-iii/author-frontier.py')
+          if($LASTEXITCODE){throw 'Canonical private fissure authoring failed'}
+          $bakeLog=Join-Path $out 'canonical-bake.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',$project,'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',$bakeLog)
+          $bake=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($bake.ExitCode){Get-Content $bakeLog -Tail 160;throw 'Canonical chapter III prefab bake failed'}
+          $env:VALORIA_CONTENT_PROBE='1'
+          $env:VALORIA_GAMEPLAY_PROBE='1'
+          $failed=@()
+          foreach($phase in @('before','after')){
+            $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $out $phase
+            New-Item -ItemType Directory -Force $env:ELDORIA_REGION1_CAPTURE_OUT|Out-Null
+            $env:ELDORIA_WORLD_ART_BASELINE=if($phase -eq 'before'){'1'}else{'0'}
+            $env:ELDORIA_REGIONAL_COLOUR_AB=if($phase -eq 'after'){'1'}else{'0'}
+            $env:ELDORIA_BAKE_TERRAIN_QUERIES=if($phase -eq 'before'){'1'}else{'0'}
+            $env:ELDORIA_VALIDATE_TERRAIN_RAYCAST=if($phase -eq 'after'){'1'}else{'0'}
+            $log=Join-Path $out ($phase+'.log')
+            $xml=Join-Path $out ($phase+'.xml')
+            $args=@('-batchmode','-force-d3d11','-projectPath',$project,'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.CoronaRegionRendersAndRetainsGeographicRoutes','-testResults',$xml,'-logFile',$log)
+            $proc=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+            if($proc.ExitCode -or !(Test-Path $xml)){
+              Get-Content $log -Tail 100
+              $failed += $phase
+            }else{
+              [xml]$result=Get-Content $xml
+              if($result.'test-run'.passed -ne '1'){$failed += $phase}
+            }
+            $tape=Join-Path $env:ELDORIA_REGION1_CAPTURE_OUT 'terrain.bytes'
+            if($phase -eq 'before' -and (Test-Path $tape)){Copy-Item $tape (Join-Path $project 'Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes')}
+          }
+          if($failed.Count){throw ("Native integrated phase failed: "+($failed -join ', '))}
+          if((Get-FileHash "$out/before/routes.txt").Hash -ne (Get-FileHash "$out/after/routes.txt").Hash){throw 'Canonical route or cells changed'}
+          if((Get-FileHash "$out/before/grid.bin").Hash -ne (Get-FileHash "$out/after/grid.bin").Hash){throw 'Navigable X/Z lattice differs'}
+          foreach($view in @('home','wood','stone','region','breach','panorama','woodland','river','breach-panorama')){
+            foreach($variant in @('original','candidate')){
+              $frame=Join-Path $out ("after/colour-"+$variant+"-"+$view+".png")
+              $meta=[IO.Path]::ChangeExtension($frame,'.json')
+              if(!(Test-Path $frame) -or !(Test-Path $meta)){throw "Missing same-camera colour pair $frame"}
+              $data=Get-Content $meta -Raw|ConvertFrom-Json
+              if($data.width -ne 390 -or $data.height -ne 844 -or -not $data.actualUnityCamera -or -not $data.playMode -or
+                 (Get-FileHash -Algorithm SHA256 $frame).Hash.ToLowerInvariant() -ne $data.sha256){throw "Unverified frame $frame"}
+            }
+            $a=Get-Content (Join-Path $out ("after/colour-original-"+$view+".json")) -Raw|ConvertFrom-Json
+            $b=Get-Content (Join-Path $out ("after/colour-candidate-"+$view+".json")) -Raw|ConvertFrom-Json
+            foreach($field in @('cameraPosition','cameraRotation','worldTarget','zoom','aspect')){
+              if(($a.$field|ConvertTo-Json -Compress) -ne ($b.$field|ConvertTo-Json -Compress)){throw "Camera changed between colour versions $view $field"}
+            }
+          }
+          Write-Host 'NINE_SAME_CAMERA_REGIONAL_COLOUR_PAIRS_PASS'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: region1-cameras-and-routes
+          path: |
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/RegionModular/
+            !${{env.MOD25D_SOURCE}}/Unity/Artifacts/RegionModular/before/terrain.bytes
+      - name: Stage mobile runtime assets from the verified project
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $source=Join-Path $project 'Assets/Eldoria/Resources/Valoria'
+          $dest=Join-Path $project 'Assets/ValoriaBuildInputs/LegacyModels'
+          New-Item -ItemType Directory -Force $dest|Out-Null
+          # Original optimized Valoria packaging excluded historical source GLBs.
+          # Keep their GUIDs inside Assets so serialized scene dependencies still resolve.
+          $files=@(Get-ChildItem $source -Recurse -File -Filter '*.glb')
+          foreach($file in $files){
+            $relative=$file.FullName.Substring($source.Length+1)
+            $target=Join-Path $dest $relative
+            New-Item -ItemType Directory -Force (Split-Path $target)|Out-Null
+            Move-Item $file.FullName $target
+            Move-Item ($file.FullName+'.meta') ($target+'.meta')
+          }
+          & $env:MOD25D_PYTHON (Join-Path $env:MOD25D_SOURCE 'tools/valoria-modular25d/pack-hidden-geography.py') $project --combined-player
+          if($LASTEXITCODE){throw 'Hidden source geometry could not be verified'}
+          Write-Host ("Historical model roots removed from automatic player inclusion: "+$files.Count)
+      - name: Build actual integrated WebGL player
+        shell: powershell
+        run: |
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $env:ELDORIA_WORLD_PLAYER_OUT=Join-Path $project 'Builds/RegionModular'
+          $log=Join-Path $project 'Artifacts/RegionModular/webgl.log'
+          $args=@('-batchmode','-quit','-projectPath',$project,'-executeMethod','Eldoria.World4XCanon.Editor.RegionOneCanonicalCapture.BuildModularWorld','-logFile',$log)
+          $proc=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+          if($proc.ExitCode -or !(Test-Path "$env:ELDORIA_WORLD_PLAYER_OUT/index.html")){Get-Content $log -Tail 150;throw 'Integrated WebGL build failed'}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-region1-webgl
+          path: ${{env.MOD25D_SOURCE}}/Unity/Builds/RegionModular/
+
+  mobile-journey:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dpr: 1
+            evidence: ciudad-region-recorrido
+          - dpr: 3
+            evidence: ciudad-region-retina
+    needs: unity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-region1-webgl
+          path: player
+      - name: Play a fresh city through Bastion V and visit the canonical region
+        env:
+          VALORIA_DPR: ${{ matrix.dpr }}
+          VALORIA_EVIDENCE: evidence
+          VALORIA_TEST_REGION: '1'
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet playwright==1.56.0
+          python3 -m playwright install ffmpeg
+          python3 tools/valoria-modular25d/journey-serve.py player 8824 &
+          python3 -u tools/valoria-modular25d/journey-browser.py 'http://127.0.0.1:8824/index.html?journey-qa'
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.evidence }}
+          path: evidence/
+      - name: Assemble original versus candidate UI evidence (no automatic quality score)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VALORIA_DPR: ${{ matrix.dpr }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow==11.3.0
+          gh run download 45638738009 -n "${{ matrix.evidence }}" -D corona-baseline
+          python3 tools/valoria-modular25d/corona-ab-evidence.py corona-baseline evidence corona-ab
+      - uses: actions/upload-artifact@v4
+        with:
+          name: corona-before-after-dpr${{ matrix.dpr }}
+          path: corona-ab/
+      - name: Extend visual evidence to all five bastions and region
+        if: matrix.dpr == 1
+        run: |
+          python3 tools/valoria-modular25d/world-art-ab.py corona-baseline evidence spatial-ab --baseline-sha 5ef2aee67cf8fde57ba2fc4b3d929b517ee67944 --candidate-sha "$GITHUB_SHA"
+      - uses: actions/upload-artifact@v4
+        if: matrix.dpr == 1
+        with:
+          name: world-city-spatial-before-after
+          path: spatial-ab/
+
+
+  # Publish the actual run URL on this exact experiment commit so reviewers
+  # can discover native Unity artifacts even when GitHub's plugin only lists
+  # PR-triggered Actions. No source code or gameplay data is written.
+  publish-run-reference:
+    if: always()
+    needs: [verify-packaging, preflight, unity, mobile-journey]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      statuses: write
+      contents: read
+    steps:
+      - name: Attach real native proof URL to this commit
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request
+          jobs=json.loads(os.environ["RESULTS"])
+          states={key:value.get("result","unknown") for key,value in jobs.items()}
+          ok=states.get("unity")=="success" and states.get("mobile-journey")=="success"
+          state="success" if ok else "failure"
+          description=("; ".join(k+"="+v for k,v in sorted(states.items())))[:140]
+          repo=os.environ["GITHUB_REPOSITORY"]
+          sha=os.environ["GITHUB_SHA"]
+          url="https://github.com/"+repo+"/actions/runs/"+os.environ["GITHUB_RUN_ID"]
+          body=json.dumps({"state":state,"context":"eldoria/corona-art-depth-proof",
+                           "target_url":url,"description":description}).encode("utf-8")
+          req=urllib.request.Request("https://api.github.com/repos/"+repo+"/statuses/"+sha,
+              method="POST",data=body,headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
+              "Accept":"application/vnd.github+json","Content-Type":"application/json"})
+          with urllib.request.urlopen(req,timeout=25) as answer:
+              print("Native proof status published:",answer.status,url,description)
+          PY
+
+

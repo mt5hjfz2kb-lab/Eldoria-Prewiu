@@ -279,9 +279,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             statusSheet=Plate("Valoria state parchment",rootTransform,activityPanelPlate,
                 new Vector2(.5f,0f),new Vector2(.5f,0f),
                 new Vector2(0f,112f),new Vector2(330f,170f));
-            councilTitle = Label("CONSEJO DE VALORIA",statusSheet,23,true,WarmWhite,TextAnchor.MiddleCenter,
+            councilTitle = Label("CONSEJO DE VALORIA",statusSheet,20,true,WarmWhite,TextAnchor.MiddleCenter,
                 new Vector2(0f,0f),new Vector2(248f,28f));
-            councilTitle.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top,10f,28f);
+            councilTitle.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top,29f,28f);
+            councilTitle.resizeTextForBestFit=true;
+            councilTitle.resizeTextMinSize=15;
+            councilTitle.resizeTextMaxSize=20;
 
             stateSummary=Label("",statusSheet,14,false,WarmWhite,TextAnchor.MiddleLeft,
                 new Vector2(0f,-15f),new Vector2(278f,83f));
@@ -930,7 +933,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(1f,.5f);
                 statusSheet.pivot=new Vector2(1f,.5f);
                 statusSheet.anchoredPosition=new Vector2(-12f-right,2f);
-                statusSheet.sizeDelta=new Vector2(328f, Mathf.Min(300f,height-top-bottom-12f));
+                statusSheetMaxHeight=Mathf.Min(300f,height-top-bottom-12f);
+                statusSheet.sizeDelta=new Vector2(328f, statusSheetMaxHeight);
             }
             else
             {
@@ -946,8 +950,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(.5f,0f);
                 statusSheet.pivot=new Vector2(.5f,0f);
                 statusSheet.anchoredPosition=new Vector2(0f,bottom+95f);
+                statusSheetMaxHeight=Mathf.Min(440f,height-top-bottom-112f);
                 statusSheet.sizeDelta=new Vector2(
-                    Mathf.Min(330f,safeWidth-28f),Mathf.Min(440f,height-top-bottom-112f));
+                    Mathf.Min(330f,safeWidth-28f),statusSheetMaxHeight);
             }
             lastWidth=w;
             lastHeight=h;
