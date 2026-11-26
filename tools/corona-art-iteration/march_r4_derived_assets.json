@@ -1,0 +1,10 @@
+{
+  "source_sha256": "f9a5ea1ea6489baffca413dc03db9dc6ceeca5a937f8c08ed3387be2d610a5e8",
+  "source_review": "reject: excessive ornament, right light; transform to quieter asset candidate",
+  "transformation": "crop [96,0,1440,860]; spatial soft-focus 6px; desaturate and suppress banner and right light; preserve ledge; separate elliptical alpha contact shadow",
+  "not_art_approved": true,
+  "assets": {
+    "march_command_gallery.png": "9ae5396ad36dcb5053967bad6c463b44abfc9df55ea7125e46bdf7c8d338a263",
+    "march_gallery_contact.png": "4c7378411b261257c70c2e10d9d10fc820b3c0a0a15cc64cfaa57028ac6bd8bb"
+  }
+}
