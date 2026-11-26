@@ -89,7 +89,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // the actual raycast/feedback graphic, not an unrelated overlay.
             var previous=b.targetGraphic;
             if(previous&&previous!=plate)HideStudioGraphic(previous);
-            plate.raycastTarget=true;plate.alphaHitTestMinimumThreshold=0f;
+            // Image defaults to rectangle hit-testing (alpha threshold zero).
+            // Do not set the property on imported non-readable Corona sprites.
+            plate.raycastTarget=true;
             b.targetGraphic=plate;
             studioRestore.Add(()=>{if(b)b.targetGraphic=previous;if(plate)plate.raycastTarget=false;});
             if(label)
