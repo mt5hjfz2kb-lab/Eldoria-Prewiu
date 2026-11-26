@@ -1,0 +1,30 @@
+name: Corona - read back actual visual agent result
+on:
+  push:
+    branches: [candidate/corona-direct-art-proof-20261126]
+    paths: ['.github/workflows/corona-agent-readback.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  readback:
+    if: github.run_attempt == 1 && github.event.before == 'de7c8478eb1ba7a28e7f19fa84b860da0258d28c'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read only exact completed agent plan and implementation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/45812100129" --jq '.conclusion' | grep -Fx success
+          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" -n corona-agent-art-plan -D plan
+          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" -n corona-agent-implementation -D impl
+          python3 - <<'PY'
+          import json
+          plan=json.load(open('plan/plan.json'))
+          print("CORONA_ART_PLAN "+json.dumps(plan,ensure_ascii=False))
+          print("CORONA_REFERENCE_MANIFEST "+json.dumps(json.load(open('plan/reference-manifest.json')),ensure_ascii=False))
+          print("CORONA_ART_IMPLEMENTATION "+json.dumps(json.load(open('impl/applied.json')),ensure_ascii=False))
+          print("CORONA_COST "+json.dumps(json.load(open('plan/plan-reservation.json'))))
+          PY
