@@ -274,6 +274,16 @@ namespace Eldoria.DailyTreasures
         }
         static Sprite LoadUnifiedResourceEmblem(string fallback)
         {
+            // The Corona HUD, wallet and actual loose rewards share one
+            // canonical resource catalogue. Time/chest art and all legacy
+            // non-Corona scenes retain their approved historical sources.
+            if(CoronaPresentation.Active)
+            {
+                string kind=fallback=="resource_wood"?"wood":
+                    fallback=="resource_stone"?"stone":fallback=="resource_food"?"food":null;
+                var corona=CoronaPresentation.ResourceIcon(kind);
+                if(corona)return corona;
+            }
             // Cropped historical 128px icons include HUD backdrops and
             // remnants of numeric labels. Prefer genuine standalone 256px
             // originals with clean transparent borders in both calendar and
@@ -324,7 +334,8 @@ namespace Eldoria.DailyTreasures
             var referenceFont=Resources.Load<Font>(display
                 ? "VigiliaArt/Fonts/CormorantGaramond-SemiBold"
                 : "VigiliaArt/Fonts/LibreBaskerville-Regular");
-            if(referenceFont)t.font=referenceFont;
+            if(CoronaPresentation.Active)t.font=CoronaPresentation.ResolveFont(display,referenceFont);
+            else if(referenceFont)t.font=referenceFont;
             else if(display)
             {
                 var fallback=Resources.Load<Font>("EldoriaRetention/reference-serif");
@@ -347,6 +358,7 @@ namespace Eldoria.DailyTreasures
             colors.pressedColor=new Color(.68f,.60f,.54f,1f);
             colors.disabledColor=new Color(.47f,.43f,.40f,.55f);
             button.colors=colors;
+            if(CoronaPresentation.Active)CoronaPresentation.ButtonFeedback(button);
             button.onClick.AddListener(()=>action());
             return button;
         }
@@ -494,6 +506,20 @@ namespace Eldoria.DailyTreasures
             if(!ApplyAuthoredFrame((RectTransform)claimButton.transform,
                 "valoria_frame_button_512x128"))
                 Relief((RectTransform)claimButton.transform,false,true);
+            if(CoronaPresentation.Active)
+            {
+                var actionSkin=Resources.Load<Sprite>(CoronaPresentation.ArtRoot+"action_arcane");
+                if(actionSkin)
+                {
+                    var surface=claimButton.targetGraphic as Image;
+                    if(surface)
+                    {
+                        surface.sprite=actionSkin;
+                        surface.type=actionSkin.border.sqrMagnitude>0?Image.Type.Sliced:Image.Type.Simple;
+                        surface.color=Color.white;
+                    }
+                }
+            }
             claimCaption=Label(claimButton.transform,"Claim label","RECLAMAR TRIBUTO",19,Ivory,TextAnchor.MiddleCenter);
             Stretch(claimCaption.rectTransform);
 

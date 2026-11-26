@@ -9,35 +9,17 @@ namespace Eldoria.UI.RoyalGold.V2
 {
     public static class CoronaFinish
     {
-        public static readonly Color32 Ivory=new Color32(250,239,213,255);
-        public static readonly Color32 Muted=new Color32(201,205,192,255);
-        public static readonly Color32 Brass=new Color32(192,159,106,255);
-        private static Font headingFont, bodyFont;
-        public static Font HeadingFont => headingFont ? headingFont :
-            (headingFont=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/CormorantGaramond-SemiBold"));
-        public static Font BodyFont => bodyFont ? bodyFont :
-            (bodyFont=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/SourceSans3-Semibold"));
-
-        // Presentation contract: painted surfaces and local semantic colours
-        // belong to each screen; interactive feedback and typefaces are shared.
-        public static Font ResolveFont(bool heading, Font fallback = null)
-        {
-            var selected=heading?HeadingFont:BodyFont;
-            return selected?selected:fallback?fallback:Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        }
-
-        public static void ApplyButtonFeedback(Selectable control)
-        {
-            control.transition=Selectable.Transition.ColorTint;
-            var state=control.colors;
-            state.normalColor=Color.white;
-            state.highlightedColor=Ivory;
-            state.selectedColor=new Color(.90f,.96f,.93f);
-            state.pressedColor=new Color(.74f,.82f,.77f,1f);
-            state.disabledColor=new Color(.55f,.57f,.56f,.7f);
-            state.fadeDuration=.09f;
-            control.colors=state;
-        }
+        public static readonly Color32 Ivory=Eldoria.DailyTreasures.CoronaPresentation.Ivory;
+        public static readonly Color32 Muted=Eldoria.DailyTreasures.CoronaPresentation.Muted;
+        public static readonly Color32 Brass=Eldoria.DailyTreasures.CoronaPresentation.Brass;
+        public static Font HeadingFont => Eldoria.DailyTreasures.CoronaPresentation.Heading;
+        public static Font BodyFont => Eldoria.DailyTreasures.CoronaPresentation.Body;
+        public static Font ResolveFont(bool heading,Font fallback=null) =>
+            Eldoria.DailyTreasures.CoronaPresentation.ResolveFont(heading,fallback);
+        public static void ApplyButtonFeedback(Selectable control) =>
+            Eldoria.DailyTreasures.CoronaPresentation.ButtonFeedback(control);
+        public static Sprite ResourceIcon(string kind) =>
+            Eldoria.DailyTreasures.CoronaPresentation.ResourceIcon(kind);
 
         // Numeric and dock text are single-line semantic roles. Measure actual
         // glyphs instead of assuming that a disjoint RectTransform ensures fit.
@@ -77,11 +59,7 @@ namespace Eldoria.UI.RoyalGold.V2
     public sealed class RoyalGoldV2Hud : MonoBehaviour
     {
         public RoyalHUD Source;
-        public static bool UseCoronaArt =>
-            UnityEngine.SceneManagement.SceneUtility.GetBuildIndexByScenePath(
-                "Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity") == 0 &&
-            UnityEngine.SceneManagement.SceneUtility.GetBuildIndexByScenePath(
-                "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity") == 1;
+        public static bool UseCoronaArt => Eldoria.DailyTreasures.CoronaPresentation.Active;
 
         private RectTransform safe, headerPlate, objectiveCard, heraldicBanner, buildingCard, buildingMiniature, scrollContent, scrollViewport;
         public RectTransform HeaderPlate => headerPlate;

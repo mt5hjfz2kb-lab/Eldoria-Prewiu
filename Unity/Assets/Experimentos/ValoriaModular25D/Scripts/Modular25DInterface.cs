@@ -379,9 +379,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
             foreach (var text in inner.transform.parent.GetComponentsInChildren<Text>(true))
             {
-                var typeface=text.name=="Opening question" ? Eldoria.UI.RoyalGold.V2.CoronaFinish.HeadingFont :
-                    Eldoria.UI.RoyalGold.V2.CoronaFinish.BodyFont;
-                if(typeface)text.font=typeface;
+                text.font=Eldoria.UI.RoyalGold.V2.CoronaFinish.ResolveFont(text.name=="Opening question");
                 text.color = WarmWhite;
                 if (text.name == "Opening question") text.color = PaleGold;
             }
@@ -391,7 +389,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             plaque.anchorMin = new Vector2(.07f,.13f);
             plaque.anchorMax = new Vector2(.93f,.74f);
             var inscription = frame.Find("Player's chosen name").GetComponent<Image>();
-            inscription.color = new Color(.105f,.122f,.145f,.94f);
+            // Reuse the same quiet painted inset that holds the HUD wallet.
+            // The InputField and its clipping, placeholder and keyboard stay intact.
+            inscription.sprite=resourcePlate;
+            inscription.type=resourcePlate.border.sqrMagnitude>0?Image.Type.Sliced:Image.Type.Simple;
+            inscription.color=new Color(.80f,.79f,.86f,.92f);
             var rim = inscription.GetComponent<Outline>();
             rim.effectColor = new Color(.59f,.51f,.35f,.86f);
             var editor = inscription.GetComponent<InputField>();
@@ -402,6 +404,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var confirm = frame.Find("Confirm your name").GetComponent<Image>();
             confirm.sprite = actionPlate;
             confirm.color = Color.white;
+            var confirmControl=confirm.GetComponent<Button>();
+            if(confirmControl)Eldoria.UI.RoyalGold.V2.CoronaFinish.ApplyButtonFeedback(confirmControl);
             confirm.rectTransform.anchorMin = new Vector2(.22f,.055f);
             confirm.rectTransform.anchorMax = new Vector2(.78f,.19f);
             prompt.Open(false, name => gateway.Issue("ChoosePlayerName", name).Ok &&
@@ -1273,9 +1277,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             navPlate=NeedCorona("nav_medallion");
             actionPlate=NeedCorona("action_arcane");
             activityStandard=NeedCorona("activity_standard");
-            woodIcon=NeedCorona("icon_wood");
-            stoneIcon=NeedCorona("icon_stone");
-            foodIcon=NeedCorona("icon_food");
+            woodIcon=Eldoria.UI.RoyalGold.V2.CoronaFinish.ResourceIcon("wood")??NeedCorona("icon_wood");
+            stoneIcon=Eldoria.UI.RoyalGold.V2.CoronaFinish.ResourceIcon("stone")??NeedCorona("icon_stone");
+            foodIcon=Eldoria.UI.RoyalGold.V2.CoronaFinish.ResourceIcon("food")??NeedCorona("icon_food");
             hammerIcon=NeedCorona("icon_hammer");
             cityIcon=NeedCorona("icon_city");
             taskIcon=NeedCorona("icon_task");

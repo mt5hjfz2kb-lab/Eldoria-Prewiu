@@ -50,7 +50,7 @@ namespace Eldoria.UI.RoyalGold.V2
         int reportMetricCount;
         RoyalGoldV41ReportArtwork.Motif reportMotif;
         readonly RoyalText[] resourceAmounts=new RoyalText[3];
-        readonly RoyalIconGraphic[] resourceIcons=new RoyalIconGraphic[3];
+        readonly Graphic[] resourceIcons=new Graphic[3];
         readonly List<Image> messageIcons=new List<Image>();
         readonly List<RoyalText> messageDates=new List<RoyalText>();
         readonly List<RoyalText> messageSubtitles=new List<RoyalText>();
@@ -256,11 +256,24 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 var pictogram=Node("Mailbox / real resource icon "+i,w);
                 pictogram.gameObject.AddComponent<CanvasRenderer>();
-                resourceIcons[i]=pictogram.gameObject.AddComponent<RoyalIconGraphic>();
-                resourceIcons[i].Icon=i+1;resourceIcons[i].raycastTarget=false;
-                resourceIcons[i].color=i==0?
-                    new Color(.98f,.72f,.34f):i==1?
-                    new Color(.83f,.86f,.90f):new Color(.95f,.79f,.49f);
+                var emblem=RoyalGoldV2Hud.UseCoronaArt?
+                    CoronaFinish.ResourceIcon(i==0?"wood":i==1?"stone":"food"):null;
+                if(emblem)
+                {
+                    var image=pictogram.gameObject.AddComponent<Image>();
+                    image.sprite=emblem;image.preserveAspect=true;
+                    image.color=Color.white;
+                    resourceIcons[i]=image;
+                }
+                else
+                {
+                    var original=pictogram.gameObject.AddComponent<RoyalIconGraphic>();
+                    original.Icon=i+1;
+                    original.color=i==0?new Color(.98f,.72f,.34f):
+                        i==1?new Color(.83f,.86f,.90f):new Color(.95f,.79f,.49f);
+                    resourceIcons[i]=original;
+                }
+                resourceIcons[i].raycastTarget=false;
                 resourceAmounts[i]=Label("Mailbox / real resource amount "+i,w,17,true);
                 resourceAmounts[i].color=Ivory;
                 resourceAmounts[i].alignment=TextAnchor.MiddleLeft;

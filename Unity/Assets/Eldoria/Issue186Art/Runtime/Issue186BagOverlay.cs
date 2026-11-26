@@ -121,8 +121,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 "VigiliaArt/Fonts/CormorantGaramond-SemiBold":
                 "VigiliaArt/Fonts/LibreBaskerville-Regular");
             if(RoyalGoldV2Hud.UseCoronaArt)
-                sharedFont=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+(heading?
-                    "CormorantGaramond-SemiBold":"SourceSans3-Semibold"));
+                sharedFont=CoronaFinish.ResolveFont(heading,RoyalGoldV41SourceArt.Serif);
             label.font=sharedFont?sharedFont:RoyalGoldV41SourceArt.Serif;
             label.fontSize=size;label.color=color;label.alignment=alignment;
             label.horizontalOverflow=HorizontalWrapMode.Wrap;
@@ -156,6 +155,7 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             var button=rect.gameObject.AddComponent<Button>();
             button.targetGraphic=frame;
+            if(RoyalGoldV2Hud.UseCoronaArt)CoronaFinish.ApplyButtonFeedback(button);
             label=TextAt(name+" caption",rect,16,Ivory,TextAnchor.MiddleCenter);
             label.text=caption;
             if(RoyalGoldV2Hud.UseCoronaArt){
@@ -371,8 +371,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     // Keep the number away from the filigree and the novelty seal.
                     float captionY = cellHeight * .52f;
                     float captionH = cellHeight * .18f;
-                    At(item.Name.rectTransform, cell * .15f, captionY, cell * .37f, captionH);
-                    At(item.Amount.rectTransform, cell * .56f, captionY, cell * .25f, captionH);
+                    At(item.Name.rectTransform, cell * .08f, captionY, cell * .44f, captionH);
+                    At(item.Amount.rectTransform, cell * .56f, captionY, cell * .36f, captionH);
                     item.Name.alignment = TextAnchor.MiddleRight;
                     item.Amount.alignment = TextAnchor.MiddleLeft;
                     item.Amount.resizeTextForBestFit = true;

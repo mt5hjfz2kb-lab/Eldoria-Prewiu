@@ -1479,7 +1479,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 lw-38f,wide?34f:43f);
             marchTroopChapter.fontSize=wide?22:29;
             marchTroopChapter.gameObject.SetActive(true);
-            float troopPicW=wide?lw*.25f:lw*.40f;
+            float troopPicW=wide?lw*.25f:lw*(RoyalGoldV2Hud.UseCoronaArt?.30f:.40f);
             float picY=troopTop+(wide?46f:53f);
             float picH=Mathf.Max(55f,troopH-(wide?54f:62f));
             Place(approvedTroopRow.rectTransform,13f,picY,troopPicW,picH);
@@ -1494,16 +1494,22 @@ namespace Eldoria.UI.RoyalGold.V2
                 orderY+descH+4f,orderW,wide?36f:Mathf.Min(60f,orderH*.20f));
             float selectorsY=orderY+descH+4f+(wide?40f:Mathf.Min(64f,orderH*.20f))+5f;
             float selectorsH=Mathf.Clamp(orderH*.26f,wide?40f:56f,wide?54f:83f);
-            float quantityW=orderW*(wide?.53f:.48f);
+            // The live quantity owns more width than the mode switch in Corona portrait.
+            // Preserve the two existing actions and their relative order.
+            float quantityW=orderW*(wide?.53f:RoyalGoldV2Hud.UseCoronaArt?.58f:.48f);
             float percentW=orderW-quantityW-8f;
             Place(percentModeButton.transform as RectTransform,
                 orderX,selectorsY,percentW,selectorsH);
             Place(quantityRow,orderX+percentW+8f,selectorsY,quantityW,selectorsH);
             float buttonW=Mathf.Min(selectorsH*.85f,quantityW*.29f);
+            if(RoyalGoldV2Hud.UseCoronaArt && !wide)
+                buttonW=Mathf.Min(buttonW,Mathf.Max(1f,(quantityW-48f-6f)*.5f));
             Place(minus.transform as RectTransform,0f,0f,buttonW,selectorsH);
             Place(plus.transform as RectTransform,quantityW-buttonW,0f,buttonW,selectorsH);
             Place(selectedText.rectTransform,buttonW+3f,0f,
-                Mathf.Max(36f,quantityW-2f*buttonW-6f),selectorsH);
+                RoyalGoldV2Hud.UseCoronaArt && !wide?
+                    Mathf.Max(1f,quantityW-2f*buttonW-6f):
+                    Mathf.Max(36f,quantityW-2f*buttonW-6f),selectorsH);
             selectedText.fontSize=wide?21:27;
             percentModeLabel.fontSize=wide?16:25;
             float sliderY=selectorsY+selectorsH+(wide?8f:11f);

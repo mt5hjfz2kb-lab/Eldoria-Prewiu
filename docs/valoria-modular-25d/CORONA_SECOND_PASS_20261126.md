@@ -1,0 +1,9 @@
+# Corona — segunda intervención de consolidación
+Base: 2a908ac6d95ce0104c189abfe02f63b3b1730d15. Studio Actions 45799566457: director, programador y auditor sobre las capturas reales de marcha y mochila (390×844, baseline 5ef2aee6). Tres agentes completados; coste estimado 0.03342525 USD, factura no verificada. La decisión de integración no es aceptación artística.
+- Marcha: columna de órdenes ampliada (retrato 40% → 30% del ancho en retrato Corona), proporción de cantidad 48% → 58%, ancho de número reservado. No modifica dominio, número de huecos ni botones. Mantener retrato entero y comprobar extremos de cantidad; no afirmar ganancia de píxeles hasta A/B.
+- Mochila: franjas nombre/cantidad ampliadas a 44%/36% de cada celda, con hueco de 4%; se conserva el número de celdas, icono, botón, estado nuevo y paginación. El paquete es un objeto envuelto, no el icono de recurso suelto: preservar su arte real.
+- Biblioteca CoronaPresentation (ensamblado ya referenciado DailyTreasures.UI): única ruta para tipografías, estados de interacción y los tres sprites de recurso suelto. HUD, cabecera del buzón y recompensas directas usan los mismos originales. Los objetos de mochila y adjuntos mantienen su arte de paquete. No se sustituye el cofre, los retratos ni el mapa.
+- Tesoros diarios: tipografía y estados de interacción comunes, CTA arcana; calendario, animación, sonidos, créditos y recompensas reales intactos.
+- Nombre: tipografía compartida e inset original del wallet para el campo; no se altera el componente InputField ni el comando ChoosePlayerName.
+- A/B pendiente: capturas auténticas a 390x844, alta densidad y paisaje. Probar cantidades, estados, nombre y teclado, secuencia real del cofre, coste/memoria, paginación, navegación y ausencia de regresiones.
+- Sin nueva puntuación ni aprobación, sin fusión ni despliegue. Faltan intervenciones verificadas en restantes pantallas/diálogos y validación móvil.
