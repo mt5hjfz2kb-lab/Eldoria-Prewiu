@@ -104,7 +104,7 @@ const cylinder=(parent,x,y,z,r,depth,color,metal=0)=>mesh(geom(`cylinder:${r}:${
 const cone=(parent,x,y,z,r,h,color)=>mesh(geom(`cone:${r}:${h}`,()=>new THREE.ConeGeometry(r,h,7)),mat(color),parent,x,y,z);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 let squad=[],foes=[],gates=[],projectiles=[],trees=[],runes=[],foeGroup,laneMarker;
-let canonicalReady=false,canonicalError='',heroMixer=null,heroWalk=null,heroAttack=null,heroRoot=null,heroAnimated=false,heroSkins=0,canonicalPieces=0,canonicalSources=[],canonicalTerrain=0,canonicalFoliage=0,enemyCanonical=false,heroAttackTime=0,heroLastTime=0,guardTriangles=0,authoredGuards=0;let guardRigs=[],heroPose=null;const portalFX=[],breachFX=[],banners=[];const lanternFX=[],mistLayers=[];let environmentPolish=false;let roadSurface,earthSurface,enemyRoot=null;let originalRoadMap=null,slateRoadMap=null,slateMaterialActive=false;let portalMeshProof=null,studioPortalsActive=false;let studioBreach=null,breachLandmarkActive=false,breachProxy=null,mainSun=null;const roadInlays=[],movingVerge=[],terrainVerges=[];let studioRuin=null,oldRoadsideRuin=null,ruinActive=false,ruinMargin=0,combatSparks=null;
+let canonicalReady=false,canonicalError='',heroMixer=null,heroWalk=null,heroAttack=null,heroRoot=null,heroAnimated=false,heroSkins=0,canonicalPieces=0,canonicalSources=[],canonicalTerrain=0,canonicalFoliage=0,enemyCanonical=false,heroAttackTime=0,heroLastTime=0,guardTriangles=0,authoredGuards=0;let guardRigs=[],heroPose=null;const portalFX=[],breachFX=[],banners=[];const lanternFX=[],mistLayers=[];let environmentPolish=false;let roadSurface,earthSurface,enemyRoot=null;let originalRoadMap=null,slateRoadMap=null,slateMaterialActive=false;let portalMeshProof=null,studioPortalsActive=false;let studioBreach=null,breachLandmarkActive=false,breachProxy=null,mainSun=null;const roadInlays=[],movingVerge=[],terrainVerges=[];let studioRuin=null,oldRoadsideRuin=null,ruinActive=false,ruinMargin=0,combatSparks=null;const forestPairs=[];let detailedForest=true;
 // Shared geometry/materials, articulated limb pivots and distinct faction silhouette.
 const geoCache=new Map();
 function geom(key,create){if(!geoCache.has(key))geoCache.set(key,create());return geoCache.get(key)}
@@ -348,7 +348,7 @@ async function loadCanonicalAssets(){
  for(let i=0;i<trees.length;i++){
   const n=trees[i];if(!n.tree.isGroup)continue;
   n.tree.clear();
-  const sp=new THREE.Sprite(foliageMaterials[i%3]);sp.center.set(.5,0);const scale=.70+(i%7)*.125;sp.scale.set(3.0*scale,5.2*scale,1);sp.position.y=.02;n.tree.add(sp);
+  const sp=new THREE.Sprite(foliageMaterials[i%3]);sp.center.set(.5,0);const scale=.70+(i%7)*.125;sp.scale.set(3.0*scale,5.2*scale,1);sp.position.y=.02;n.tree.add(sp);const pine=new THREE.Mesh(pineGeometry(i%3),pineMaterial());pine.scale.setScalar(scale);pine.rotation.y=i*2.399963;n.tree.add(pine);forestPairs.push({original:sp,detail:pine});sp.visible=false;
   const shadow=mesh(geom('treecontact',()=>new THREE.CircleGeometry(.76,16)),new THREE.MeshBasicMaterial({color:0x19221b,transparent:true,opacity:.38,depthWrite:false}),n.tree,0,.012,0);shadow.rotation.x=-Math.PI/2;shadow.scale.set(1.3,.9,1);canonicalFoliage++;
  }
  addDistantForest(pines);
@@ -428,6 +428,41 @@ function applyRoadMasonryMaterial(tex){
  const m=new THREE.MeshStandardMaterial({map:tex,bumpMap:tex,bumpScale:.023,color:0x8d8475,roughness:.94});
  for(const part of masonryParts)part.material=m;
 }
+// True triangulated conifer silhouettes: irregular descending branch whorls,
+// thin secondary sprays, a tapered trunk, and vertex-colored needles.
+// Shared meshes and instancing keep the mobile draw-call budget predictable.
+let firMat=null;
+function pineMaterial(){return firMat||(firMat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,side:THREE.DoubleSide,metalness:0}));}
+function pineGeometry(variant){return geom('detailed-fir-'+variant,()=>{
+ const pos=[],colors=[];let seed=5317+variant*7919;
+ const rnd=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
+ const color=(base,f)=>new THREE.Color(base).multiplyScalar(f);
+ const tri=(a,b,c,col)=>{for(const v of [a,b,c]){pos.push(...v);colors.push(col.r,col.g,col.b)}};
+ const ring=(r,y,i,n)=>[r*Math.cos(i*2*Math.PI/n),y,r*Math.sin(i*2*Math.PI/n)];
+ for(let i=0;i<7;i++){const a=ring(.12,0,i,7),b=ring(.12,0,i+1,7),c=ring(.027,5.10,i,7),d=ring(.027,5.10,i+1,7);const col=color(0x574536,.65+rnd()*.45);tri(a,b,c,col);tri(b,d,c,col);}
+ for(let tier=0;tier<11;tier++){
+  const y=.69+tier*.385,rad=1.58*Math.pow(1-tier/12,.86),num=tier<6?10:8,offset=tier*2.399963+variant*.71;
+  for(let n=0;n<num;n++){
+   const a=offset+n*Math.PI*2/num+(rnd()-.5)*.18,rx=Math.cos(a),rz=Math.sin(a),sx=-rz,sz=rx;
+   const len=rad*(.77+rnd()*.39),droop=.18+rnd()*.19;
+   const root=[rx*.055,y+.14,rz*.055],tip=[rx*len,y-droop,rz*len];
+   const mid=[rx*len*.59,y+.10,rz*len*.59],width=len*.22;
+   const left=[mid[0]+sx*width,y-.02,mid[2]+sz*width],right=[mid[0]-sx*width,y-.05,mid[2]-sz*width];
+   tri(root,left,mid,color(0x2b4b42,.7+rnd()*.5));tri(root,mid,right,color(0x1a362d,.8+rnd()*.4));
+   tri(mid,left,tip,color(0x3f6050,.75+rnd()*.55));tri(mid,tip,right,color(0x244438,.85+rnd()*.45));
+   for(let k=0;k<5;k++){const d=.35+k*.125,dist=len*d,span=width*(1-d)*(.9+rnd()*.4);
+    for(const side of [-1,1]){
+     const base=[rx*dist,y-droop*d+.025,rz*dist],end=[rx*(dist+len*.17)+sx*span*side,y-droop*d-.10,rz*(dist+len*.17)+sz*span*side];
+     const ridge=[(base[0]+end[0])*.5,y-droop*d+.13,(base[2]+end[2])*.5];
+     const heel=[rx*(dist-len*.08)+sx*span*.63*side,y-droop*d-.045,rz*(dist-len*.08)+sz*span*.63*side];
+     tri(base,heel,ridge,color(0x305544,.8+rnd()*.45));tri(heel,end,ridge,color(0x416452,.7+rnd()*.6));
+    }
+   }
+  }
+ }
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));g.computeVertexNormals();g.computeBoundingSphere();return g;
+});}
+function setDetailedForest(on){detailedForest=on;for(const p of forestPairs){p.original.visible=!on;p.detail.visible=on;}}
 function rememberVerge(o){movingVerge.push({o,z:o.position.z});return o}
 function scrollPosition(z,distance,min,length){return ((z-min-distance)%length+length)%length+min}
 function buildTerrainVerges(){
@@ -648,7 +683,7 @@ async function init(){try{renderer=new THREE.WebGLRenderer({canvas:$('viewport')
  let touchX=null;$('viewport').addEventListener('pointerdown',e=>{touchX=e.clientX;$('viewport').setPointerCapture(e.pointerId)});$('viewport').addEventListener('pointerup',e=>{if(touchX!==null&&Math.abs(e.clientX-touchX)>29)steer(e.clientX>touchX?1:-1);touchX=null});$('viewport').addEventListener('pointercancel',()=>touchX=null);
  addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='a')steer(-1);if(e.key==='ArrowRight'||e.key==='d')steer(1);if(e.key===' '&&!started)start()});
  $('viewport').addEventListener('webglcontextlost',e=>{e.preventDefault();$('error').style.display='flex';started=false});
- if(TEST)window.__senda3d={start,steer,setStudioRuin:on=>{setStudioRuin(!!on);present(elapsed);renderFrame()},setBreachLandmark:on=>{setBreachLandmark(!!on);present(elapsed);renderFrame()},setStudioPortals:on=>{useStudioPortals(gates,!!on);studioPortalsActive=!!on;present(elapsed);renderFrame()},setSlateMaterial:on=>{setSlateMaterial(!!on);present(elapsed);renderFrame()},setSpeed:v=>{speed=clamp(v,0,8)},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;syncGates();hud()},advance:seconds=>{for(let t=0;t<seconds&&started;t+=.05)priorUpdate(Math.min(.05,seconds-t));present(elapsed);renderFrame()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length,gateLabels:gates.map(g=>[g.type,g.value]),screenLaneX:squad[0].position.clone().project(camera).x,gateScreenX:gates.map(g=>g.group.position.clone().project(camera).x),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,batches:renderBatches.length,canonicalReady,environmentPolish,slateMaterialActive,studioPortalsActive,portalMeshProof,ruinActive,ruinMargin,vergeObjects:movingVerge.length,vergeZ:movingVerge[0]?.o.position.z??null,worldScroll:elapsed*4.3,combatSparksVisible:combatSparks?.visible??false,breachLandmarkActive,breachScreenX:studioBreach?.position.clone().project(camera).x??null,breachHeight:studioBreach?.scale.y??0,shadowCasters:scene?(()=>{let n=0;scene.traverse(o=>{if(o.castShadow&&o.isSkinnedMesh)n++});return n})():0,canonicalSources,canonicalPieces,guardTriangles,authoredGuards,canonicalTerrain,canonicalFoliage,enemyCanonical,heroAttackTime,heroSkins,heroAnimated,heroWalkTime:heroWalk?.time??0,canonicalError})};
+ if(TEST)window.__senda3d={start,steer,setDetailedForest:on=>{setDetailedForest(!!on);present(elapsed);renderFrame()},setStudioRuin:on=>{setStudioRuin(!!on);present(elapsed);renderFrame()},setBreachLandmark:on=>{setBreachLandmark(!!on);present(elapsed);renderFrame()},setStudioPortals:on=>{useStudioPortals(gates,!!on);studioPortalsActive=!!on;present(elapsed);renderFrame()},setSlateMaterial:on=>{setSlateMaterial(!!on);present(elapsed);renderFrame()},setSpeed:v=>{speed=clamp(v,0,8)},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;syncGates();hud()},advance:seconds=>{for(let t=0;t<seconds&&started;t+=.05)priorUpdate(Math.min(.05,seconds-t));present(elapsed);renderFrame()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length,gateLabels:gates.map(g=>[g.type,g.value]),screenLaneX:squad[0].position.clone().project(camera).x,gateScreenX:gates.map(g=>g.group.position.clone().project(camera).x),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,batches:renderBatches.length,canonicalReady,environmentPolish,slateMaterialActive,studioPortalsActive,portalMeshProof,detailedForest,forestCount:forestPairs.length,ruinActive,ruinMargin,vergeObjects:movingVerge.length,vergeZ:movingVerge[0]?.o.position.z??null,worldScroll:elapsed*4.3,combatSparksVisible:combatSparks?.visible??false,breachLandmarkActive,breachScreenX:studioBreach?.position.clone().project(camera).x??null,breachHeight:studioBreach?.scale.y??0,shadowCasters:scene?(()=>{let n=0;scene.traverse(o=>{if(o.castShadow&&o.isSkinnedMesh)n++});return n})():0,canonicalSources,canonicalPieces,guardTriangles,authoredGuards,canonicalTerrain,canonicalFoliage,enemyCanonical,heroAttackTime,heroSkins,heroAnimated,heroWalkTime:heroWalk?.time??0,canonicalError})};
  hud();requestAnimationFrame(loop);
  }catch(e){canonicalError=String(e);console.error('SENDA_3D_INIT',e);$('error').style.display='flex'}}
 let speed=1;
