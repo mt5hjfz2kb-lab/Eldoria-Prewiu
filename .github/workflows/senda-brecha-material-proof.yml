@@ -1,17 +1,17 @@
-name: Senda | verified portal contour and material transfer
+name: Senda | verified geological landmark transfer
 on:
   push:
     branches: [feature/senda-brecha-lane-event-20261115]
-    paths: ['tools/senda-brecha/material/portal-request.json']
+    paths: ['tools/senda-brecha/material/landmark-request.json']
 permissions:
   contents: read
   actions: read
 concurrency:
-  group: senda-portal-material-transfer
+  group: senda-landmark-material-transfer
   cancel-in-progress: false
 jobs:
   prepare:
-    if: github.run_attempt == 1 && github.event.before == 'fa444bfad5f2754281343d599eeda090e77db2b8' && github.event.head_commit.message == 'Prepare verified Valoria portal contour once'
+    if: github.run_attempt == 1 && github.event.before == '1bdff784ff961ddfe76a48cd82b9b991e1695e52' && github.event.head_commit.message == 'Prepare verified Breach landmark once'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -20,20 +20,20 @@ jobs:
           persist-credentials: false
           sparse-checkout: |
             tools/senda-brecha/material
-      - name: Recover actual generated PNG and create physical extrusion outline
+      - name: Recover exact generated PNG and verify alpha silhouette
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh api repos/$GITHUB_REPOSITORY/actions/runs/45718046144 --jq '.conclusion' | grep -x success
-          gh api repos/$GITHUB_REPOSITORY/actions/artifacts/15070712509 --jq '.name' | grep -x senda-portal-result-45718046144
-          gh run download 45718046144 --repo "$GITHUB_REPOSITORY" --name senda-portal-result-45718046144 --dir /tmp/senda-portal
-          python3 -m pip install --disable-pip-version-check Pillow==11.3.0 numpy==2.2.6 opencv-python-headless==4.12.0.88
-          python3 tools/senda-brecha/material/prepare_portal_mesh.py /tmp/senda-portal/candidate.png /tmp/senda-portal-out
+          gh api repos/$GITHUB_REPOSITORY/actions/runs/45771904456 --jq '.conclusion' | grep -x success
+          gh api repos/$GITHUB_REPOSITORY/actions/artifacts/15094351746 --jq '.name' | grep -x senda-landmark-result-45771904456
+          gh run download 45771904456 --repo "$GITHUB_REPOSITORY" --name senda-landmark-result-45771904456 --dir /tmp/senda-landmark
+          python3 -m pip install --disable-pip-version-check Pillow==11.3.0 numpy==2.2.6 
+          python3 tools/senda-brecha/material/prepare_landmark.py /tmp/senda-landmark/candidate.png /tmp/senda-landmark-out
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-senda-portal
-          path: /tmp/senda-portal-out/
+          name: verified-senda-landmark
+          path: /tmp/senda-landmark-out/
           if-no-files-found: error
   archive:
     needs: prepare
@@ -51,21 +51,21 @@ jobs:
             tools/senda-brecha
       - uses: actions/download-artifact@v4
         with:
-          name: verified-senda-portal
-          path: /tmp/senda-portal-out
-      - name: Commit only exact portal texture and contour to existing PR
+          name: verified-senda-landmark
+          path: /tmp/senda-landmark-out
+      - name: Commit only verified landmark and provenance
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           dir=tools/senda-brecha/visual-3d/art
           mkdir -p "$dir"
-          for n in senda-valoria-portal.png senda-valoria-portal.mesh.json; do
+          for n in senda-breach-landmark.png senda-breach-landmark.json; do
             test ! -e "$dir/$n"
-            cp "/tmp/senda-portal-out/$n" "$dir/$n"
+            cp "/tmp/senda-landmark-out/$n" "$dir/$n"
             git add "$dir/$n"
           done
           test "$(git diff --cached --name-only | wc -l)" = 2
           git config user.name 'eldoria-studio-material'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -m "Archive verified Valoria portal texture and physical contour"
+          git commit -m "Archive verified Breach landmark surface"
           git push origin HEAD:refs/heads/feature/senda-brecha-lane-event-20261115
