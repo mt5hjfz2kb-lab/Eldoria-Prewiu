@@ -138,7 +138,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 "VigiliaArt/PremiumSurfaces/burgundy_action"):null;
             if(RoyalGoldV2Hud.UseCoronaArt)
                 authored=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/"+
-                    (caption=="USAR"?"action_arcane":"world_rune"));
+                    (caption=="USAR"?"wallet_inset":"world_rune"));
             Graphic frame;
             if(authored)
             {
@@ -226,7 +226,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 r.Frame=Rect("Issue186 aged metal",r.Root);
                 if(corona)
                 {
-                    var pocket=Art(r.Frame,new Color(.76f,.73f,.70f,.90f));
+                    var pocket=Art(r.Frame,new Color(.65f,.66f,.67f,.78f));
                     pocket.sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/panel_obsidian");
                 }
                 else if(sharedTheme)
@@ -369,19 +369,34 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     // Reserve the quiet strip between the illustration and the action.
                     // Keep the number away from the filigree and the novelty seal.
-                    float captionY = cellHeight * .52f;
-                    float captionH = cellHeight * .18f;
-                    At(item.Name.rectTransform, cell * .08f, captionY, cell * .44f, captionH);
-                    At(item.Amount.rectTransform, cell * .56f, captionY, cell * .36f, captionH);
-                    item.Name.alignment = TextAnchor.MiddleRight;
-                    item.Amount.alignment = TextAnchor.MiddleLeft;
-                    item.Amount.resizeTextForBestFit = true;
-                    item.Amount.resizeTextMinSize = 9;
-                    item.Amount.resizeTextMaxSize = item.Amount.fontSize;
+                    // A real hierarchy: illustration at left, two full-width text rows
+                    // on its right, action below. Keep the same packet/use hit targets.
+                    float actionH=Mathf.Clamp(cell*.24f,35f,54f);
+                    float contentH=Mathf.Max(1f,cellHeight-actionH-12f);
+                    float artW=Mathf.Min(cell*.43f,contentH*.76f);
+                    float copyX=artW+9f,copyW=Mathf.Max(1f,cell-copyX-6f);
+                    At(item.Icon.rectTransform,4f,(contentH-artW)*.5f+3f,artW,artW);
+                    At(item.Quantity.rectTransform,4f+artW*.15f,(contentH-artW)*.5f+3f+artW*.73f,artW*.70f,artW*.18f);
+                    At(item.Name.rectTransform,copyX,contentH*.16f,copyW,contentH*.34f);
+                    At(item.Amount.rectTransform,copyX,contentH*.50f,copyW,contentH*.34f);
+                    item.Name.alignment=TextAnchor.MiddleLeft;
+                    item.Amount.alignment=TextAnchor.MiddleLeft;
+                    item.Name.font=CoronaFinish.ResolveFont(false);
+                    item.Name.color=CoronaFinish.Muted;
+                    item.Amount.color=CoronaFinish.Ivory;
+                    item.Name.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.12f,12f,19f));
+                    item.Amount.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.18f,17f,28f));
+                    item.Name.resizeTextForBestFit=true;
+                    item.Name.resizeTextMinSize=10;
+                    item.Name.resizeTextMaxSize=item.Name.fontSize;
+                    item.Amount.resizeTextForBestFit=true;
+                    item.Amount.resizeTextMinSize=11;
+                    item.Amount.resizeTextMaxSize=item.Amount.fontSize;
                 }
                 else
                 {
                     item.Amount.resizeTextForBestFit = false;
+                    item.Name.resizeTextForBestFit = false;
                 }
                 // Novelty is already represented by the original badge.
                 // Keep source state available without duplicating a text line.

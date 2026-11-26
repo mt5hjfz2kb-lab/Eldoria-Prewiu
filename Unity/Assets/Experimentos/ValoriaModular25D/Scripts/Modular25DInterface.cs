@@ -322,10 +322,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if (Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
             {
                 districtClock = Plate("Plazo de la obra", hudCanvas.transform, slatePlate,
-                    new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(158f,38f));
-                districtClock.GetComponent<Image>().color=new Color(.61f,.66f,.73f,1f);
-                districtClockText = Label("", districtClock, 17, false, WarmWhite, TextAnchor.MiddleCenter,
-                    Vector2.zero, new Vector2(148f,32f));
+                    new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(176f,44f));
+                districtClock.GetComponent<Image>().color=new Color(.80f,.84f,.87f,1f);
+                districtClockText = Label("", districtClock, 20, false, WarmWhite, TextAnchor.MiddleCenter,
+                    Vector2.zero, new Vector2(164f,36f));
                 districtClock.gameObject.SetActive(false);
                 var hand = Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/guante_guia");
                 if (hand)
@@ -393,14 +393,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // The InputField and its clipping, placeholder and keyboard stay intact.
             inscription.sprite=resourcePlate;
             inscription.type=resourcePlate.border.sqrMagnitude>0?Image.Type.Sliced:Image.Type.Simple;
-            inscription.color=new Color(.80f,.79f,.86f,.92f);
+            inscription.color=new Color(.62f,.67f,.74f,.97f);
             var rim = inscription.GetComponent<Outline>();
-            rim.effectColor = new Color(.59f,.51f,.35f,.86f);
+            rim.effectColor = new Color(.86f,.72f,.43f,.98f);
+            rim.effectDistance=new Vector2(1.5f,-1.5f);
             var editor = inscription.GetComponent<InputField>();
             editor.textComponent.alignment = TextAnchor.MiddleCenter;
             var hint = (Text)editor.placeholder;
             hint.alignment = TextAnchor.MiddleCenter;
-            hint.color = new Color(.81f,.78f,.69f);
+            hint.color = new Color(.91f,.88f,.80f);
             var confirm = frame.Find("Confirm your name").GetComponent<Image>();
             confirm.sprite = actionPlate;
             confirm.color = Color.white;

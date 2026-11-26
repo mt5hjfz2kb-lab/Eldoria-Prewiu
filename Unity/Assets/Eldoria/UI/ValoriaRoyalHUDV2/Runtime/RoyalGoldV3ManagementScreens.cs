@@ -1299,8 +1299,20 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(quantityRow,pad,qy,orderW-pad*2f,qh);
             Place(slider.transform as RectTransform,
                 pad+7f,sliderY,orderW-pad*2f-14f,wide?16f:22f);
-            Place(summary.rectTransform,pad,summaryY,
-                orderW-pad*2f,summaryH);
+            Place(summary.rectTransform,pad+6f,summaryY,
+                orderW-pad*2f-12f,summaryH);
+            // Use the existing cost card as a quiet band INSIDE the integrated
+            // order; it is not a new panel, command, or data source.
+            if(RoyalGoldV2Hud.UseCoronaArt && !wide)
+            {
+                trainingCostCard.gameObject.SetActive(true);
+                Place(trainingCostCard,pad,summaryY-3f,orderW-pad*2f,summaryH+6f);
+                trainingCostCard.SetSiblingIndex(Mathf.Min(1,right.childCount-1));
+                var costSurface=trainingCostCard.GetComponent<Image>();
+                if(costSurface)costSurface.color=new Color(.095f,.135f,.15f,.84f);
+                summary.alignment=TextAnchor.MiddleCenter;
+                summary.color=CoronaFinish.Ivory;
+            }
             Place(tierButton.transform as RectTransform,
                 pad,tierY,orderW-pad*2f,tierH);
             Place(status.rectTransform,pad,trainingStatusY,orderW-pad*2f,statusH);
@@ -1385,8 +1397,10 @@ namespace Eldoria.UI.RoyalGold.V2
 
             float leftW=wide?(width-gap)*.58f:width;
             float rightW=wide?width-leftW-gap:width;
-            float heroH=wide?bodyH*.53f:bodyH*(RoyalGoldV2Hud.UseCoronaArt?.36f:.34f);
-            float troopH=wide?bodyH-heroH:bodyH*(RoyalGoldV2Hud.UseCoronaArt?.30f:.28f);
+            // Reclaim space from the gallery and troop controls for the live
+            // summary. Keep all three existing hero slots and all quantities.
+            float heroH=wide?bodyH*.53f:bodyH*(RoyalGoldV2Hud.UseCoronaArt?.33f:.34f);
+            float troopH=wide?bodyH-heroH:bodyH*(RoyalGoldV2Hud.UseCoronaArt?.28f:.28f);
             float summaryH=wide?bodyH:bodyH-heroH-troopH-gap;
             Place(left,x,bodyY,leftW,heroH+troopH);
             Place(right,wide?x+leftW+gap:x,
@@ -1558,13 +1572,27 @@ namespace Eldoria.UI.RoyalGold.V2
                     tilesTop+(i/cols)*(tileH+tileGap),tileW,tileH);
                 var frame=card.GetComponent<RoyalGoldV2FrameGraphic>();
                 if(frame)frame.enabled=false;
-                // Remove giant decorative dark boxes; retain the real texts.
+                // A single scorecard surface with alternating, low-contrast
+                // bands makes six authoritative numbers scannable without six
+                // separate decorative plates. Only existing artwork is used.
                 var art=card.GetComponentsInChildren<Image>(true);
                 foreach(var img in art)if(img.name.StartsWith("Approved source /"))
-                    img.enabled=false;
-                Place(marchMetricValues[i].rectTransform,5f,2f,tileW-10f,tileH-4f);
-                marchMetricValues[i].fontSize=wide?(compact?15:18):31;
-                marchMetricValues[i].alignment=TextAnchor.MiddleLeft;
+                {
+                    img.enabled=RoyalGoldV2Hud.UseCoronaArt && !wide;
+                    if(img.enabled)img.color=i<2?new Color(.75f,.80f,.82f,.42f):new Color(.78f,.80f,.80f,.24f);
+                }
+                var metric=marchMetricValues[i];
+                Place(metric.rectTransform,10f,2f,tileW-20f,tileH-4f);
+                metric.fontSize=wide?(compact?15:18):31;
+                metric.alignment=TextAnchor.MiddleLeft;
+                if(RoyalGoldV2Hud.UseCoronaArt && !wide)
+                {
+                    metric.font=CoronaFinish.ResolveFont(false);
+                    metric.color=i==2?CoronaFinish.StatusGold:CoronaFinish.Ivory;
+                    metric.resizeTextForBestFit=true;
+                    metric.resizeTextMinSize=23;
+                    metric.resizeTextMaxSize=31;
+                }
             }
             float statusY=rh-statusH;
             Place(marchStatusBacking,6f,statusY,statsW-12f,statusH-4f);

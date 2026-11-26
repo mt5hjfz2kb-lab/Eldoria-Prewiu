@@ -18,7 +18,7 @@ screens = [
     ("training","sistema-training.png"), ("scouts","sistema-scouts.png"),
     ("vigilants","sistema-vigilants.png"),
 ]
-manifest = {"baseline_run":45638738009,"baseline_sha":"5ef2aee67cf8fde57ba2fc4b3d929b517ee67944", "candidate_sha":os.environ.get("GITHUB_SHA"),"dpr":dpr,"pairs":[],"missing":[],"approval":False}
+manifest = {"baseline_run":45802472999,"baseline_sha":"91b8de9874aed87219d733efa6e8e0aa56207f1e", "candidate_sha":os.environ.get("GITHUB_SHA"),"dpr":dpr,"pairs":[],"missing":[],"approval":False}
 for role, name in screens:
     left, right = baseline/name, candidate/name
     if not left.is_file() or not right.is_file():

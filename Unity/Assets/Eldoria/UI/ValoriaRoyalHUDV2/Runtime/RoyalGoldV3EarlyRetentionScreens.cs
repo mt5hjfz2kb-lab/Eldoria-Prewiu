@@ -1277,7 +1277,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // neither original Engendro nor alpha guardians cover the text.
             if(OpenDestination==Destination.Vigilants)
             {
-                float textWidth=Mathf.Max(132f,iw*.585f-34f);
+                float textWidth=Mathf.Max(132f,iw*(RoyalGoldV2Hud.UseCoronaArt&&height>width?.60f:.585f)-34f);
                 float actionTop=ih-(height>width?114f:compactLandscape?84f:106f);
                 TL(chapter.rectTransform,26f,10f,iw-52f,47f);
                 TL(opponent.rectTransform,18f,60f,textWidth,95f);
@@ -1394,15 +1394,15 @@ namespace Eldoria.UI.RoyalGold.V2
                     float titleTop=portrait?12f:13f;
                     TL(scoutTitles[i].rectTransform,32f,titleTop,cellW-64f,portrait?62f:36f);
                     float detailTop=portrait?72f:54f;
-                    float imageW=portrait?128f:70f;
-                    float imageH=portrait?98f:50f;
+                    float imageW=portrait?(RoyalGoldV2Hud.UseCoronaArt?105f:128f):70f;
+                    float imageH=portrait?(RoyalGoldV2Hud.UseCoronaArt?82f:98f):50f;
                     TL(scoutThumbnails[i].rectTransform,32f,detailTop,imageW,imageH);
                     TL(scoutInsetUnder[i].rectTransform,
                         26f,detailTop-6f,imageW+12f,imageH+12f);
                     TL(scoutInsetLip[i].rectTransform,
                         32f,detailTop,imageW,imageH);
                     float captionX=32f+imageW+18f;
-                    float buttonW=portrait?158f:120f;
+                    float buttonW=portrait?(RoyalGoldV2Hud.UseCoronaArt?144f:158f):120f;
                     float contentWidth=Mathf.Max(75f,cellW-captionX-buttonW-34f);
                     TL(scoutCards[i].rectTransform,captionX,detailTop,contentWidth,
                         Mathf.Max(51f,spacing-detailTop-16f));
@@ -1410,8 +1410,14 @@ namespace Eldoria.UI.RoyalGold.V2
                         cellW-buttonW-18f,detailTop+4f,buttonW,portrait?88f:40f);
                     scoutTitles[i].fontSize=portrait?30:21;
                     scoutTitles[i].alignment=TextAnchor.MiddleLeft;
-                    scoutCards[i].fontSize=portrait?26:18;
+                    scoutCards[i].fontSize=portrait?(RoyalGoldV2Hud.UseCoronaArt?28:26):18;
                     scoutCards[i].alignment=TextAnchor.MiddleLeft;
+                    if(RoyalGoldV2Hud.UseCoronaArt && portrait)
+                    {
+                        scoutCards[i].resizeTextForBestFit=true;
+                        scoutCards[i].resizeTextMinSize=23;
+                        scoutCards[i].resizeTextMaxSize=28;
+                    }
                     scoutActionLabels[i].fontSize=portrait?26:18;
                 }
                 scoutThumbnails[i].gameObject.SetActive(scoutVignettes!=null || paintedScouts!=null);

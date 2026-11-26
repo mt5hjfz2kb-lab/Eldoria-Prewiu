@@ -970,6 +970,7 @@ namespace Eldoria.DailyTreasures
                 if(dayBack[i].sprite)
                     dayBack[i].color=next?Color.white:
                         collected?new Color(.62f,.62f,.59f,1f):
+                        CoronaPresentation.Active?new Color(.78f,.82f,.84f,1f):
                         new Color(.60f,.65f,.68f,1f);
                 else
                     dayBack[i].color=next?new Color(.42f,.29f,.16f,1f):
@@ -2240,7 +2241,7 @@ namespace Eldoria.DailyTreasures
                     {
                         // Each tribute has a readable icon beside its actual payout.
                         // Keep the entire lower band for the two-resource days.
-                        float iconSide = Mathf.Min(cellW*.30f,cellH*.56f);
+                        float iconSide = Mathf.Min(cellW*(CoronaPresentation.Active?.25f:.30f),cellH*.56f);
                         float itemY = -cellH*.09f;
                         float iconX = -cellW*.5f + iconSide*.5f + 10f;
                         Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,iconX,itemY,iconSide,iconSide);
@@ -2250,7 +2251,13 @@ namespace Eldoria.DailyTreasures
                         Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
                             (iconSide+10f)*.5f,itemY,textWidth,cellH*.64f);
                         dayBody[i].alignment=TextAnchor.MiddleLeft;
-                        dayBody[i].fontSize=roomy?17:15;
+                        dayBody[i].fontSize=CoronaPresentation.Active?(roomy?19:17):(roomy?17:15);
+                        if(CoronaPresentation.Active)
+                        {
+                            dayBody[i].resizeTextForBestFit=true;
+                            dayBody[i].resizeTextMinSize=14;
+                            dayBody[i].resizeTextMaxSize=dayBody[i].fontSize;
+                        }
                         continue;
                     }
                     dayBody[i].alignment=TextAnchor.MiddleCenter;

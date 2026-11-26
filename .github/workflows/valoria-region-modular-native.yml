@@ -1,7 +1,7 @@
 name: Valoria Region 1 modular art and navigation parity
 on:
   push:
-    branches: [experiment/valoria-ciudad-region-unificada-20261121]
+    branches: [candidate/corona-structural-art-20261126]
     paths:
       - '.github/workflows/valoria-region-modular-native.yml'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs'
@@ -402,7 +402,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m pip install --quiet Pillow==11.3.0
-          gh run download 45638738009 -n "${{ matrix.evidence }}" -D corona-baseline
+          gh run download 45802472999 -n "${{ matrix.evidence }}" -D corona-baseline
           python3 tools/valoria-modular25d/corona-ab-evidence.py corona-baseline evidence corona-ab
       - uses: actions/upload-artifact@v4
         with:

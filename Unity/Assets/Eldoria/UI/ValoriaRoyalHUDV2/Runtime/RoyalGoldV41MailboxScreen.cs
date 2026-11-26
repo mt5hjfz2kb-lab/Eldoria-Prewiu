@@ -465,7 +465,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Position((RectTransform)b.transform,left+i*(tabW+tabGap),
                     tabsY,tabW,tabH);
                 tabLabels[i].fontSize=Pixels(Mathf.Clamp(
-                    Mathf.RoundToInt(tabW*(wide?.112f:.135f)),15,27));
+                    Mathf.RoundToInt(tabW*(wide?.112f:RoyalGoldV2Hud.UseCoronaArt?.15f:.135f)),15,29));
                 tabLabels[i].horizontalOverflow=HorizontalWrapMode.Wrap;
                 Position((RectTransform)tabBadges[i].transform.parent,
                     tabW-23f,-9f,27f,27f);
@@ -528,13 +528,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 float rowY=bodyY+rowPad+i*rowH;
                 Position((RectTransform)button.transform,
                     left+rowPad,rowY,innerW,rowH-6f);
-                float iconSize=Mathf.Clamp((rowH-6f)*.58f,40f,92f);
+                float iconSize=Mathf.Clamp((rowH-6f)*(RoyalGoldV2Hud.UseCoronaArt&&!wide?.49f:.58f),40f,92f);
                 float iconX=Mathf.Max(9f,rowH*.09f);
                 float iconY=(rowH-6f-iconSize)*.50f;
                 Position(messageIcons[i].rectTransform,iconX,iconY,iconSize,iconSize);
                 Position(messageUnreadDots[i].rectTransform,
                     iconX-7f,iconY-8f,wide?19f:18f,wide?19f:18f);
-                float textX=iconX+iconSize+Mathf.Clamp(w*.016f,10f,22f);
+                float textX=iconX+iconSize+Mathf.Clamp(w*(RoyalGoldV2Hud.UseCoronaArt&&!wide?.012f:.016f),9f,22f);
                 float arrowW=wide?37f:27f;
                 float copyWidth=Mathf.Max(70f,innerW-textX-arrowW-16f);
                 Position(messageLabels[i].rectTransform,textX,
@@ -553,7 +553,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     arrowW,36f);
                 messageArrows[i].fontSize=Pixels(28);
                 messageLabels[i].fontSize=Pixels(Mathf.Clamp(
-                    Mathf.RoundToInt((wide?23f:26f)*fontScale),18,30));
+                    Mathf.RoundToInt((wide?23f:RoyalGoldV2Hud.UseCoronaArt?28f:26f)*fontScale),18,32));
                 messageSubtitles[i].fontSize=Pixels(Mathf.Clamp(
                     Mathf.RoundToInt((wide?17f:21f)*fontScale),15,25));
                 messageDates[i].fontSize=Pixels(Mathf.Clamp(

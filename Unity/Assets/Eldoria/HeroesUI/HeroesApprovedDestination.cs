@@ -1371,7 +1371,7 @@ namespace Eldoria.HeroesUI
             float cardGridH=Mathf.Max(rows*78f,availableH-gap*(rows-1));
             bool tieredRows=(rows==2&&!phoneLandscape)||narrowPortrait||compactLandscape;
             float primaryH=compactLandscape?cardGridH*.60f:
-                narrowPortrait?cardGridH*(coronaTypography&&displayCount==6?.62f:.46f):
+                narrowPortrait?cardGridH*(coronaTypography&&displayCount==6?.68f:.46f):
                 tieredRows?cardGridH*.625f:cardGridH/rows;
             float secondaryH=compactLandscape?cardGridH-primaryH:
                 narrowPortrait?(cardGridH-primaryH)/Mathf.Max(1,rows-1):
@@ -1557,6 +1557,7 @@ namespace Eldoria.HeroesUI
                     metal.fillCenter=false;
                     metal.raycastTarget=false;
                     metal.color=unlocked?Color.white:
+                        coronaTypography?new Color(.62f,.64f,.65f,.66f):
                         new Color(.73f,.70f,.64f,.90f);
                 }
                 // Retain the original thin structural rim behind authored art.
