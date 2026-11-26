@@ -14,7 +14,7 @@ namespace Eldoria.UI.RoyalGold.V2
     /// clock, camera, gameplay scene or resource balance. All purchases use LocalGateway.
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class RoyalGoldV3ManagementScreens : MonoBehaviour
+    public sealed partial class RoyalGoldV3ManagementScreens : MonoBehaviour
     {
         public enum Destination { Training, March }
         public RoyalHUD Hud { get; private set; }
@@ -846,7 +846,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 // Restore the previous verified plain text path and its authored
                 // 31-unit portrait font sizing. No metric or command is changed.
                 for(int i=0;i<marchMetricValues.Length;i++)
-                    marchMetricValues[i].Put(liveMetric[i]);
+                    PutStudioMarchMetric(i,liveMetric[i]);
                 int occupied=MarchCapacityRules.ActiveCount(s,utcTicks());
                 // Keep every authoritative value in compact landscape but
                 // condense the labels into three legible lines. The former
@@ -927,6 +927,7 @@ namespace Eldoria.UI.RoyalGold.V2
         void Reflow()
         {
             if(root==null)return;
+            ResetStudioMarch();
             foreach(var item in textDensity)
             {
                 if(!item.Key)continue;
@@ -1096,6 +1097,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(CurrentDestination!=Destination.Training)
                     Place(feedback.rectTransform,14,4,fw-28,44);
             }
+            if(CurrentDestination==Destination.March && !landscape && RoyalGoldV2Hud.UseCoronaArt)
+                ApplyStudioMarchPortrait(w,h,leftSide,rightSide,top,bottom);
             if(compactLandscape)
             {
                 foreach(var label in layoutRoot.GetComponentsInChildren<RoyalText>(true))
