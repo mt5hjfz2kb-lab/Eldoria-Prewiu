@@ -1,0 +1,50 @@
+name: Studio March existing native evidence verification
+on:
+  push:
+    branches: [candidate/corona-march-legibility-repair-20261126]
+    paths: ['.github/workflows/march-studio-readback.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify-existing-native:
+    if: >-
+      ${{ github.run_attempt == 1 && github.event.before == 'dfcd588fb5b5338b50c4292016fdbc6b7515a1e0' && github.event.head_commit.message == 'QA: verify existing March native evidence without new native process or API spend' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/corona-art-iteration
+          persist-credentials: false
+      - name: Retrieve only the existing source-pinned native job evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p proof
+          test "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/45867113963" --jq .head_sha)" = "e242722fb614462eb30cea377ef0cad28b4217e2"
+          for i in $(seq 1 40); do
+            gh api "repos/$GITHUB_REPOSITORY/actions/jobs/140072811749" > proof/job.json
+            state=$(jq -r .status proof/job.json)
+            if [ "$state" = completed ]; then break; fi
+            sleep 30
+          done
+          test "$state" = completed
+          result=$(jq -r .conclusion proof/job.json)
+          gh run view 45867113963 --repo "$GITHUB_REPOSITORY" --job 140072811749 --log > proof/native-job.log
+          if [ "$result" != success ]; then
+            gh run download 45867113963 --repo "$GITHUB_REPOSITORY" --name march-studio-native-evidence --dir proof/partial-native || true
+            echo "Existing native run failed; no art evaluation permitted."
+            exit 1
+          fi
+          gh run download 45867113963 --repo "$GITHUB_REPOSITORY" --name march-studio-native-evidence --dir proof/native
+          (cd proof/native && zip -q -r ../native.zip .)
+          python3 -m pip install --quiet Pillow==11.3.0
+          python3 tools/corona-art-iteration/verify_march_studio_pilot.py verify proof/native.zip proof/verified
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: march-studio-verified-existing-proof
+          path: proof/
+          if-no-files-found: warn
