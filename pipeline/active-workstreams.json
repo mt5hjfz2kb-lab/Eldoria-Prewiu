@@ -10337,6 +10337,70 @@
           "reason": "Owner expressly prioritizes Corona de la Brecha and transfers Studio and resources from PR195."
         }
       ]
+    },
+    {
+      "id": "eldoria-studio-v3-autonomous-execution-20261126",
+      "title": "Eldoria Development Studio V3 — isolated autonomous execution benchmark",
+      "owner": "chatgpt-studio-v3-live-pilot-20261126",
+      "ownership_state": "claimed",
+      "ownership_revision": 3,
+      "write_scope_released": false,
+      "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
+      "status": "active",
+      "phase": "V3_PAIRED_REAL_AGENT_PILOT",
+      "claimed_at": "2026-11-26T19:46:00Z",
+      "base_main_sha": "58ec6108b9fdb23d2ee2505ab17c8c19662ba37a",
+      "base_studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
+      "user_authorization": "Owner explicitly continued after proposal of independent $1.05 reservation for V3. Bounded paired technical benchmark; no Corona/V2 funds, production changes, Windows, merge or publication.",
+      "scope": [
+        "tools/studio-v3/**",
+        ".github/workflows/studio-v3-offline.yml",
+        ".github/workflows/studio-v3-live-pilot.yml"
+      ],
+      "resources": [],
+      "delivery_definition": {
+        "deliverable": "Isolated executable V3 core with bounded declarative edits, verified evidence, rejection/retry/pivot, reproducible local tests and baseline-vs-studio benchmark contract.",
+        "evidence": "Actual source changes in scratch and tests; no live model autonomy or artistic gain claims without controlled live experiment. GitHub-hosted read-only offline Node CI using pinned actual V2 input; no API secret, paid model or Windows runner.",
+        "handoff": "Preserve V2/Corona owner and budgets; no main game modifications; release only own scope after validation."
+      },
+      "art_approved": false,
+      "previous_owner": "chatgpt-studio-v3-autonomy-20261126",
+      "delivery_head": "8a5a59b52cd2701d74ad257792bc31e3a6eb22bc",
+      "evidence": {
+        "final_run": 45887946346,
+        "final_job": 140143228373,
+        "earlier_runs": [
+          45887151636,
+          45887441892,
+          45887654921
+        ],
+        "node_tests_passed": 32,
+        "python_guard_tests_passed": 9,
+        "failed_tests": 0,
+        "pinned_v2_source_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
+        "replay_attempts": 3,
+        "technical_rejections": 2,
+        "pivoted_after_repeated_failure": true,
+        "checkpoints": 4,
+        "source_unchanged": true,
+        "base_lessons_preserved": 6,
+        "candidate_lessons": 7,
+        "candidate_promoted": false,
+        "new_api_calls": 0,
+        "live_model_roles": false,
+        "art_approved": false,
+        "windows_runner": false
+      },
+      "remaining": "Broader V3 roadmap not complete: authenticated one-shot dispatch and actual live accounting/report integration, separately authorized V3 allocation, independently scored live paired benchmark on a real task, native/visual QA where applicable; no automatic live trigger or production merge.",
+      "next": "Reclaim this same canonical workstream for authorized live pilot; preserve active Corona/V2 scope and budget. Use 1–3 attempts and a distinct immutable V3 reservation; do not claim performance or artistic improvement before the paired benchmark.",
+      "pilot": {
+        "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+        "source_path": "tools/senda-brecha/src/rules.js",
+        "target": "SENDA_STATE_VALIDATION",
+        "max_total_reservation_usd": "1.05",
+        "mode": "candidate only",
+        "note": "Read pinned source from paused Senda branch; all generated candidates and tools stay in isolated V3 branch/artifacts. No Senda writes."
+      }
     }
   ],
   "history": [
