@@ -163,6 +163,7 @@ namespace Eldoria.UI.RoyalGold.V2
             cardButton.GetComponent<RoyalGoldV2FrameGraphic>().Primary = true;
             actionButton = cardButton.gameObject.AddComponent<RoyalButton>();
             actionButton.targetGraphic = cardButton.GetComponent<RoyalGoldV2FrameGraphic>();
+            if(RoyalGoldV2Hud.UseCoronaArt)CoronaFinish.ApplyButtonFeedback(actionButton);
             buttonLabel = Text("Canonical action label", cardButton, 18, Ivory, true);
             buttonLabel.alignment = TextAnchor.MiddleCenter;
             buttonLabel.rectTransform.anchorMin = Vector2.zero;
@@ -185,6 +186,7 @@ namespace Eldoria.UI.RoyalGold.V2
             closeRect.sizeDelta = new Vector2(40f, 40f);
             closeButton = closeRect.gameObject.AddComponent<RoyalButton>();
             closeButton.targetGraphic = closeRect.GetComponent<RoyalGoldV2FrameGraphic>();
+            if(RoyalGoldV2Hud.UseCoronaArt)CoronaFinish.ApplyButtonFeedback(closeButton);
             var closeLabel = Text("Close selected object label", closeRect, 26, Ivory, true);
             closeLabel.Put("×");
             closeLabel.alignment = TextAnchor.MiddleCenter;

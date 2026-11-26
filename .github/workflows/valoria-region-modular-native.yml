@@ -191,6 +191,29 @@ jobs:
           }
           "MOD25D_SOURCE=$root"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
           Write-Host "MOD25D_CHECKOUT_PINNED $env:GITHUB_SHA"
+      - name: Validate Corona shared UI contract in Unity EditMode
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $results=Join-Path $env:RUNNER_TEMP ('corona-contract-'+$env:GITHUB_RUN_ID+'.xml')
+          $log=Join-Path $env:RUNNER_TEMP ('corona-contract-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-projectPath',$project,'-runTests','-testPlatform','EditMode','-testFilter','Eldoria.Tests.CoronaPresentationContractTests','-testResults',$results,'-logFile',$log)
+          $editor=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $editor.WaitForExit(1800000)){ $editor.Kill(); throw 'Corona EditMode timed out' }
+          if($editor.ExitCode -ne 0 -or -not(Test-Path $results)){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Corona contract failed'}
+          [xml]$report=Get-Content $results -Raw
+          $run=$report.'test-run'
+          if([int]$run.total -lt 8 -or [int]$run.failed -ne 0 -or [int]$run.passed -lt 8){throw 'Corona contract incomplete or failing'}
+      - name: Upload Corona contract evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: corona-contract-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/corona-contract-${{ github.run_id }}.xml
+            ${{ runner.temp }}/corona-contract-${{ github.run_id }}.log
+          if-no-files-found: ignore
       - name: Capture the alternative study at the exact candidate revision
         shell: powershell
         run: |
