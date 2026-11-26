@@ -1,1 +1,39 @@
-{"cycle":{"automatic_reset":false,"ends_exclusive":"2026-12-01","pilot_cap_usd":"1.05","starts":"2026-11-26"},"prepared_ci":{"run_id":45889006247,"sha":"dacfda1e34663c4417647944258e11c34a553d2a"},"reservations":[{"id":"v3-senda-a","request_sha256":"1a8418e9dcbc31760359dbaa79a52c720e59621111d1d264bec4b6ee3ecd0395","reserve_usd":"0.525","run_id":"v3-senda-a","status":"authorized_once"},{"id":"v3-senda-b","request_sha256":"921ee8b768205d1d0358d09743e5db3410840146b09b0923bf718615f1e30c0c","reserve_usd":"0.525","run_id":"v3-senda-b","status":"authorized_once"}],"v3_isolated":true}
+{
+  "cycle": {
+    "automatic_reset": false,
+    "ends_exclusive": "2026-12-01",
+    "pilot_cap_usd": "1.05",
+    "starts": "2026-11-26"
+  },
+  "prepared_ci": {
+    "run_id": 45889006247,
+    "sha": "dacfda1e34663c4417647944258e11c34a553d2a"
+  },
+  "reservations": [
+    {
+      "id": "v3-senda-a",
+      "request_sha256": "1a8418e9dcbc31760359dbaa79a52c720e59621111d1d264bec4b6ee3ecd0395",
+      "reserve_usd": "0.525",
+      "run_id": "v3-senda-a",
+      "status": "closed_reserved"
+    },
+    {
+      "id": "v3-senda-b",
+      "request_sha256": "921ee8b768205d1d0358d09743e5db3410840146b09b0923bf718615f1e30c0c",
+      "reserve_usd": "0.525",
+      "run_id": "v3-senda-b",
+      "status": "closed_reserved"
+    }
+  ],
+  "v3_isolated": true,
+  "closeout": {
+    "run_id": 45889150854,
+    "verified_commit": "fd29ee7ed7226548175a819eb0368ed3ba449c0e",
+    "estimated_usd": "0.024530",
+    "api_call_attempts": 3,
+    "api_responses": 3,
+    "billing_verified": false,
+    "automatic_reset": false,
+    "reason": "One-shot paired pilot completed; do not transfer or reuse this reservation automatically."
+  }
+}

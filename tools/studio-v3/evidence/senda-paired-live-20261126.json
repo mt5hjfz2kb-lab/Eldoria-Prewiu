@@ -1,0 +1,361 @@
+{
+  "schema": 1,
+  "kind": "certified_paired_live_technical_benchmark",
+  "run_id": 45889150854,
+  "job_id": 140147222266,
+  "source_commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+  "verified_commit": "fd29ee7ed7226548175a819eb0368ed3ba449c0e",
+  "offline_preparation_run": 45889006247,
+  "artifact": {
+    "id": 15150528146,
+    "digest": "sha256:8e6396b2cabe745221bf2f43ac10846668da361303faba0ff104a52cb9ddcb8c",
+    "size_bytes": 23526
+  },
+  "dispatch": {
+    "head": "fd29ee7ed7226548175a819eb0368ed3ba449c0e",
+    "before": "cd98ccbbc3c4d67e531d1ebdd72b6c3bac2fa9db",
+    "prepared_sha": "dacfda1e34663c4417647944258e11c34a553d2a",
+    "prepared_ci_run": 45889006247,
+    "registry_blob": "f6f58f8cf17772a57460d678d5c7e5d42f9b3fc0",
+    "run_id": 45889150854,
+    "plan_sha256": "6df692f02fcac4c13707d9a1fa96ca255e6def7cc4c390ce3799913d897fbccd",
+    "budget_sha256": "a95d00abe9f3610ca52f4779e77b84f652f38783ce6d5c55e7c6028abfe1d004",
+    "owner": "chatgpt-studio-v3-live-pilot-20261126"
+  },
+  "baseline": {
+    "routes": {
+      "digest": "45d87dfd153b76e14bf7d3ed8fbe159a4af9ab804bb2b6da9db7754c2e282ee4",
+      "wins": 168,
+      "losses": 561,
+      "count": 729
+    },
+    "invalid": {
+      "count": 22,
+      "failed": [
+        "fractional-units",
+        "excess-units",
+        "fractional-attack",
+        "negative-attack",
+        "excess-attack",
+        "fractional-shields",
+        "negative-shields",
+        "excess-shields",
+        "missing-lost",
+        "negative-lost",
+        "fractional-lost",
+        "missing-recruited",
+        "negative-recruited",
+        "fractional-recruited",
+        "missing-score",
+        "negative-score",
+        "fractional-score",
+        "nonarray-history",
+        "null-history",
+        "history-length",
+        "missing-finished",
+        "ongoing-victory"
+      ]
+    }
+  },
+  "arms": [
+    {
+      "method": "single",
+      "grant_id": "v3-senda-a",
+      "accepted": true,
+      "terminal": "candidate_ready",
+      "elapsed_ms": 7840,
+      "attempts": 1,
+      "rows": [
+        {
+          "attempt": 1,
+          "strategy": "append-active-state-guard",
+          "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc",
+          "checks": [
+            {
+              "id": "safe-edit",
+              "pass": true,
+              "evidence": "Exact single allowlisted guard insertion",
+              "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc"
+            },
+            {
+              "id": "malformed-states",
+              "pass": true,
+              "evidence": "Rejected 22/22 invalid states; failed IDs: ",
+              "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc"
+            },
+            {
+              "id": "route-parity",
+              "pass": true,
+              "evidence": "All 729 terminal states and reports hash 45d87dfd153b76e14bf7d3ed8fbe159a4af9ab804bb2b6da9db7754c2e282ee4; wins 168; losses 561",
+              "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc"
+            }
+          ],
+          "audit": {
+            "reviewer": "independent-reviewer",
+            "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc",
+            "decision": "accept",
+            "reason": "Method-blind deterministic acceptance; no extra model review",
+            "quality": "not_assessed"
+          },
+          "outcome": "accepted_candidate",
+          "reason": "Method-blind deterministic acceptance; no extra model review"
+        }
+      ],
+      "role_receipts": [
+        {
+          "role": "producer",
+          "attempt": 1,
+          "request_digest": "7cadf1bb05e7cf19f91cb342b10c78388fc116568d09c2e92ae83206f0e28109",
+          "payload_digest": "9290c606e1bc675e5ba35b867e63f43b41a7e4d5b12a15deb48b290b475e1d38",
+          "receipt_ref": "v3-senda-a:producer-1",
+          "origin": "archived_role_output"
+        }
+      ],
+      "candidate_sha256": "3a8114d68f8588e383d09bf5134c9735655435a12cd5b23826e9f73cb0a27b84",
+      "quality_score": null,
+      "manual_interventions": 0,
+      "technical_checks": [
+        {
+          "id": "safe-edit",
+          "pass": true,
+          "evidence": "Exact single allowlisted guard insertion",
+          "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc"
+        },
+        {
+          "id": "malformed-states",
+          "pass": true,
+          "evidence": "Rejected 22/22 invalid states; failed IDs: ",
+          "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc"
+        },
+        {
+          "id": "route-parity",
+          "pass": true,
+          "evidence": "All 729 terminal states and reports hash 45d87dfd153b76e14bf7d3ed8fbe159a4af9ab804bb2b6da9db7754c2e282ee4; wins 168; losses 561",
+          "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc"
+        }
+      ],
+      "api_call_attempts": 1,
+      "api_responses": 1,
+      "fixture_calls": 0,
+      "estimated_cost_usd": 0.009006,
+      "reserved_usd": "0.15",
+      "halted": false,
+      "ledger_entries": [
+        {
+          "slot": "producer-1",
+          "request_digest": "7cadf1bb05e7cf19f91cb342b10c78388fc116568d09c2e92ae83206f0e28109",
+          "reserved_usd": "0.15",
+          "state": "completed",
+          "estimated_usd": "0.009006",
+          "api_status": "completed",
+          "usage": {
+            "input_tokens": 2392,
+            "input_tokens_details": {
+              "cache_write_tokens": 2264,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 2264
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 309,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 2701
+          },
+          "duration_ms": 5651,
+          "model": "gpt-6.2-sol",
+          "tariff": "2026-11-25-standard-short",
+          "billing_verified": false,
+          "packet_digest": "9290c606e1bc675e5ba35b867e63f43b41a7e4d5b12a15deb48b290b475e1d38",
+          "receipt_ref": "v3-senda-a:producer-1"
+        }
+      ]
+    },
+    {
+      "method": "studio",
+      "grant_id": "v3-senda-b",
+      "accepted": true,
+      "terminal": "candidate_ready",
+      "elapsed_ms": 7956,
+      "attempts": 1,
+      "rows": [
+        {
+          "attempt": 1,
+          "strategy": "append-active-state-validation",
+          "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc",
+          "checks": [
+            {
+              "id": "safe-edit",
+              "pass": true,
+              "evidence": "Exact single allowlisted guard insertion",
+              "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc"
+            },
+            {
+              "id": "malformed-states",
+              "pass": true,
+              "evidence": "Rejected 22/22 invalid states; failed IDs: ",
+              "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc"
+            },
+            {
+              "id": "route-parity",
+              "pass": true,
+              "evidence": "All 729 terminal states and reports hash 45d87dfd153b76e14bf7d3ed8fbe159a4af9ab804bb2b6da9db7754c2e282ee4; wins 168; losses 561",
+              "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc"
+            }
+          ],
+          "audit": {
+            "reviewer": "independent-reviewer",
+            "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc",
+            "decision": "accept",
+            "reason": "La comparación textual muestra una única inserción permitida que cubre los requisitos y protege el acceso a history.length. Los controles aportados indican conformidad; no se identifican deficiencias frente al objetivo.",
+            "quality": "not_assessed",
+            "evidence_refs": [
+              "safe-edit",
+              "malformed-states",
+              "route-parity"
+            ]
+          },
+          "outcome": "accepted_candidate",
+          "reason": "La comparación textual muestra una única inserción permitida que cubre los requisitos y protege el acceso a history.length. Los controles aportados indican conformidad; no se identifican deficiencias frente al objetivo."
+        }
+      ],
+      "role_receipts": [
+        {
+          "role": "producer",
+          "attempt": 1,
+          "request_digest": "5f31d52ff781d2fab484e56cc1353ec346b443c920b6eee89b01101eb3d60491",
+          "payload_digest": "01556df2c823381747b9a479cc49a396b8a83306390efe29d183e9fce6423d7c",
+          "receipt_ref": "v3-senda-b:producer-1",
+          "origin": "archived_role_output"
+        },
+        {
+          "role": "auditor",
+          "attempt": 1,
+          "request_digest": "62f884d6ffb78fa76dcb72a712149cf70fc8f3109f7db4f1cab62410a214ee43",
+          "payload_digest": "7cce607ff63ab098a7d0cfb01b24a3793123c69f204e97279782d192b15ed9b1",
+          "receipt_ref": "v3-senda-b:auditor-1",
+          "origin": "archived_role_output"
+        }
+      ],
+      "candidate_sha256": "3a8114d68f8588e383d09bf5134c9735655435a12cd5b23826e9f73cb0a27b84",
+      "quality_score": null,
+      "manual_interventions": 0,
+      "technical_checks": [
+        {
+          "id": "safe-edit",
+          "pass": true,
+          "evidence": "Exact single allowlisted guard insertion",
+          "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc"
+        },
+        {
+          "id": "malformed-states",
+          "pass": true,
+          "evidence": "Rejected 22/22 invalid states; failed IDs: ",
+          "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc"
+        },
+        {
+          "id": "route-parity",
+          "pass": true,
+          "evidence": "All 729 terminal states and reports hash 45d87dfd153b76e14bf7d3ed8fbe159a4af9ab804bb2b6da9db7754c2e282ee4; wins 168; losses 561",
+          "candidate_digest": "5059bd6d77ef057c1638722b4ac3a2e2b8b88fc55cf5186373ab2cc945bb5ebc"
+        }
+      ],
+      "api_call_attempts": 2,
+      "api_responses": 2,
+      "fixture_calls": 0,
+      "estimated_cost_usd": 0.015524,
+      "reserved_usd": "0.25",
+      "halted": false,
+      "ledger_entries": [
+        {
+          "slot": "producer-1",
+          "request_digest": "5f31d52ff781d2fab484e56cc1353ec346b443c920b6eee89b01101eb3d60491",
+          "reserved_usd": "0.15",
+          "state": "completed",
+          "estimated_usd": "0.008971",
+          "api_status": "completed",
+          "usage": {
+            "input_tokens": 2390,
+            "input_tokens_details": {
+              "cache_write_tokens": 2262,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 2262
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 306,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 2696
+          },
+          "duration_ms": 4728,
+          "model": "gpt-6.2-sol",
+          "tariff": "2026-11-25-standard-short",
+          "billing_verified": false,
+          "packet_digest": "01556df2c823381747b9a479cc49a396b8a83306390efe29d183e9fce6423d7c",
+          "receipt_ref": "v3-senda-b:producer-1"
+        },
+        {
+          "slot": "auditor-1",
+          "request_digest": "62f884d6ffb78fa76dcb72a712149cf70fc8f3109f7db4f1cab62410a214ee43",
+          "reserved_usd": "0.10",
+          "state": "completed",
+          "estimated_usd": "0.006553",
+          "api_status": "completed",
+          "usage": {
+            "input_tokens": 4571,
+            "input_tokens_details": {
+              "cache_write_tokens": 4568,
+              "cache_write_tokens_details": {
+                "ttl_12h_tokens": 0,
+                "ttl_30m_tokens": 4568
+              },
+              "cached_tokens": 0
+            },
+            "output_tokens": 168,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 4739
+          },
+          "duration_ms": 3181,
+          "model": "gpt-6.1-terra",
+          "tariff": "2026-11-25-standard-short",
+          "billing_verified": false,
+          "packet_digest": "7cce607ff63ab098a7d0cfb01b24a3793123c69f204e97279782d192b15ed9b1",
+          "receipt_ref": "v3-senda-b:auditor-1"
+        }
+      ]
+    }
+  ],
+  "total_estimated_usd": "0.024530",
+  "max_total_reservation_usd": "1.05",
+  "actual_slot_reservations_usd": "0.40",
+  "billing_verified": false,
+  "source_sha256": "0a2de34c510cd2a9f7d0bfad4bc285763b375a06945410a5479df6bec8012d23",
+  "candidate_sha256": "3a8114d68f8588e383d09bf5134c9735655435a12cd5b23826e9f73cb0a27b84",
+  "candidate_reconstructed_from_pinned_source_and_canonical_guard": true,
+  "candidate_hash_matches_both_live_outputs": true,
+  "candidate_promoted": false,
+  "art_approved": false,
+  "comparison": {
+    "same_candidate": true,
+    "studio_incremental_cost_usd": "0.006518",
+    "studio_cost_ratio": 1.7237397290695091,
+    "elapsed_difference_ms": 116,
+    "quality_score": null,
+    "decision": "No added technical benefit for this simple constrained case; use one producer plus independent deterministic QA as control for similar low-risk tests, test separate specialist value on materially harder tasks."
+  },
+  "limitations": [
+    "Single constrained task; safe predicate whitelist supplied to both producers.",
+    "No visual quality evaluation, no production promotion.",
+    "Live feedback and correction capability were enabled but neither arm needed a second attempt; retry and pivot demonstrated only in offline rehearsal.",
+    "Estimated usage cost from recorded token receipts, not invoice.",
+    "Candidate reconstructed from frozen source and whitelist and matched both hashes; ZIP metadata verified, ZIP bytes not independently extracted.",
+    "Both arms used the same producer model; only the Studio arm invoked a second independent text model."
+  ]
+}

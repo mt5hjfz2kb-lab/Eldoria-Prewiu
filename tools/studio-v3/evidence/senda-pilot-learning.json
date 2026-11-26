@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "status": "verified_limited_observation",
+  "run_id": 45889150854,
+  "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+  "comparison_sha256": "3a8114d68f8588e383d09bf5134c9735655435a12cd5b23826e9f73cb0a27b84",
+  "observation": "For this bounded exact-text validation task, producer + deterministic QA equaled the producer + independent model auditor in technical outcome. Studio cost an estimated $0.006518 extra; time difference 116 ms; no added measured quality.",
+  "operational_rule": "Do not spend on routine multiagent reviews solely because more roles exist. Prefer a single producer plus mandatory deterministic gates for similar narrowly scoped, low-risk tasks unless additional audit value is justified. Escalate complex, ambiguous, visual or high-risk cases to appropriate specialists; treat this as a routing hypothesis until replicated.",
+  "next_experiment": {
+    "status": "not_authorized_or_run",
+    "scope": "A real high-impact art/UI task or multi-component functional defect with alternative plausible solutions; preserve active workstream ownership.",
+    "criteria": [
+      "Identical frozen source, evidence, objectives and per-arm ceilings.",
+      "Independent blind reviewers evaluate actual render/behavior, not agent prose; identical regression gate.",
+      "Record defect classes, quality change, time, cost, interventions and rejected hypotheses.",
+      "Require a distinct contribution from specialist and an actual executed change; avoid giving both arms the complete solution in the task.",
+      "Replicate before concluding general superiority."
+    ]
+  }
+}
