@@ -1,0 +1,98 @@
+name: Studio - Corona commercial HUD review
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths: ['tools/openai-development-studio/corona-hud-budget.json']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-studio-corona-hud-one-shot
+  cancel-in-progress: false
+jobs:
+  review:
+    if: github.run_attempt == 1 && github.event.before == '530e5ea765213dd87d59a2f8e1ddf6b014b855d7' && github.event.head_commit.message == 'Studio: execute one bounded Corona HUD commercial review under transferred owner priority'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Verify transferred lease, immutable budgets and baseline evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          cd tools/openai-development-studio
+          python3 mission_packet.py --self-test
+          python3 budget_guard.py --self-test
+          python3 test_economics_v2.py
+          python3 - <<'PY'
+          import base64,json,subprocess,os,datetime
+          from decimal import Decimal as D
+          import budget_guard
+          def gh(p):return json.loads(subprocess.check_output(['gh','api',p],timeout=60))
+          repo=os.environ['GITHUB_REPOSITORY']
+          meta=gh(f'repos/{repo}/contents/pipeline/active-workstreams.json?ref=main')
+          blob=gh(f'repos/{repo}/git/blobs/{meta["sha"]}')
+          assert blob['sha']==meta['sha']
+          reg=json.loads(base64.b64decode(blob['content']))
+          a=next(a for a in reg['active'] if a['id']=='eldoria-openai-development-studio-20261125')
+          assert a['owner']=='chatgpt-corona-brecha-commercial-20261126' and a['ownership_revision']==18 and a['phase']=='CORONA_UI_AGENT_MISSION'
+          assert gh(f'repos/{repo}/git/ref/heads/pilot/eldoria-openai-development-studio-20261125')['object']['sha']==os.environ['GITHUB_SHA']
+          names=('budget-cycle.json','senda-benchmark-budget.json','senda-portal-budget.json','senda-final-review-budget.json')
+          docs=[json.load(open(n)) for n in names]
+          for d in docs:budget_guard.validate(d,datetime.datetime.now(datetime.timezone.utc).date())
+          rows=[r for d in docs for r in d['reservations']]
+          assert sum(D(r['reserve_usd']) for r in rows)==D('14.41')
+          moved=[r for r in rows if r['id'].startswith('transfer-corona-hud-commercial-review-20261126-')]
+          assert len(moved)==2 and sum(D(r['reserve_usd']) for r in moved)==D('.70') and all(r['status']=='closed_reserved' for r in moved)
+          current=json.load(open('corona-hud-budget.json'))
+          budget_guard.authorize(current,datetime.datetime.now(datetime.timezone.utc).date(),'corona-hud-commercial-review-20261126','corona-hud-commercial-review-20261126',1,D('.70'))
+          PY
+          gh run download 45638738009 --repo "$GITHUB_REPOSITORY" --name ciudad-region-recorrido --dir /tmp/corona-baseline
+          python3 prepare_corona_hud_review.py /tmp/corona-baseline /tmp/corona-packet
+          python3 mission_packet.py --packet /tmp/corona-packet/packet.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: corona-hud-packet
+          path: /tmp/corona-packet/
+          retention-days: 14
+      - name: Execute real director, programmer, independent auditor and coordinator
+        id: live
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ELDORIA_AUTH_EVENT: corona-hud-commercial-review-20261126
+        run: |
+          set -eu
+          date -u +%Y-%m-%dT%H:%M:%SZ > /tmp/corona-start
+          cd tools/openai-development-studio
+          cp corona-hud-budget.json budget-cycle.json
+          python3 - <<'PY'
+          import studio,mission_packet
+          studio.MAX_OUTPUT=2200
+          mission_packet.execute('/tmp/corona-packet/packet.json','/tmp/corona-result',True,'corona-hud-commercial-review-20261126')
+          PY
+      - name: Record measured usage even on partial failure
+        if: always() && steps.live.outcome != 'skipped'
+        env:
+          LIVE_STATUS: ${{ steps.live.outcome }}
+        run: |
+          mkdir -p /tmp/corona-economics
+          python3 tools/openai-development-studio/intervention_report.py collect --root /tmp/corona-result --run "$GITHUB_RUN_ID" --request corona-hud-commercial-review-20261126 --started "$(cat /tmp/corona-start)" --finished "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --source-run 45638738009 --status "$LIVE_STATUS" --out "/tmp/corona-economics/run-$GITHUB_RUN_ID.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-hud-review-result
+          path: /tmp/corona-result/
+          retention-days: 30
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-hud-review-economics
+          path: /tmp/corona-economics/
+          retention-days: 30
+          if-no-files-found: warn

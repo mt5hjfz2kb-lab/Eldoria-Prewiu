@@ -13,6 +13,13 @@
       "run_id": "senda-commercial-review-v1",
       "reserve_usd": "0.70",
       "status": "authorized_once"
+    },
+    {
+      "id": "transfer-corona-hud-commercial-review-20261126-3",
+      "run_id": "transfer-corona-hud-commercial-review-20261126-3",
+      "status": "closed_reserved",
+      "reserve_usd": "0.01",
+      "reason": "Owner transferred Studio and resources from PR195 to Corona. Earmarked existing unused authorization only, not API spend; never reclaim or count again in combined ledger."
     }
   ]
 }

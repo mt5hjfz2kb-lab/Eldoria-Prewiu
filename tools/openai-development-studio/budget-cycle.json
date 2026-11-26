@@ -53,6 +53,13 @@
       "estimated_usd": "0.038709675",
       "result_artifact_id": 15055362108,
       "quality_result": "Diagnostic accepted for the two supplied native frames only; cause and proposed visual correction unproven. No production writes. Economy coordination retained independent auditor's reservations."
+    },
+    {
+      "id": "transfer-corona-hud-commercial-review-20261126-0",
+      "run_id": "transfer-corona-hud-commercial-review-20261126-0",
+      "status": "closed_reserved",
+      "reserve_usd": "0.69",
+      "reason": "Owner transferred Studio and resources from PR195 to Corona. Earmarked existing unused authorization only, not API spend; never reclaim or count again in combined ledger."
     }
   ],
   "policy": {
