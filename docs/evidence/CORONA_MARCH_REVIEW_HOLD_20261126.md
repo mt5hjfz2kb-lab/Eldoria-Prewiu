@@ -1,0 +1,1 @@
+Static source review found HideDecorations could disable genuine Approved source hero portrait Images. Preserve exact native diagnostic, but supersede the unstarted paid review by moving its branch ref; its first preflight assertion must fail before any API request. Reuse the existing .30 reservation only after this run confirms no paid request. No duplicate spending.
