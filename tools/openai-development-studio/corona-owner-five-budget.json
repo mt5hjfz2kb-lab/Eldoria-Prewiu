@@ -6,31 +6,64 @@
     "pilot_cap_usd": "5.00",
     "automatic_reset": false
   },
-  "scope": "New owner-authorized $5 allocation exclusively Corona de la Brecha, 2026-11-26. Separate from previous reservations; do not reclaim. No retries or automatic reset. Reserve $2.80 for initial four missions, retain $2.20 for evidence-based implementation and A/B review.",
+  "scope": "Owner-authorized additional $5 exclusively Corona. Historical $2.80 reserved, all 16 calls completed, estimated $0.17878825, unreconciled. Three new A/B missions reserve $2.10. $0.10 unreserved; no automatic reuse or retries.",
   "reservations": [
     {
       "id": "corona-hero-training-20261126",
       "run_id": "corona-hero-training-20261126",
-      "status": "authorized_once",
-      "reserve_usd": "0.70"
+      "status": "executed",
+      "reserve_usd": "0.70",
+      "github_actions_run": 45801501327,
+      "estimated_usd": "0.04320675",
+      "invoice_verified": false
     },
     {
       "id": "corona-scout-vigilant-20261126",
       "run_id": "corona-scout-vigilant-20261126",
-      "status": "authorized_once",
-      "reserve_usd": "0.70"
+      "status": "executed",
+      "reserve_usd": "0.70",
+      "github_actions_run": 45801501327,
+      "estimated_usd": "0.0448355",
+      "invoice_verified": false
     },
     {
       "id": "corona-daily-name-20261126",
       "run_id": "corona-daily-name-20261126",
-      "status": "authorized_once",
-      "reserve_usd": "0.70"
+      "status": "executed",
+      "reserve_usd": "0.70",
+      "github_actions_run": 45801501327,
+      "estimated_usd": "0.0428655",
+      "invoice_verified": false
     },
     {
       "id": "corona-mail-construction-20261126",
       "run_id": "corona-mail-construction-20261126",
+      "status": "executed",
+      "reserve_usd": "0.70",
+      "github_actions_run": 45801501327,
+      "estimated_usd": "0.0478805",
+      "invoice_verified": false
+    },
+    {
+      "id": "corona-ab-hud-20261126",
+      "run_id": "corona-ab-hud-20261126",
       "status": "authorized_once",
-      "reserve_usd": "0.70"
+      "reserve_usd": "0.70",
+      "condition": "Only after complete successful source-pinned Unity/mobile journey with full A/B manifest at 91b8de9874aed87219d733efa6e8e0aa56207f1e"
+    },
+    {
+      "id": "corona-ab-management-20261126",
+      "run_id": "corona-ab-management-20261126",
+      "status": "authorized_once",
+      "reserve_usd": "0.70",
+      "condition": "Only after complete successful source-pinned Unity/mobile journey with full A/B manifest at 91b8de9874aed87219d733efa6e8e0aa56207f1e"
+    },
+    {
+      "id": "corona-ab-narrative-20261126",
+      "run_id": "corona-ab-narrative-20261126",
+      "status": "authorized_once",
+      "reserve_usd": "0.70",
+      "condition": "Only after complete successful source-pinned Unity/mobile journey with full A/B manifest at 91b8de9874aed87219d733efa6e8e0aa56207f1e"
     }
   ],
   "policy": {
