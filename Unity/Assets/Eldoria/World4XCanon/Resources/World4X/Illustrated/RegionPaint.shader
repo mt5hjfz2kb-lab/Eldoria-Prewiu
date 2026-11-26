@@ -12,6 +12,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
   _CityEarth("Bastion I painted earth lanes",2D)="white"{}
   _CityCobble("Bastion I illustrated paving",2D)="white"{}
   _CityFinish("Shared modular paint",Range(0,1))=1
+  _RegionalColourPass("Regional art candidate (0 = original)",Range(0,1))=1
  }
  SubShader { Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="Opaque"} Pass {
  Cull Back
@@ -46,7 +47,7 @@ Shader "Eldoria/Region1/Illustrated ground" {
   o.slope=TransformObjectToWorldNormal(v.normal);
   o.world=TransformObjectToWorld(v.p);return o;
  }
- float _BeyondMap; float _BoundaryWeight; float4 _BoundaryColour; float _CityFinish;
+ float _BeyondMap; float _BoundaryWeight; float4 _BoundaryColour; float _CityFinish; float _RegionalColourPass;
  half3 borderMist(float2 metres) {
   float2 cloud=metres/float2(670,450);
   float veil=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,cloud).g;
@@ -248,6 +249,13 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half dryField=smoothstep(.34,.77,exposure)*(1-canopy*.82)*(1-mask.r);
   half3 dryPigment=lerp(grass*half3(1.20,1.04,.74),sharedEarth*half3(1.14,1.05,.79),.32);
   grass=lerp(grass,dryPigment,dryField*.79);
+  // Distinguish open meadow zones with broad existing geographic signals.
+  // Preserve the city approach, roads, canopy, steep slopes and fault pigment.
+  half meadowZones=smoothstep(.20,.82,field*.65+exposure*.35);
+  half3 fieldGrade=lerp(half3(.80,1.05,1.13),half3(1.20,1.10,.83),meadowZones);
+  half regionalContinuity=smoothstep(28,110,length(metre));
+  half openGrade=regionalContinuity*(1-canopy)*(1-mask.r)*(1-upland*.65);
+  grass*=lerp(half3(1,1,1),fieldGrade,openGrade*.80*saturate(_RegionalColourPass));
   half3 colour=lerp(grass,fracturedSlate,faultWeight*.87);
   // Sample the geological opening on the terrain triangles themselves.
   // A separately tessellated patch clipped into the steep fault walls in
@@ -299,12 +307,14 @@ Shader "Eldoria/Region1/Illustrated ground" {
   half shelf=lerp(1-smoothstep(.17,.79,district.r),1-smoothstep(.1,3.8+shoal*2.4,shore),local);
   // At close range the shallows previously picked up the same olive value
   // as the meadow. Keep amber sediment at the margin and cool the wet shelf.
-  half3 channel=half3(.105,.286,.335)*(.77+pigment*.30+shoal*.15);
-  half3 shallows=lerp(half3(.35,.47,.42),half3(.25,.49,.50),local)
-                 *(.85+pigment*.32);
+  half grade=saturate(_RegionalColourPass);
+  half3 channel=lerp(half3(.105,.286,.335),half3(.09,.31,.40),grade)*(.77+pigment*.30+shoal*.15);
+  half3 originalShallows=lerp(half3(.35,.47,.42),half3(.25,.49,.50),local);
+  half3 clearShallows=lerp(half3(.31,.51,.55),half3(.26,.57,.63),local);
+  half3 shallows=lerp(originalShallows,clearShallows,grade)*(.85+pigment*.32);
   half3 riverColour=lerp(channel,shallows,shelf*lerp(.79,.66,local));
   half glint=smoothstep(.36,.85,pigment)*lerp(.42,1,close);
-  riverColour+=half3(.064,.078,.073)*glint;
+  riverColour+=lerp(half3(.064,.078,.073),half3(.075,.10,.105),grade)*glint;
   #ifndef UNITY_COLORSPACE_GAMMA
   riverColour=SRGBToLinear(riverColour);
   #endif
