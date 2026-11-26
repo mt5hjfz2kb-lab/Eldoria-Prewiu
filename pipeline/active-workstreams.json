@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-26T07:44:40.957Z",
+  "updated_at": "2026-11-26T09:50:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9630,14 +9630,12 @@
       "title": "La Senda de la Brecha — vertical slice arcade por carriles, sin alterar beta",
       "owner": "chatgpt-senda-brecha-ios-unity-20261115",
       "ownership_state": "claimed",
-      "ownership_revision": 12,
+      "ownership_revision": 13,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "LANE_MOTION_AND_COMMERCIAL_QA",
+      "phase": "PAUSED_OWNER_CORONA_PRIORITY",
       "claimed_at": "2026-11-25T22:58:00.051Z",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "tools/senda-brecha/**",
         "docs/events/senda-brecha/**",
@@ -9659,12 +9657,13 @@
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/195",
       "final_source_sha": "2a8d89f82d96dc9988825ad5e6f116f1de5a4af4",
       "final_evidence": "Verified actual WebGL 45773424569 artifact 15094169758; four viewports, gameplay, matching portal/Breach/ruin A/B, 263 mobile draw calls; artistic approval false. Native 45772645407 failed field initialization, cleanup success; retry 45774255290 running. No PC release before terminal and cleanup.",
-      "next": "Inspect geometric forest A/B; retain original if no improvement. Inspect corrected native GPU evidence, release Windows only once completed and cleanup verified. Commercial quality, full native URP, physical iPhone not approved.",
+      "next": "Paused by owner for Corona priority; do not dispatch native or Studio until reassigned.",
       "art_production_request": "pipeline/art-production-requests/eldoria-senda-brecha-lane-event-20261115.json",
       "resource_handoff": {
-        "at": "2026-11-15T16:10:39.032Z",
-        "to": "eldoria-private-beta-i-v-20261107",
-        "reason": "Owner explicitly instructed P0 to use idle PC. No Actions runs in progress at transfer; Windows process preflight must independently confirm no Unity/Blender before work."
+        "status": "paused_by_owner_priority",
+        "at": "2026-11-26T09:50:00Z",
+        "previous_run": 45777504885,
+        "reason": "Owner says PR195 can wait; source ownership and prior work preserved."
       },
       "user_authorization": "Owner expressly requests continuation with agents until concept quality; preserve PR195 isolation and existing USD 10 benchmark ceiling.",
       "current_native_run_id": 45777504885,
@@ -10022,26 +10021,20 @@
       "id": "eldoria-valoria-modular25d-bastion1-20261119",
       "title": "Eldoria — Valoria Bastión I modular 2.5D: premium authored sprites + Unity native proof",
       "area_handoff_request": {
-        "status": "ready",
-        "completed": true,
-        "area": "Integración de las fachadas del Postigo y los Portales en Bastión V",
-        "owner": "chatgpt-valoria-umbrales-20261124",
-        "revision": 15,
-        "branch_head": "2ad82c894e597107c442fd150df2b3cd44d31bfc",
-        "run_id": 45472764940,
-        "artistic_approval": "provisional",
-        "note": "Verificado en 313 fotogramas de recorrido nativo y en cámaras fijas. En las dos fachadas, proyectar el eje de la calle tanto en la elevación como en el contacto de la sombra y en las entradas. El Postigo conserva una hilera larga y repetitiva. Revisión personal móvil publicada con ?arte=2ad82c8. iPhone físico pendiente."
+        "status": "superseded",
+        "completed": false,
+        "note": "Owner reprioritized Corona; preserve earlier completed area evidence in history."
       },
-      "owner": "chatgpt-valoria-umbrales-20261124",
+      "owner": "chatgpt-corona-brecha-commercial-20261126",
       "ownership_state": "claimed",
-      "ownership_revision": 15,
+      "ownership_revision": 16,
       "write_scope_released": false,
       "branch": "experiment/valoria-ciudad-region-unificada-20261121",
       "status": "active",
-      "phase": "BASTION_V_URBAN_COMPOSITION",
-      "claimed_at": "2026-11-24T14:09:10.089Z",
+      "phase": "CORONA_COMMERCIAL_UI_CONSOLIDATION",
+      "claimed_at": "2026-11-26T09:50:00Z",
       "base_main_sha": "60d8ce11dde88960ece713f725d4564283cc6a90",
-      "user_authorization": "Owner 2026-11-20: research, design, implement and finish new commercial strategy mobile HUD for the existing modular Bastion I; complete pending artist sprite/Unity/WebGL issues, preserve original main and game logic, isolated branch, no paid credits.",
+      "user_authorization": "Owner 2026-11-26: Corona de la Brecha is now priority; transfer resources and Studio from PR195; preserve other work, no Main gameplay, no public beta, no merge. Existing spending limits remain.",
       "scope": [
         "Unity/Assets/Experimentos/ValoriaModular25D/**",
         "Unity/Assets/Experimentos/ValoriaModular25D.meta",
@@ -10049,7 +10042,9 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_approved": false,
       "device_qa": "PENDING physical Safari iPhone",
       "delivery_definition": {
@@ -10129,6 +10124,12 @@
           "ownership_revision": 14,
           "transferred_at": "2026-11-24T19:37:41.634712+00:00",
           "reason": "Continuación solicitada por Cristian tras agotarse el chat anterior. Revisar orientación, umbrales y contacto en Bastión V."
+        },
+        {
+          "owner": "chatgpt-valoria-umbrales-20261124",
+          "ownership_revision": 15,
+          "transferred_at": "2026-11-26T09:50:00Z",
+          "reason": "Owner expressly prioritizes Corona de la Brecha and transfers Studio and resources from PR195."
         }
       ],
       "handoff_note": "Technical source e681fda70aaa985dc62a928e4c9c6a0c63628cd5 certified by 44713811420; HEAD 63c4059 is documentation-only. See docs/valoria-modular-25d/DELIVERY_20261120_NATIVE_WEBGL_CAMERA.md and PRODUCTION_GUIDE_BASTION_I_20261120.md. Art approval and physical iPhone separate. Owner/Windows released to available rev5; reuse SAME canonical ID on authorized continuation.",
@@ -10152,8 +10153,8 @@
         "artistic_approval": "pending_owner_review",
         "note": "Ciudad, guardado histórico, mapa, WebGL, WebKit y dos recorridos I–V finalizados. El PC queda disponible. Revisión artística del propietario y prueba física de iPhone pendientes."
       },
-      "previous_owner": "chatgpt-valoria-zoom-20261124",
-      "next": "Next owner may claim canonical workstream eldoria-valoria-modular25d-bastion1-20261119 on existing PR after live queue check; preserve 6743b8baf2448679f1670acd961d64a76bd33a01 and last_completed_area.",
+      "previous_owner": "chatgpt-valoria-umbrales-20261124",
+      "next": "HUD first; native matched A/B on exact branch, shared presentation controls; preserve mechanics and best screens.",
       "resource_handoff_note": "Owner explicitly confirmed no other work and reassigned only PC resources to Eldoria Development Studio. Source ownership unchanged."
     },
     {
@@ -10184,16 +10185,16 @@
     {
       "id": "eldoria-openai-development-studio-20261125",
       "title": "Eldoria Development Studio — bounded native Unity validation",
-      "owner": "chatgpt-senda-lane-commercial-20261126",
+      "owner": "chatgpt-corona-brecha-commercial-20261126",
       "ownership_state": "claimed",
-      "ownership_revision": 17,
+      "ownership_revision": 18,
       "write_scope_released": false,
       "branch": "pilot/eldoria-openai-development-studio-20261125",
       "status": "active",
-      "phase": "SENDA_COMMERCIAL_FINAL_VISUAL_AUDIT",
-      "claimed_at": "2026-11-26T07:44:40.957Z",
+      "phase": "CORONA_UI_AGENT_MISSION",
+      "claimed_at": "2026-11-26T09:50:00Z",
       "base_main_sha": "184294f7c723458c3eef5a294944a043681dab55",
-      "user_authorization": "Owner requests active Studio, commercial polish and responsive lane movement; retain combined $10 ceiling and all prior reservations.",
+      "user_authorization": "Owner 2026-11-26: Corona de la Brecha is now priority; transfer resources and Studio from PR195; preserve other work, no Main gameplay, no public beta, no merge. Existing spending limits remain.",
       "scope": [
         "tools/openai-development-studio/**",
         ".github/workflows/eldoria-openai-*.yml"
@@ -10213,7 +10214,7 @@
       "current_native_run_id": 45685929688,
       "current_native_head": "630052347439c62b044fa63e22e60bee17a523b0",
       "last_hosted_request_proof": 45675138084,
-      "previous_owner": "chatgpt-senda-commercial-horizon-20261126",
+      "previous_owner": "chatgpt-senda-lane-commercial-20261126",
       "closed_at": "2026-11-26T07:19:58.433Z",
       "last_native_run": 45675919389,
       "last_native_head": "02b8ea3306c5348ca3c0f56f560ad501c170f52e",
@@ -10237,7 +10238,7 @@
         "quality_decision": "Local modest improvement, insufficient standalone promotion; original retained.",
         "billing_verified": false
       },
-      "next": "Use Studio on a high-impact measurable functional task rather than another micro-adjustment; maintain canonical Valoria source ownership.",
+      "next": "Prepare bounded Corona native evidence and agent mission; no paid calls without budget reservation.",
       "phase2_evidence": {
         "historical_backfill_run": 45681283119,
         "final_ci_run": 45681700141,
@@ -10327,7 +10328,15 @@
         "billing_verified": false,
         "web_pass": 45773424569,
         "art_approved": false
-      }
+      },
+      "ownership_history": [
+        {
+          "owner": "chatgpt-senda-lane-commercial-20261126",
+          "ownership_revision": 17,
+          "transferred_at": "2026-11-26T09:50:00Z",
+          "reason": "Owner expressly prioritizes Corona de la Brecha and transfers Studio and resources from PR195."
+        }
+      ]
     }
   ],
   "history": [
@@ -21544,96 +21553,18 @@
   },
   "resource_rotation": {
     "resource": "windows-runner-heavy",
-    "authorized_by": "Owner requests continued PR195 visual development; prior native job completed and cleanup successful.",
-    "authorized_at": "2026-11-25T21:44:55.392Z",
+    "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
+    "authorized_at": "2026-11-26T09:50:00Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": "eldoria-senda-brecha-lane-event-20261115",
-    "current_run_id": 45777504885,
+    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+    "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "senda_native_commercial_art_reserved",
+    "status": "corona_native_reserved",
+    "previous_completed_run": 45777504885,
     "rules": [
-      "Isolated native proof, same PR, no beta or main gameplay change.",
-      "Check live lease and idle processes. No cancellation of other work."
-    ],
-    "previous_rotation": {
-      "resource": "windows-runner-heavy",
-      "authorized_by": "Owner 2026-11-19: PC can be used for the new Bastion I while no other work is active.",
-      "authorized_at": "2026-11-19T12:01:31.172Z",
-      "mode": "exclusive_one_workstream_at_a_time",
-      "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-      "current_run_id": null,
-      "next_workstream": null,
-      "return_to": null,
-      "status": "reserved_modular25d_rev6_bounded_native_art_ab",
-      "rules": [
-        "No cancellation of ongoing Unity jobs or interruption of other writers.",
-        "Only isolated modular25d branch and native QA; no main gameplay changes, merge, beta publication, paid credits or art approval.",
-        "Preserve source owners and release Windows after the bounded native run.",
-        "Check live claim and Windows processes before Editor invocation."
-      ],
-      "previous_rotation": {
-        "resource": "windows-runner-heavy",
-        "authorized_by": "Owner explicitly allowed PC alternation while doing depth work; City2D holds code ownership and has no native Actions job running",
-        "authorized_at": "2026-11-18T09:20:00Z",
-        "mode": "one_bounded_native_execution_per_turn",
-        "current_workstream": "eldoria-valoria-25d-depth-motion-pilot-20261118",
-        "current_run_id": null,
-        "next_workstream": "eldoria-city2d-illustrated-proof-20261116",
-        "return_to": "eldoria-city2d-illustrated-proof-20261116",
-        "status": "single_depth_native_retry_while_city2d_PC_idle",
-        "rules": [
-          "Never cancel another workstream or interrupt active Unity/Blender processes.",
-          "Only this branch and exact archived V6 control may be used for 1 bounded Unity A/B run.",
-          "Retain other workstream write ownership and return windows-runner-heavy with CAS after run.",
-          "No merge, no beta publication, no artistic PASS without actual original Unity frames."
-        ],
-        "previous_completed_run": 44023117740,
-        "note": "One exclusive Unity 6000.3 run with CRLF-tolerant A scene clone and source gate passed; return Windows to City2D immediately after run. No interrupted processes, no beta/merge.",
-        "completed_visual_reboot_run": 43780662139,
-        "priority_override_scope": "Only windows-runner-heavy; all other branch owners and active production scopes retained",
-        "previous_rotation": {
-          "resource": "windows-runner-heavy",
-          "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
-          "authorized_at": "2026-11-15T22:44:00.333Z",
-          "mode": "one_bounded_native_execution_per_turn",
-          "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
-          "current_run_id": null,
-          "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
-          "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-          "status": "ashen_turn_available",
-          "rules": [
-            "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
-            "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
-            "Retain both source owners/scopes/branches. Transfer ONLY windows-runner-heavy via fresh CAS.",
-            "Each owner releases Windows while reviewing artifacts or editing source. No automatic expiry or takeover from inactivity.",
-            "After one Visual Reboot native run and clean exit, return Windows availability to Ashen Citadel; respect other legitimate concurrent jobs."
-          ],
-          "previous_completed_run": 43906347228,
-          "note": "First real Visual Reboot Unity invocation completed with exit 1, artifact preserved; Windows returned to Ashen immediately while Visual Reboot diagnoses off-PC. All source owners unchanged.",
-          "completed_visual_reboot_run": 43780662139
-        },
-        "handoff_from": "eldoria-city2d-illustrated-proof-20261116",
-        "last_depth_pilot_runs": [
-          44275072091,
-          44275806196
-        ],
-        "last_depth_pilot_status": "NATIVE_RENDER_NOT_PRODUCED; SOURCE_FIX_PENDING_NATIVE_RETEST",
-        "last_depth_pilot_checkout_cleanup": "44275072091 scratch cleaned by retry. 44275806196 failed compilation scratch may remain and must be checked before future run.",
-        "last_depth_pilot_source_sha": "8ee63b684af749adf19d5b73cda15895a2aceabe",
-        "latest_source_asset_audit_run": 44280257279,
-        "last_depth_pilot_run": 44283728868,
-        "last_depth_pilot_result": "Unity compile success, capture aborted by over-strict meta CRLF check, fixed source awaiting fresh native test",
-        "last_depth_temp_cleanup": "confirmed SAFE_DEPTH_SCRATCH_CLEANUP_PASS for run 44283728868; no new native frames",
-        "last_software_api_check": "Unity official 6000.3 TextureImporterSettings.spriteAlignment/spritePivot",
-        "last_depth_previous_run": 44281717983,
-        "last_depth_candidate_sha": "43b90dd31173ebe7f11a773ed8cb541f72454013"
-      },
-      "note": "Exclusive Unity run for spatial composition and environmental work on existing modular25d branch. Source owner rev6; no other running Actions; Unity process safety rechecked on Windows; release after bounded native run(s)."
-    },
-    "released_at": "2026-11-26T06:57:54.628Z",
-    "released_after_run": 45717722109,
-    "previous_completed_run": 45707272556,
-    "note": "Native recovery completed successfully and disposable Library removal confirmed. No other Windows ownership changed."
+      "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
+      "Preserve Senda work; no cancellation or automatic return."
+    ]
   }
 }
