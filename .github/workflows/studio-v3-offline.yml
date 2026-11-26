@@ -42,8 +42,14 @@ jobs:
         run: |
           python3 tools/studio-v3/visual-live/dispatch.test.py
           python3 tools/studio-v3/visual-live/dispatch.py --validate-plan
-          python3 tools/studio-v3/visual-live/dispatch.py --prepare "$RUNNER_TEMP/v3-visual-calibration-offline"
-          node tools/studio-v3/visual-live/host.mjs --verify-input "$RUNNER_TEMP/v3-visual-calibration-offline"
+          state=$(python3 -c 'import json;print(json.load(open("tools/studio-v3/visual-live/authorized-budget.json"))["reservations"][0]["status"])')
+          if [ "$state" = authorized_once ]; then
+            python3 tools/studio-v3/visual-live/dispatch.py --prepare "$RUNNER_TEMP/v3-visual-calibration-offline"
+            node tools/studio-v3/visual-live/host.mjs --verify-input "$RUNNER_TEMP/v3-visual-calibration-offline"
+          else
+            test "$state" = closed_reserved
+            node --test tools/studio-v3/visual-live/archived-visual.test.mjs
+          fi
       - name: Verify V2 client unchanged from pinned source
         run: git diff --exit-code 1657b2caa6b1a955319538ce3a8b2906398599b3 HEAD -- tools/openai-development-studio
       - name: Replay rejection, pivot, independent checks and scratch persistence

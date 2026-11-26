@@ -89,6 +89,28 @@ def validate_parent():
     raw,g,b=load_plan()
     s.authorize(raw,b,proof_for(raw),DAY())
     return raw,g,b
+def validate_offline_plan():
+    """Validate an open or permanently closed historical plan without authorizing spend."""
+    raw,g,b=load_plan()
+    rows=b.get("reservations",[])
+    need(len(rows)==1 and rows[0]["id"]==g["id"] and rows[0]["request_sha256"]==s.sha(raw),"Plan/ledger binding")
+    if rows[0]["status"]=="authorized_once":
+        validate_parent()
+        return raw,g,b,"open"
+    need(rows[0]["status"]=="closed_reserved" and b.get("v3_visual_isolated") is True,"Unexpected reservation status")
+    c=b.get("closeout",{})
+    archived=load(ROOT+"evidence/visual-paired-live-20261126.json")
+    p=archived["proof"]
+    need(c["run_id"]==archived["run_id"]==45901310692 and c["verified_commit"]==archived["verified_commit"] and c["api_calls"]==p["call_count"]==6,"Closeout not bound to real run")
+    need(s.D(c["estimated_usd"])==sum((s.D(e["estimated_usd"]) for e in p["ledger_entries"]),s.D(0)) and s.D(c["estimated_usd"])+s.D(c["unused_ceiling_usd"])==s.D(g["max_total_usd"]),"Closeout accounting differs")
+    need(c["automatic_reset"] is False and c["billing_verified"] is False,"Invalid closeout")
+    try:
+        s.authorize(raw,b,proof_for(raw),dt.date.fromisoformat(b["cycle"]["starts"]))
+    except ValueError:
+        pass
+    else:
+        raise ValueError("Closed reservation unexpectedly authorizes a live session")
+    return raw,g,b,"closed"
 def preflight(cal):
     need(os.environ.get("GITHUB_REPOSITORY")==REPO and os.environ.get("GITHUB_REF")==s.BRANCH and os.environ.get("GITHUB_RUN_ATTEMPT")=="1" and os.environ.get("GITHUB_EVENT_NAME")=="push","Not first authorized push")
     event=load(os.environ["GITHUB_EVENT_PATH"]);head=os.environ["GITHUB_SHA"];before=event["before"]
@@ -158,7 +180,7 @@ if __name__=="__main__":
     mode=sys.argv[1]
     if mode=="--prepare" and len(sys.argv)==3:prepare(sys.argv[2])
     elif mode=="--validate-plan" and len(sys.argv)==2:
-        raw,g,b=validate_parent();print("STUDIO_V3_VISUAL_PLAN "+json.dumps({"grant_sha256":s.sha(raw),"cap":g["max_total_usd"],"evidence":g["production_evidence"]}))
+        raw,g,b,state=validate_offline_plan();print("STUDIO_V3_VISUAL_PLAN "+json.dumps({"grant_sha256":s.sha(raw),"cap":g["max_total_usd"],"state":state,"evidence":g["production_evidence"]}))
     elif mode=="--preflight" and len(sys.argv)==3:
         *_,proof=preflight(sys.argv[2]);print("STUDIO_V3_VISUAL_LIVE_PREFLIGHT_PASS "+json.dumps(proof))
     elif mode=="--transport" and len(sys.argv)==4:transport(sys.argv[2],sys.argv[3])
