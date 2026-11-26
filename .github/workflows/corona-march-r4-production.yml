@@ -1,0 +1,49 @@
+name: Studio March R4 learn modular Bastion and author original gallery
+on:
+  push:
+    branches: [candidate/corona-march-r4-modular25d-20261126]
+    paths: ['.github/workflows/corona-march-r4-production.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  art-production:
+    if: >-
+      ${{ github.run_attempt == 1 && github.event.before == '0aa89f7dda367ba3afc3a666a8c0574198ad9c8f' && github.event.head_commit.message == 'Studio R4: learn from approved modular Bastion and commercial evidence before authoring hero stage' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/corona-art-iteration
+            docs/valoria-modular-25d
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 1657b2caa6b1a955319538ce3a8b2906398599b3
+          path: studio-source
+          sparse-checkout: tools/openai-development-studio
+          persist-credentials: false
+      - name: Download exact R3, actual Bastion I and commercial references
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow==11.3.0
+          gh run download 45900917700 --repo "$GITHUB_REPOSITORY" --name march-studio-native-evidence --dir native
+          gh run download 45900917700 --repo "$GITHUB_REPOSITORY" --name march-r3-independent-art-scorecard --dir scores
+          gh run download 45851071206 --repo "$GITHUB_REPOSITORY" --name recovery-ciudad-region-recorrido --dir city
+          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-art-plan --dir refs
+          python3 -m py_compile tools/corona-art-iteration/march_r4_production.py
+      - name: Studio direction, original artist asset and independent review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python3 tools/corona-art-iteration/march_r4_production.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: march-r4-studio-production
+          path: march-r4-production/
+          if-no-files-found: warn
