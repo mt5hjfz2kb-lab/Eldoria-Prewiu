@@ -1,0 +1,75 @@
+name: Studio V3 visual benchmark calibration
+on:
+  push:
+    branches: [pilot/eldoria-studio-v3-autonomous-execution-20261126]
+    paths:
+      - 'tools/studio-v3/visual-benchmark/**'
+      - '.github/workflows/studio-v3-visual-benchmark.yml'
+permissions:
+  contents: read
+concurrency:
+  group: studio-v3-visual-benchmark-calibration
+  cancel-in-progress: false
+jobs:
+  actual-webgl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          sparse-checkout: tools/studio-v3/visual-benchmark
+          fetch-depth: 1
+      - name: Validate restricted design grammar
+        run: node --test tools/studio-v3/visual-benchmark/design.test.mjs
+      - name: Materialize only immutable actual source and shared art references
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin e1d3b9892e1a75a9e7bfbafd0db225de7aacba74
+          git fetch --no-tags --depth=1 origin 91b8de9874aed87219d733efa6e8e0aa56207f1e
+          git fetch --no-tags --depth=1 origin 5ef2aee67cf8fde57ba2fc4b3d929b517ee67944
+          root="$RUNNER_TEMP/studio-v3-visual-source"
+          mkdir -p "$root"
+          git archive e1d3b9892e1a75a9e7bfbafd0db225de7aacba74 tools/senda-brecha/visual-3d | tar -x -C "$root"
+          mkdir -p "$root/tools/senda-brecha/visual-3d/reference"
+          git show 5ef2aee67cf8fde57ba2fc4b3d929b517ee67944:Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/panel_obsidian.png > "$root/tools/senda-brecha/visual-3d/reference/panel_obsidian.png"
+          git show 91b8de9874aed87219d733efa6e8e0aa56207f1e:docs/valoria-modular-25d/CORONA_BRECHA_ART_DIRECTION_20261120.md > "$root/reference-art-direction.md"
+          git show 91b8de9874aed87219d733efa6e8e0aa56207f1e:docs/valoria-modular-25d/CORONA_SHARED_STANDARD_20261126.md > "$root/reference-shared-standard.md"
+          echo "V3_VISUAL_WEBROOT=$root" >> "$GITHUB_ENV"
+          echo "V3_VISUAL_OUT=$RUNNER_TEMP/studio-v3-visual-evidence" >> "$GITHUB_ENV"
+      - name: Install isolated Chromium
+        run: |
+          mkdir -p "$RUNNER_TEMP/studio-v3-visual-node"
+          npm install --no-save --prefix "$RUNNER_TEMP/studio-v3-visual-node" playwright@1.55.0
+          "$RUNNER_TEMP/studio-v3-visual-node/node_modules/.bin/playwright" install chromium
+      - name: Actual paired screenshots and matched state verification
+        env:
+          NODE_PATH: ${{ runner.temp }}/studio-v3-visual-node/node_modules
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8773 --bind 127.0.0.1 --directory "$V3_VISUAL_WEBROOT" > /tmp/studio-v3-visual-http.log 2>&1 &
+          server=$!
+          trap 'kill $server || true' EXIT
+          sleep 2
+          node tools/studio-v3/visual-benchmark/browser.mjs
+      - name: Retain blinded genuine screenshots and reference
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-v3-visual-blind-review
+          path: ${{ runner.temp }}/studio-v3-visual-evidence/blind-review
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Retain private mapping, source assets and technical evidence separately
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-v3-visual-receipts
+          path: |
+            ${{ runner.temp }}/studio-v3-visual-evidence/private-receipts
+            ${{ runner.temp }}/studio-v3-visual-evidence/report.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Verify tracked source unchanged
+        if: always()
+        run: git diff --exit-code
