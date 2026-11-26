@@ -2,7 +2,7 @@ name: Studio - Valoria roadside architectural asset
 on:
   push:
     branches: [pilot/eldoria-openai-development-studio-20261125]
-    paths: ['tools/openai-development-studio/senda-ruin-request.json']
+    paths: ['tools/openai-development-studio/senda-ruin-closeout.json']
 permissions:
   contents: read
   actions: read
@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   benchmark:
-    if: github.run_attempt == 1 && github.event.before == '7089e8d24c57dab31bb28b36a549a09d426df4a4' && github.event.head_commit.message == 'Run bounded Senda Valoria ruin mission once'
+    if: ${{ false }} # paid mission closed
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -75,3 +75,33 @@ jobs:
           path: /tmp/senda-economics/
           retention-days: 30
           if-no-files-found: warn
+
+  archive:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Archive exact usage without API access
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/senda-receipts
+          gh run download 45772954576 --repo "$GITHUB_REPOSITORY" --name senda-ruin-economics-45772954576 --dir /tmp/senda-receipts
+          python3 - <<'PY'
+          import json
+          from decimal import Decimal as D
+          from pathlib import Path
+          r=json.loads(Path('/tmp/senda-receipts/run-45772954576.json').read_text())
+          assert r['calls_recorded']==5 and r['estimate_complete'] and r['billed_usd'] is None
+          assert D(r['estimated_known_usd'])==D('.07832050')
+          PY
+          python3 tools/openai-development-studio/publish_receipts.py /tmp/senda-receipts

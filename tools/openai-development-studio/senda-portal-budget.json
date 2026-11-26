@@ -8,7 +8,7 @@
   },
   "authorized_additional_ceiling_usd": "10.00",
   "first_tranche_reserved_usd": "4.35",
-  "scope": "Second tranche of existing $10 PR195 authorization. Single portal asset intervention, no automatic renewal.",
+  "scope": "Second tranche of existing $10 PR195 authorization. Three completed interventions; no automatic renewal.",
   "reservations": [
     {
       "id": "senda-portal-production-v1",
@@ -32,12 +32,15 @@
     {
       "id": "senda-valoria-ruin-v1",
       "reserve_usd": "1.45",
-      "status": "authorized_once",
-      "run_id": "senda-valoria-ruin-v1",
-      "reason": "High-impact foreground military ruin; existing $10 ceiling, no auto retry."
+      "status": "executed",
+      "run_id": 45772954576,
+      "reason": "High-impact foreground military ruin; existing $10 ceiling, no auto retry.",
+      "estimated_usd": "0.07832050",
+      "result_artifact_id": 15094293865,
+      "quality_result": "Auditor rejected low parapet replacement. Asset alpha inspected; alternative isolated roadside arch candidate, runtime A/B required. Not approved."
     }
   ],
-  "estimated_total_usd": "0.15497850",
-  "cumulative_pr195_estimated_usd": "0.33041875",
+  "estimated_total_usd": "0.23329900",
+  "cumulative_pr195_estimated_usd": "0.40873925",
   "billing_verified": false
 }
