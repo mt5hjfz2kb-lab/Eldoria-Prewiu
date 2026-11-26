@@ -24,6 +24,13 @@ import economics
 BRANCH = "refs/heads/pilot/eldoria-studio-v3-autonomous-execution-20261126"
 RESERVE = {"producer": Decimal("0.20"), "auditor": Decimal("0.15")}
 D = Decimal
+SMALL_PILOT_RESERVE = {"producer": D("0.15"), "auditor": D("0.10")}
+
+def checked_reserves(reserves, g):
+    if reserves is None:
+        return RESERVE.copy()
+    require(reserves == SMALL_PILOT_RESERVE and g["id"] in ("v3-senda-a","v3-senda-b") and g["max_attempts"] <= 2 and economics.money(g["cap_usd"]) <= D("0.525"), "Unapproved smaller reservation profile")
+    return reserves.copy()
 
 def require(ok,msg):
     if not ok:
@@ -32,7 +39,7 @@ def require(ok,msg):
 def sha(raw):
     return hashlib.sha256(raw).hexdigest()
 
-def authorize(raw_grant, isolated_budget, dispatch, day):
+def authorize(raw_grant, isolated_budget, dispatch, day, reserves=None):
     require(type(raw_grant) is bytes and 0 < len(raw_grant) <= 16000,"Invalid grant bytes")
     g = adapter.unique_json(raw_grant.decode("utf-8"))
     keys = ["schema","id","mission_id","source_sha","target","objective","producer","auditor","required_checks","files","max_attempts","cap_usd","routing_profile","approved_public_game_evidence","expires_on"]
@@ -55,7 +62,7 @@ def authorize(raw_grant, isolated_budget, dispatch, day):
     require(adapter.exact(dispatch,["branch","run_attempt","grant_sha256","verified_unique_dispatch","owner_authorized"]),"Unverified dispatch")
     require(dispatch["branch"]==BRANCH and dispatch["run_attempt"]==1 and dispatch["grant_sha256"]==sha(raw_grant) and dispatch["verified_unique_dispatch"] is True and dispatch["owner_authorized"] is True,"Dispatch not authorized")
     cap=economics.money(g["cap_usd"])
-    required=g["max_attempts"]*sum(RESERVE.values(),D(0))
+    required=g["max_attempts"]*sum(checked_reserves(reserves,g).values(),D(0))
     require(required<=cap<=D("5.00"),"Insufficient isolated reservation or excessive pilot cap")
     # Isolate this cycle from the active V2/Corona allocation.
     require(isolated_budget.get("v3_isolated") is True,"V3 isolated budget required")
@@ -82,8 +89,9 @@ def verify_role_request(req,g):
     return role,attempt
 
 class Session:
-    def __init__(self,raw_grant,isolated_budget,dispatch,day,root):
-        self.grant=authorize(raw_grant,isolated_budget,dispatch,day)
+    def __init__(self,raw_grant,isolated_budget,dispatch,day,root,reserves=None):
+        self.grant=authorize(raw_grant,isolated_budget,dispatch,day,reserves)
+        self.reserves=checked_reserves(reserves,self.grant)
         self.cap=economics.money(self.grant["cap_usd"])
         self.root=pathlib.Path(root)
         self.root.mkdir(parents=False,exist_ok=False)
@@ -110,16 +118,26 @@ class Session:
         if role=="auditor":
             require(any(e["slot"]=="producer-"+str(attempt) and e["state"]=="completed" for e in entries),"Auditor requires completed producer")
         v2role,payload,manifest=adapter.prepare_payload(req,self.grant["routing_profile"])
+        if self.reserves == SMALL_PILOT_RESERVE:
+            require(len(adapter.canonical(req).encode("utf-8")) <= 16000,"Small pilot request exceeds 16KB")
         require(type(key) is str and bool(key.strip()),"Trusted host must supply key")
-        reserve=RESERVE[role]
+        reserve=self.reserves[role]
         new_total=D(self.ledger["reserved_usd"])+reserve
         require(new_total<=self.cap,"Cumulative reservation exhausted")
         entry={"slot":slot,"request_digest":req["request_digest"],"reserved_usd":str(reserve),"state":"reserved_before_network","estimated_usd":None}
         entries.append(entry);self.ledger["reserved_usd"]=str(new_total)
         self._persist()
+        import time
+        started=time.monotonic()
         try:
             send=network if network is not None else adapter.studio.request_api
             raw=send(payload,key)
+            entry.update(response_id=raw.get("id"),api_status=raw.get("status"),usage=raw.get("usage"),duration_ms=round((time.monotonic()-started)*1000))
+            try:
+                entry["estimated_usd"]=str(economics.estimate(raw.get("model") or payload["model"],raw.get("usage"),raw.get("service_tier") or "standard"))
+            except (KeyError,ValueError,TypeError):
+                entry["estimated_usd"]=None
+            self._persist()
             report=adapter.studio.report(v2role,payload,manifest,raw)
             cost=economics.money(report["cost_estimate_usd"])
             entry.update(estimated_usd=str(cost),usage=report["usage"],model=report["model_returned"],tariff=report["tariff"],billing_verified=False)
@@ -133,6 +151,7 @@ class Session:
             return packet
         except Exception:
             if entry["state"]!="over_reservation":
+                entry["duration_ms"]=round((time.monotonic()-started)*1000)
                 entry["state"]="failed_reserved";self.ledger["halted"]=True
                 self._persist()
             raise
