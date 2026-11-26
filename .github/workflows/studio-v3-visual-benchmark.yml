@@ -18,10 +18,12 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
-          sparse-checkout: tools/studio-v3/visual-benchmark
+          sparse-checkout: |
+            tools/studio-v3/visual-benchmark
+            tools/openai-development-studio
           fetch-depth: 1
       - name: Validate restricted design grammar
-        run: node --test tools/studio-v3/visual-benchmark/design.test.mjs
+        run: node --test tools/studio-v3/visual-benchmark/design.test.mjs tools/studio-v3/visual-benchmark/role-contract.test.mjs
       - name: Materialize only immutable actual source and shared art references
         run: |
           set -euo pipefail
@@ -52,6 +54,15 @@ jobs:
           trap 'kill $server || true' EXIT
           sleep 2
           node tools/studio-v3/visual-benchmark/browser.mjs
+      - name: Prepare verified screenshot sheets and separate blinded role packets
+        env:
+          NODE_PATH: ${{ runner.temp }}/studio-v3-visual-node/node_modules
+        run: node tools/studio-v3/visual-benchmark/role-inputs.mjs
+      - name: Verify actual V2 visual client unchanged and prepare real multimodal payloads offline
+        run: |
+          git fetch --no-tags --depth=1 origin 1657b2caa6b1a955319538ce3a8b2906398599b3
+          git diff --exit-code 1657b2caa6b1a955319538ce3a8b2906398599b3 HEAD -- tools/openai-development-studio
+          PYTHONDONTWRITEBYTECODE=1 python3 tools/studio-v3/visual-benchmark/v2-visual-payload.py "$V3_VISUAL_OUT"
       - name: Retain blinded genuine screenshots and reference
         if: always()
         uses: actions/upload-artifact@v4
@@ -68,6 +79,7 @@ jobs:
           path: |
             ${{ runner.temp }}/studio-v3-visual-evidence/private-receipts
             ${{ runner.temp }}/studio-v3-visual-evidence/report.json
+            ${{ runner.temp }}/studio-v3-visual-evidence/role-inputs
           if-no-files-found: warn
           retention-days: 14
       - name: Verify tracked source unchanged
