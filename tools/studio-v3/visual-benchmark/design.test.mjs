@@ -1,0 +1,10 @@
+import {test} from "node:test";
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+import {assemble,validateArt,validateLayout,TARGET} from "./design.mjs";
+const f=JSON.parse(readFileSync(new URL("./calibration.json",import.meta.url)));
+const clone=x=>structuredClone(x);
+test("both calibration packets compile actual distinct art and CSS",()=>{const a=f.packets.map(assemble);assert.notEqual(a[0].css_sha256,a[1].css_sha256);assert.notEqual(a[0].art_sha256,a[1].art_sha256);assert.ok(a.every(x=>x.css.includes("#play")&&x.css.includes("#end")&&x.svg.startsWith("<svg")))});
+test("no injected CSS, external URLs, or arbitrary SVG attributes",()=>{let p=clone(f.packets[0]);p.direction.palette.ink="#123456;display:none";assert.throws(()=>assemble(p));p=clone(f.packets[0]);p.art.paths[0].d='M0 0"><script>';assert.throws(()=>assemble(p));p=clone(f.packets[0]);p.art.paths[0].href="https://bad.example";assert.throws(()=>assemble(p))});
+test("layout guard forbids too-small controls, unknown fields and unsafe bounds",()=>{let p=clone(f.packets[0]);p.layout.control=10;assert.throws(()=>assemble(p));p=clone(f.packets[0]);p.layout.hideButtons=true;assert.throws(()=>assemble(p));p=clone(f.packets[0]);p.layout.modal_width=1000;assert.throws(()=>assemble(p))});
+test("only declared target and independent role contributions accepted",()=>{let p=clone(f.packets[0]);p.target="WRONG";assert.throws(()=>assemble(p));p=clone(f.packets[0]);delete p.art;assert.throws(()=>assemble(p));p=clone(f.packets[0]);p.layout.icon_position="hide";assert.throws(()=>assemble(p))});

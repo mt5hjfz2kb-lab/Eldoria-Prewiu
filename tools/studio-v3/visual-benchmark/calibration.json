@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "description": "Two independently hand-authored calibration packets from this chat; NOT agent comparison or scored artistic result.",
+  "packets": [
+    {
+      "schema": 1,
+      "target": "SENDA_UI_VISUAL_SYSTEM",
+      "direction": {
+        "palette": {
+          "ink": "#101D2A",
+          "surface": "#223B47",
+          "light": "#355460",
+          "trim": "#B99B63",
+          "text": "#F8E9CA",
+          "muted": "#E6D7B7",
+          "action": "#C6A66D",
+          "action_text": "#171D22",
+          "shield": "#D6B6F3"
+        },
+        "identity": "Military expedition, one compact information strip, brass details without distracting from combat.",
+        "title_font": "serif",
+        "frame": "bevel",
+        "texture": "matte"
+      },
+      "art": {
+        "placement": "corners",
+        "paths": [
+          {
+            "d": "M8 80 L8 8 L80 8 L64 18 L18 18 L18 64 Z",
+            "fill": "trim",
+            "stroke": "light",
+            "width": 1
+          },
+          {
+            "d": "M18 40 L40 18 L52 18 L18 52 Z",
+            "fill": "surface",
+            "stroke": "trim",
+            "width": 1
+          },
+          {
+            "d": "M23 23 L35 23 L23 35 Z",
+            "fill": "action",
+            "stroke": "none",
+            "width": 0
+          }
+        ]
+      },
+      "layout": {
+        "gutter": 12,
+        "gap": 5,
+        "title": 22,
+        "label": 10,
+        "value": 21,
+        "stat_height": 48,
+        "control": 48,
+        "modal_width": 348,
+        "modal_padding": 17,
+        "footer_gap": 8,
+        "hud_pad": 10,
+        "stat_style": "strip",
+        "icon_position": "left",
+        "panel_align": "center"
+      }
+    },
+    {
+      "schema": 1,
+      "target": "SENDA_UI_VISUAL_SYSTEM",
+      "direction": {
+        "palette": {
+          "ink": "#1A1428",
+          "surface": "#30223F",
+          "light": "#463354",
+          "trim": "#C99C54",
+          "text": "#F1E9D4",
+          "muted": "#DCCDD1",
+          "action": "#63D9CF",
+          "action_text": "#14282D",
+          "shield": "#D0A6FF"
+        },
+        "identity": "Corona de la Brecha: dark obsidian with a small amethyst sigil, aged gold, turquoise reserved for the main decision; live legible labels.",
+        "title_font": "serif",
+        "frame": "inset",
+        "texture": "obsidian"
+      },
+      "art": {
+        "placement": "crest-and-corners",
+        "paths": [
+          {
+            "d": "M50 4 L94 50 L50 96 L6 50 Z",
+            "fill": "surface",
+            "stroke": "trim",
+            "width": 3
+          },
+          {
+            "d": "M50 12 L82 50 L50 88 L18 50 Z",
+            "fill": "none",
+            "stroke": "light",
+            "width": 2
+          },
+          {
+            "d": "M50 25 L62 43 L54 47 L65 60 L48 80 L38 59 L44 52 L34 43 Z",
+            "fill": "shield",
+            "stroke": "trim",
+            "width": 1
+          },
+          {
+            "d": "M11 50 Q20 30 35 20 M89 50 Q80 30 65 20",
+            "fill": "none",
+            "stroke": "trim",
+            "width": 2
+          }
+        ]
+      },
+      "layout": {
+        "gutter": 11,
+        "gap": 4,
+        "title": 22,
+        "label": 10,
+        "value": 22,
+        "stat_height": 49,
+        "control": 50,
+        "modal_width": 350,
+        "modal_padding": 19,
+        "footer_gap": 9,
+        "hud_pad": 10,
+        "stat_style": "tiles",
+        "icon_position": "left",
+        "panel_align": "center"
+      }
+    }
+  ]
+}
