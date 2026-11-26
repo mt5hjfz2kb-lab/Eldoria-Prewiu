@@ -1,17 +1,17 @@
-name: Senda | verified geological landmark transfer
+name: Senda | verified roadside arch candidate transfer
 on:
   push:
     branches: [feature/senda-brecha-lane-event-20261115]
-    paths: ['tools/senda-brecha/material/landmark-request.json']
+    paths: ['tools/senda-brecha/material/ruin-request.json']
 permissions:
   contents: read
   actions: read
 concurrency:
-  group: senda-landmark-material-transfer
+  group: senda-ruin-material-transfer
   cancel-in-progress: false
 jobs:
   prepare:
-    if: github.run_attempt == 1 && github.event.before == '1bdff784ff961ddfe76a48cd82b9b991e1695e52' && github.event.head_commit.message == 'Prepare verified Breach landmark once'
+    if: github.run_attempt == 1 && github.event.before == '4e2ffc14a7ee6be0f799cdd8e862251727387ca1' && github.event.head_commit.message == 'Prepare bounded roadside arch candidate once'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -25,15 +25,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh api repos/$GITHUB_REPOSITORY/actions/runs/45771904456 --jq '.conclusion' | grep -x success
-          gh api repos/$GITHUB_REPOSITORY/actions/artifacts/15094351746 --jq '.name' | grep -x senda-landmark-result-45771904456
-          gh run download 45771904456 --repo "$GITHUB_REPOSITORY" --name senda-landmark-result-45771904456 --dir /tmp/senda-landmark
+          gh api repos/$GITHUB_REPOSITORY/actions/runs/45772954576 --jq '.conclusion' | grep -x success
+          gh api repos/$GITHUB_REPOSITORY/actions/artifacts/15094293865 --jq '.name' | grep -x senda-ruin-result-45772954576
+          gh run download 45772954576 --repo "$GITHUB_REPOSITORY" --name senda-ruin-result-45772954576 --dir /tmp/senda-ruin
           python3 -m pip install --disable-pip-version-check Pillow==11.3.0 numpy==2.2.6 
-          python3 tools/senda-brecha/material/prepare_landmark.py /tmp/senda-landmark/candidate.png /tmp/senda-landmark-out
+          python3 tools/senda-brecha/material/prepare_ruin.py /tmp/senda-ruin/candidate.png /tmp/senda-ruin-out
       - uses: actions/upload-artifact@v4
         with:
-          name: verified-senda-landmark
-          path: /tmp/senda-landmark-out/
+          name: verified-senda-ruin
+          path: /tmp/senda-ruin-out/
           if-no-files-found: error
   archive:
     needs: prepare
@@ -51,21 +51,21 @@ jobs:
             tools/senda-brecha
       - uses: actions/download-artifact@v4
         with:
-          name: verified-senda-landmark
-          path: /tmp/senda-landmark-out
-      - name: Commit only verified landmark and provenance
+          name: verified-senda-ruin
+          path: /tmp/senda-ruin-out
+      - name: Commit only verified ruin candidate and provenance
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           dir=tools/senda-brecha/visual-3d/art
           mkdir -p "$dir"
-          for n in senda-breach-landmark.png senda-breach-landmark.json; do
+          for n in senda-valoria-ruin.png senda-valoria-ruin.json; do
             test ! -e "$dir/$n"
-            cp "/tmp/senda-landmark-out/$n" "$dir/$n"
+            cp "/tmp/senda-ruin-out/$n" "$dir/$n"
             git add "$dir/$n"
           done
           test "$(git diff --cached --name-only | wc -l)" = 2
           git config user.name 'eldoria-studio-material'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -m "Archive verified Breach landmark surface"
+          git commit -m "Archive verified roadside arch candidate"
           git push origin HEAD:refs/heads/feature/senda-brecha-lane-event-20261115
