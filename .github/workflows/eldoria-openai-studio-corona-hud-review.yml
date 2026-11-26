@@ -2,7 +2,7 @@ name: Studio - Corona commercial HUD review
 on:
   push:
     branches: [pilot/eldoria-openai-development-studio-20261125]
-    paths: ['tools/openai-development-studio/corona-hud-budget.json']
+    paths: ['.github/workflows/eldoria-openai-studio-corona-hud-review.yml', 'tools/openai-development-studio/corona-hud-budget.json']
 permissions:
   contents: read
   actions: read
@@ -11,7 +11,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   review:
-    if: github.run_attempt == 1 && github.event.before == '530e5ea765213dd87d59a2f8e1ddf6b014b855d7' && github.event.head_commit.message == 'Studio: execute one bounded Corona HUD commercial review under transferred owner priority'
+    if: >-
+      ${{ github.run_attempt == 1 && github.event.before == '5c0821201e151e4a1227d62c6239a1c911cd20ad' && github.event.head_commit.message == 'Studio Corona HUD review rearm after zero-job YAML failure' }}
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
