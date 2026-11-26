@@ -141,6 +141,19 @@ namespace Eldoria.Tests
             finally {Object.DestroyImmediate(root);}
         }
 
+        [TestCase(600f,110f,10f,3,15,5)]
+        [TestCase(590f,110f,10f,3,15,5)]
+        [TestCase(589f,110f,10f,3,15,4)]
+        [TestCase(600f,110f,10f,3,12,4)]
+        [TestCase(400f,128f,10f,2,15,2)]
+        public void InventoryDensityDoesNotReduceCellDimensions(float available,float height,float gap,int columns,int slots,int expected)
+        {
+            int rows=CoronaFinish.InventoryVisibleRows(available,height,gap,columns,slots);
+            Assert.AreEqual(expected,rows);
+            Assert.That(rows*columns,Is.LessThanOrEqualTo(slots));
+            Assert.That(rows*height+(rows-1)*gap,Is.LessThanOrEqualTo(available));
+        }
+
         [TestCase(90f,128f,35f)]
         [TestCase(140f,140f,35f)]
         [TestCase(210f,210f,50f)]

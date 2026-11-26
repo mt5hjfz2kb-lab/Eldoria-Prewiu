@@ -40,6 +40,14 @@ namespace Eldoria.UI.RoyalGold.V2
             if (modal.Secondary) ApplyButtonFeedback(modal.Secondary);
         }
 
+        // Dense inventory: extra cells only when their original dimensions fit.
+        // Do not shrink art, caption, action or tap areas to force a fifth row.
+        public static int InventoryVisibleRows(float available,float cellHeight,float gap,int columns,int slots)
+        {
+            int limit=Mathf.Max(1,Mathf.Min(5,slots/Mathf.Max(1,columns)));
+            return Mathf.Clamp(Mathf.FloorToInt((available+gap)/(cellHeight+gap)),1,limit);
+        }
+
         // Disjoint top-left logical bands within the existing saved-packet cell.
         public static void InventoryBands(float width,float height,float actionHeight,
             out Rect icon,out Rect caption,out Rect action)

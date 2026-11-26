@@ -216,7 +216,8 @@ namespace Eldoria.UI.RoyalGold.V2
             count=TextAt("Issue186 available count",panel,17,Ivory);
             feedback=TextAt("Issue186 real command feedback",panel,14,Gold);
             back=Action("Issue186 bag close",panel,"VOLVER",Close,out _);
-            for(int i=0;i<12;i++)
+            int slotPool=corona?15:12;
+            for(int i=0;i<slotPool;i++)
             {
                 int index=i;
                 var r=new Row();
@@ -346,13 +347,15 @@ namespace Eldoria.UI.RoyalGold.V2
             float cell=Mathf.Min((width-gap*(columns-1))/columns,
                 Mathf.Max(80f,footer-52f-cardsTop));
             float cellHeight=portraitCorona?Mathf.Max(cell,128f):cell;
-            int lines=Mathf.Clamp(Mathf.FloorToInt(
-                (footer-52f-cardsTop+gap)/(cellHeight+gap)),1,12/columns);
+            int lines=portraitCorona
+                ? CoronaFinish.InventoryVisibleRows(footer-52f-cardsTop,cellHeight,gap,columns,rows.Count)
+                : Mathf.Clamp(Mathf.FloorToInt(
+                    (footer-52f-cardsTop+gap)/(cellHeight+gap)),1,12/columns);
             perPage=columns*lines;
             // Share leftover portrait height between rows while keeping the feedback
             // and paging controls anchored below the inventory.
             float rowGap=portraitCorona && lines>1
-                ? Mathf.Clamp((footer-66f-cardsTop-lines*cellHeight)/(lines-1),gap,cell*.24f) : gap;
+                ? Mathf.Clamp((footer-66f-cardsTop-lines*cellHeight)/(lines-1),gap,Mathf.Max(gap,cell*.24f)) : gap;
             float gridW=columns*cell+(columns-1)*gap;
             float gridLeft=x0+(width-gridW)*.5f;
             for(int i=0;i<rows.Count;i++)
