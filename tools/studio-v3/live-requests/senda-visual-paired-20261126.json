@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "id": "v3-senda-visual-paired-20261126",
+  "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+  "reference_sha": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+  "target": "SENDA_UI_VISUAL_SYSTEM",
+  "production_evidence": {
+    "primary_sha256": "584ea87bcfd63cd6923dae244ceb20b4e2e44040a1b8eedb5964dbfed73538dd",
+    "secondary_sha256": "5c8c1bf49440ff5bbb8513c6c5849b2912339282f042c425494bdb16cc3cc27d",
+    "reference_text_sha256": "141650f4f5f7bf035af29b86168711a3c9052da3bab83dd11a59169692cf9fe1"
+  },
+  "calibration_run": 45892128146,
+  "max_total_usd": "2.00",
+  "arm_max_usd": "0.80",
+  "judge_max_usd": "0.40",
+  "expires_on": "2026-12-01",
+  "owner_authorized": true
+}
