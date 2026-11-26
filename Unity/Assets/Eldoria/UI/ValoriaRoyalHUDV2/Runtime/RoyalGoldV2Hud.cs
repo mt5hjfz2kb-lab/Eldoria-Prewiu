@@ -67,16 +67,21 @@ namespace Eldoria.UI.RoyalGold.V2
             label.fontStyle=FontStyle.Normal;
             int title=22,number=34;
             string left=value.Substring(0,split),right=value.Substring(split+1);
+            var rect=label.rectTransform.rect;
+            var settings=label.GetGenerationSettings(new Vector2(rect.width,rect.height));
+            var generator=label.cachedTextGeneratorForLayout;
+            float pixels=Mathf.Max(.01f,label.pixelsPerUnit);
+            string styled;
             while(true)
             {
-                string styled="<size="+title+"><color=#C9CDC0>"+left+
+                styled="<size="+title+"><color=#C9CDC0>"+left+
                     "</color></size>\n<size="+number+"><color=#FAEFD5>"+right+"</color></size>";
-                if(label.text!=styled)label.text=styled;
-                if((label.preferredWidth<=label.rectTransform.rect.width-2f &&
-                    label.preferredHeight<=label.rectTransform.rect.height) ||
+                if((generator.GetPreferredWidth(styled,settings)/pixels<=rect.width-2f &&
+                    generator.GetPreferredHeight(styled,settings)/pixels<=rect.height) ||
                     (title<=17 && number<=26))break;
                 title=Mathf.Max(17,title-1);number=Mathf.Max(26,number-2);
             }
+            if(label.text!=styled)label.text=styled;
         }
 
         // Numeric and dock text are single-line semantic roles. Measure actual

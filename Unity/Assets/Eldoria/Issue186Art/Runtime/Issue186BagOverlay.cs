@@ -401,6 +401,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 else
                 {
                     item.Amount.resizeTextForBestFit = false;
+                    item.Name.horizontalOverflow=HorizontalWrapMode.Wrap;
+                    item.Name.verticalOverflow=VerticalWrapMode.Truncate;
+                    item.Amount.horizontalOverflow=HorizontalWrapMode.Wrap;
+                    item.Amount.verticalOverflow=VerticalWrapMode.Truncate;
+                    item.Name.color=Ivory;item.Amount.color=Gold;
                 }
                 // Novelty is already represented by the original badge.
                 // Keep source state available without duplicating a text line.

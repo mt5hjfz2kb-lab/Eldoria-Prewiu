@@ -967,7 +967,7 @@ namespace Eldoria.DailyTreasures
                 bool collected=!newCycle && daily.CycleDay>0 && i+1<=daily.CycleDay;
                 dayHead[i].text="DÍA "+(i+1)+(collected?"  OK":next?"  HOY":"");
                 dayHead[i].color=next?Ivory:collected?Muted:
-                    CoronaPresentation.Active?CoronaPresentation.StatusGold:Gold;
+                    CoronaPresentation.Active?(Color)CoronaPresentation.StatusGold:Gold;
                 if(dayBack[i].sprite)
                     dayBack[i].color=next?Color.white:
                         collected?new Color(.62f,.62f,.59f,1f):
@@ -2212,6 +2212,7 @@ namespace Eldoria.DailyTreasures
                 float y=gridHeight*.5f-row*(cellH+gap)-cellH*.5f;
                 Place(dayBack[i].rectTransform,.5f,.5f,.5f,.5f,x,y,width,cellH);
                 bool roomy=cellH>=123.5f;
+                if(CoronaPresentation.Active)dayBody[i].resizeTextForBestFit=false;
                 Place(dayHead[i].rectTransform,.5f,1f,.5f,1f,0f,-5f,width-6f,25f);
                 dayHead[i].fontSize=roomy?18:17;
                 if(i==6)

@@ -148,5 +148,16 @@ def main():
         prompt="Auditor independiente. Imagen 1: ANTES, imagen 2: DESPUÉS (capturas WebGL reales del mismo recorrido). Revisa cada pantalla etiquetada, no premies el mero cambio de código. Evalúa mejora o regresión por criterios artísticos; null cuando no sea legible. No declares pruebas físicas, animación o aprobación basándote en estáticos. JSON puro {screens:{id:{before:number|null,after:number|null,delta:number|null,evidence:string,remaining:string}},overall:string}. Conserva las discrepancias con evaluación previa; no inventes una puntuación de referencia."
         result=call(args.studio,args.out,"audit",prompt,args.out/"brief.json",[old,args.out/"game.jpg"])
         assert set(result.get("screens",{}))=={x[0] for x in CFG["screens"]}
+        for key,screen in result["screens"].items():
+            assert set(screen)=={"before","after","delta","evidence","remaining"}
+            for role in ("before","after"):
+                score=screen[role]
+                assert score is None or (type(score) in (float,int) and 0<=score<=10)
+            screen["agent_reported_delta"]=screen["delta"]
+            screen["delta"]=None if screen["before"] is None or screen["after"] is None else round(screen["after"]-screen["before"],2)
+            screen["baseline_reference_score"]=plan["screens"][key]["reference_score"]
+            screen["reference_limit"]=plan["screens"][key]["reference"]
+        result["approval"]=False
+        result["reference_comparison"]="Original agent's reference scores are retained; audit is a separate before/after assessment, not physical device certification."
         dump(args.out/"audit.json",result)
 if __name__=="__main__":main()
