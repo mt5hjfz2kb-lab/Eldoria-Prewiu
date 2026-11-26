@@ -1,0 +1,106 @@
+name: Corona final exact revision calibrated art proof
+on:
+  push:
+    branches: [candidate/corona-final-calibrated-proof-20261126]
+    paths: ['.github/workflows/corona-final-calibrated-proof.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  final-evidence-and-review:
+    if: >-
+      ${{ github.run_attempt == 1 && github.event.before == '6bf18de64b89208a4cbf625d704274242a786cb5' && github.event.head_commit.message == 'Studio final exact-revision 33-view weighted audit within remaining authorized budget' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/corona-art-iteration
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 1657b2caa6b1a955319538ce3a8b2906398599b3
+          path: studio-source
+          sparse-checkout: tools/openai-development-studio
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 41c124f4b9ef10cd9b4a9d87562a7d2727b730b6
+          path: harness
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - name: Verify exact source and await existing native WebGL artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/45842935818" --jq .head_sha)" = "41c124f4b9ef10cd9b4a9d87562a7d2727b730b6"
+          for i in $(seq 1 100); do
+            state=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/45842935818/jobs" --jq '.jobs[] | select(.name=="unity") | .status')
+            result=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/45842935818/jobs" --jq '.jobs[] | select(.name=="unity") | .conclusion')
+            if [ "$state" = completed ]; then test "$result" = success; break; fi
+            sleep 30
+          done
+          test "$result" = success
+          gh run download 45842935818 --repo "$GITHUB_REPOSITORY" --name valoria-region1-webgl --dir player
+      - name: Capture five additional contextual screens in exact final playable build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VALORIA_DPR: '1'
+          VALORIA_EVIDENCE: aux-after
+          VALORIA_TEST_REGION: '1'
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet playwright==1.56.0 Pillow==11.3.0
+          python3 -m playwright install ffmpeg
+          gh run download 45837717094 --repo "$GITHUB_REPOSITORY" --name corona-auxiliary-original --dir aux-base
+          python3 tools/corona-art-iteration/final_extra_visual_capture.py patch harness/tools/valoria-modular25d/journey-browser.py extra-journey.py
+          python3 harness/tools/valoria-modular25d/journey-serve.py player 8824 &
+          python3 -u extra-journey.py 'http://127.0.0.1:8824/index.html?journey-qa'
+          python3 tools/corona-art-iteration/final_extra_visual_capture.py manifest aux-after 41c124f4b9ef10cd9b4a9d87562a7d2727b730b6 45842935818
+          python3 tools/corona-art-iteration/final_extra_visual_capture.py pairs aux-base aux-after aux
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-final-auxiliary-real-ab
+          path: |
+            aux/
+            aux-after/extra-*.png
+            aux-after/extra-manifest.json
+            aux-after/journey.json
+          if-no-files-found: warn
+      - name: Reuse completed calibrated baseline and actual final DPR1 captures
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 70); do
+            status=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/45842935818/jobs" --jq '.jobs[] | select(.name | startswith("mobile-journey (1,")) | .status')
+            result=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/45842935818/jobs" --jq '.jobs[] | select(.name | startswith("mobile-journey (1,")) | .conclusion')
+            calibration=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/45844200241" --jq .status)
+            if [ "$status" = completed ]; then test "$result" = success; fi
+            if [ "$calibration" = completed ]; then test "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/45844200241" --jq .conclusion)" = success; fi
+            if [ "$result" = success ] && [ "$calibration" = completed ]; then break; fi
+            sleep 30
+          done
+          test "$result" = success
+          test "$calibration" = completed
+          gh run download 45638738009 --repo "$GITHUB_REPOSITORY" --name ciudad-region-recorrido --dir baseline
+          gh run download 45842935818 --repo "$GITHUB_REPOSITORY" --name corona-before-after-dpr1 --dir ui
+          gh run download 45842935818 --repo "$GITHUB_REPOSITORY" --name ciudad-region-recorrido --dir candidate
+          gh run download 45842935818 --repo "$GITHUB_REPOSITORY" --name region1-cameras-and-routes --dir native
+          gh run download 45844200241 --repo "$GITHUB_REPOSITORY" --name corona-original-weight-calibrated-scorecard --dir resume
+          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-art-plan --dir references
+          python3 -m py_compile tools/corona-art-iteration/final_calibrated_review.py
+      - name: Independent final scores, exact original weights and source
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python3 tools/corona-art-iteration/final_calibrated_review.py --ui ui --baseline baseline --candidate candidate --aux aux --aux-base aux-base --aux-after aux-after --native native --references references --rubric tools/corona-art-iteration/calibrated-rubric-20261124.json --studio studio-source/tools/openai-development-studio --out final-calibrated --resume resume
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-final-exact-revision-calibrated-scorecard
+          path: final-calibrated/
+          if-no-files-found: warn
