@@ -1,0 +1,99 @@
+name: Studio - Corona secondary UI missions
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths: ['.github/workflows/eldoria-openai-studio-corona-secondary.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-studio-corona-secondary-owner-five
+  cancel-in-progress: false
+jobs:
+  review:
+    if: >-
+      ${{ github.run_attempt == 1 && github.event.before == '35ffe25733fdfc80212336f737843c7c937d319e' && github.event.head_commit.message == 'Corona Studio: owner authorizes dedicated five dollar allocation' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        mission: [hero-training, scout-vigilant, daily-name, mail-construction]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: tools/openai-development-studio
+      - name: Verify owner lease, budget and exact baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MISSION: ${{ matrix.mission }}
+        run: |
+          set -eu
+          cd tools/openai-development-studio
+          python3 budget_guard.py --self-test
+          python3 mission_packet.py --self-test
+          python3 - <<'PY'
+          import base64,json,subprocess,os,datetime
+          from decimal import Decimal as D
+          import budget_guard
+          def gh(p):return json.loads(subprocess.check_output(['gh','api',p],timeout=60))
+          repo=os.environ['GITHUB_REPOSITORY']
+          meta=gh(f'repos/{repo}/contents/pipeline/active-workstreams.json?ref=main')
+          blob=gh(f'repos/{repo}/git/blobs/{meta["sha"]}')
+          assert blob['sha']==meta['sha']
+          reg=json.loads(base64.b64decode(blob['content']))
+          a=next(a for a in reg['active'] if a['id']=='eldoria-openai-development-studio-20261125')
+          assert a['owner']=='chatgpt-corona-brecha-commercial-20261126' and a['ownership_revision']==18 and a['phase']=='CORONA_UI_AGENT_MISSION'
+          assert gh(f'repos/{repo}/git/ref/heads/pilot/eldoria-openai-development-studio-20261125')['object']['sha']==os.environ['GITHUB_SHA']
+          ledger=json.load(open('corona-owner-five-budget.json'))
+          day=datetime.datetime.now(datetime.timezone.utc).date()
+          check=budget_guard.validate(ledger,day)
+          assert D(check['cap_usd'])==D('5') and D(check['reserved_usd'])==D('2.8')
+          ident='corona-'+os.environ['MISSION']+'-20261126'
+          budget_guard.authorize(ledger,day,ident,ident,1,D('.70'))
+          PY
+          gh run download 45638738009 --repo "$GITHUB_REPOSITORY" --name ciudad-region-recorrido --dir /tmp/corona-baseline
+          python3 prepare_corona_secondary.py "$MISSION" /tmp/corona-baseline /tmp/corona-packet
+          python3 mission_packet.py --packet /tmp/corona-packet/packet.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: corona-packet-${{ matrix.mission }}
+          path: /tmp/corona-packet/
+      - name: Execute four real agents
+        id: live
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ELDORIA_AUTH_EVENT: corona-${{ matrix.mission }}-20261126
+        run: |
+          set -eu
+          date -u +%Y-%m-%dT%H:%M:%SZ > /tmp/corona-start
+          cd tools/openai-development-studio
+          cp corona-owner-five-budget.json budget-cycle.json
+          python3 - <<'PY'
+          import os,studio,mission_packet
+          studio.MAX_OUTPUT=2200
+          mission_packet.execute('/tmp/corona-packet/packet.json','/tmp/corona-result',True,os.environ['ELDORIA_AUTH_EVENT'])
+          PY
+      - name: Record measured usage
+        if: always() && steps.live.outcome != 'skipped'
+        env:
+          LIVE_STATUS: ${{ steps.live.outcome }}
+          MISSION: ${{ matrix.mission }}
+        run: |
+          mkdir -p /tmp/corona-economics
+          python3 tools/openai-development-studio/intervention_report.py collect --root /tmp/corona-result --run "$GITHUB_RUN_ID" --request "corona-$MISSION-20261126" --started "$(cat /tmp/corona-start)" --finished "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --source-run 45638738009 --status "$LIVE_STATUS" --out "/tmp/corona-economics/$MISSION.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-result-${{ matrix.mission }}
+          path: /tmp/corona-result/
+          retention-days: 30
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-economics-${{ matrix.mission }}
+          path: /tmp/corona-economics/
+          retention-days: 30
+          if-no-files-found: warn

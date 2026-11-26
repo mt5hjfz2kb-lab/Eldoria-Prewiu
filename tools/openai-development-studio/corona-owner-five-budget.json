@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "cycle": {
+    "starts": "2026-11-26",
+    "ends_exclusive": "2026-12-17",
+    "pilot_cap_usd": "5.00",
+    "automatic_reset": false
+  },
+  "scope": "New owner-authorized $5 allocation exclusively Corona de la Brecha, 2026-11-26. Separate from previous reservations; do not reclaim. No retries or automatic reset. Reserve $2.80 for initial four missions, retain $2.20 for evidence-based implementation and A/B review.",
+  "reservations": [
+    {
+      "id": "corona-hero-training-20261126",
+      "run_id": "corona-hero-training-20261126",
+      "status": "authorized_once",
+      "reserve_usd": "0.70"
+    },
+    {
+      "id": "corona-scout-vigilant-20261126",
+      "run_id": "corona-scout-vigilant-20261126",
+      "status": "authorized_once",
+      "reserve_usd": "0.70"
+    },
+    {
+      "id": "corona-daily-name-20261126",
+      "run_id": "corona-daily-name-20261126",
+      "status": "authorized_once",
+      "reserve_usd": "0.70"
+    },
+    {
+      "id": "corona-mail-construction-20261126",
+      "run_id": "corona-mail-construction-20261126",
+      "status": "authorized_once",
+      "reserve_usd": "0.70"
+    }
+  ],
+  "policy": {
+    "allow_automatic_retries": false,
+    "api_invoice_verified": false
+  }
+}
