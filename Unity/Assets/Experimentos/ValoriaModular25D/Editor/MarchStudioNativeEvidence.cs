@@ -214,21 +214,34 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                         var slider=manager.VisibleRoot.GetComponentInChildren<Slider>(true);
                         slider.value=7;manager.SynchronizeLayout();
                         var count=FindButton(manager,"Increase quantity");
-                        if(count&&count.interactable)
+                        var initialCount=manager.SelectedQuantity;
+                        bool increased=count&&count.interactable&&ClickNative(count,cam);
+                        Defect(increased&&manager.SelectedQuantity==initialCount+1,"Increment down-up-click did not change quantity "+fixture);
+                        var reduce=FindButton(manager,"Reduce quantity");
+                        var increasedCount=manager.SelectedQuantity;
+                        bool reduced=reduce&&reduce.interactable&&ClickNative(reduce,cam);
+                        Defect(reduced&&manager.SelectedQuantity==increasedCount-1,"Decrement down-up-click did not change quantity "+fixture);
+                        var modeButton=FindButton(manager,"Edit march by percent");
+                        if(modeButton&&modeButton.interactable)
                         {
-                            bool hit=ClickNative(count,cam);
-                            Defect(hit,"Increment actual click not proven "+fixture);
-                            if(!hit)count.onClick.Invoke(); // functional diagnostic only
+                            var modeLabel=modeButton.GetComponentInChildren<RoyalText>(true);
+                            var initialMode=modeLabel?modeLabel.text:"";
+                            bool changed=ClickNative(modeButton,cam);
+                            Defect(changed&&modeLabel&&modeLabel.text!=initialMode,"Percentage mode down-up-click not proven "+fixture);
+                            bool restored=ClickNative(modeButton,cam);
+                            Defect(restored&&modeLabel&&modeLabel.text==initialMode,"Quantity mode restoration not proven "+fixture);
                         }
+                        else Defect(false,"Quantity mode control unavailable "+fixture);
                         manager.SynchronizeLayout();
                         var expected=manager.SelectedQuantity;
                         var action=manager.VisibleAction;
-                        Need(action&&action.interactable,"Real confirm command available "+fixture);
-                        bool confirmed=ClickNative(action,cam);
-                        Defect(confirmed,"Confirm actual click not proven "+fixture);
-                        if(!confirmed)action.onClick.Invoke(); // preserve diagnostic, never call it touch proof
+                        Defect(action&&action.interactable,"Real confirm command unavailable "+fixture);
+                        bool confirmed=action&&action.interactable&&ClickNative(action,cam);
                         var saved=gateway.Snapshot();
-                        Need(saved.MarchConfigured&&(mixed?saved.PreparedTroops.ArcherT2:saved.PreparedTroops.ArcherT1)==expected,"Real confirm persists chosen family quantity "+fixture);
+                        Defect(confirmed&&saved.MarchConfigured&&(mixed?saved.PreparedTroops.ArcherT2:saved.PreparedTroops.ArcherT1)==expected,
+                            "Confirm down-up-click did not persist chosen quantity "+fixture+" expected="+expected+" actual="+(mixed?saved.PreparedTroops.ArcherT2:saved.PreparedTroops.ArcherT1));
+                        // Do not bypass event handlers. Collect the other
+                        // authentic frames even when the interaction fails. 
                     }
                     cam.targetTexture=null;target.Release();Object.Destroy(target);
                     room.SetActive(false);Object.Destroy(room);
@@ -296,7 +309,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             if(!PointerTarget(button,cam,out string first)){Debug.LogWarning("MARCH_STUDIO_POINTER_MISS "+button.name+" -> "+first);return false;}
             var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);
             var pos=(RectTransformUtility.WorldToScreenPoint(cam,corners[0])+RectTransformUtility.WorldToScreenPoint(cam,corners[2]))*.5f;
-            var ev=new PointerEventData(EventSystem.current){position=pos,button=PointerEventData.InputButton.Left};
+            // RoyalButton accepts a click only after matching Down -> Up;
+            // invoking OnPointerClick alone cannot exercise its drag guard.
+            var ev=new PointerEventData(EventSystem.current){position=pos,pressPosition=pos,pointerId=-1,button=PointerEventData.InputButton.Left,eligibleForClick=true};
+            ExecuteEvents.Execute(button.gameObject,ev,ExecuteEvents.pointerDownHandler);
+            ExecuteEvents.Execute(button.gameObject,ev,ExecuteEvents.pointerUpHandler);
             ExecuteEvents.Execute(button.gameObject,ev,ExecuteEvents.pointerClickHandler);
             return true;
         }

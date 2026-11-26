@@ -112,9 +112,21 @@ namespace Eldoria.UI.RoyalGold.V2
             if(split<0){marchMetricValues[i].Put(live);return;}
             studioMetricCaptions[i].Put(live.Substring(0,split));
             marchMetricValues[i].Put(live.Substring(split+1));
-            CoronaFinish.FitSingleLine(studioMetricCaptions[i],28,25);
-            CoronaFinish.FitSingleLine(marchMetricValues[i],36,29);
+            FitStudioText(studioMetricCaptions[i],27,25);
+            FitStudioText(marchMetricValues[i],35,29);
         }
+        // Fit both dimensions, including the two-line hero labels. Width-only
+        // fitting was insufficient for the real native metric caption rects.
+        static void FitStudioText(RoyalText label,int max,int min)
+        {
+            if(!label)return;
+            label.fontSize=max;
+            while(label.fontSize>min &&
+                (label.preferredHeight>label.rectTransform.rect.height-1f ||
+                 label.preferredWidth>label.rectTransform.rect.width-1f))
+                label.fontSize--;
+        }
+
         void ApplyStudioMarchPortrait(float w,float h,float x,float insetRight,float top,float bottom)
         {
 #if UNITY_EDITOR
@@ -162,7 +174,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
             // R3 director and technical challenge, actual run 45882958150.
             // More portrait height; two-column obsidian summary; preserve order controls.
-            float gap=12f,heroH=bodyH*.31f,troopH=bodyH*.32f;
+            float gap=12f,heroH=bodyH*.33f,troopH=Mathf.Max(410f,bodyH*.30f);
             float summaryH=bodyH-heroH-troopH-gap;
             Place(left,x,bodyY,width,heroH+troopH);
             Place(right,x,bodyY+heroH+troopH+gap,width,summaryH);
@@ -172,14 +184,19 @@ namespace Eldoria.UI.RoyalGold.V2
             StudioText(unitTitle,30,StudioBrass,TextAnchor.MiddleLeft,true);
             Place((RectTransform)heroesButton.transform,lw-220,2,210,92);
             StudioButton(heroesButton,StudioInk,28);
-            float cardTop=97f,cardH=heroH-cardTop-12f,cardGap=10f,cardW=(lw-28f-2f*cardGap)/3f;
+            float cardTop=97f,cardH=heroH-cardTop-12f,cardGap=10f;
+            float cardsW=lw-28f-2f*cardGap,leaderW=cardsW*.44f,wingW=(cardsW-leaderW)*.5f;
             for(int i=0;i<3;i++)
             {
+                // Preserve the director's triptych, but correct the visibly
+                // diminished commander's portrait in the authentic R3 frame.
+                float cardW=i==0?leaderW:wingW;
+                float cardX=i==0?14f:14f+leaderW+cardGap+(i-1)*(wingW+cardGap);
                 var card=(RectTransform)heroSlotButtons[i].transform;
-                Place(card,14+i*(cardW+cardGap),cardTop,cardW,cardH);
+                Place(card,cardX,cardTop,cardW,cardH);
                 HideDecorations(card);
                 StudioPlate("hero slot "+i,card,1,1,cardW-2,cardH-2,StudioInk,true,"panel_obsidian");
-                float captionH=72f,artW2=cardW-16,artH2=cardH-captionH-14;
+                float captionH=80f,artW2=cardW-16,artH2=cardH-captionH-14;
                 Place(heroPortraitViewports[i],8,8,artW2,artH2);
                 var sprite=approvedHeroes[i].sprite;
                 float ar=sprite?sprite.rect.width/sprite.rect.height:1f;
@@ -194,7 +211,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 var ribbon=StudioPlate("hero caption "+i,card,6,cardH-captionH,cardW-12,captionH-5,StudioInk,true,"secondary_quiet");
                 ribbon.transform.SetAsLastSibling();
                 Place(heroSlotLabels[i].rectTransform,7,cardH-captionH,cardW-14,captionH-5);
-                StudioText(heroSlotLabels[i],28,i==2?CoronaFinish.Muted:CoronaFinish.Ivory,TextAnchor.MiddleCenter);
+                StudioText(heroSlotLabels[i],27,i==2?CoronaFinish.Muted:CoronaFinish.Ivory,TextAnchor.MiddleCenter);
                 heroSlotLabels[i].transform.SetAsLastSibling();
             }
             float ty=heroH+4f;
@@ -263,10 +280,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 var cap=studioMetricCaptions[i];cap.gameObject.SetActive(true);
                 cap.font=CoronaFinish.ResolveFont(false);cap.fontStyle=FontStyle.Normal;
                 cap.color=CoronaFinish.Muted;cap.alignment=TextAnchor.MiddleCenter;
-                Place(cap.rectTransform,8,4,tileW-16,tileH*.39f-3f);
+                float captionH=Mathf.Max(36f,tileH*.43f);
+                Place(cap.rectTransform,8,2,tileW-16,captionH);
                 var value=marchMetricValues[i];
-                Place(value.rectTransform,8,tileH*.39f,tileW-16,tileH*.61f-4f);
-                StudioText(value,36,i==2?StudioBrass:(Color)CoronaFinish.Ivory,TextAnchor.MiddleCenter);
+                Place(value.rectTransform,8,captionH+2f,tileW-16,tileH-captionH-5f);
+                StudioText(value,35,i==2?StudioBrass:(Color)CoronaFinish.Ivory,TextAnchor.MiddleCenter);
             }
             float sy=rh-statusH-4f;
             StudioPlate("readiness strip",right,12,sy,rw-24,statusH-6,StudioSlate,true,"secondary_quiet");

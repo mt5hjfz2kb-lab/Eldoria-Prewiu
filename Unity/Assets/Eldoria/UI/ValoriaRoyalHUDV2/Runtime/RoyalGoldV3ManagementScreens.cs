@@ -774,6 +774,12 @@ namespace Eldoria.UI.RoyalGold.V2
                     heroSlotLabels[i].color=locked?CoronaFinish.Muted:CoronaFinish.Ivory;
                 }
                 approvedHeroes[i].gameObject.SetActive(!training);
+                if(!training&&studioMarchActive)
+                {
+                    if(!string.IsNullOrEmpty(heroSlots[i]))
+                        heroSlotLabels[i].Put(heroSlotLabels[i].text.Replace(" · ","\n"));
+                    FitStudioText(heroSlotLabels[i],27,24);
+                }
             }
             approvedTroopRow.gameObject.SetActive(!training);
             percentModeButton.gameObject.SetActive(!training);
