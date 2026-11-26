@@ -104,7 +104,7 @@ const cylinder=(parent,x,y,z,r,depth,color,metal=0)=>mesh(geom(`cylinder:${r}:${
 const cone=(parent,x,y,z,r,h,color)=>mesh(geom(`cone:${r}:${h}`,()=>new THREE.ConeGeometry(r,h,7)),mat(color),parent,x,y,z);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 let squad=[],foes=[],gates=[],projectiles=[],trees=[],runes=[],foeGroup,laneMarker;
-let canonicalReady=false,canonicalError='',heroMixer=null,heroWalk=null,heroAttack=null,heroRoot=null,heroAnimated=false,heroSkins=0,canonicalPieces=0,canonicalSources=[],canonicalTerrain=0,canonicalFoliage=0,enemyCanonical=false,heroAttackTime=0,heroLastTime=0,guardTriangles=0,authoredGuards=0;let guardRigs=[],heroPose=null;const portalFX=[],breachFX=[],banners=[];const lanternFX=[],mistLayers=[];let environmentPolish=false;let roadSurface,earthSurface,enemyRoot=null;let originalRoadMap=null,slateRoadMap=null,slateMaterialActive=false;let portalMeshProof=null,studioPortalsActive=false;let studioBreach=null,breachLandmarkActive=false,breachProxy=null,mainSun=null;const roadInlays=[];
+let canonicalReady=false,canonicalError='',heroMixer=null,heroWalk=null,heroAttack=null,heroRoot=null,heroAnimated=false,heroSkins=0,canonicalPieces=0,canonicalSources=[],canonicalTerrain=0,canonicalFoliage=0,enemyCanonical=false,heroAttackTime=0,heroLastTime=0,guardTriangles=0,authoredGuards=0;let guardRigs=[],heroPose=null;const portalFX=[],breachFX=[],banners=[];const lanternFX=[],mistLayers=[];let environmentPolish=false;let roadSurface,earthSurface,enemyRoot=null;let originalRoadMap=null,slateRoadMap=null,slateMaterialActive=false;let portalMeshProof=null,studioPortalsActive=false;let studioBreach=null,breachLandmarkActive=false,breachProxy=null,mainSun=null;const roadInlays=[],movingVerge=[],terrainVerges=[];let studioRuin=null,oldRoadsideRuin=null,ruinActive=false,ruinMargin=0,combatSparks=null;
 // Shared geometry/materials, articulated limb pivots and distinct faction silhouette.
 const geoCache=new Map();
 function geom(key,create){if(!geoCache.has(key))geoCache.set(key,create());return geoCache.get(key)}
@@ -267,7 +267,7 @@ function setSlateMaterial(on){
  if(!originalRoadMap||!slateRoadMap)throw Error('Road material pair not loaded');
  const tex=on?slateRoadMap:originalRoadMap;
  roadSurface.material.map=tex;roadSurface.material.needsUpdate=true;scene.userData.roadMap=tex;
- tex.offset.y=-((elapsed*4.3/148)*tex.repeat.y)%1;slateMaterialActive=on;
+ tex.offset.y=-((elapsed*4.3/148)*tex.repeat.y)%1;roadSurface.material.bumpMap=tex;roadSurface.material.bumpScale=on?.033:.014;roadSurface.material.needsUpdate=true;slateMaterialActive=on;
 }
 async function loadBreachLandmark(){
  const r=await fetch(new URL('./art/senda-breach-landmark.png',import.meta.url));if(!r.ok)throw Error('Breach landmark missing');
@@ -276,6 +276,16 @@ async function loadBreachLandmark(){
  const url=URL.createObjectURL(new Blob([bytes],{type:'image/png'}));try{
   const t=await new THREE.TextureLoader().loadAsync(url);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return t;
  }finally{URL.revokeObjectURL(url)}
+}
+async function loadStudioRuin(){
+ const r=await fetch(new URL('./art/senda-valoria-ruin.png',import.meta.url));if(!r.ok)throw Error('Ruin asset unavailable');
+ const data=await r.arrayBuffer();const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',data)),x=>x.toString(16).padStart(2,'0')).join('');
+ if(digest!=='69dc527d9b1df5bef5b452ff77b32991f9f4f3c543f70ed2d9ee9f868de417ba')throw Error('Ruin identity mismatch');
+ const url=URL.createObjectURL(new Blob([data],{type:'image/png'}));try{const t=await new THREE.TextureLoader().loadAsync(url);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return t}finally{URL.revokeObjectURL(url)}
+}
+function setStudioRuin(on){
+ if(!studioRuin||!oldRoadsideRuin)throw Error('Ruin pair unavailable');
+ studioRuin.visible=on;oldRoadsideRuin.visible=!on;ruinActive=on;
 }
 function setBreachLandmark(on){
  if(!studioBreach||!breachProxy)throw Error('Breach comparison unavailable');
@@ -304,31 +314,41 @@ async function loadCanonicalAssets(){
   const m=new THREE.SpriteMaterial({map:texture,transparent:true,alphaTest:.13,depthWrite:true,color:0xe8e5dd});
   const sp=new THREE.Sprite(m);sp.center.set(.5,0);sp.position.set(x,y,z);sp.scale.set(height*texture.image.width/texture.image.height,height,1);scene.add(sp);canonicalPieces++;return sp;
  }
- landmark(bastion,10.0,2.8,49,11.3);landmark(ruinA,-5.6,0,15.0,4.9);landmark(ruinB,5.7,0,24,4.5);
+ landmark(bastion,10.0,2.8,49,11.3);landmark(ruinA,-5.6,0,15.0,4.9);
+ oldRoadsideRuin=landmark(ruinB,6.4,.08,18.7,5.0);rememberVerge(oldRoadsideRuin);
+ // The Studio arch was rejected as a low parapet. Test only one isolated
+ // scenic ruin, safely beyond the playable road edge, as in the concept.
+ const ruinTex=await loadStudioRuin();
+ studioRuin=new THREE.Sprite(new THREE.SpriteMaterial({map:ruinTex,color:0xe7ddcc,transparent:true,alphaTest:.10,depthWrite:true,fog:true}));
+ studioRuin.center.set(.5,0);studioRuin.scale.set(5.0*ruinTex.image.width/ruinTex.image.height,5.0,1);studioRuin.position.set(6.4,.08,18.7);
+ ruinMargin=studioRuin.position.x-studioRuin.scale.x*.5-3.8;if(ruinMargin<.10)throw Error('Scenic ruin intrudes into lane');
+ scene.add(studioRuin);rememberVerge(studioRuin);setStudioRuin(true);
  // Original Valoria and the newly authored geological landmark are separate
  // world objects, with opaque terrain and intervening foliage. No scene overlay.
  const breachTex=await loadBreachLandmark();
  studioBreach=new THREE.Sprite(new THREE.SpriteMaterial({map:breachTex,color:0xdad8ee,alphaTest:.09,transparent:true,depthWrite:true,fog:true}));
  studioBreach.name='Studio / geological Breach rooted in world';studioBreach.center.set(.5,0);
- studioBreach.position.set(-10.7,.10,54);studioBreach.scale.set(12.8*breachTex.image.width/breachTex.image.height,12.8,1);
+ studioBreach.position.set(-10.0,.10,51);studioBreach.scale.set(13.4*breachTex.image.width/breachTex.image.height,13.4,1);
  scene.add(studioBreach);setBreachLandmark(true);
  // Existing painted Valoria terrain textures on actual continuous ground meshes.
  for(const t of [paving,meadow]){t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=4;}
  paving.repeat.set(1.75,33.5);meadow.repeat.set(27,31);
  originalRoadMap=paving;slateRoadMap=await loadStudioSlate();setSlateMaterial(true);
- const stoneDetail=paving.clone();stoneDetail.repeat.set(.65,.65);stoneDetail.needsUpdate=true;
+ const stoneDetail=slateRoadMap.clone();stoneDetail.repeat.set(.65,.65);stoneDetail.needsUpdate=true;
  const gateMasonry=new THREE.MeshStandardMaterial({map:stoneDetail,bumpMap:stoneDetail,bumpScale:.022,color:0xa69a87,roughness:.92});
  for(const g of gates)g.group.traverse(o=>{if(o.isMesh&&o.material?.isMeshStandardMaterial&&o.material.metalness<.1)o.material=gateMasonry});
  applyRoadMasonryMaterial(stoneDetail);
  portalMeshProof=await buildStudioPortals(gates,stoneDetail);useStudioPortals(gates,true);studioPortalsActive=true;
- earthSurface.material.map=meadow;earthSurface.material.needsUpdate=true;canonicalTerrain=2;
+ earthSurface.material.map=meadow;earthSurface.material.color.setHex(0x758174);earthSurface.material.needsUpdate=true;canonicalTerrain=2;
+ const vergeMap=meadow.clone();vergeMap.repeat.set(1.6,34);vergeMap.needsUpdate=true;
+ for(const verge of terrainVerges){verge.material.map=vergeMap;verge.material.bumpMap=vergeMap;verge.material.bumpScale=.055;verge.material.needsUpdate=true;}
  // Same painterly tree artwork used by Valoria's 2.5D district, spatially
  // placed, camera-facing vegetation with real depth and moving world positions.
  const foliageMaterials=pines.map(t=>new THREE.SpriteMaterial({map:t,color:0x728d87,alphaTest:.20,transparent:true,depthWrite:true}));
  for(let i=0;i<trees.length;i++){
   const n=trees[i];if(!n.tree.isGroup)continue;
   n.tree.clear();
-  const sp=new THREE.Sprite(foliageMaterials[i%3]);sp.center.set(.5,0);const scale=.82+(i%7)*.12;sp.scale.set(3.0*scale,5.2*scale,1);sp.position.y=.02;n.tree.add(sp);
+  const sp=new THREE.Sprite(foliageMaterials[i%3]);sp.center.set(.5,0);const scale=.70+(i%7)*.125;sp.scale.set(3.0*scale,5.2*scale,1);sp.position.y=.02;n.tree.add(sp);
   const shadow=mesh(geom('treecontact',()=>new THREE.CircleGeometry(.76,16)),new THREE.MeshBasicMaterial({color:0x19221b,transparent:true,opacity:.38,depthWrite:false}),n.tree,0,.012,0);shadow.rotation.x=-Math.PI/2;shadow.scale.set(1.3,.9,1);canonicalFoliage++;
  }
  addDistantForest(pines);
@@ -372,7 +392,7 @@ function buildValoriaLandscape(){
  const cloth=new THREE.MeshStandardMaterial({map:crestTex,side:THREE.DoubleSide,roughness:1});
  for(let i=0;i<8;i++){
   const side=i%2?1:-1,x=side*4.75,z=5+Math.floor(i/2)*12.5;
-  const pole=new THREE.Group();pole.position.set(x,0,z);scene.add(pole);
+  const pole=new THREE.Group();pole.position.set(x,0,z);scene.add(pole);rememberVerge(pole);
   cylinder(pole,0,1.65,0,.055,3.3,0x5f4b30,.4);box(pole,0,3.0,0,.91,.08,.09,0xc1a36a,.45);
   cone(pole,0,3.34,0,.11,.24,0xd1af66,.5);
   const banner=mesh(geom('banner',()=>new THREE.PlaneGeometry(.78,1.2,3,4)),cloth,pole,0,2.32,-.04);banner.rotation.y=Math.PI;
@@ -396,17 +416,53 @@ function buildRoadMasonry(){
   if((segment*7+(side>0?3:0))%11<3)continue;
   for(let row=0;row<2+(segment%3===0?1:0);row++)for(let b=0;b<3;b++){
    let part=box(scene,x+(b%2)*side*.045,.23+row*.39,z+b*.79+(row%2)*.23,.69,.36,.75,0x777061);
-   part.rotation.y=.025*Math.sin(segment*3+b*2);masonryParts.push(part);
+   part.rotation.y=.025*Math.sin(segment*3+b*2);masonryParts.push(part);rememberVerge(part);
   }
-  if(segment%3===0){let cap=box(scene,x,.25+(segment%3===0?3:2)*.39,z+.85,.82,.20,2.45,0x776b59);masonryParts.push(cap)}
+  if(segment%3===0){let cap=box(scene,x,.25+(segment%3===0?3:2)*.39,z+.85,.82,.20,2.45,0x776b59);masonryParts.push(cap);rememberVerge(cap)}
   if(segment%4===1){
-    let rubble=ball(scene,x+side*.49,.19,z+2.8,.44,0x716b5d);rubble.scale.set(1.0,.6,.9);rubble.rotation.y=segment*.83;masonryParts.push(rubble);
+    let rubble=ball(scene,x+side*.49,.19,z+2.8,.44,0x716b5d);rubble.scale.set(1.0,.6,.9);rubble.rotation.y=segment*.83;masonryParts.push(rubble);rememberVerge(rubble);
   }
  }
 }
 function applyRoadMasonryMaterial(tex){
  const m=new THREE.MeshStandardMaterial({map:tex,bumpMap:tex,bumpScale:.023,color:0x8d8475,roughness:.94});
  for(const part of masonryParts)part.material=m;
+}
+function rememberVerge(o){movingVerge.push({o,z:o.position.z});return o}
+function scrollPosition(z,distance,min,length){return ((z-min-distance)%length+length)%length+min}
+function buildTerrainVerges(){
+ // Actual uneven continuous verge meshes break the clean road/grass seam.
+ for(const side of [-1,1]){
+   const geo=new THREE.PlaneGeometry(4.0,148,5,64);geo.rotateX(-Math.PI/2);
+   const a=geo.attributes.position;
+   for(let i=0;i<a.count;i++){const x=a.getX(i),z=a.getZ(i),t=(x*side+2)/4;
+     const y=.012+.20*t+.10*t*Math.sin(z*.74+side)+.07*t*Math.sin(z*1.73+x*3);a.setY(i,y)}
+   a.needsUpdate=true;geo.computeVertexNormals();geo.computeBoundingSphere();
+   const m=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0x737f72,roughness:1}));m.position.set(side*5.8,0,34);m.receiveShadow=true;scene.add(m);terrainVerges.push(m);
+ }
+}
+function buildDistantCauseway(){
+ // A distant, noninteractive fortified arch continues the Valoria road.
+ // Real geometry, subdued by world fog, never a fourth choice portal.
+ const g=new THREE.Group();g.position.set(0,0,65);scene.add(g);
+ for(const side of [-1,1]){
+  box(g,side*4.12,1.35,0,.75,2.7,1.25,0x625e62);
+  box(g,side*4.12,2.70,0,1.0,.26,1.50,0x716a68);
+  for(let k=0;k<2;k++){box(g,side*(5.05+k*1.7),2.40,0,1.65,.63,1.05,0x5e5b61);box(g,side*(5.05+k*1.7),.95,0,.48,1.90,.88,0x5b585d);}
+ }
+ for(let k=0;k<11;k++){let a=k*Math.PI/11+.012,b=(k+1)*Math.PI/11-.012;mesh(geom('distant-arch:'+k,()=>archWedge(3.65,4.15,a,b,1.2)),mat(k%2?0x625d62:0x6b6464),g,0,2.65,-.6);}
+}
+function buildCombatSparks(){
+ const n=32,geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(n*3),3));
+ combatSparks=new THREE.Points(geo,new THREE.PointsMaterial({color:0xffd79c,map:glowTexture(),size:.23,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,sizeAttenuation:true}));
+ combatSparks.frustumCulled=false;combatSparks.visible=false;scene.add(combatSparks);
+}
+function presentCombatSparks(t,active,approach){
+ if(!combatSparks)return;combatSparks.visible=active&&approach>.25;if(!combatSparks.visible)return;
+ const a=combatSparks.geometry.attributes.position;for(let i=0;i<a.count;i++){
+   const phase=(t*2.2+i*.131)%1,theta=i*2.399963;const r=.12+phase*.65;
+   a.setXYZ(i,sideX*.38+Math.cos(theta)*r,.78+Math.sin(theta)*r*.58+phase*.55,8.0+Math.sin(theta)*r*.66-approach*.7);
+ }a.needsUpdate=true;combatSparks.material.opacity=.52+.32*Math.sin(t*13)*Math.sin(t*13);
 }
 function addDistantForest(pines){
  const layers=[{z:59,scale:4.8,tint:0x647c7b},{z:76,scale:8.2,tint:0x536777},{z:94,scale:11,tint:0x536171}];
@@ -427,7 +483,7 @@ function addMist(){
   const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,
    uniforms:{phase:{value:i*3.},time:{value:0}},
    vertexShader:'varying vec2 v;void main(){v=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-   fragmentShader:'varying vec2 v;uniform float phase;uniform float time;void main(){float edges=smoothstep(0.,.20,v.x)*(1.-smoothstep(.80,1.,v.x));float h=sin(v.y*3.14159265);float bands=.6+.4*sin(v.x*23.+sin(v.y*10.+phase)*2.+phase+time*.12);float a=edges*pow(max(h,0.),1.8)*bands*.15;gl_FragColor=vec4(.43,.50,.60,a);}'});
+   fragmentShader:'varying vec2 v;uniform float phase;uniform float time;void main(){float edges=smoothstep(0.,.20,v.x)*(1.-smoothstep(.80,1.,v.x));float h=sin(v.y*3.14159265);float bands=.6+.4*sin(v.x*23.+sin(v.y*10.+phase)*2.+phase+time*.12);float a=edges*pow(max(h,0.),2.4)*bands*.22;gl_FragColor=vec4(.38,.44,.57,a);}'});
   const p=new THREE.Mesh(geo,m);p.position.set(0,2.2,38+i*18);scene.add(p);mistLayers.push(m);
  }
 }
@@ -451,7 +507,7 @@ function enableActorShadows(){
 function addAtmosphere(){
  const sky=new THREE.Mesh(new THREE.SphereGeometry(118,24,16),new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,toneMapped:false,
  vertexShader:'varying vec3 vDir;void main(){vDir=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
- fragmentShader:'varying vec3 vDir;float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);float a=fract(sin(dot(i,vec2(127.1,311.7)))*43758.5453);float b=fract(sin(dot(i+vec2(1.,0.),vec2(127.1,311.7)))*43758.5453);float c=fract(sin(dot(i+vec2(0.,1.),vec2(127.1,311.7)))*43758.5453);float d=fract(sin(dot(i+vec2(1.,1.),vec2(127.1,311.7)))*43758.5453);return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}void main(){vec3 d=normalize(vDir);float h=clamp(d.y*2.+.15,0.,1.);vec3 c=mix(vec3(.29,.35,.43),vec3(.055,.08,.15),h);vec2 p=d.xz*12./(abs(d.y)+.35);float n=noise(p)*.55+noise(p*2.1)*.3+noise(p*5.)*.15;float cloud=smoothstep(.48,.78,n)*smoothstep(-.02,.25,d.y);c=mix(c,vec3(.13,.14,.24),cloud*.92);float glow=pow(max(dot(d,normalize(vec3(-.29,.18,1.))),0.),20.);c+=vec3(.26,.08,.33)*glow;gl_FragColor=vec4(c,1.);}' }));
+ fragmentShader:'varying vec3 vDir;float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);float a=fract(sin(dot(i,vec2(127.1,311.7)))*43758.5453);float b=fract(sin(dot(i+vec2(1.,0.),vec2(127.1,311.7)))*43758.5453);float c=fract(sin(dot(i+vec2(0.,1.),vec2(127.1,311.7)))*43758.5453);float d=fract(sin(dot(i+vec2(1.,1.),vec2(127.1,311.7)))*43758.5453);return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}void main(){vec3 d=normalize(vDir);float h=clamp(d.y*2.+.15,0.,1.);vec3 c=mix(vec3(.29,.35,.43),vec3(.055,.08,.15),h);vec2 p=d.xz*12./(abs(d.y)+.35);float n=noise(p)*.55+noise(p*2.1)*.3+noise(p*5.)*.15;float ridges=noise(p*1.8+vec2(n*1.9,n))*.58+noise(p*4.5)*.28+noise(p*9.)*.14;float cloud=smoothstep(.36,.71,n*.65+ridges*.35)*smoothstep(-.07,.22,d.y);c=mix(c,vec3(.08,.11,.21),cloud*.93);c+=vec3(.14,.085,.21)*smoothstep(.48,.65,ridges)*cloud;float glow=pow(max(dot(d,normalize(vec3(-.29,.18,1.))),0.),20.);c+=vec3(.26,.08,.33)*glow;gl_FragColor=vec4(c,1.);}' }));
  sky.renderOrder=-100;sky.frustumCulled=false;scene.add(sky);addMist();
 }
 function makeScene(){scene=new THREE.Scene();scene.background=new THREE.Color(0x283745);scene.fog=new THREE.FogExp2(0x41495d,.0115);addAtmosphere();
@@ -468,19 +524,15 @@ function makeScene(){scene=new THREE.Scene();scene.background=new THREE.Color(0x
  // Repeated, subtle inset markers are real geometry. Clearly separate the three lanes.
  for(let k=0;k<45;k++)for(let side of [-1,1]){let m=box(scene,side*1.06,.061,k*2.8-12,.075,.016,1.05,0xb5a374);runes.push(m)}
  for(const side of [-1,1])box(scene,side*1.06,.054,34,.019,.01,148,0x9a8860);
- for(let i=0;i<12;i++){let z=i*12-3;for(let side of [-1,1]){
-  let x=side*(5.05+(i%3)*.37);box(scene,x,.43,z,1.02,.86,.91,0x514b40);
-  box(scene,x,.93,z,.78,.18,.81,0x6b6050);
-  if(i%3===0){box(scene,x,1.49,z,.55,1.0,.62,0x575247);box(scene,x,2.05,z,.77,.20,.75,0x88765b);}
- }}
+ // Remove redundant primitive columns. Existing parapets, authentic ruin and standards provide the edge hierarchy.
  for(let side of [-1,1])box(scene,side*3.92,.035,34,.42,.27,148,palette.stone);
  for(let i=0;i<0;i++){let z=-8+(i*2.1),x=(((i*17)%23)/23-.5)*6.3;
  let slab=box(scene,x,.059,z,.45+(i%4)*.10,.022,.22+(i%3)*.10,i%3===0?0x776954:0x504a40);slab.rotation.y=(i%7-3)*.15;runes.push(slab)}
  for(let i=0;i<42;i++){let side=i%2===0?-1:1;let x=side*(5.3+(i%6)*.82),z=(i*6.8)%93-5;
  if(i%7===0){let rock=ball(scene,x,.47,z,.63+(i%3)*.12,0x525b64);rock.scale.set(1.3,.7,.9);trees.push({tree:rock,original:z})}
  else forest(x,z,i)}
- buildRoadMasonry();buildRoadIdentity();
- buildValoriaLandscape();
+ buildTerrainVerges();buildRoadMasonry();buildRoadIdentity();buildDistantCauseway();
+ buildValoriaLandscape();buildCombatSparks();
  for(let i=0;i<14;i++){let o=soldier(false,i===0);scene.add(o);squad.push(o)}
  laneMarker=mesh(new THREE.RingGeometry(.83,1.06,30),new THREE.MeshBasicMaterial({color:0xc2a372,transparent:true,opacity:.28,side:THREE.DoubleSide,depthWrite:false}),scene,0,.11,3.1);laneMarker.rotation.x=-Math.PI/2;
  for(let i=0;i<10;i++){let o=soldier(true,i===0);scene.add(o);foes.push(o)}
@@ -561,7 +613,7 @@ function present(t){
  if(laneMarker){laneMarker.position.x=sideX;laneMarker.material.opacity=.28+.10*Math.sin(t*5)}
  for(let i=0;i<squad.length;i++){
  let u=squad[i],active=i<visibleCount;u.visible=active;if(!active)continue;
- let col=(i-1+3)%3,row=Math.floor((i-1)/3);u.position.set(sideX+(i===0?0:(col-1)*.77+(row%2)*.045),0,i===0?3.76:2.62-row*.88);u.rotation.z=0;if(!u.userData.guard&&(i!==0||!heroRoot))animateUnit(u,t,i)}
+ let col=(i-1+3)%3,row=Math.floor((i-1)/3);const charge=stepTime>=6.4&&!battleDone?Math.min(1,(stepTime-6.4)/1.6)*.7:0;u.position.set(sideX+(i===0?0:(col-1)*.77+(row%2)*.045),0,(i===0?3.76:2.62-row*.88)+charge);u.rotation.z=0;if(!u.userData.guard&&(i!==0||!heroRoot))animateUnit(u,t,i)}
  for(const m of portalFX)m.uniforms.t.value=t;
  for(const m of mistLayers)m.uniforms.time.value=t;
  for(const f of lanternFX){f.flame.scale.y=1.4+.17*Math.sin(t*11+f.phase);f.glow.material.opacity=.66+.12*Math.sin(t*7+f.phase)}
@@ -570,15 +622,16 @@ function present(t){
  let gatez=25.1-Math.min(1,stepTime/4.15)*21.7;
  for(let i=0;i<gates.length;i++){let g=gates[i];g.group.visible=!gateUsed;g.group.position.set((1-i)*2.12,0,gatez)}
  let enemiesVisible=stepTime>=6.4&&stepTime<=11;let approach=clamp((stepTime-6.4)/2.6,0,1);
- for(let i=0;i<foes.length;i++){let u=foes[i];u.visible=enemiesVisible&&(!battleDone||i%3===0);u.position.set((i%4-1.5)*.93,Math.sin(t*11+i)*.05-(battleDone?.48:0),17.5+Math.floor(i/4)*1.06-6.5*approach);u.rotation.z=battleDone?1.5:0;if(i===0&&enemyRoot){enemyRoot.rotation.z=battleDone?0:.035*Math.sin(t*8);enemyRoot.position.y=battleDone?0:.03*Math.sin(t*8)}else if(!u.userData.guard)animateUnit(u,t,i,true,battleDone)}
- for(let i=0;i<projectiles.length;i++){let sh=projectiles[i];sh.visible=enemiesVisible&&!battleDone;
- if(sh.visible){let pos=(t*11+i*.73)%11;sh.position.set(sideX+(i%3-1)*.43,1.2,4+pos*1.35)}}
- updateGuardArmy(guardRigs,t,stepTime>=6.4&&stepTime<9&&!battleDone);
- const offset=(t*4.3)%100;
+ for(let i=0;i<foes.length;i++){let u=foes[i];u.visible=enemiesVisible&&(!battleDone||i%3===0);u.position.set((i%4-1.5)*.93,Math.sin(t*11+i)*.05-(battleDone?.48:0),15.5+Math.floor(i/4)*1.06-7.5*approach);u.rotation.z=battleDone?1.5:0;if(i===0&&enemyRoot){enemyRoot.rotation.z=battleDone?0:.035*Math.sin(t*8);enemyRoot.position.y=battleDone?0:.03*Math.sin(t*8)}else if(!u.userData.guard)animateUnit(u,t,i,true,battleDone)}
+ for(let i=0;i<projectiles.length;i++){let sh=projectiles[i];sh.visible=enemiesVisible&&!battleDone&&i<9;
+ if(sh.visible){let pos=(t*2.5+i*.12)%1;sh.position.set(sideX*(1-pos)+(i%3-1)*.43,1.2+Math.sin(pos*Math.PI)*.28,4.2+pos*(10-approach*5))}}
+ updateGuardArmy(guardRigs,t,stepTime>=6.4&&stepTime<9&&!battleDone);presentCombatSparks(t,enemiesVisible&&!battleDone,approach);
+ const offset=t*4.3;
  if(scene.userData.roadMap)scene.userData.roadMap.offset.y=-((t*4.3/148)*scene.userData.roadMap.repeat.y)%1;
- for(let i=0;i<trees.length;i++){let node=trees[i],z=((node.original-offset+100)%100)-9;node.tree.position.z=z}
- for(const k of roadInlays)k.mesh.position.z=((k.z-offset+127.5)%127.5)-6;
- for(let i=0;i<runes.length;i++){let slab=runes[i];if(slab.userData.baseZ===undefined)slab.userData.baseZ=slab.position.z;slab.position.z=((slab.userData.baseZ-offset+148)%148)-8}
+ for(let i=0;i<trees.length;i++){let node=trees[i],z=scrollPosition(node.original,offset,-10,100);node.tree.position.z=z}
+ for(const k of roadInlays)k.mesh.position.z=scrollPosition(k.z,offset,-6,127.5);
+ for(const k of movingVerge)k.o.position.z=scrollPosition(k.z,offset,-10,140);
+ for(let i=0;i<runes.length;i++){let slab=runes[i];if(slab.userData.baseZ===undefined)slab.userData.baseZ=slab.position.z;slab.position.z=scrollPosition(slab.userData.baseZ,offset,-12,148)}
  if(performance.now()>noticeUntil)$('notice').classList.remove('active')
 }
 function loop(now){requestAnimationFrame(loop);let dt=clamp((now-last)/1000,0,.045);last=now;
@@ -595,7 +648,7 @@ async function init(){try{renderer=new THREE.WebGLRenderer({canvas:$('viewport')
  let touchX=null;$('viewport').addEventListener('pointerdown',e=>{touchX=e.clientX;$('viewport').setPointerCapture(e.pointerId)});$('viewport').addEventListener('pointerup',e=>{if(touchX!==null&&Math.abs(e.clientX-touchX)>29)steer(e.clientX>touchX?1:-1);touchX=null});$('viewport').addEventListener('pointercancel',()=>touchX=null);
  addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='a')steer(-1);if(e.key==='ArrowRight'||e.key==='d')steer(1);if(e.key===' '&&!started)start()});
  $('viewport').addEventListener('webglcontextlost',e=>{e.preventDefault();$('error').style.display='flex';started=false});
- if(TEST)window.__senda3d={start,steer,setBreachLandmark:on=>{setBreachLandmark(!!on);present(elapsed);renderFrame()},setStudioPortals:on=>{useStudioPortals(gates,!!on);studioPortalsActive=!!on;present(elapsed);renderFrame()},setSlateMaterial:on=>{setSlateMaterial(!!on);present(elapsed);renderFrame()},setSpeed:v=>{speed=clamp(v,0,8)},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;syncGates();hud()},advance:seconds=>{for(let t=0;t<seconds&&started;t+=.05)priorUpdate(Math.min(.05,seconds-t));present(elapsed);renderFrame()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length,gateLabels:gates.map(g=>[g.type,g.value]),screenLaneX:squad[0].position.clone().project(camera).x,gateScreenX:gates.map(g=>g.group.position.clone().project(camera).x),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,batches:renderBatches.length,canonicalReady,environmentPolish,slateMaterialActive,studioPortalsActive,portalMeshProof,breachLandmarkActive,breachScreenX:studioBreach?.position.clone().project(camera).x??null,breachHeight:studioBreach?.scale.y??0,shadowCasters:scene?(()=>{let n=0;scene.traverse(o=>{if(o.castShadow&&o.isSkinnedMesh)n++});return n})():0,canonicalSources,canonicalPieces,guardTriangles,authoredGuards,canonicalTerrain,canonicalFoliage,enemyCanonical,heroAttackTime,heroSkins,heroAnimated,heroWalkTime:heroWalk?.time??0,canonicalError})};
+ if(TEST)window.__senda3d={start,steer,setStudioRuin:on=>{setStudioRuin(!!on);present(elapsed);renderFrame()},setBreachLandmark:on=>{setBreachLandmark(!!on);present(elapsed);renderFrame()},setStudioPortals:on=>{useStudioPortals(gates,!!on);studioPortalsActive=!!on;present(elapsed);renderFrame()},setSlateMaterial:on=>{setSlateMaterial(!!on);present(elapsed);renderFrame()},setSpeed:v=>{speed=clamp(v,0,8)},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;syncGates();hud()},advance:seconds=>{for(let t=0;t<seconds&&started;t+=.05)priorUpdate(Math.min(.05,seconds-t));present(elapsed);renderFrame()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length,gateLabels:gates.map(g=>[g.type,g.value]),screenLaneX:squad[0].position.clone().project(camera).x,gateScreenX:gates.map(g=>g.group.position.clone().project(camera).x),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,batches:renderBatches.length,canonicalReady,environmentPolish,slateMaterialActive,studioPortalsActive,portalMeshProof,ruinActive,ruinMargin,vergeObjects:movingVerge.length,vergeZ:movingVerge[0]?.o.position.z??null,worldScroll:elapsed*4.3,combatSparksVisible:combatSparks?.visible??false,breachLandmarkActive,breachScreenX:studioBreach?.position.clone().project(camera).x??null,breachHeight:studioBreach?.scale.y??0,shadowCasters:scene?(()=>{let n=0;scene.traverse(o=>{if(o.castShadow&&o.isSkinnedMesh)n++});return n})():0,canonicalSources,canonicalPieces,guardTriangles,authoredGuards,canonicalTerrain,canonicalFoliage,enemyCanonical,heroAttackTime,heroSkins,heroAnimated,heroWalkTime:heroWalk?.time??0,canonicalError})};
  hud();requestAnimationFrame(loop);
  }catch(e){canonicalError=String(e);console.error('SENDA_3D_INIT',e);$('error').style.display='flex'}}
 let speed=1;

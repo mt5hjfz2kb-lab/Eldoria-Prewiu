@@ -7,7 +7,7 @@ const assert=require('node:assert/strict');
  fs.mkdirSync(directory,{recursive:true});
  const browser=await chromium.launch({headless:true,args:['--enable-webgl','--ignore-gpu-blocklist','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  try {
- const checks=[],errors=[];let materialAB=null,portalAB=null,breachAB=null;
+ const checks=[],errors=[];let materialAB=null,portalAB=null,breachAB=null,ruinAB=null;
  for(const [name,width,height] of [['iphone',390,844],['small',320,700],['landscape',844,390],['desktop',1280,800]]){
   const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1,hasTouch:true});
   page.on('pageerror',e=>errors.push(name+':'+e.message));
@@ -21,7 +21,7 @@ const assert=require('node:assert/strict');
   await page.getByRole('button',{name:'COMENZAR EXPEDICIÓN'}).click();
   await page.waitForTimeout(900);
   const start=await page.evaluate(()=>window.__senda3d.state());
-  assert.equal(start.canonicalPieces,3);assert.equal(start.canonicalSources.length,10);assert.equal(start.canonicalTerrain,2);assert.ok(start.canonicalFoliage>25);assert.equal(start.enemyCanonical,true);assert.equal(start.authoredGuards,22);assert.equal(start.environmentPolish,true);assert.equal(start.slateMaterialActive,true);assert.equal(start.studioPortalsActive,true);assert.equal(start.breachLandmarkActive,true);assert.ok(start.breachScreenX>0&&start.breachHeight>=12,'Breach must occupy right-hand world horizon');assert.ok(start.shadowCasters>10,'Actual animated armor shadow casters');assert.equal(start.portalMeshProof.width,2.04);assert.equal(start.portalMeshProof.depth,.42);assert.ok(start.portalMeshProof.meshVertices>100);assert.ok(start.guardTriangles>1000&&start.guardTriangles<=12000,'Derived armor geometry LOD budget');assert.ok(start.heroSkins>0);assert.ok(start.heroAnimated&&start.heroWalkTime>0,'Actual approved Aldric skin and walk clip must render');
+  assert.equal(start.canonicalPieces,3);assert.equal(start.canonicalSources.length,10);assert.equal(start.canonicalTerrain,2);assert.ok(start.canonicalFoliage>25);assert.equal(start.enemyCanonical,true);assert.equal(start.authoredGuards,22);assert.equal(start.environmentPolish,true);assert.equal(start.slateMaterialActive,true);assert.equal(start.studioPortalsActive,true);assert.equal(start.breachLandmarkActive,true);assert.equal(start.ruinActive,true);assert.ok(start.ruinMargin>.10&&start.vergeObjects>100,'Actual isolated ruin and moving physical verges');assert.ok(start.breachScreenX>0&&start.breachHeight>=12,'Breach must occupy right-hand world horizon');assert.ok(start.shadowCasters>10,'Actual animated armor shadow casters');assert.equal(start.portalMeshProof.width,2.04);assert.equal(start.portalMeshProof.depth,.42);assert.ok(start.portalMeshProof.meshVertices>100);assert.ok(start.guardTriangles>1000&&start.guardTriangles<=12000,'Derived armor geometry LOD budget');assert.ok(start.heroSkins>0);assert.ok(start.heroAnimated&&start.heroWalkTime>0,'Actual approved Aldric skin and walk clip must render');
   assert.equal(start.started,true);assert.equal(start.soldiers,22);
   await page.locator('#left').click();assert.equal((await page.evaluate(()=>window.__senda3d.state())).lane,0);
   await page.evaluate(()=>window.__senda3d.advance(.6));
@@ -56,9 +56,13 @@ const assert=require('node:assert/strict');
     const d=await page.evaluate(()=>{__senda3d.setBreachLandmark(true);return __senda3d.state()});
     assert.equal(c.stepTime,d.stepTime);assert.deepEqual(c.gateLabels,d.gateLabels);assert.equal(c.soldiers,d.soldiers);assert.ok(d.breachScreenX>0);
     await page.screenshot({path:path.join(directory,'breach-B-studio.png')});breachAB={sameFixture:true,oldCalls:c.drawCalls,newCalls:d.drawCalls,screenX:d.breachScreenX,height:d.breachHeight,artApproved:false};
+    const e=await page.evaluate(()=>{__senda3d.setStudioRuin(false);return __senda3d.state()});await page.screenshot({path:path.join(directory,'ruin-A-original.png')});
+    const f=await page.evaluate(()=>{__senda3d.setStudioRuin(true);return __senda3d.state()});assert.equal(e.stepTime,f.stepTime);assert.equal(e.lane,f.lane);assert.equal(e.soldiers,f.soldiers);assert.ok(f.ruinMargin>.1);await page.screenshot({path:path.join(directory,'ruin-B-studio.png')});ruinAB={sameFixture:true,oldCalls:e.drawCalls,newCalls:f.drawCalls,roadClearance:f.ruinMargin,artApproved:false};
   }
   await page.evaluate(()=>{window.__senda3d.setPhase(2,7.2);window.__senda3d.advance(.35)});
   await page.screenshot({path:path.join(directory,name+'-battle.png')});
+  assert.equal(await page.evaluate(()=>__senda3d.state().combatSparksVisible),true,'Combat effect is actual scene particles');
+  const motion0=await page.evaluate(()=>__senda3d.state());await page.evaluate(()=>__senda3d.advance(.20));const motion1=await page.evaluate(()=>__senda3d.state());assert.ok(motion1.worldScroll>motion0.worldScroll&&motion1.vergeZ!==motion0.vergeZ,'Verge must move with road, not stay fixed');
   const state=await page.evaluate(()=>window.__senda3d.state());
   assert.deepEqual(state.gateLabels,[['Power',45],['Recruit',13],['Trap',9]],'Gate label must match selected stage');
   assert.ok(state.batches>0,'Repeated geometry must be batched');assert.ok(state.drawCalls<350,'Mobile rendering budget exceeded: '+state.drawCalls);
@@ -121,7 +125,7 @@ const assert=require('node:assert/strict');
   await videoPage.screenshot({path:path.join(sequence,String(frame).padStart(3,'0')+'.png')});
  }
  await videoPage.close();
- const result={renderer:'THREE/WebGL',source:'isolated prototype',notUnity:true,notIphonePhysical:true,checks,errors,materialAB,portalAB,breachAB,victoryRouteChecked:true,defeatRouteChecked:true,pauseAndReplayChecked:true};
+ const result={renderer:'THREE/WebGL',source:'isolated prototype',notUnity:true,notIphonePhysical:true,checks,errors,materialAB,portalAB,breachAB,ruinAB,victoryRouteChecked:true,defeatRouteChecked:true,pauseAndReplayChecked:true};
  fs.writeFileSync(path.join(directory,'report.json'),JSON.stringify(result,null,2));
  assert.equal(errors.length,0,JSON.stringify(errors));
  console.log('SENDA_WEB3D_CHROMIUM_PASS '+JSON.stringify(checks));
