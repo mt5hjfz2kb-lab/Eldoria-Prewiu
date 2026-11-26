@@ -171,7 +171,7 @@ light("Small warm metal edge",(-4.4,1.5,3.1),620,(1,.51,.25),1.4)
 camd=bpy.data.cameras.new("Card illustration orthographic camera");cam=bpy.data.objects.new("Card illustration camera",camd);scene.collection.objects.link(cam)
 cam.location=tuple(bounds(x,-15,15) for x in D["camera"]["position"]);target=Vector(tuple(bounds(x,-4,4) for x in D["camera"]["target"]))
 cam.rotation_euler=(target-cam.location).to_track_quat("-Z","Y").to_euler();camd.type="ORTHO";camd.ortho_scale=bounds(D["camera"]["scale"],4.3,5.6);scene.camera=cam
-scene.render.engine="CYCLES";scene.cycles.samples=40;scene.cycles.use_denoising=True;scene.cycles.max_bounces=6
+# Ubuntu packaged Blender has no OpenImageDenoiser (run 45908125394).\n# Native Cycles sampling instead of a fake postprocessed image.\nscene.render.engine="CYCLES";scene.cycles.samples=128;scene.cycles.use_denoising=False;scene.cycles.max_bounces=6\nscene.cycles.use_adaptive_sampling=True;scene.cycles.adaptive_threshold=.025
 scene.render.resolution_x=768;scene.render.resolution_y=864;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG";scene.render.image_settings.color_mode="RGB";scene.render.film_transparent=False
 try:scene.view_settings.view_transform="AgX"
