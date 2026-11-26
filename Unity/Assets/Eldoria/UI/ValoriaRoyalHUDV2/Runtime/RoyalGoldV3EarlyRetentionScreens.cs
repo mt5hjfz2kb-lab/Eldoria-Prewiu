@@ -263,7 +263,7 @@ namespace Eldoria.UI.RoyalGold.V2
             r.gameObject.AddComponent<CanvasRenderer>();
             var t=r.gameObject.AddComponent<RoyalText>();
             t.font=RoyalGoldV2Hud.UseCoronaArt
-                ? (bold ? RoyalGoldV2Hud.CoronaHeadingFont : RoyalGoldV2Hud.CoronaBodyFont)
+                ? CoronaFinish.ResolveFont(bold)
                 : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             t.fontSize=size;t.fontStyle=bold?FontStyle.Bold:FontStyle.Normal;
             t.color=tint;t.raycastTarget=false;
@@ -315,6 +315,7 @@ namespace Eldoria.UI.RoyalGold.V2
             surface.raycastTarget=true;
             var b=r.gameObject.AddComponent<RoyalButton>();
             b.targetGraphic=surface;
+            if(RoyalGoldV2Hud.UseCoronaArt)CoronaFinish.ApplyButtonFeedback(b);
             caption=Text(r,"Original gilded label",17,Ivory,true);
             caption.alignment=TextAnchor.MiddleCenter;
             Stretch(caption.rectTransform,5);

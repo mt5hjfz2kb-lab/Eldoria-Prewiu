@@ -1067,11 +1067,18 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                         number.rectTransform.anchoredPosition=new Vector2(-valueInset,0f);
                         float valueWidth=Mathf.Max(1f,chipWidth-iconInset-d-contentGap-valueInset);
                         number.rectTransform.sizeDelta=new Vector2(valueWidth,31f);
-                        number.fontSize=chipWidth<82f?16:18;
-                        number.resizeTextMaxSize=number.fontSize;
+                        int preferred=chipWidth<82f?16:18;
+                        Eldoria.UI.RoyalGold.V2.CoronaFinish.FitSingleLine(number,preferred,10);
                     }
                 }
 
+            }
+
+            private static void SetAmount(Text label,string amount,float chipWidth)
+            {
+                if(label.text==amount)return;
+                label.text=amount;
+                Eldoria.UI.RoyalGold.V2.CoronaFinish.FitSingleLine(label,chipWidth<82f?16:18,10);
             }
 
             public void Refresh(PlayerState s)
@@ -1083,9 +1090,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     if(lastLayout.x>0)Layout(lastLayout.x,lastLayout.y,lastLayout.z,lastLayout.w);
                 }
                 level.text = "Bastión " + s.BastionLevel;
-                woodValue.text = CompactResource(s.Resources.Wood);
-                stoneValue.text = CompactResource(s.Resources.Stone);
-                foodValue.text = CompactResource(s.Resources.Food);
+                SetAmount(woodValue,CompactResource(s.Resources.Wood),resourceChips[0].rect.width);
+                SetAmount(stoneValue,CompactResource(s.Resources.Stone),resourceChips[1].rect.width);
+                SetAmount(foodValue,CompactResource(s.Resources.Food),resourceChips[2].rect.width);
                 // Preserve the artist's original full-color logs. Tinting the
                 // *whole* premium illustration with AntiqueBrass destroyed its
                 // wood/rope/material separation. Only numbers convey shortages.
@@ -1185,15 +1192,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             art.type=Image.Type.Simple;
             art.preserveAspect=true;
             var word=control.GetComponentInChildren<Text>();
-            var dockTypeface=Eldoria.UI.RoyalGold.V2.CoronaFinish.BodyFont;
-            if(dockTypeface)word.font=dockTypeface;
-            word.fontSize=13;
+            word.font=Eldoria.UI.RoyalGold.V2.CoronaFinish.ResolveFont(false);
+            word.fontSize=14;
             word.color=WarmWhite;
             word.alignment=TextAnchor.MiddleCenter;
             word.rectTransform.anchoredPosition=new Vector2(0f,-30f);
-            word.rectTransform.sizeDelta=new Vector2(80f,21f);
-            word.horizontalOverflow=HorizontalWrapMode.Overflow;
-            word.verticalOverflow=VerticalWrapMode.Overflow;
+            word.rectTransform.sizeDelta=new Vector2(74f,21f);
+            Eldoria.UI.RoyalGold.V2.CoronaFinish.FitSingleLine(word,14,11);
             // WOS-style captions sit just below the original sculpted
             // medals, not over the metal/hammer itself. Four-way ivory
             // outline keeps the caption legible against animated grass.
@@ -1212,15 +1217,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             target.raycastTarget = true;
             var button = rect.gameObject.AddComponent<Button>();
             button.targetGraphic = target;
-            button.transition = Selectable.Transition.ColorTint;
-            var colours = button.colors;
-            colours.normalColor = Color.white;
-            colours.highlightedColor = Eldoria.UI.RoyalGold.V2.CoronaFinish.Ivory;
-            colours.selectedColor = new Color(.90f,.96f,.93f);
-            colours.pressedColor = new Color(.74f, .82f, .77f, 1f);
-            colours.disabledColor = new Color(.55f, .57f, .56f, .7f);
-            colours.fadeDuration = .09f;
-            button.colors = colours;
+            Eldoria.UI.RoyalGold.V2.CoronaFinish.ApplyButtonFeedback(button);
             Label(caption, rect, 14, false,
                 name == "Execute canonical Build command" ? DarkInk : PaleGold,
                 TextAnchor.MiddleCenter, Vector2.zero, new Vector2(size.x - 12f, size.y - 5f));
@@ -1239,10 +1236,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             rect.anchoredPosition = at;
             rect.sizeDelta = size;
             var label = go.GetComponent<Text>();
-            label.font = inscription ? Eldoria.UI.RoyalGold.V2.CoronaFinish.HeadingFont :
-                Eldoria.UI.RoyalGold.V2.CoronaFinish.BodyFont;
-            if (label.font == null)
-                label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            label.font = Eldoria.UI.RoyalGold.V2.CoronaFinish.ResolveFont(inscription);
             label.text = content;
             label.fontSize = fontSize;
             label.color = color;

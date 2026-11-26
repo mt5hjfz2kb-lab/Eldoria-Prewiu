@@ -111,7 +111,8 @@ namespace Eldoria.UI.RoyalGold.V2
             var r = Rect(name, parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var t = r.gameObject.AddComponent<RoyalText>();
-            t.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            t.font = RoyalGoldV2Hud.UseCoronaArt ? CoronaFinish.ResolveFont(bold) :
+                Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             t.fontSize = font;
             t.fontStyle = bold ? FontStyle.Bold : FontStyle.Normal;
             t.color = color;

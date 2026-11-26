@@ -172,7 +172,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var r=Node(name,parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var t=r.gameObject.AddComponent<RoyalText>();
-            t.font=RoyalGoldV2Hud.UseCoronaArt ? (strong ? RoyalGoldV2Hud.CoronaHeadingFont : RoyalGoldV2Hud.CoronaBodyFont)
+            t.font=RoyalGoldV2Hud.UseCoronaArt ? CoronaFinish.ResolveFont(strong,RoyalGoldV41SourceArt.Serif)
                 : RoyalGoldV41SourceArt.Serif;
             t.fontSize=fontSize;t.fontStyle=strong?FontStyle.Bold:FontStyle.Normal;
             t.color=Ivory;t.alignment=TextAnchor.MiddleLeft;
@@ -189,6 +189,7 @@ namespace Eldoria.UI.RoyalGold.V2
             graphic.raycastTarget=true;graphic.color=Color.white;
             var button=rect.gameObject.AddComponent<Button>();
             button.targetGraphic=graphic;
+            if(RoyalGoldV2Hud.UseCoronaArt)CoronaFinish.ApplyButtonFeedback(button);
             label=Label(id+" label",rect,17,true);label.Put(text);
             label.alignment=TextAnchor.MiddleCenter;
             label.rectTransform.anchorMin=Vector2.zero;

@@ -1,0 +1,13 @@
+# Corona de la Brecha — contrato compartido v0.2 (candidato)
+Base: 348b19f958d5bbd447db59e16fc30e7c554cc72a. Misión Studio: Actions 45797892140, cuatro respuestas y ledger descargados.
+El auditor visual recibió dos PNG de Bastión I/V; programador y coordinador solo texto. El coordinador no aprobó el alfa de las placas ni la puntuación 8.5. Revisión humana asistida de PNG de Bastión V: valores y arte legibles, rótulos pequeños; mantener la silueta original.
+## Implementación
+- CoronaFinish.ResolveFont: fuente de título Cormorant Garamond Semibold y cuerpo Source Sans 3 Semibold, fallback explícito. Se usa en HUD modular, V2 HUD, contexto, gestión, retención y correo. Las escenas no Corona mantienen su rama anterior.
+- CoronaFinish.ApplyButtonFeedback: conserva el esquema ya existente en HUD modular, con transición de 90ms, seleccionado, pulsado, deshabilitado y hover. Se aplica a los productores comunes del HUD, gestión (héroes/marchas/entrenamiento), retención (exploradores/vigilantes) y buzón. Los callbacks, superficies, áreas táctiles y estados de dominio no cambian. No reemplazar gráficos especiales con el helper.
+- CoronaFinish.FitSingleLine: medida de ancho de glifos con TextGenerator, tamaño máximo por rol y mínimo explícito, sin recortar el string. Solo cantidades de HUD y dock; el cambio de cantidades se recalcula cuando cambia su texto o el layout. Los anchos inferiores al mínimo de fuente no están certificados.
+- Dock: prueba 14 frente a 13, sin cambiar botones ni navegación. Mantener medallones originales, no añadir otro aro.
+- No se toca alfa de placas, fondos, retratos, reglas, animaciones ni escenas.
+## Validación y promoción
+A/B del commit base y candidato con misma cámara, wallet, fixture, escala, 390x844 y alta densidad. Probar valores 173/465/2.4K, valores largos, nombre largo y ES/EN; verificar anchos seguros menores, horizontal, callbacks y estados. Confirmar que el ancho de texto renderizado cumple margen y no se recorta. Revisar diferencias de feedback y tipografía en cada pantalla, no solo el HUD; revertir cualquier regresión. Verificar teclado, animaciones, rendimiento y memoria en dispositivo. Nunca inferir nota artística de CI. Pendiente de compilar y renderizar el candidato.
+## Pendiente del encargo integral
+Inventario de recursos y rareza comunes, mochila, tesoros diarios con secuencias, nombre con teclado, diálogos de construcción/mejora, objetivos, informes, estados vacíos y bloqueados, transición de pantallas. No se declaran completos. La misión Studio tuvo 0.05331975 USD estimados (facturación no verificada). No se inicia una nueva llamada pagada con una reserva no verificada.

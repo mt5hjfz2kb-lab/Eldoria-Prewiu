@@ -17,6 +17,53 @@ namespace Eldoria.UI.RoyalGold.V2
             (headingFont=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/CormorantGaramond-SemiBold"));
         public static Font BodyFont => bodyFont ? bodyFont :
             (bodyFont=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/SourceSans3-Semibold"));
+
+        // Presentation contract: painted surfaces and local semantic colours
+        // belong to each screen; interactive feedback and typefaces are shared.
+        public static Font ResolveFont(bool heading, Font fallback = null)
+        {
+            var selected=heading?HeadingFont:BodyFont;
+            return selected?selected:fallback?fallback:Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        }
+
+        public static void ApplyButtonFeedback(Selectable control)
+        {
+            control.transition=Selectable.Transition.ColorTint;
+            var state=control.colors;
+            state.normalColor=Color.white;
+            state.highlightedColor=Ivory;
+            state.selectedColor=new Color(.90f,.96f,.93f);
+            state.pressedColor=new Color(.74f,.82f,.77f,1f);
+            state.disabledColor=new Color(.55f,.57f,.56f,.7f);
+            state.fadeDuration=.09f;
+            control.colors=state;
+        }
+
+        // Numeric and dock text are single-line semantic roles. Measure actual
+        // glyphs instead of assuming that a disjoint RectTransform ensures fit.
+        // Preserve the complete string; a below-floor width is not certified.
+        public static void FitSingleLine(Text label, int preferred, int minimum, float padding=2f)
+        {
+            label.resizeTextForBestFit=false;
+            label.horizontalOverflow=HorizontalWrapMode.Overflow;
+            label.verticalOverflow=VerticalWrapMode.Overflow;
+            float available=Mathf.Max(1f,label.rectTransform.rect.width-padding);
+            int size=preferred;
+            var settings=label.GetGenerationSettings(Vector2.zero);
+            settings.resizeTextForBestFit=false;
+            settings.horizontalOverflow=HorizontalWrapMode.Overflow;
+            settings.verticalOverflow=VerticalWrapMode.Overflow;
+            var generator=label.cachedTextGeneratorForLayout;
+            while(size>minimum)
+            {
+                settings.fontSize=size;
+                float measured=generator.GetPreferredWidth(label.text,settings)/
+                    Mathf.Max(.01f,label.pixelsPerUnit);
+                if(measured<=available)break;
+                size--;
+            }
+            label.fontSize=size;
+        }
     }
 
     /// <summary>
@@ -539,9 +586,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var r = NewRect(name, parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var label = r.gameObject.AddComponent<RoyalText>();
-            var approved = UseCoronaArt
-                ? (bold ? CoronaHeadingFont : CoronaBodyFont)
-                : ChronicleFont;
+            var approved = UseCoronaArt ? CoronaFinish.ResolveFont(bold) : ChronicleFont;
             label.font = approved ? approved : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             label.fontSize = fontSize;
             label.fontStyle = bold ? FontStyle.Bold : FontStyle.Normal;
@@ -565,6 +610,7 @@ namespace Eldoria.UI.RoyalGold.V2
             frame.raycastTarget = true;
             var button = r.gameObject.AddComponent<RoyalButton>();
             button.targetGraphic = frame;
+            if(UseCoronaArt)CoronaFinish.ApplyButtonFeedback(button);
             label = Text("Label", r, 21, primary ? Ivory : Gold, true);
             label.alignment = TextAnchor.MiddleCenter;
             Stretch(label.rectTransform, 8f);
