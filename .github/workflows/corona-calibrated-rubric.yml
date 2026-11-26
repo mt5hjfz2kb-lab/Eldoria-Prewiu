@@ -1,0 +1,51 @@
+name: Corona original rubric calibrated agent measurement
+on:
+  push:
+    branches: [candidate/corona-calibrated-rubric-20261126]
+    paths: ['.github/workflows/corona-calibrated-rubric.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  calibrated-art-review:
+    if: ${{ github.run_attempt == 1 && github.event.before == '4cf80d439bba248b0e0125f4cd42798602d43d7d' && github.event.head_commit.message == 'Studio: independently remeasure 33 rendered roles with original 24 November weighted rubric' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/corona-art-iteration
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 1657b2caa6b1a955319538ce3a8b2906398599b3
+          path: studio-source
+          sparse-checkout: tools/openai-development-studio
+          persist-credentials: false
+      - name: Retrieve original verified capture artifacts and references
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow==11.3.0
+          gh run download 45638738009 --repo "$GITHUB_REPOSITORY" --name ciudad-region-recorrido --dir baseline
+          gh run download 45824434222 --repo "$GITHUB_REPOSITORY" --name corona-before-after-dpr1 --dir ui
+          gh run download 45824434222 --repo "$GITHUB_REPOSITORY" --name ciudad-region-recorrido --dir candidate
+          gh run download 45837717094 --repo "$GITHUB_REPOSITORY" --name corona-auxiliary-real-ab --dir aux
+          gh run download 45837717094 --repo "$GITHUB_REPOSITORY" --name corona-auxiliary-original --dir aux-base
+          gh run download 45837717094 --repo "$GITHUB_REPOSITORY" --name corona-auxiliary-corona --dir aux-after
+          gh run download 45834241279 --repo "$GITHUB_REPOSITORY" --name region1-cameras-and-routes --dir native
+          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-art-plan --dir references
+          python3 -m py_compile tools/corona-art-iteration/calibrated_review.py
+      - name: Seven bounded independent reviewers with original weights
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python3 tools/corona-art-iteration/calibrated_review.py --ui ui --baseline baseline --candidate candidate --aux aux --aux-base aux-base --aux-after aux-after --native native --references references --rubric tools/corona-art-iteration/calibrated-rubric-20261124.json --studio studio-source/tools/openai-development-studio --out calibrated
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-original-weight-calibrated-scorecard
+          path: calibrated/
+          if-no-files-found: warn
