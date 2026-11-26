@@ -350,6 +350,17 @@ async def main():
                     await until(lambda:state.get('room')==name)
                     await page.wait_for_timeout(650)
                     await page.screenshot(path=OUT/('sistema-'+name+'.png'))
+                    # Inspect the same live room at the supported alternate
+                    # orientation, not a stretched portrait screenshot. Restore
+                    # the original viewport before the canonical journey continues.
+                    await page.set_viewport_size({'width':844,'height':390})
+                    await fresh();await fresh();await page.wait_for_timeout(550)
+                    await page.screenshot(path=OUT/('sistema-'+name+'-horizontal.png'))
+                    landscape_ok=state.get('room')==name and find(back) is not None
+                    log.append({'room_landscape':name,'exit_available':landscape_ok})
+                    await page.set_viewport_size({'width':390,'height':844})
+                    await fresh();await fresh();await page.wait_for_timeout(300)
+                    assert landscape_ok,('Landscape lost room or exit',name)
                     await tap(back,False)
                     await until(lambda:not state.get('room'))
                     log.append({'room_traversed':name,'level':state['level']})
@@ -369,6 +380,35 @@ async def main():
                                   ('scouts','Return to actual kingdom'),
                                   ('bag','Issue186 bag close')]:
                     await visit_room(name,back)
+                # Isolated localhost save only: exercise an actual daily claim
+                # after all parity checks. The full browser video captures the
+                # ceremony; stills supplement it, never substitute for motion.
+                await council()
+                await tap('OpenSystem/daily')
+                await until(lambda:state.get('room')=='daily')
+                claim='Claim exact daily reward'
+                if find(claim):
+                    await page.screenshot(path=OUT/'tesoro-antes.png')
+                    revision_before=state['revision']
+                    target=find(claim)
+                    box=await page.locator('canvas').bounding_box()
+                    x=box['x']+box['width']*target['x']
+                    y=box['y']+box['height']*target['y']
+                    await cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':x,'y':y}]})
+                    await page.wait_for_timeout(175)
+                    await cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
+                    for i,delay in enumerate([200,350,450,600,700,900]):
+                        await page.wait_for_timeout(delay)
+                        await page.screenshot(path=OUT/f'tesoro-apertura-{i}.png')
+                    await until(lambda:state['revision']>revision_before and find(claim),25)
+                    await page.screenshot(path=OUT/'tesoro-resultado.png')
+                    await tap(claim,False)
+                    await until(lambda:not state.get('room'))
+                    log.append({'daily_claim_ceremony':'captured','before':revision_before,'after':state['revision']})
+                else:
+                    log.append({'daily_claim_ceremony':'not available in this save; NOT TESTED'})
+                    await tap('Close tributes',False)
+                    await until(lambda:not state.get('room'))
             # The final camera tour starts in the persisted city, with the HUD
             # closed. Pinch inward in world units, then traverse via actual
             # browser touch gestures, capturing the Unity canvas throughout.

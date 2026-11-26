@@ -149,6 +149,13 @@ namespace Eldoria.HeroesUI
         Button Button(string name,string caption,float x,float y,float w,float h,Action action,bool enabled=true)
         {
             var r=Frame(name,content,x,y,w,h);var b=r.gameObject.AddComponent<Button>();b.interactable=enabled;
+            if(coronaTypography)
+            {
+                // Preserve the authored plate and callback; animate its actual Image,
+                // not the transparent hit area above hero portraits.
+                b.targetGraphic=r.GetComponent<Image>();
+                CoronaFinish.ApplyButtonFeedback(b);
+            }
             b.onClick.AddListener(()=>action());var t=Label(name+" label",r,caption,5,3,w-10,h-6,20,TextAnchor.MiddleCenter);
             t.color=enabled?ivory:new Color(.48f,.48f,.48f);return b;
         }
@@ -1472,6 +1479,8 @@ namespace Eldoria.HeroesUI
                         lateral?22:cardW<150?17:23,
                         TextAnchor.MiddleCenter);
                     namePlate.color=gold;
+                    if(coronaTypography)
+                        namePlate.font=CoronaFinish.ResolveFont(true,font);
                     if(lateral)namePlate.resizeTextForBestFit=false;
                     bool largeCard=!lateral&&cardH>=260f&&identityH>=72f&&cardW>=200f;
                     if(largeCard)
@@ -1487,7 +1496,12 @@ namespace Eldoria.HeroesUI
                         ix+3f,iy+(lateral?ih*.49f:largeCard?46f:compactCard?26f:30f),iw-6f,
                         lateral?Mathf.Max(40f,ih*.48f):largeCard?38f:
                             compactCard?Mathf.Max(36f,identityH-46f):Mathf.Max(20f,identityH-39f),
-                        lateral?19:compactCard?13:largeCard?14:17,TextAnchor.MiddleCenter);
+                        lateral?19:compactCard?(coronaTypography?15:13):largeCard?14:17,TextAnchor.MiddleCenter);
+                    if(coronaTypography)
+                    {
+                        statePlate.font=CoronaFinish.ResolveFont(false,compactFont);
+                        statePlate.color=unlocked?CoronaFinish.Ivory:CoronaFinish.Muted;
+                    }
                     // At 512:575 reference proportions, real hero power must
                     // remain on ONE visible line instead of wrapping under the
                     // image and being truncated by its 20-unit stat row.
