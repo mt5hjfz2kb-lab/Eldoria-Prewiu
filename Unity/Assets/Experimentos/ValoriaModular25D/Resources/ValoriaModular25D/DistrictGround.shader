@@ -2,6 +2,7 @@ Shader "Eldoria/Valoria/District ground" {
 Properties {
  _MainTex("Meadow",2D)="white"{} _Paving("Cobble",2D)="white"{}
  _Soil("Earth",2D)="white"{} _Slate("Quarry strata",2D)="white"{} _Built("Completed districts",Vector)=(0,0,0,0)
+ _MatureFinish("Mature urban material pass",Range(0,1))=1
 }
 SubShader { Tags {"RenderType"="Opaque" "Queue"="Geometry"} Pass {
 CGPROGRAM
@@ -11,7 +12,7 @@ CGPROGRAM
 sampler2D _MainTex,_Paving,_Soil,_Slate;
 float4 _CivicAxis,_WorkLane,_Forecourt;
 float4 _UpperBlock,_LowerBlock,_Orchard,_QuarryMeadow;
-float _Boroughs;
+float _Boroughs,_MatureFinish;
 float4 _WestSills,_EastSills;
 float4 _Built, _MilitaryYard, _MarketYard, _StoneFace;
 struct Vertex { float4 vertex:POSITION; float2 uv:TEXCOORD0; };
@@ -185,6 +186,17 @@ half4 frag(Varying i):SV_Target {
  shale*=lerp(.82,1.17,ledge);
  half floorCover=saturate(max(rock*.88,outcrop))*_Built.z;
  ground=lerp(ground,lerp(dirt*.83,shale*half3(.98,.96,.93),.86),floorCover);
+ // One surface, no extra shadow cards or fake city image. Maturity follows
+ // existing real district unlocks; Bastion I remains pixel-identical.
+ half maturity=saturate(.38*_Built.x+.26*_Built.y+.16*_Built.z+.20*_Boroughs)*saturate(_MatureFinish);
+ half civicWeave=max(street,max(doorstep,apron*.85))*maturity;
+ ground=lerp(ground,lerp(ground,seam*half3(.93,.92,.86),.28),civicWeave*.72);
+ // Separate a worn, cooler drill court from warmer productive market soil,
+ // using the existing texture and registered parcel shapes rather than rectangles.
+ ground=lerp(ground,lerp(dirt*.91,seam*half3(.93,.95,.94),.63),drill*maturity*.30);
+ ground=lerp(ground,lerp(dirt*half3(1.05,.96,.82),seam,.18),market*maturity*.28);
+ half masonryFringe=saturate(streetMargin*(1-doorstep)+blockLand*(1-apron)*.55)*_Boroughs;
+ ground*=lerp(half3(1,1,1),half3(.87,.90,.93),masonryFringe*maturity*.40);
  return half4(ground,1);
 }
 ENDCG

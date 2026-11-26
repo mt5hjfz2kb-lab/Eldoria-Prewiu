@@ -252,10 +252,12 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // Distinguish open meadow zones with broad existing geographic signals.
   // Preserve the city approach, roads, canopy, steep slopes and fault pigment.
   half meadowZones=smoothstep(.20,.82,field*.65+exposure*.35);
-  half3 fieldGrade=lerp(half3(.80,1.05,1.13),half3(1.20,1.10,.83),meadowZones);
+  // Native 15127316953 exposed a synthetic green/ochre patchwork in
+  // strategic views. Keep the river improvement but grade fields more quietly.
+  half3 fieldGrade=lerp(half3(.91,1.035,1.08),half3(1.13,1.07,.91),meadowZones);
   half regionalContinuity=smoothstep(28,110,length(metre));
   half openGrade=regionalContinuity*(1-canopy)*(1-mask.r)*(1-upland*.65);
-  grass*=lerp(half3(1,1,1),fieldGrade,openGrade*.80*saturate(_RegionalColourPass));
+  grass*=lerp(half3(1,1,1),fieldGrade,openGrade*lerp(.75,.52,strategicScale)*saturate(_RegionalColourPass));
   half3 colour=lerp(grass,fracturedSlate,faultWeight*.87);
   // Sample the geological opening on the terrain triangles themselves.
   // A separately tessellated patch clipped into the steep fault walls in
@@ -342,6 +344,10 @@ Shader "Eldoria/Region1/Illustrated ground" {
   // Reserve the change for geographic slopes, not a global brightness boost.
   half paintedLight=clamp(1+(geomLight-.85)*.86,.59,1.16);
   colour*=lerp(1,paintedLight,(1-saturate(mask.r))*.82);
+  // The existing real relief, rather than brighter arbitrary fields, supplies
+  // additional value separation at strategic scales. Flat meadow is unchanged.
+  half reliefContrast=clamp(1+(geomLight-.85)*.28,.81,1.08);
+  colour*=lerp(1,reliefContrast,(1-saturate(mask.r))*mapScale*saturate(_RegionalColourPass));
   colour*=1+.045*sin(metre.x*.018+sin(metre.y*.027))*cos(metre.y*.014);
   if (_BeyondMap>.5) {
    half shoulder=saturate((1-geometricNormal.y)*4.7);

@@ -1237,7 +1237,12 @@ namespace Eldoria.UI.RoyalGold.V2
             // The approved composition places a full-height archer on the
             // courtyard floor and the order below the unit identity at right.
             // Narrow portrait keeps those same layers, stacking only the order.
-            float portraitOrderH=Mathf.Min(485f,bodyH*.47f);
+            // The real Corona training capture left costs and readiness
+            // subordinate to the yard. Only tall portrait may spend some
+            // of that decorative height on the actual recruitment order.
+            float portraitOrderH=RoyalGoldV2Hud.UseCoronaArt&&!wide&&bodyH>=1100f?
+                Mathf.Min(560f,bodyH*.48f):Mathf.Min(485f,bodyH*.47f);
+            bool roomyCoronaOrder=RoyalGoldV2Hud.UseCoronaArt&&!wide&&portraitOrderH>=500f;
             float artH=wide?bodyH:bodyH-portraitOrderH-12;
             Place(left,x,bodyY,wide?width*.54f:width,artH);
             float floorMargin=RoyalGoldV2Hud.UseCoronaArt && !wide ? artH*.095f : 0f;
@@ -1296,7 +1301,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float qy=wide?Mathf.Max(37f,orderH*.105f):43f;
             float sliderY=qy+qh+(wide?8f:10f);
             float summaryY=sliderY+(wide?21f:31f);
-            float summaryH=wide?Mathf.Clamp(orderH*.15f,43f,65f):72f;
+            float summaryH=wide?Mathf.Clamp(orderH*.15f,43f,65f):roomyCoronaOrder?88f:72f;
             float tierY=summaryY+summaryH+7f;
             float tierH=wide?34f:49f;
             float trainingStatusY=tierY+tierH+6f;
@@ -1327,9 +1332,9 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(trainingProgress,pad,trainingStatusY-11f,orderW-pad*2f,7f);
             Place(action.transform as RectTransform,pad,
                 actionY,orderW-pad*2f,wide?52f:78f);
-            summary.fontSize=wide?21:RoyalGoldV2Hud.UseCoronaArt?30:26;
-            status.fontSize=wide?16:23;
-            actionLabel.fontSize=wide?18:25;
+            summary.fontSize=wide?21:roomyCoronaOrder?34:RoyalGoldV2Hud.UseCoronaArt?30:26;
+            status.fontSize=wide?16:roomyCoronaOrder?28:23;
+            actionLabel.fontSize=wide?18:roomyCoronaOrder?28:25;
             float qw=quantityRow.rect.width;
             Place(minus.transform as RectTransform,0,0,qh,qh);
             Place(plus.transform as RectTransform,qw-qh,0,qh,qh);

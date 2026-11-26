@@ -1062,8 +1062,12 @@ namespace Eldoria.UI.RoyalGold.V2
             // Vigilants has one encounter card: fill portrait with the world
             // instead of leaving a long dark strip before the battle button.
             // Scouts retains three full-size readable contracts beneath its map.
-            float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-760f):
-                portrait?Mathf.Clamp(ph-(RoyalGoldV2Hud.UseCoronaArt?810f:988f),220f,1090f):
+            // Actual 390x844 Corona captures showed beautiful maps but a
+            // cramped manuscript. Reserve an additional 90-100 units for the
+            // live tactical content on tall portrait displays only.
+            bool roomyCorona=portrait&&RoyalGoldV2Hud.UseCoronaArt&&ph>=1550f;
+            float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-(roomyCorona?860f:760f)):
+                portrait?Mathf.Clamp(ph-(RoyalGoldV2Hud.UseCoronaArt?(roomyCorona?900f:810f):988f),220f,1090f):
                 ph-155f;
             // The landscape remains dominant, but the enemy and all real
             // stats get sufficient room in a proper illustrated card.
@@ -1299,6 +1303,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 reward.fontSize=height>width?(RoyalGoldV2Hud.UseCoronaArt?28:26):compactLandscape?20:23;
                 passive.fontSize=height>width?26:compactLandscape?19:21;
                 battleFeedback.fontSize=height>width?23:compactLandscape?18:21;
+                if(roomyCorona && ih>=650f)
+                {
+                    // One clearly divided tactical manuscript: two-line
+                    // identity, two-line formation, full rewards and mastery.
+                    // The authored guardian keeps its separate right-hand bay.
+                    TL(opponent.rectTransform,18f,60f,textWidth,88f);
+                    TL(formation.rectTransform,18f,154f,textWidth,70f);
+                    TL(reward.rectTransform,18f,230f,textWidth,90f);
+                    TL(passive.rectTransform,18f,328f,textWidth,82f);
+                    TL(battleFeedback.rectTransform,18f,420f,textWidth,
+                        Mathf.Max(42f,actionTop-428f));
+                    opponent.fontSize=30;formation.fontSize=28;
+                    reward.fontSize=30;passive.fontSize=28;
+                }
                 if(compactLandscape)
                 {
                     // Keep the complete XP/mastery text above the real buttons.
@@ -1392,26 +1410,27 @@ namespace Eldoria.UI.RoyalGold.V2
                     TL(cell,12f,head+i*spacing,iw-24f,spacing-5f);
                     float cellW=iw-24f;
                     bool coronaPortrait=portrait&&RoyalGoldV2Hud.UseCoronaArt;
+                    bool spaciousCorona=roomyCorona&&coronaPortrait&&spacing>=205f;
                     float titleTop=coronaPortrait?8f:portrait?12f:13f;
-                    TL(scoutTitles[i].rectTransform,32f,titleTop,cellW-64f,coronaPortrait?54f:portrait?62f:36f);
-                    float detailTop=coronaPortrait?64f:portrait?72f:54f;
-                    float imageW=coronaPortrait?110f:portrait?128f:70f;
-                    float imageH=portrait?98f:50f;
+                    TL(scoutTitles[i].rectTransform,32f,titleTop,cellW-64f,spaciousCorona?60f:coronaPortrait?54f:portrait?62f:36f);
+                    float detailTop=spaciousCorona?70f:coronaPortrait?64f:portrait?72f:54f;
+                    float imageW=spaciousCorona?128f:coronaPortrait?110f:portrait?128f:70f;
+                    float imageH=spaciousCorona?110f:portrait?98f:50f;
                     TL(scoutThumbnails[i].rectTransform,32f,detailTop,imageW,imageH);
                     TL(scoutInsetUnder[i].rectTransform,
                         26f,detailTop-6f,imageW+12f,imageH+12f);
                     TL(scoutInsetLip[i].rectTransform,
                         32f,detailTop,imageW,imageH);
                     float captionX=32f+imageW+18f;
-                    float buttonW=portrait?158f:120f;
+                    float buttonW=spaciousCorona?170f:portrait?158f:120f;
                     float contentWidth=Mathf.Max(75f,cellW-captionX-buttonW-34f);
                     TL(scoutCards[i].rectTransform,captionX,detailTop,contentWidth,
                         Mathf.Max(51f,spacing-detailTop-16f));
                     TL((RectTransform)scoutActions[i].transform,
-                        cellW-buttonW-18f,detailTop+4f,buttonW,portrait?88f:40f);
-                    scoutTitles[i].fontSize=portrait?30:21;
+                        cellW-buttonW-18f,detailTop+4f,buttonW,spaciousCorona?92f:portrait?88f:40f);
+                    scoutTitles[i].fontSize=spaciousCorona?34:portrait?30:21;
                     scoutTitles[i].alignment=TextAnchor.MiddleLeft;
-                    scoutCards[i].fontSize=coronaPortrait?28:portrait?26:18;
+                    scoutCards[i].fontSize=spaciousCorona?30:coronaPortrait?28:portrait?26:18;
                     if(coronaPortrait)scoutCards[i].font=CoronaFinish.ResolveFont(false);
                     scoutCards[i].alignment=TextAnchor.MiddleLeft;
                     scoutActionLabels[i].fontSize=portrait?26:18;
