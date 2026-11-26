@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "branch": "candidate/corona-studio-material-20261126",
+  "base": "62a8a6e97eb587721986c27a03d40e78dd951cb9",
+  "studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
+  "source_run": 45802472999,
+  "source_sha": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+  "reference_run": 45812100129,
+  "unused_review_run": 45802703502,
+  "prior_total_reserved": "5.00",
+  "released_unexecuted": "2.10",
+  "new_reserved": "1.25",
+  "remaining_released": "0.85",
+  "scope": "One original quiet secondary-button skin, visual only. Never replace original world_rune or primary action_arcane. Apply to selected existing contexts only if independent visual auditor accepts.",
+  "paths": {
+    "bag": "Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186BagOverlay.cs",
+    "heroes": "Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs",
+    "mail": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs"
+  },
+  "artdir": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/",
+  "expected_replacements": {
+    "bag": 2,
+    "heroes": 2,
+    "mail": 1
+  }
+}

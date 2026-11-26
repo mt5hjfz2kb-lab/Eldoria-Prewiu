@@ -1,0 +1,123 @@
+name: Corona - agents create and integrate original secondary material
+on:
+  push:
+    branches: [candidate/corona-studio-material-20261126]
+    paths: ['.github/workflows/corona-agent-material-production.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: corona-artist-material-single-owner-reservation
+  cancel-in-progress: false
+jobs:
+  artistic-production:
+    if: >-
+      ${{ github.run_attempt == 1 && github.event.before == '62a8a6e97eb587721986c27a03d40e78dd951cb9' && github.event.head_commit.message == 'Corona: authorize real agent material production within unused allocation' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/corona-studio-material
+            Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186BagOverlay.cs
+            Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 1657b2caa6b1a955319538ce3a8b2906398599b3
+          path: studio-source
+          sparse-checkout: tools/openai-development-studio
+          persist-credentials: false
+      - name: Get actual earlier mobile comparisons and reference screenshots
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run download 45802472999 --repo "$GITHUB_REPOSITORY" --name corona-before-after-dpr1 --dir evidence
+          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-art-plan --dir references
+          python3 -m pip install --quiet Pillow==11.3.0
+          python3 -m py_compile tools/corona-studio-material/produce.py
+          python3 studio-source/tools/openai-development-studio/budget_guard.py --self-test
+      - name: Real director, artist, implementation programmer and independent auditor
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 tools/corona-studio-material/produce.py run --root . --studio studio-source/tools/openai-development-studio --source evidence --reference references --out result
+          cat result/handoff.json
+          cat result/audit-decision.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-agent-material-production
+          path: result/
+          if-no-files-found: warn
+          retention-days: 30
+  integrate:
+    needs: artistic-production
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          sparse-checkout: |
+            tools/corona-studio-material
+            Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186BagOverlay.cs
+            Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: corona-agent-material-production
+          path: result
+      - name: Apply actual agent-produced image and exact presentation choices, if accepted
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow==11.3.0
+          python3 tools/corona-studio-material/produce.py apply --root . --source result --out implementation.json
+          cat implementation.json
+          git diff --check
+          git diff > source.patch
+      - name: Commit only the allowed asset and source paths, no Main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = "candidate/corona-studio-material-20261126"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/$GITHUB_REF_NAME" --jq .object.sha)" = "$GITHUB_SHA"
+          git config user.name "Eldoria Studio art production"
+          git config user.email "eldoria-studio-art@users.noreply.github.com"
+          python3 - <<'PY'
+          import json,subprocess
+          c=json.load(open('tools/corona-studio-material/contract.json'))
+          p=json.load(open('implementation.json'))
+          allowed=set(c['paths'].values())|{c['artdir']+'secondary_quiet.png',c['artdir']+'secondary_quiet.png.meta'}
+          if p['applied']:
+              files=set(p['changed_files'])
+              assert files<=allowed
+              subprocess.run(['git','add','--',*sorted(files)],check=True)
+              staged=set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())
+              assert staged==files
+          PY
+          if ! git diff --cached --quiet; then
+            git commit -m "Corona studio artist: integrate original reviewed secondary skin"
+            git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+          fi
+          git rev-parse HEAD > implementation-sha.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: corona-agent-material-integration
+          path: |
+            implementation.json
+            source.patch
+            implementation-sha.txt
