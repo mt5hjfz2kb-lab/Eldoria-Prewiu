@@ -56,6 +56,7 @@ def mesh(name,v,f,m,bevel=0,smooth=False):
         for p in data.polygons:p.use_smooth=True
     if bevel:
         mod=obj.modifiers.new("Hand-polished edges","BEVEL");mod.width=bevel;mod.segments=3
+        if hasattr(data,"use_auto_smooth"):data.use_auto_smooth=True
         mod=obj.modifiers.new("Weighted material normals","WEIGHTED_NORMAL")
     return obj
 def polar(theta,r,z):
@@ -139,7 +140,9 @@ closed_profile("Velvet inner lining",[(R-T-.06,z0+.08),(R-T-.018,z0+.08),(R-T-.0
 def cylinder(name,radius,depth,z,material,vertices=96):
     bpy.ops.mesh.primitive_cylinder_add(vertices=vertices,radius=radius,depth=depth,location=(0,0,z))
     o=bpy.context.object;o.name=name;o.data.materials.append(material)
-    mod=o.modifiers.new("Stone chamfer","BEVEL");mod.width=.065;mod.segments=3;o.modifiers.new("Normals","WEIGHTED_NORMAL")
+    mod=o.modifiers.new("Stone chamfer","BEVEL");mod.width=.065;mod.segments=3
+    if hasattr(o.data,"use_auto_smooth"):o.data.use_auto_smooth=True
+    o.modifiers.new("Normals","WEIGHTED_NORMAL")
     return o
 cylinder("Octagonal relic plinth",1.93,.30,.48,stone,12)
 cylinder("Lower step",2.06,.18,.24,stone,12)
