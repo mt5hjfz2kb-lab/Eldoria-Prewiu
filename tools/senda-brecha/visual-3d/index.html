@@ -70,6 +70,16 @@
 #vignette{background:radial-gradient(ellipse at 50% 50%,transparent 52%,#06101b38 100%),linear-gradient(180deg,#050b11ad 0%,transparent 26%,transparent 78%,#06101b8a 100%)}
 @media(max-height:530px){#hudcrest{display:none}#eyebrow,#hud h1,#chapter{padding-left:0}#hud{padding-bottom:7px}#stats b{font-size:14px}#pause{top:8px}#hint{display:none}}
 </style>
+
+<style id="valoria-final-hud">
+#stats>span{position:relative;display:grid;grid-template-columns:27px 1fr;grid-template-rows:27px 12px;align-items:center;justify-content:center;padding:6px 7px 5px;gap:0;min-height:52px}
+#stats .statIcon{display:block;width:24px;height:24px;grid-column:1;grid-row:1;line-height:1;margin:0;filter:drop-shadow(0 2px 1px #0009)}
+#stats .statIcon svg{width:100%;height:100%}
+#stats b{grid-column:2;grid-row:1;text-align:center}
+#stats small{grid-column:1/3;grid-row:2;text-align:center;margin:0;font-size:8px;letter-spacing:.07em}
+@media(max-width:360px){#stats>span{grid-template-columns:21px 1fr;padding:5px 4px 4px}#stats .statIcon{width:19px;height:19px}#stats b{font-size:15px}}
+@media(max-height:530px){#stats>span{min-height:36px;grid-template-columns:17px 1fr;grid-template-rows:18px 10px;padding:3px}#stats .statIcon{display:block;width:16px;height:16px}#stats small{font-size:7px}}
+</style>
 </head>
 <body><main id="game"><canvas id="viewport" aria-label="Recorrido 3D de La Senda de la Brecha"></canvas><div id="vignette"></div>
 <header id="hud"><img id="hudcrest" alt="" /><div id="eyebrow">ELDORIA · EXPEDICIÓN DE VALORIA</div><h1>LA SENDA DE LA BRECHA</h1><div id="chapter">EL UMBRAL</div><div id="round"><span id="roundlabel">TRAMO 1/6</span><div id="track"><div id="bar"></div></div><span id="timer">0:00</span></div><div id="stats"><span><i class="statIcon">♜</i><b id="count">22</b><small>GUARDIA</small></span><span><i class="statIcon">⚔</i><b id="damage">100%</b><small>ATAQUE</small></span><span><i class="statIcon">◇</i><b id="armor" class="amethyst">0</b><small>ESCUDOS</small></span><span><i class="statIcon">✦</i><b id="liveScore">0</b><small>PUNTOS</small></span></div></header>
@@ -267,7 +277,7 @@ function setSlateMaterial(on){
  if(!originalRoadMap||!slateRoadMap)throw Error('Road material pair not loaded');
  const tex=on?slateRoadMap:originalRoadMap;
  roadSurface.material.map=tex;roadSurface.material.needsUpdate=true;scene.userData.roadMap=tex;
- tex.offset.y=-((elapsed*4.3/148)*tex.repeat.y)%1;roadSurface.material.bumpMap=tex;roadSurface.material.bumpScale=on?.033:.014;roadSurface.material.needsUpdate=true;slateMaterialActive=on;
+ tex.offset.y=-((elapsed*4.3/148)*tex.repeat.y)%1;roadSurface.material.bumpMap=tex;roadSurface.material.bumpScale=on?.065:.022;roadSurface.material.needsUpdate=true;slateMaterialActive=on;
 }
 async function loadBreachLandmark(){
  const r=await fetch(new URL('./art/senda-breach-landmark.png',import.meta.url));if(!r.ok)throw Error('Breach landmark missing');
@@ -314,13 +324,13 @@ async function loadCanonicalAssets(){
   const m=new THREE.SpriteMaterial({map:texture,transparent:true,alphaTest:.13,depthWrite:true,color:0xe8e5dd});
   const sp=new THREE.Sprite(m);sp.center.set(.5,0);sp.position.set(x,y,z);sp.scale.set(height*texture.image.width/texture.image.height,height,1);scene.add(sp);canonicalPieces++;return sp;
  }
- landmark(bastion,10.0,2.8,49,11.3);landmark(ruinA,-5.6,0,15.0,4.9);
- oldRoadsideRuin=landmark(ruinB,6.4,.08,18.7,5.0);rememberVerge(oldRoadsideRuin);
+ landmark(bastion,11.1,3.7,57.0,12.0);landmark(ruinA,-5.6,0,15.0,4.9);
+ oldRoadsideRuin=landmark(ruinB,6.6,.08,30.2,5.4);rememberVerge(oldRoadsideRuin);
  // The Studio arch was rejected as a low parapet. Test only one isolated
  // scenic ruin, safely beyond the playable road edge, as in the concept.
  const ruinTex=await loadStudioRuin();
  studioRuin=new THREE.Sprite(new THREE.SpriteMaterial({map:ruinTex,color:0xe7ddcc,transparent:true,alphaTest:.10,depthWrite:true,fog:true}));
- studioRuin.center.set(.5,0);studioRuin.scale.set(5.0*ruinTex.image.width/ruinTex.image.height,5.0,1);studioRuin.position.set(6.4,.08,18.7);
+ studioRuin.center.set(.5,0);studioRuin.scale.set(5.4*ruinTex.image.width/ruinTex.image.height,5.4,1);studioRuin.position.set(6.6,.08,30.2);
  ruinMargin=studioRuin.position.x-studioRuin.scale.x*.5-3.8;if(ruinMargin<.10)throw Error('Scenic ruin intrudes into lane');
  scene.add(studioRuin);rememberVerge(studioRuin);setStudioRuin(true);
  // Original Valoria and the newly authored geological landmark are separate
@@ -363,16 +373,38 @@ function glowTexture(){
  const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d'),g=x.createRadialGradient(32,32,1,32,32,31);
  g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.18,'rgba(255,255,255,.60)');g.addColorStop(.55,'rgba(255,255,255,.14)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,64,64);glowMap=new THREE.CanvasTexture(c);return glowMap;
 }
+function cliffSurface(){
+ const c=document.createElement('canvas');c.width=c.height=256;const ctx=c.getContext('2d');const im=ctx.createImageData(256,256);
+ let seed=9973;const rnd=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
+ for(let y=0;y<256;y++)for(let x=0;x<256;x++){const veins=Math.sin(x*.116+Math.sin(y*.046)*1.6)+.58*Math.sin(x*.37+y*.052),moss=Math.max(0,Math.sin(x*.05+y*.083)-.57),v=108+veins*17+rnd()*27;let k=(y*256+x)*4;im.data[k]=v*(1-.20*moss);im.data[k+1]=v*.96+moss*9;im.data[k+2]=v*.93-moss*14;im.data[k+3]=255}
+ ctx.putImageData(im,0,0);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1.2,1.6);return t;
+}
+function cliffGeometry(variant){
+ let s=371+variant*761;const rnd=()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296};
+ const N=11,L=6,verts=[],uv=[],indices=[];
+ for(let l=0;l<=L;l++){const t=l/L,r=1-.36*t-.18*t*t;for(let i=0;i<N;i++){
+  const a=i*Math.PI*2/N,ir=r*(.78+rnd()*.34),x=Math.cos(a)*ir,z=Math.sin(a)*ir;
+  verts.push(x,t*(.89+.11*rnd())+.055*Math.sin(i*1.9+l*2.1),z);uv.push(i/(N-1),t);
+ }}
+ for(let l=0;l<L;l++)for(let i=0;i<N;i++){const j=(i+1)%N,a=l*N+i,b=l*N+j,c=(l+1)*N+i,d=(l+1)*N+j;indices.push(a,c,b,b,c,d)}
+ const top=verts.length/3;verts.push(0,1,0);uv.push(.5,1);for(let i=0;i<N;i++)indices.push(L*N+i,top,L*N+(i+1)%N);
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();g.computeBoundingSphere();return g;
+}
 function buildValoriaLandscape(){
  // Real scene depth: terraced bedrock, forest silhouettes, banners and a fissure
  // rooted in a rocky slope. No painted full-screen environment.
  const land=new THREE.Group();scene.add(land);
- const tex=groundTexture(false);
- const rockMat=new THREE.MeshStandardMaterial({color:0x8b8472,map:tex,roughness:1});
+ const tex=cliffSurface(),rockMat=new THREE.MeshStandardMaterial({map:tex,bumpMap:tex,bumpScale:.32,roughness:1,color:0x9a9690});
+ // Geometric, weathered rock buttresses support the castle instead of floating
+ // on a smooth sphere hill. The distant illustration remains its canonical asset.
  for(let i=0;i<12;i++){
-  const x=8.0+i*1.1,z=45+(i%4)*3.2;
-  let rock=mesh(geom('ridge',()=>new THREE.IcosahedronGeometry(1,1)),rockMat,land,x,.7+(i%3)*.14,z);
-  rock.scale.set(3.6,2.45+(i%4)*.18,5.0);rock.rotation.y=i*.61;
+  const x=7.9+i*.93,z=50+(i%4)*3.2;
+  let rock=mesh(geom('strata-'+i%3,()=>cliffGeometry(i%3)),rockMat,land,x,0,z);
+  rock.scale.set(3.8,3.7+(i%4)*.34,5.4);rock.rotation.y=i*.45;
+ }
+ for(let i=0;i<8;i++){
+  const x=-7.6-(i%4)*1.8,z=46+(i%5)*2.9;let rock=mesh(geom('strata-'+i%3,()=>cliffGeometry(i%3)),rockMat,land,x,0,z);
+  rock.scale.set(2.3,1.25+(i%4)*.31,2.9);rock.rotation.y=i*.83;
  }
  // Vertical rock fragments grow from the fractured terrain, rather than a floating icon.
  const rift=new THREE.Group();rift.position.set(-10,0,43);scene.add(rift);breachProxy=rift;
@@ -477,15 +509,22 @@ function buildTerrainVerges(){
  }
 }
 function buildDistantCauseway(){
- // A distant, noninteractive fortified arch continues the Valoria road.
- // Real geometry, subdued by world fog, never a fourth choice portal.
- const g=new THREE.Group();g.position.set(0,0,65);scene.add(g);
- for(const side of [-1,1]){
-  box(g,side*4.12,1.35,0,.75,2.7,1.25,0x625e62);
-  box(g,side*4.12,2.70,0,1.0,.26,1.50,0x716a68);
-  for(let k=0;k<2;k++){box(g,side*(5.05+k*1.7),2.40,0,1.65,.63,1.05,0x5e5b61);box(g,side*(5.05+k*1.7),.95,0,.48,1.90,.88,0x5b585d);}
+ // Three arches of a fortified Valoria viaduct: continuous crown, masonry
+ // piers down to terrain, central opening clear of the gameplay road.
+ const g=new THREE.Group();g.position.set(0,0,76);scene.add(g);
+ const stone=0x66636c,cap=0x77717a;
+ for(const x of [-10.0,-4.5,4.5,10.0]){
+  box(g,x,2.5,0,1.45,5.0,2.25,stone);box(g,x,4.94,0,1.75,.35,2.55,cap);box(g,x,.38,0,1.85,.76,2.65,stone);
  }
- for(let k=0;k<11;k++){let a=k*Math.PI/11+.012,b=(k+1)*Math.PI/11-.012;mesh(geom('distant-arch:'+k,()=>archWedge(3.65,4.15,a,b,1.2)),mat(k%2?0x625d62:0x6b6464),g,0,2.65,-.6);}
+ const arches=[{x:0,r:3.75,y:3.15},{x:-7.25,r:2.02,y:3.15},{x:7.25,r:2.02,y:3.15}];
+ for(const o of arches)for(let k=0;k<10;k++){
+  const a=k*Math.PI/10+.009,b=(k+1)*Math.PI/10-.009;
+  const part=mesh(geom('viaduct:'+o.r+':'+k,()=>archWedge(o.r,o.r+.54,a,b,2.0)),mat(k%2?stone:cap),g,o.x,o.y,-1);
+ }
+ // Visible uninterrupted top deck; spandrels step up over side arches.
+ for(const side of [-1,1]){box(g,side*7.25,5.98,0,5.5,1.52,2.25,stone);box(g,side*10.8,3.1,0,1.8,6.2,2.3,stone);}
+ box(g,0,7.35,0,22.5,.45,2.8,cap);box(g,0,7.91,0,22.5,.70,1.7,stone);
+ for(let i=0;i<17;i++)box(g,-10.6+i*1.32,8.57,0,.72,.62,1.66,stone);
 }
 function buildCombatSparks(){
  const n=32,geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(n*3),3));
@@ -513,13 +552,13 @@ function addDistantForest(pines){
 function addMist(){
  // Fog volumes represented by world-space soft transparent geometry, not screen overlays.
  // They sit BEHIND portals and actors and fade to zero at their boundaries.
- const geo=new THREE.PlaneGeometry(30,5.0);
+ const geo=new THREE.PlaneGeometry(34,6.0);
  for(let i=0;i<3;i++){
   const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,
    uniforms:{phase:{value:i*3.},time:{value:0}},
    vertexShader:'varying vec2 v;void main(){v=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-   fragmentShader:'varying vec2 v;uniform float phase;uniform float time;void main(){float edges=smoothstep(0.,.20,v.x)*(1.-smoothstep(.80,1.,v.x));float h=sin(v.y*3.14159265);float bands=.6+.4*sin(v.x*23.+sin(v.y*10.+phase)*2.+phase+time*.12);float a=edges*pow(max(h,0.),2.4)*bands*.22;gl_FragColor=vec4(.38,.44,.57,a);}'});
-  const p=new THREE.Mesh(geo,m);p.position.set(0,2.2,38+i*18);scene.add(p);mistLayers.push(m);
+   fragmentShader:'varying vec2 v;uniform float phase;uniform float time;void main(){float edges=smoothstep(0.,.20,v.x)*(1.-smoothstep(.80,1.,v.x));float h=sin(v.y*3.14159265);float bands=.6+.4*sin(v.x*23.+sin(v.y*10.+phase)*2.+phase+time*.12);float a=edges*pow(max(h,0.),2.4)*bands*.31;gl_FragColor=vec4(.43,.47,.61,a);}'});
+  const p=new THREE.Mesh(geo,m);p.position.set(0,2.25,37+i*16);scene.add(p);mistLayers.push(m);
  }
 }
 function buildRoadIdentity(){
@@ -547,10 +586,10 @@ function addAtmosphere(){
 }
 function makeScene(){scene=new THREE.Scene();scene.background=new THREE.Color(0x283745);scene.fog=new THREE.FogExp2(0x41495d,.0115);addAtmosphere();
  camera=new THREE.PerspectiveCamera(46,1,.2,150);camera.position.set(0,7.8,-13.7);camera.lookAt(0,1.5,15);
- const sun=new THREE.DirectionalLight(0xffd6a1,3.3);sun.position.set(-12,17,10);sun.target.position.set(0,0,4);scene.add(sun,sun.target);mainSun=sun;
+ const sun=new THREE.DirectionalLight(0xffd1a0,3.55);sun.position.set(-12,17,10);sun.target.position.set(0,0,4);scene.add(sun,sun.target);mainSun=sun;
  sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-9;sun.shadow.camera.right=9;sun.shadow.camera.top=13;sun.shadow.camera.bottom=-13;sun.shadow.camera.near=1;sun.shadow.camera.far=43;sun.shadow.bias=-.00025;sun.shadow.normalBias=.025;sun.shadow.radius=2;
  const rimLight=new THREE.DirectionalLight(0xa5bce8,1.35);rimLight.position.set(9,9,-11);scene.add(rimLight);
- const fill=new THREE.HemisphereLight(0xb0c9e3,0x504033,1.35);scene.add(fill);scene.add(new THREE.AmbientLight(0xffe9d0,.28));
+ const fill=new THREE.HemisphereLight(0xb6bfdf,0x504033,.96);scene.add(fill);scene.add(new THREE.AmbientLight(0xffe9d0,.22));
  const rift=new THREE.PointLight(0x9660c2,22,16);rift.position.set(-6,3,38);scene.add(rift);
  // Continually scrolling physical roadway; camera is fixed to reduce WebGL memory.
  const earth=groundTexture(false),stone=groundTexture(true);earth.repeat.set(35,38);stone.repeat.set(2.5,38);scene.userData.roadMap=stone;
