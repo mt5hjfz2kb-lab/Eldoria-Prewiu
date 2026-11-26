@@ -1,0 +1,78 @@
+{
+  "id": "eldoria-art-rubric-20261124-v1",
+  "source": "Auditoría comparativa imparcial, 24 noviembre 2026, 21:32 UTC; pesos recuperados de la conversación original.",
+  "dimensions": [
+    [
+      "resources",
+      20,
+      "Calidad de los recursos gráficos: personajes, edificios, iconos, texturas, arte original"
+    ],
+    [
+      "integration",
+      20,
+      "Integración espacial y visual: perspectiva, escala, profundidad, contacto, ensamblaje de elementos y superficies UI"
+    ],
+    [
+      "language",
+      15,
+      "Coherencia del lenguaje visual e identidad artística"
+    ],
+    [
+      "composition",
+      15,
+      "Composición, jerarquía, foco, densidad y uso del espacio"
+    ],
+    [
+      "light_material",
+      10,
+      "Iluminación, color y materiales"
+    ],
+    [
+      "mobile",
+      10,
+      "Nitidez y legibilidad móvil a 390×844"
+    ],
+    [
+      "finish",
+      10,
+      "Pulido, animaciones y presentación; en capturas estáticas evaluar sólo presentación visible y declarar animación no evaluada"
+    ]
+  ],
+  "bands": {
+    "9-10": "comercial de primer nivel",
+    "8-8.9": "competitivo",
+    "7-7.9": "bueno mejorable",
+    "6-6.9": "prototipo avanzado",
+    "5-5.9": "insuficiente",
+    "0-4.9": "revisión importante"
+  },
+  "constraints": [
+    "Misma rúbrica para ambos lados y referencias; no penalizar 2.5D vs 3D.",
+    "No introducir un criterio nuevo ni cambiar pesos.",
+    "Mismo estado y cámara cuando demostrable, declarar limitaciones.",
+    "No utilizar notas históricas como objetivo a reproducir ni premiar código.",
+    "No puntuar una animación a partir de estáticos. El componente finish estático mide presentación visible; resultado provisional para motion.",
+    "Distinguir referencias directas, análogas y no disponibles; null cuando no se pueda puntuar.",
+    "Separar prueba técnica de calidad."
+  ],
+  "historical_context": {
+    "hud": 7.4,
+    "march": 7.4,
+    "bag": 7.7,
+    "mail": 7.4,
+    "name": 7.5,
+    "daily": 7.8,
+    "heroes": 8,
+    "training": 8,
+    "scouts": 8.3,
+    "vigilants": 8.2
+  },
+  "historical_note": "Totales históricos recuperados, no se recuperaron los siete subscores por pantalla; no ajustar artificialmente resultados para coincidir. No usar como input del evaluador antes de cerrar sus subscores.",
+  "supersession": {
+    "source_run": 45824434222,
+    "source_sha": "3486754d5f4c28db2ae4ffa2a7def3b0f000fb3c",
+    "unstarted_audit": "final-art-audit",
+    "reservation_usd": ".45",
+    "reason": "Owner explicitly requests original scoring rubric; source-pinned old audit must not spend on obsolete weights. Already-running native/mobile checks retain exact source SHA. No gameplay or workflow files modified."
+  }
+}
