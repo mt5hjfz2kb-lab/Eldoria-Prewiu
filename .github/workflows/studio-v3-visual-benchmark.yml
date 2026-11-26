@@ -8,7 +8,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: studio-v3-visual-benchmark-calibration
+  group: studio-v3-visual-benchmark-targeted
   cancel-in-progress: false
 jobs:
   actual-webgl:
@@ -27,16 +27,8 @@ jobs:
       - name: Materialize only immutable actual source and shared art references
         run: |
           set -euo pipefail
-          git fetch --no-tags --depth=1 origin e1d3b9892e1a75a9e7bfbafd0db225de7aacba74
-          git fetch --no-tags --depth=1 origin 91b8de9874aed87219d733efa6e8e0aa56207f1e
-          git fetch --no-tags --depth=1 origin 5ef2aee67cf8fde57ba2fc4b3d929b517ee67944
           root="$RUNNER_TEMP/studio-v3-visual-source"
-          mkdir -p "$root"
-          git archive e1d3b9892e1a75a9e7bfbafd0db225de7aacba74 tools/senda-brecha/visual-3d | tar -x -C "$root"
-          mkdir -p "$root/tools/senda-brecha/visual-3d/reference"
-          git show 5ef2aee67cf8fde57ba2fc4b3d929b517ee67944:Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/panel_obsidian.png > "$root/tools/senda-brecha/visual-3d/reference/panel_obsidian.png"
-          git show 91b8de9874aed87219d733efa6e8e0aa56207f1e:docs/valoria-modular-25d/CORONA_BRECHA_ART_DIRECTION_20261120.md > "$root/reference-art-direction.md"
-          git show 91b8de9874aed87219d733efa6e8e0aa56207f1e:docs/valoria-modular-25d/CORONA_SHARED_STANDARD_20261126.md > "$root/reference-shared-standard.md"
+          python3 tools/studio-v3/visual-benchmark/materialize.py "$root"
           echo "V3_VISUAL_WEBROOT=$root" >> "$GITHUB_ENV"
           echo "V3_VISUAL_OUT=$RUNNER_TEMP/studio-v3-visual-evidence" >> "$GITHUB_ENV"
       - name: Install isolated Chromium

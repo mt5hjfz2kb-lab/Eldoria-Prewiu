@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+      "path": "tools/senda-brecha/visual-3d/guard-art.mjs",
+      "destination": "tools/senda-brecha/visual-3d/guard-art.mjs",
+      "blob_sha": "b4abf070ea4fc785f1d205fccfcd7bb4b1e9e3da",
+      "size": 8268
+    },
+    {
+      "commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+      "path": "tools/senda-brecha/visual-3d/index.html",
+      "destination": "tools/senda-brecha/visual-3d/index.html",
+      "blob_sha": "8f221d39e7031fbe05cabc9e892fce3a702619a7",
+      "size": 78943
+    },
+    {
+      "commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+      "path": "tools/senda-brecha/visual-3d/lane-motion.mjs",
+      "destination": "tools/senda-brecha/visual-3d/lane-motion.mjs",
+      "blob_sha": "0b8735892265c27abd289fc307362e49f15cea4d",
+      "size": 537
+    },
+    {
+      "commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+      "path": "tools/senda-brecha/visual-3d/portal-art.mjs",
+      "destination": "tools/senda-brecha/visual-3d/portal-art.mjs",
+      "blob_sha": "f6866b9788b1ea34ac92ccc6df32930d9f7c574e",
+      "size": 3523
+    },
+    {
+      "commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+      "path": "tools/senda-brecha/visual-3d/art/senda-breach-landmark.json",
+      "destination": "tools/senda-brecha/visual-3d/art/senda-breach-landmark.json",
+      "blob_sha": "4db5d7e6b8a8605970e637917ef73ff9216e0f28",
+      "size": 486
+    },
+    {
+      "commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+      "path": "tools/senda-brecha/visual-3d/art/senda-breach-landmark.png",
+      "destination": "tools/senda-brecha/visual-3d/art/senda-breach-landmark.png",
+      "blob_sha": "ffa3ca9314ca6e7c9e6f527d388e13d93894fa95",
+      "size": 979966
+    },
+    {
+      "commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+      "path": "tools/senda-brecha/visual-3d/art/senda-valoria-portal.mesh.json",
+      "destination": "tools/senda-brecha/visual-3d/art/senda-valoria-portal.mesh.json",
+      "blob_sha": "e413866b4e37cb318ab7808da3c37f7d7cc199bf",
+      "size": 12777
+    },
+    {
+      "commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+      "path": "tools/senda-brecha/visual-3d/art/senda-valoria-portal.png",
+      "destination": "tools/senda-brecha/visual-3d/art/senda-valoria-portal.png",
+      "blob_sha": "0a1404c5cabcfa37a7c553d1a00d4c3f89046406",
+      "size": 1439302
+    },
+    {
+      "commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+      "path": "tools/senda-brecha/visual-3d/art/senda-valoria-ruin.json",
+      "destination": "tools/senda-brecha/visual-3d/art/senda-valoria-ruin.json",
+      "blob_sha": "4f4e82e80b8ea3a2471886d7a61d4946db413387",
+      "size": 541
+    },
+    {
+      "commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+      "path": "tools/senda-brecha/visual-3d/art/senda-valoria-ruin.png",
+      "destination": "tools/senda-brecha/visual-3d/art/senda-valoria-ruin.png",
+      "blob_sha": "f1044d5f9a1550dbdae147864758e0c9c9b4aab2",
+      "size": 1170998
+    },
+    {
+      "commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+      "path": "tools/senda-brecha/visual-3d/art/senda-worn-slate.png",
+      "destination": "tools/senda-brecha/visual-3d/art/senda-worn-slate.png",
+      "blob_sha": "38386e0cf5b31f6bf600187f863beb6ca436df7f",
+      "size": 2007103
+    },
+    {
+      "commit": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+      "path": "tools/senda-brecha/visual-3d/art/senda-worn-slate.provenance.json",
+      "destination": "tools/senda-brecha/visual-3d/art/senda-worn-slate.provenance.json",
+      "blob_sha": "84041583c9aba047f7c5b577b0c376e4a38defbf",
+      "size": 591
+    },
+    {
+      "commit": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+      "path": "docs/valoria-modular-25d/CORONA_BRECHA_ART_DIRECTION_20261120.md",
+      "destination": "reference-art-direction.md",
+      "blob_sha": "ec5e91fd5d842165ebe48d6eecd85a827001f87b",
+      "size": 6485
+    },
+    {
+      "commit": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+      "path": "docs/valoria-modular-25d/CORONA_SHARED_STANDARD_20261126.md",
+      "destination": "reference-shared-standard.md",
+      "blob_sha": "b99495cc6542ddf408235926b7b8592d45e79a90",
+      "size": 2700
+    },
+    {
+      "commit": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+      "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/panel_obsidian.png",
+      "destination": "tools/senda-brecha/visual-3d/reference/panel_obsidian.png",
+      "blob_sha": "232b5d94967106be8e076eaa501193a767ca185f",
+      "size": 137869
+    }
+  ]
+}
