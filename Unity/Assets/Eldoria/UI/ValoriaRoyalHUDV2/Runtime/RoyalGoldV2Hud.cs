@@ -22,6 +22,8 @@ namespace Eldoria.UI.RoyalGold.V2
             Eldoria.DailyTreasures.CoronaPresentation.ButtonFeedback(control);
         public static Sprite ResourceIcon(string kind) =>
             Eldoria.DailyTreasures.CoronaPresentation.ResourceIcon(kind);
+        public static void ApplyQuantitySlider(Slider slider) =>
+            Eldoria.DailyTreasures.CoronaPresentation.QuantitySlider(slider);
 
         // The original ModalWindow is also used for settings, confirmation,
         // army and narrative. Do not instantiate a replacement or change

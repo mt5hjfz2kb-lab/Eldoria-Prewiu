@@ -30,6 +30,47 @@ namespace Eldoria.Tests
             Assert.AreNotSame(CoronaFinish.HeadingFont,CoronaFinish.BodyFont);
         }
 
+        [Test]
+        public void QuantitySliderUsesCoronaArtworkWithoutChangingItsRangeOrListeners()
+        {
+            var root=new GameObject("Quantity",typeof(RectTransform),typeof(Image),typeof(Slider));
+            root.SetActive(false);
+            try
+            {
+                var control=root.GetComponent<Slider>();
+                Image Child(string name)
+                {
+                    var go=new GameObject(name,typeof(RectTransform),typeof(Image));
+                    go.transform.SetParent(root.transform,false);
+                    return go.GetComponent<Image>();
+                }
+                var thumb=Child("Handle");
+                var fill=Child("Fill");
+                control.handleRect=thumb.rectTransform;
+                control.fillRect=fill.rectTransform;
+                control.targetGraphic=thumb;
+                control.minValue=0;control.maxValue=100;control.wholeNumbers=true;
+                control.SetValueWithoutNotify(56);
+                int callbacks=0;
+                control.onValueChanged.AddListener(_=>callbacks++);
+                var originalSize=((RectTransform)root.transform).sizeDelta;
+                CoronaFinish.ApplyQuantitySlider(control);
+                var expected=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/nav_medallion");
+                Assert.IsNotNull(expected);
+                Assert.AreSame(expected,thumb.sprite);
+                Assert.AreSame(thumb,control.targetGraphic);
+                Assert.AreEqual(0,control.minValue);
+                Assert.AreEqual(100,control.maxValue);
+                Assert.AreEqual(56,control.value);
+                Assert.IsTrue(control.wholeNumbers);
+                Assert.AreEqual(originalSize,((RectTransform)root.transform).sizeDelta);
+                Assert.AreEqual(0,callbacks);
+                control.onValueChanged.Invoke(57);
+                Assert.AreEqual(1,callbacks);
+            }
+            finally {Object.DestroyImmediate(root);}
+        }
+
         [Test] public void ButtonFeedbackPreservesInteractionAndTarget()
         {
             var go=new GameObject("Contract",typeof(RectTransform),typeof(Image),typeof(Button));

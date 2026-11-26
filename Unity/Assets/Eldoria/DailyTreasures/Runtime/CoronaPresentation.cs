@@ -41,6 +41,37 @@ namespace Eldoria.DailyTreasures
                 default: return null;
             }
         }
+        // Canonical quantity control: the real slider still owns its range,
+        // fill direction, handle anchors, callbacks and input rectangle.
+        // Only its presentation is changed; both sprites already ship.
+        public static void QuantitySlider(Slider control)
+        {
+            if(!control || !control.fillRect || !control.handleRect)return;
+            var track=control.GetComponent<Image>();
+            var fill=control.fillRect.GetComponent<Image>();
+            var thumb=control.handleRect.GetComponent<Image>();
+            var inset=Resources.Load<Sprite>(ArtRoot+"wallet_inset");
+            var medallion=Resources.Load<Sprite>(ArtRoot+"nav_medallion");
+            if(track && inset)
+            {
+                track.sprite=inset;
+                track.type=inset.border.sqrMagnitude>0?Image.Type.Sliced:Image.Type.Simple;
+                track.color=Color.white;
+            }
+            if(fill)fill.color=new Color(.24f,.76f,.72f,1f);
+            if(thumb && medallion)
+            {
+                thumb.sprite=medallion;
+                thumb.type=Image.Type.Simple;
+                thumb.preserveAspect=true;
+                thumb.color=Color.white;
+                // Allow the thumb to remain visible even on the compact
+                // landscape track. Do not resize the root hit rectangle.
+                control.handleRect.sizeDelta=new Vector2(28f,4f);
+            }
+            ButtonFeedback(control);
+        }
+
         public static void ButtonFeedback(Selectable control)
         {
             control.transition=Selectable.Transition.ColorTint;

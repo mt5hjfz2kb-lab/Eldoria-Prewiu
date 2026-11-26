@@ -440,6 +440,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var handleImage = handle.gameObject.AddComponent<Image>();
             handleImage.color=Ivory;slider.handleRect=handle;
             slider.targetGraphic=handleImage;
+            if(RoyalGoldV2Hud.UseCoronaArt)CoronaFinish.ApplyQuantitySlider(slider);
             slider.onValueChanged.AddListener(v=>SetQuantity(Mathf.RoundToInt(v)));
             // All animation and progress derive from the persisted UTC
             // deadline; closing the screen does not reset the training.
