@@ -463,3 +463,59 @@ jobs:
               print("Native proof status published:",answer.status,url,description)
           PY
 
+
+  spatial-art-audit:
+    needs: [unity, mobile-journey]
+    if: >-
+      ${{ always() && needs.unity.result == 'success' && github.run_attempt == 1 && github.event.before == 'd8e731b556789d4d79c13bfa9e24908cc8c41389' && github.event.head_commit.message == 'Art QA: add budget-bounded independent city and world scoring after native evidence' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/corona-art-iteration
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 1657b2caa6b1a955319538ce3a8b2906398599b3
+          path: studio-source
+          sparse-checkout: tools/openai-development-studio
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: world-city-spatial-before-after
+          path: spatial
+      - uses: actions/download-artifact@v4
+        with:
+          name: region1-cameras-and-routes
+          path: native
+      - uses: actions/download-artifact@v4
+        with:
+          name: ciudad-region-recorrido
+          path: candidate
+      - name: Download exact original and reference evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow==11.3.0
+          gh run download 45638738009 --repo "$GITHUB_REPOSITORY" --name ciudad-region-recorrido --dir baseline
+          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-art-plan --dir references
+          gh run download 45823822067 --repo "$GITHUB_REPOSITORY" --name corona-agent-material-production --dir artist
+          python3 -m py_compile tools/corona-art-iteration/spatial_visual_review.py
+      - name: Two independent spatial art audits, nonduplicated 0.30 USD reservation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MOBILE_RESULT: ${{ needs.mobile-journey.result }}
+        run: |
+          python3 tools/corona-art-iteration/spatial_visual_review.py --spatial spatial --native native --baseline baseline --candidate candidate --references references --artist artist --studio studio-source/tools/openai-development-studio --out final-spatial
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-final-independent-spatial-review
+          path: final-spatial/
+          if-no-files-found: warn
