@@ -32,9 +32,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
         static readonly List<Control> Controls=new List<Control>();
         static readonly List<string> Checks=new List<string>();
         static readonly List<string> Defects=new List<string>();
+        static int excludedRenderers,excludedCanvases;
+        static bool uiOnlyNativeCamera;
         [Serializable] sealed class Frame {public string file,sha256,fixture,variant;public int width,height;public bool actualCamera,playMode;public int t1,t2,selectedQuantity,selectedTier;public string selectedHero;public long revision;public string[] metrics;}
-        [Serializable] sealed class Control {public string frame,name;public float width,height;public bool interactable,hit;}
-        [Serializable] sealed class Report {public string sourceSha,harnessSha,engine,engineVersion,prefabPath,assetSha;public bool actualPrefab,actualGateway,artApproved,physicalIphone,fullBrowserJourney;public Frame[] frames;public Control[] controls;public string[] checks,defects;}
+        [Serializable] sealed class Control {public string frame,name;public float width,height;public bool interactable,hit;public string topHit;}
+        [Serializable] sealed class Report {public string sourceSha,harnessSha,engine,engineVersion,prefabPath,assetSha;public bool actualPrefab,actualGateway,artApproved,physicalIphone,fullBrowserJourney,uiOnlyNativeCamera;public int excludedRenderers,excludedCanvases;public Frame[] frames;public Control[] controls;public string[] checks,defects;}
         sealed class Clock:IClock {public long UtcTicks{get;set;}=new DateTime(2026,11,26,12,0,0,DateTimeKind.Utc).Ticks;}
         sealed class Memory:IStateStore {public PlayerState Stored;public PlayerState Load()=>Stored;public void Save(PlayerState s){Stored=s;}}
         static IEnumerator routine;
@@ -113,9 +115,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     Need(SliceContentProfiles.ActiveRuntimeProfile==SliceContentProfiles.OwnerIiiId,"Actual combined-player content profile, disposable fixture only");
                     var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(SessionState.GetString(Flag+"Prefab",""));
                     Need(prefab&&prefab.GetComponent<RoyalHUD>(),"Actual source-pinned room prefab exists");
-                    var host=Object.Instantiate(prefab);
-                    host.GetComponent<Canvas>().enabled=false;
-                    routine=Exercise(host,prefab);
+                    // Do not instantiate an unused duplicate HUD: its
+                    // runtime children/canvases can pollute the capture.
+                    routine=Exercise(prefab);
                 }
                 // This existing enumerator only yields null; one real frame per Editor update.
                 if(routine.MoveNext())return;
@@ -137,12 +139,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
         {
             return manager.VisibleRoot.GetComponentsInChildren<Button>(true).FirstOrDefault(x=>x.name==name);
         }
-        static IEnumerator Exercise(GameObject host,GameObject prefab)
+        static IEnumerator Exercise(GameObject prefab)
         {
             var cameraGo=new GameObject("March native actual UI camera");
             var cam=cameraGo.AddComponent<Camera>();cam.orthographic=true;cam.orthographicSize=5;
             cam.transform.position=new Vector3(0,0,-10);cam.clearFlags=CameraClearFlags.SolidColor;
             cam.backgroundColor=new Color(.02f,.035f,.045f,1);cam.enabled=false;
+            cam.cullingMask=1<<5;cam.nearClipPlane=.05f;cam.farClipPlane=3f;
             if(EventSystem.current==null)new GameObject("Native actual event system",typeof(EventSystem));
             var originalAsset=Path.Combine(UnityEngine.Application.dataPath,"Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/march_command_table.png");
             Need(File.Exists(originalAsset)&&Digest(File.ReadAllBytes(originalAsset))=="a42b20c2ca7bd57a8b09d95a7442ccc81bb33c9f23f2e1869112b10e4071cab7","Exact original studio artist material imported");
@@ -211,12 +214,19 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                         var slider=manager.VisibleRoot.GetComponentInChildren<Slider>(true);
                         slider.value=7;manager.SynchronizeLayout();
                         var count=FindButton(manager,"Increase quantity");
-                        if(count&&count.interactable)count.onClick.Invoke();
+                        if(count&&count.interactable)
+                        {
+                            bool hit=ClickNative(count,cam);
+                            Defect(hit,"Increment actual click not proven "+fixture);
+                            if(!hit)count.onClick.Invoke(); // functional diagnostic only
+                        }
                         manager.SynchronizeLayout();
                         var expected=manager.SelectedQuantity;
                         var action=manager.VisibleAction;
                         Need(action&&action.interactable,"Real confirm command available "+fixture);
-                        action.onClick.Invoke();
+                        bool confirmed=ClickNative(action,cam);
+                        Defect(confirmed,"Confirm actual click not proven "+fixture);
+                        if(!confirmed)action.onClick.Invoke(); // preserve diagnostic, never call it touch proof
                         var saved=gateway.Snapshot();
                         Need(saved.MarchConfigured&&(mixed?saved.PreparedTroops.ArcherT2:saved.PreparedTroops.ArcherT1)==expected,"Real confirm persists chosen family quantity "+fixture);
                     }
@@ -250,12 +260,49 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             }
             var report=new Report{sourceSha=Source,harnessSha=Environment.GetEnvironmentVariable("MARCH_STUDIO_HARNESS_SHA")??Source,engine="Unity",engineVersion=UnityEngine.Application.unityVersion,prefabPath=SessionState.GetString(Flag+"Prefab",""),assetSha=Digest(File.ReadAllBytes(originalAsset)),
                 actualPrefab=true,actualGateway=true,artApproved=false,physicalIphone=false,fullBrowserJourney=false,
+                uiOnlyNativeCamera=uiOnlyNativeCamera,excludedRenderers=excludedRenderers,excludedCanvases=excludedCanvases,
                 frames=Frames.ToArray(),controls=Controls.ToArray(),checks=Checks.ToArray(),defects=Defects.ToArray()};
             File.WriteAllText(Path.Combine(Out,"evidence.json"),JsonUtility.ToJson(report,true));
             Debug.Log("MARCH_STUDIO_CAPTURE_COMPLETE frames="+Frames.Count+" defects="+Defects.Count);
         }
+        // Scratch scene only. The actual production HUD normally renders as
+        // overlay; camera mode must not render bootstrap 3D meshes or other
+        // canvases in front of it. Do not change a game asset or production scene.
+        static void IsolateNativeRoom(RoyalGoldV3ManagementScreens manager,Camera cam)
+        {
+            var root=manager.transform;
+            foreach(var child in root.GetComponentsInChildren<Transform>(true))child.gameObject.layer=5;
+            foreach(var renderer in Object.FindObjectsByType<Renderer>(FindObjectsInactive.Exclude,FindObjectsSortMode.None))
+                if(renderer.enabled){renderer.enabled=false;excludedRenderers++;}
+            foreach(var canvas in Object.FindObjectsByType<Canvas>(FindObjectsInactive.Exclude,FindObjectsSortMode.None))
+                if(canvas.enabled&&canvas.transform!=root&&!canvas.transform.IsChildOf(root))
+                {canvas.enabled=false;excludedCanvases++;}
+            cam.cullingMask=1<<5;
+            uiOnlyNativeCamera=Object.FindObjectsByType<Renderer>(FindObjectsInactive.Exclude,FindObjectsSortMode.None)
+                .All(r=>!r.enabled);
+            Need(uiOnlyNativeCamera,"Native fixture excludes non-UI scene renderers");
+        }
+        static bool PointerTarget(Button button,Camera cam,out string first)
+        {
+            var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);
+            var pos=(RectTransformUtility.WorldToScreenPoint(cam,corners[0])+RectTransformUtility.WorldToScreenPoint(cam,corners[2]))*.5f;
+            var ev=new PointerEventData(EventSystem.current){position=pos,button=PointerEventData.InputButton.Left};
+            var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(ev,hits);
+            first=hits.Count>0?hits[0].gameObject.name:"none";
+            return hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)==button.gameObject;
+        }
+        static bool ClickNative(Button button,Camera cam)
+        {
+            if(!PointerTarget(button,cam,out string first)){Debug.LogWarning("MARCH_STUDIO_POINTER_MISS "+button.name+" -> "+first);return false;}
+            var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);
+            var pos=(RectTransformUtility.WorldToScreenPoint(cam,corners[0])+RectTransformUtility.WorldToScreenPoint(cam,corners[2]))*.5f;
+            var ev=new PointerEventData(EventSystem.current){position=pos,button=PointerEventData.InputButton.Left};
+            ExecuteEvents.Execute(button.gameObject,ev,ExecuteEvents.pointerClickHandler);
+            return true;
+        }
         static void CaptureFrame(RoyalGoldV3ManagementScreens manager,LocalGateway gateway,Camera cam,RenderTexture rt,string fixture,string variant,int width,int height,bool checkTargets)
         {
+            IsolateNativeRoom(manager,cam);
             Canvas.ForceUpdateCanvases();cam.Render();Canvas.ForceUpdateCanvases();
             manager.SynchronizeLayout();Canvas.ForceUpdateCanvases();cam.Render();cam.Render();
             var tex=new Texture2D(width,height,TextureFormat.RGB24,false);var prev=RenderTexture.active;
@@ -279,9 +326,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 if(!button.gameObject.activeInHierarchy)continue;
                 var rect=(RectTransform)button.transform;var corners=new Vector3[4];rect.GetWorldCorners(corners);
                 var a=RectTransformUtility.WorldToScreenPoint(cam,corners[0]);var b=RectTransformUtility.WorldToScreenPoint(cam,corners[2]);var center=(a+b)*.5f;
-                var ev=new PointerEventData(EventSystem.current){position=center};var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(ev,hits);
-                bool hit=hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)==button.gameObject;
-                Controls.Add(new Control{frame=file,name=button.name,width=Mathf.Abs(b.x-a.x),height=Mathf.Abs(b.y-a.y),interactable=button.interactable,hit=hit});
+                bool hit=PointerTarget(button,cam,out string topHit);
+                Controls.Add(new Control{frame=file,name=button.name,width=Mathf.Abs(b.x-a.x),height=Mathf.Abs(b.y-a.y),interactable=button.interactable,hit=hit,topHit=topHit});
                 if(checkTargets&&button.interactable)
                 {
                     Defect(Mathf.Abs(b.x-a.x)>=43.5f&&Mathf.Abs(b.y-a.y)>=43.5f,"Touch target below 44px "+file+"/"+button.name);

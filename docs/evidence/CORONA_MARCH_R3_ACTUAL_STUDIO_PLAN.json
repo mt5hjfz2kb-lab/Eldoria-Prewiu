@@ -1,0 +1,41 @@
+{
+  "run": 45882958150,
+  "artifact": 15148881104,
+  "plan": {
+    "direction": "R3: una mesa de guerra noble para March en vertical, con héroes como foco, tropas como zona operativa y resumen subordinado a la decisión final. Reutilizar el arte del estudio y las texturas Corona existentes, no la estética azul plana de una plantilla. La comparación nativa solo permite juzgar las zonas visibles: la obstrucción 3D es ajena a las tarjetas y aparece antes y después; no se atribuye al WebGL, que usa otro fixture.",
+    "hero_treatment": "Dar más altura a los retratos existentes para recuperar rostro y personaje, con recortes consistentes y marcos oscuros con acentos dorados. Conservar las tres ranuras y sus estados reales, incluida la tercera bloqueada, sin presentarla como disponible. Mantener cierre y acceso a héroes, diferenciados del contenido.",
+    "troop_treatment": "Usar el arquero original como ancla visual de una placa de tropas con profundidad. Conservar el selector real T1/T2, cantidad y porcentaje, menos, más y deslizador; mantener entrenamiento solo si existe en el flujo. Agruparlos con etiquetas legibles y áreas táctiles de al menos 44 × 44 px, sin alterar valores ni comportamiento.",
+    "metric_treatment": "Presentar las seis métricas existentes en una retícula de dos columnas, con composición T1/T2 primero y poder, ataque, defensa y vida después. Usar valores dominantes, etiquetas secundarias y separadores discretos sobre obsidiana, en lugar de seis losas azuladas equivalentes. Mantener el bloque de estado y todos sus datos reales, sin inventar cifras.",
+    "cta_treatment": "Dar a Confirmar una identidad inequívoca con action_arcane: pieza de mando turquesa y oro, relieve y texto de alto contraste, separada visualmente del estado. Mantener su etiqueta y estados reales, con área táctil mínima de 44 px y foco visible; no sustituir su lógica de confirmación.",
+    "material_treatment": "Construir en Unity con march_command_table como base de mesa, panel_obsidian para paneles y secondary_quiet para acciones secundarias. Reutilizar las texturas Corona y el material original importado, con capas, bordes y sombras moderadas para crear profundidad sin comprometer contraste ni legibilidad. Adaptar mediante anclajes y escalado al formato vertical, sin modificar la ruta horizontal existente.",
+    "acceptance": "Verificar en dispositivo nativo, sin obstrucción delante de la interfaz, los estados T1 y mixto, las tres ranuras, selector T2, valores reales, seis métricas, estado y confirmación persistida. Medir áreas táctiles de al menos 44 × 44 px, incluido cambiar destino, y probar raycast real en menos, más, edición por porcentaje y confirmar. Comprobar contraste y foco, además de que horizontal conserve su ruta original. Las capturas obstruidas no admiten puntuación ni validación visual completa.",
+    "critical_risks": [
+      "La obstrucción 3D compartida impide evaluar partes de héroes y tropas; debe aislarse en la captura nativa antes de aceptar el diseño.",
+      "Cambiar destino presenta un área táctil inferior a 44 px; los raycasts de varios controles aún no están demostrados.",
+      "La confirmación persiste cantidades en las comprobaciones aportadas, pero eso no demuestra por sí solo la interacción táctil de todos los controles.",
+      "Ampliar retratos puede desplazar controles o estado fuera de pantalla; validar distintos tamaños verticales sin ocultar funciones.",
+      "No extrapolar diferencias entre el WebGL original y el fixture nativo como regresiones del mismo entorno."
+    ]
+  },
+  "challenge": {
+    "verdict": "Revisar antes de aceptar. La dirección artística es coherente, pero el plan no resuelve los defectos nativos registrados y no demuestra hit-testing real a 390×844. Separar contaminación de captura y fallos de producción: la obstrucción 3D descrita como presente antes y después contamina la evaluación visual y no debe atribuirse a la UI/WebGL; en cambio, objetivos menores de 44 px, raycasts fallidos o no demostrados y controles no interactuables son defectos de producción que requieren corrección. No inferir cambios funcionales a partir de las capturas ni promover automáticamente ranuras bloqueadas.",
+    "corrections": [
+      "Repetir la evaluación en dispositivo nativo a 390×844, con cámara limpia y estado equivalente; mantener separada la evidencia WebGL, cuyo fixture es distinto. No puntuar visualmente capturas obstruidas.",
+      "Corregir los rects de destino: «Switch destination» mide 116×35.1 px en vertical en ambas variantes. Ampliar su rect de interacción a por lo menos 44×44 px sin alterar el arte ni invadir controles vecinos.",
+      "Garantizar raycast y límites de interacción efectivos, no solo rects grandes: en t1-after y mixed-after fallan menos, edición por porcentaje y confirmar; en mixed-after también falla más. Investigar capas, bloqueo de raycast, orden de canvas y oclusión de eventos, y corregirlos conservando la lógica existente.",
+      "Mantener selectores, cantidad, porcentaje, deslizador, ranuras, estado y confirmación reales. «Increase quantity» aparece no interactuable en t1-after y en ambos registros landscape; no presentarlo como operativo hasta corregir o reflejar fielmente su estado real. Conservar la tercera ranura bloqueada.",
+      "Usar rects de al menos 44×44 px para todos los controles accionables. Los registros landscape también presentan objetivos insuficientes para destino (215.6×22.1), menos/más (22.1×26), edición por porcentaje (144.3×26) y confirmar (542.9×31.7); comprobarlos sin cambiar la ruta horizontal existente.",
+      "Conservar el tratamiento visual propuesto —arte del estudio, Corona, mesa noble y acentos oro/turquesa—, pero fijar capas y anclajes para que retratos, placas de tropas, seis métricas, estado y CTA no se solapen ni queden fuera de pantalla. No sacrificar controles por ampliar retratos.",
+      "Definir fallback vertical para alturas o tamaños menores: contenido desplazable donde corresponda, CTA y estado alcanzables y métricas legibles; evitar recortar controles o depender de escalado que reduzca objetivos táctiles.",
+      "Preservar etiqueta, estados, persistencia y comportamiento originales de Confirmar. La evidencia de persistencia no prueba que el toque alcance el control; no sustituir su lógica."
+    ],
+    "tests": [
+      "En dispositivo nativo a 390×844, con cámara limpia, reproducir estados equivalentes T1 y mixto y verificar visualmente las tres ranuras, tropas, valores reales, seis métricas, estado y CTA.",
+      "En esa misma resolución y estado, ejecutar toques y confirmar raycast efectivo para cambiar destino, seleccionar T2, menos, más, edición por porcentaje, deslizador y confirmar; comprobar respuesta y persistencia sin inferir éxito solo de la interactividad declarada.",
+      "Medir y registrar ancho y alto de todos los objetivos táctiles: mínimo 44×44 px para cada acción, incluidos cambio de destino y controles de cantidad; comprobar que los rects no se solapan ni quedan bloqueados por capas.",
+      "Inspeccionar capas, orden de canvas, raycast targets y límites de rect para explicar y corregir cada fallo observado; verificar por separado controles interactuables y estados deshabilitados, sin activar automáticamente la ranura bloqueada.",
+      "Comprobar recorte, desbordamiento, desplazamiento y accesibilidad de CTA/estado en 390×844 y en otros formatos verticales; comparar horizontal con su ruta original para detectar regresiones.",
+      "Evaluar legibilidad, contraste y foco visible sobre los materiales Corona y las capas propuestas, sin usar capturas con obstrucción 3D para validar zonas tapadas."
+    ]
+  }
+}
