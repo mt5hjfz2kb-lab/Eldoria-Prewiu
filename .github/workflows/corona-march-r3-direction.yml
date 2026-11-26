@@ -1,0 +1,46 @@
+name: Studio March R3 independent creative direction
+on:
+  push:
+    branches: [candidate/corona-march-r3-studio-20261126]
+    paths: ['.github/workflows/corona-march-r3-direction.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  art-direction:
+    if: >-
+      ${{ github.run_attempt == 1 && github.event.before == '034997e4bc5f4e9cd95bb092d604d8053f7b9fd3' && github.event.head_commit.message == 'Studio: authorize bounded R3 art direction and evaluate actual failed visual proof' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/corona-art-iteration
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 1657b2caa6b1a955319538ce3a8b2906398599b3
+          path: studio-source
+          sparse-checkout: tools/openai-development-studio
+          persist-credentials: false
+      - name: Download actual verified images
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow==11.3.0
+          gh run download 45872970373 --repo "$GITHUB_REPOSITORY" --name march-studio-native-evidence --dir native
+          gh run download 45851071206 --repo "$GITHUB_REPOSITORY" --name recovery-ciudad-region-recorrido --dir actual
+          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-art-plan --dir refs
+          python3 -m py_compile tools/corona-art-iteration/march_r3_direction.py
+      - name: Execute two bounded studio roles
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python3 tools/corona-art-iteration/march_r3_direction.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: march-r3-studio-direction
+          path: r3-direction/
+          if-no-files-found: warn
