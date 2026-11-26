@@ -138,7 +138,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 "VigiliaArt/PremiumSurfaces/burgundy_action"):null;
             if(RoyalGoldV2Hud.UseCoronaArt)
                 authored=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/"+
-                    (caption=="USAR"?"action_arcane":"world_rune"));
+                    (caption=="USAR"?"action_arcane":"secondary_quiet"));
             Graphic frame;
             if(authored)
             {
@@ -259,7 +259,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     ()=>Use(index),out r.UseText);
                 if(corona && r.Use.targetGraphic is Image useSurface)
                 {
-                    var quiet=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/world_rune");
+                    var quiet=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/secondary_quiet");
                     if(quiet)
                     {
                         useSurface.sprite=quiet;

@@ -1063,7 +1063,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 t.color=key==category?Gold:Ivory;
                 var surface=t.transform.parent.GetComponentInChildren<Image>();
                 if(surface!=null){surface.sprite=RoyalGoldV2Hud.UseCoronaArt ? Resources.Load<Sprite>(
-                    "ValoriaModular25D/UI/CoronaBrecha/"+(key==category?"action_arcane":"world_rune")) :
+                    "ValoriaModular25D/UI/CoronaBrecha/"+(key==category?"action_arcane":"secondary_quiet")) :
                     RoyalGoldV41SourceArt.Get(key==category?"tab-active":"tab-idle",18);surface.color=Color.white;}
                 int unread=mail?.Unread(key)??0,index=Array.IndexOf(categories,key);
                 tabBadges[index].transform.parent.gameObject.SetActive(unread>0);
