@@ -26,7 +26,9 @@ def main(root,out):
     b=src.index("private static void AccentHairline",a)
     c=src.index("private static RectTransform DockButton")
     d=src.index("private static Sprite NeedCorona",c)
-    excerpt=(src[a:b]+"\n"+src[c:d]).encode()
+    refresh=src.index("public void Refresh(PlayerState s)",a)
+    resource=src.index("private static RectTransform CreateResource",refresh)
+    excerpt=(src[a:refresh]+"\n"+src[resource:b]+"\n"+src[c:d]).encode()
     assert 0<len(excerpt)<=12000
     (out/"source.txt").write_bytes(excerpt)
     packet={"schema":1,"target_id":"CORONA_HUD_COMMERCIAL_REVIEW","source_sha":SHA,"source_run":RUN,"mode":"review","routing_profile":"standard",

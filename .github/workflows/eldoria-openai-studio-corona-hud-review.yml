@@ -12,7 +12,7 @@ concurrency:
 jobs:
   review:
     if: >-
-      ${{ github.run_attempt == 1 && github.event.before == '5c0821201e151e4a1227d62c6239a1c911cd20ad' && github.event.head_commit.message == 'Studio Corona HUD review rearm after zero-job YAML failure' }}
+      ${{ github.run_attempt == 1 && github.event.before == '996d11781ffc4058b67fc3b6b20c425446f3ee38' && github.event.head_commit.message == 'Studio Corona HUD correct bounded excerpt after preflight only' }}
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
