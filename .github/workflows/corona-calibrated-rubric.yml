@@ -9,7 +9,7 @@ permissions:
 jobs:
   calibrated-art-review:
     if: >-
-      ${{ github.run_attempt == 1 && github.event.before == 'e520da0905bbdda6aa3033081ce76cc2222d98d8' && github.event.head_commit.message == 'Studio calibrated original rubric audit - corrected workflow syntax' }}
+      ${{ github.run_attempt == 1 && github.event.before == '82d220f3a2dd47e65ea7f60a8832ab311ec6eb64' && github.event.head_commit.message == 'Studio: resume six remaining rubric evaluations, preserve completed HUD receipt' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -37,13 +37,14 @@ jobs:
           gh run download 45837717094 --repo "$GITHUB_REPOSITORY" --name corona-auxiliary-corona --dir aux-after
           gh run download 45834241279 --repo "$GITHUB_REPOSITORY" --name region1-cameras-and-routes --dir native
           gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-art-plan --dir references
+          gh run download 45843367417 --repo "$GITHUB_REPOSITORY" --name corona-original-weight-calibrated-scorecard --dir resume
           python3 -m py_compile tools/corona-art-iteration/calibrated_review.py
-      - name: Seven bounded independent reviewers with original weights
+      - name: Recover HUD receipt and execute six unspent reviewers
         env:
           GH_TOKEN: ${{ github.token }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          python3 tools/corona-art-iteration/calibrated_review.py --ui ui --baseline baseline --candidate candidate --aux aux --aux-base aux-base --aux-after aux-after --native native --references references --rubric tools/corona-art-iteration/calibrated-rubric-20261124.json --studio studio-source/tools/openai-development-studio --out calibrated
+          python3 tools/corona-art-iteration/calibrated_review.py --ui ui --baseline baseline --candidate candidate --aux aux --aux-base aux-base --aux-after aux-after --native native --references references --rubric tools/corona-art-iteration/calibrated-rubric-20261124.json --studio studio-source/tools/openai-development-studio --out calibrated --resume resume
       - uses: actions/upload-artifact@v4
         if: always()
         with:

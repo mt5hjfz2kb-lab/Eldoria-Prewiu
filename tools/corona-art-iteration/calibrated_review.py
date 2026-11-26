@@ -44,7 +44,8 @@ def score_rows(raw,keys):
         if set(r)!={"before","after","reference","reference_kind","reference_label","evidence","remaining"}:raise ValueError("Bad row "+k)
         if r["reference_kind"] not in ("direct","analog","none"):raise ValueError("Bad reference kind")
         if (r["reference_kind"]=="none")!=(r["reference"] is None):raise ValueError("Unproven reference")
-        if not all(isinstance(r[x],str) and r[x].strip() for x in ["reference_label","evidence","remaining"]):raise ValueError("Missing visual rationale")
+        if not all(isinstance(r[x],str) and r[x].strip() for x in ["evidence","remaining"]):raise ValueError("Missing visual rationale")
+        if not isinstance(r["reference_label"],str) or (r["reference_kind"]!="none" and not r["reference_label"].strip()):raise ValueError("Missing comparable reference label")
         for v in ["before","after","reference"]:
             r[v+"_total"]=None if r[v] is None else round(total(r[v]),2)
         r["delta"]=None if r["before_total"] is None or r["after_total"] is None else round(r["after_total"]-r["before_total"],2)
@@ -116,6 +117,9 @@ def preflight():
     assert D("2.90")+D("1.25")+D(".42")+D(".43")==D("5.00")
 def main(a):
     preflight()
+    repo=os.environ["GITHUB_REPOSITORY"]
+    old=gh(f"repos/{repo}/actions/runs/45843367417");assert old["head_sha"]=="82d220f3a2dd47e65ea7f60a8832ab311ec6eb64" and old["status"]=="completed" and old["conclusion"]=="failure"
+    assert any(x["id"]==15128947585 for x in gh(f"repos/{repo}/actions/runs/45843367417/artifacts")["artifacts"])
     rubric=read(a.rubric);assert [d[0] for d in rubric["dimensions"]]==DIMENSIONS and [d[1] for d in rubric["dimensions"]]==WEIGHTS
     refs=read(a.references/"reference-manifest.json")
     assert any(x["label"].startswith("WOS") and "sha256" in x for x in refs) and any(x["label"].startswith("COD") and "sha256" in x for x in refs)
@@ -137,9 +141,21 @@ def main(a):
         evidence=mission.textfile(folder/"evidence.json",json.dumps(info,ensure_ascii=False))
         prepared[g]=(folder,keys,p,evidence)
     results={};cost=D(0)
+    # Recover the completed first call exactly; never pay for it twice.
+    prior=read(a.resume/"hud/auditor.json");oldledger=read(a.resume/"hud/ledger.json")
+    assert oldledger["cap_usd"]=="0.06" and len(oldledger["reservations"])==1 and oldledger["reservations"][0]["state"]=="completed"
+    assert D(oldledger["reservations"][0]["estimated_usd"])==D(prior["cost_estimate_usd"])==D("0.0151455")
+    assert read(a.resume/"provenance.json")==provenance
+    folder,keys,p,evidence=prepared["hud"]
+    assert sha(a.resume/"hud/actual-ab.jpg")==sha(p)
+    result=score_rows(parse(prior["response"]),keys)
+    write(folder/"auditor.json",prior);write(folder/"ledger.json",oldledger);write(folder/"scores.json",result)
+    results.update(result["screens"]);cost+=D(prior["cost_estimate_usd"])
+    write(a.out/"partial-scorecard.json",{"rubric_id":rubric["id"],"screens":results,"estimated_usd":str(cost),"complete":False})
     for g,(folder,keys,p,evidence) in prepared.items():
+        if g=="hud":continue
         ledger=mission.Ledger(folder/"ledger.json",D(".06"))
-        instructions="Auditor artístico independiente de Eldoria. Aplica EXACTAMENTE la rúbrica recuperada del 24/11: recursos 20%, integración 20%, lenguaje 15%, composición 15%, iluminación/color/materiales 10%, nitidez móvil 10%, pulido/animaciones/presentación 10%. Escala 9-10 comercial primer nivel, 8-8.9 competitivo, 7-7.9 bueno mejorable, 6-6.9 prototipo avanzado, 5-5.9 insuficiente. No penalices técnica 2.5D frente a 3D. Imagen 1 pares reales ANTES izquierda / DESPUÉS derecha. Imagen 2 referentes WOS/COD reales; compara con misma rúbrica, si no hay equivalente directo marca analog, o none y null; no inventes referencia para mundo o paneles. En HUD juzga interfaz y su integración, no cantidad de edificios; en ciudad excluye HUD; en mundo juzga arte de la escena. No infieras animación: sé explícito que finish es sólo presentación visible. Puntúa 7 componentes cada uno 0-10, mismo criterio en antes/después/referente, sin sesgo de cambio ni obligación de subir. Se aceptan decimales, null para una vista no evaluable. Devuelve JSON puro {screens:{id:{before:[7 números]|null,after:[7 números]|null,reference:[7 números]|null,reference_kind:'direct'|'analog'|'none',reference_label:string,evidence:string,remaining:string}},overall:string}. Justifica cambios concretos, incluso ausencia de cambios y defectos. Todos los ids: "+",".join(keys)
+        instructions="Auditor artístico independiente de Eldoria. Aplica EXACTAMENTE la rúbrica recuperada del 24/11: recursos 20%, integración 20%, lenguaje 15%, composición 15%, iluminación/color/materiales 10%, nitidez móvil 10%, pulido/animaciones/presentación 10%. Escala 9-10 comercial primer nivel, 8-8.9 competitivo, 7-7.9 bueno mejorable, 6-6.9 prototipo avanzado, 5-5.9 insuficiente. No penalices técnica 2.5D frente a 3D. Imagen 1 pares reales ANTES izquierda / DESPUÉS derecha. Imagen 2 referentes WOS/COD reales; compara con misma rúbrica, si no hay equivalente directo marca analog, o none y null (reference_label puede ser vacío sólo cuando none); no inventes referencia para mundo o paneles. En HUD juzga interfaz y su integración, no cantidad de edificios; en ciudad excluye HUD; en mundo juzga arte de la escena. No infieras animación: sé explícito que finish es sólo presentación visible. Puntúa 7 componentes cada uno 0-10, mismo criterio en antes/después/referente, sin sesgo de cambio ni obligación de subir. Se aceptan decimales, null para una vista no evaluable. Devuelve JSON puro {screens:{id:{before:[7 números]|null,after:[7 números]|null,reference:[7 números]|null,reference_kind:'direct'|'analog'|'none',reference_label:string,evidence:string,remaining:string}},overall:string}. Justifica cambios concretos, incluso ausencia de cambios y defectos. Todos los ids: "+",".join(keys)
         answer=mission.ask("visual","gpt-6.1-terra",evidence,(str(p),str(a.references/"reference.jpg")),ledger,"auditor",folder,instructions,effort="none")
         r=score_rows(parse(answer),keys);write(folder/"scores.json",r)
         results.update(r["screens"]);cost+=D(ledger.rows[0]["estimated_usd"])
@@ -153,5 +169,5 @@ def main(a):
     write(a.out/"calibrated-scorecard.json",report);print("CALIBRATED_SCORECARD",json.dumps(report,ensure_ascii=False),flush=True)
 if __name__=="__main__":
     p=argparse.ArgumentParser()
-    for k in ("ui","baseline","candidate","aux","aux-base","aux-after","native","references","rubric","studio","out"):p.add_argument("--"+k,type=Path,required=True)
+    for k in ("ui","baseline","candidate","aux","aux-base","aux-after","native","references","rubric","studio","out","resume"):p.add_argument("--"+k,type=Path,required=True)
     main(p.parse_args())
