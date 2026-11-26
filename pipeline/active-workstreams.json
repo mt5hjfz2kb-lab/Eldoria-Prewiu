@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-26T07:19:58.433Z",
+  "updated_at": "2026-11-26T07:44:40.957Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9633,7 +9633,7 @@
       "ownership_revision": 12,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "COMMERCIAL_NATIVE_PORTAL_LANDMARK_AND_SHADOWS",
+      "phase": "LANE_MOTION_AND_COMMERCIAL_QA",
       "claimed_at": "2026-11-25T22:58:00.051Z",
       "resources": [
         "windows-runner-heavy"
@@ -9667,13 +9667,13 @@
         "reason": "Owner explicitly instructed P0 to use idle PC. No Actions runs in progress at transfer; Windows process preflight must independently confirm no Unity/Blender before work."
       },
       "user_authorization": "Owner expressly requests continuation with agents until concept quality; preserve PR195 isolation and existing USD 10 benchmark ceiling.",
-      "current_native_run_id": 45774255290,
-      "current_web_run_id": 45774107976,
+      "current_native_run_id": 45777504885,
+      "current_web_run_id": 45777504799,
       "pending_evidence": {
-        "native_source": "0eb325e2c1bcb8db35f5088a7fd32cf87a757bcc",
-        "native_run": 45774255290,
-        "web_source": "7a23066ada8c136d913b3ea30b49f9d9b83f2c4d",
-        "web_run": 45774107976,
+        "native_source": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+        "native_run": 45777504885,
+        "web_source": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+        "web_run": 45777504799,
         "art_approved": false
       }
     },
@@ -10179,6 +10179,154 @@
         "deliverable": "Implementación aislada del núcleo de estadísticas, prestigio, colecciones y clasificación; integración real condicionada por titularidad y autoridad de servidor.",
         "evidence": "Pruebas de dominio, persistencia, idempotencia, desbloqueos y pruebas Unity cuando se libere el recurso.",
         "handoff": "PR única draft, SHA, pruebas y pendientes exactos."
+      }
+    },
+    {
+      "id": "eldoria-openai-development-studio-20261125",
+      "title": "Eldoria Development Studio — bounded native Unity validation",
+      "owner": "chatgpt-senda-lane-commercial-20261126",
+      "ownership_state": "claimed",
+      "ownership_revision": 17,
+      "write_scope_released": false,
+      "branch": "pilot/eldoria-openai-development-studio-20261125",
+      "status": "active",
+      "phase": "SENDA_COMMERCIAL_FINAL_VISUAL_AUDIT",
+      "claimed_at": "2026-11-26T07:44:40.957Z",
+      "base_main_sha": "184294f7c723458c3eef5a294944a043681dab55",
+      "user_authorization": "Owner requests active Studio, commercial polish and responsive lane movement; retain combined $10 ceiling and all prior reservations.",
+      "scope": [
+        "tools/openai-development-studio/**",
+        ".github/workflows/eldoria-openai-*.yml"
+      ],
+      "resources": [],
+      "delivery_definition": {
+        "deliverable": "Real source-level road contact candidate, controlled native A/B, route and B1 regressions; release PC and deliver reversible candidate only if justified.",
+        "evidence": "Native frames, source exact diff and control reversals. Separate technical from aesthetic gain; no extra API spend.",
+        "handoff": "Keep main gameplay and Valoria branch intact until accepted source handoff."
+      },
+      "art_approved": false,
+      "last_native_failure": {
+        "run_id": 45685805585,
+        "stage": "hosted preparation",
+        "cause": "Large registry content omitted by GitHub contents API; fixed by exact blob read. No Windows used."
+      },
+      "current_native_run_id": 45685929688,
+      "current_native_head": "630052347439c62b044fa63e22e60bee17a523b0",
+      "last_hosted_request_proof": 45675138084,
+      "previous_owner": "chatgpt-senda-commercial-horizon-20261126",
+      "closed_at": "2026-11-26T07:19:58.433Z",
+      "last_native_run": 45675919389,
+      "last_native_head": "02b8ea3306c5348ca3c0f56f560ad501c170f52e",
+      "native_closeout_run": 45679533675,
+      "delivery_head": "e400d40f69d4479e4ff8a551edab66c17a3fdccd",
+      "evidence": {
+        "native_run": 45685929688,
+        "closeout_run": 45688957980,
+        "native_artifact": 15057232964,
+        "comparison_artifact": 15058495152,
+        "cleanup_artifact": 15056799206,
+        "frames": 45,
+        "exact_reversals": 8,
+        "courier_entry_steps": 698,
+        "courier_exit_steps": 148,
+        "source_tests": 4,
+        "windows_seconds": 951,
+        "hosted_seconds": 44,
+        "estimated_api_attributed_usd": "0.038709675",
+        "new_api_calls": 0,
+        "quality_decision": "Local modest improvement, insufficient standalone promotion; original retained.",
+        "billing_verified": false
+      },
+      "next": "Use Studio on a high-impact measurable functional task rather than another micro-adjustment; maintain canonical Valoria source ownership.",
+      "phase2_evidence": {
+        "historical_backfill_run": 45681283119,
+        "final_ci_run": 45681700141,
+        "tests_passed": 54,
+        "api_calls_added": 0,
+        "historical_calls": 15,
+        "estimated_api_total_usd": "0.18984755",
+        "billing_verified": false,
+        "persistent_receipts": 4,
+        "github_hosted_seconds_selected": 512,
+        "self_hosted_windows_seconds_selected": 1519,
+        "limitations": "No official cost CSV; new routing profiles and future paid report path tested offline, not with additional live spend. Real productivity savings not measured."
+      },
+      "phase3_evidence": {
+        "source_run": 45638738009,
+        "api_run": 45683014884,
+        "final_ci": 45683596285,
+        "live_calls": 4,
+        "estimated_cost_usd": "0.038709675",
+        "total_estimated_usd": "0.228557225",
+        "api_elapsed_seconds": 69,
+        "diagnosis": "accepted with reserves; actual artistic change not implemented",
+        "billing_verified": false,
+        "reason": "Export contains only time buckets; no amounts."
+      },
+      "source_proof": {
+        "artifact_id": 15055952865,
+        "source_sha256": "fe19f3274135efdcc0766f64e372a61fb0f5b0e066e901dc1a21ec79a2d67c38",
+        "candidate_sha256": "1631d06cfe223da43b099013cce128c8c0e4f11b344315a96fe18ade92ba4439",
+        "source_tests": 4,
+        "art_approved": false
+      },
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Studio coordinates API, accounting, and review only; generated art and native geometry governed by the canonical Senda art-production request.",
+      "benchmark_evidence": {
+        "api_runs": [
+          45693242088,
+          45693467813
+        ],
+        "receipt_archive": 45694172796,
+        "calls": 6,
+        "estimated_usd": "0.09172975",
+        "billing_verified": false,
+        "web_run": 45695680165,
+        "native_run": 45694055440,
+        "art_approved": false
+      },
+      "latest_polish_evidence": {
+        "agent_run": 45707395248,
+        "receipt_archive_run": 45708553234,
+        "material_transfer_run": 45708122329,
+        "web_run": 45708451082,
+        "native_recovery_run": 45707272556,
+        "new_api_calls": 5,
+        "estimated_incremental_usd": 0.0837105,
+        "estimated_pr195_total_usd": 0.17544025,
+        "estimated_studio_total_usd": 0.403997475,
+        "billing_verified": false,
+        "art_approved": false
+      },
+      "portal_evidence": {
+        "agent_run": 45718046144,
+        "archive_run": 45718530299,
+        "asset_transfer_run": 45718448230,
+        "calls": 5,
+        "estimated_usd": "0.07706800",
+        "estimated_pr195_total_usd": "0.25250825",
+        "billing_verified": false,
+        "art_approved": false
+      },
+      "commercial_pass_evidence": {
+        "agent_runs": [
+          45771904456,
+          45772954576
+        ],
+        "receipt_archive_runs": [
+          45772461103,
+          45773603330
+        ],
+        "asset_transfer_runs": [
+          45772142038,
+          45773175299
+        ],
+        "calls": 10,
+        "estimated_usd": "0.15623100",
+        "estimated_pr195_total_usd": "0.40873925",
+        "billing_verified": false,
+        "web_pass": 45773424569,
+        "art_approved": false
       }
     }
   ],
@@ -21400,7 +21548,7 @@
     "authorized_at": "2026-11-25T21:44:55.392Z",
     "mode": "exclusive_one_workstream_at_a_time",
     "current_workstream": "eldoria-senda-brecha-lane-event-20261115",
-    "current_run_id": null,
+    "current_run_id": 45777504885,
     "next_workstream": null,
     "return_to": null,
     "status": "senda_native_commercial_art_reserved",
