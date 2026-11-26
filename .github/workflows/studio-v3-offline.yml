@@ -1,0 +1,30 @@
+name: Studio V3 offline execution proof
+on:
+  push:
+    branches: [pilot/eldoria-studio-v3-autonomous-execution-20261126]
+    paths:
+      - 'tools/studio-v3/**'
+      - '.github/workflows/studio-v3-offline.yml'
+permissions:
+  contents: read
+concurrency:
+  group: studio-v3-offline
+  cancel-in-progress: false
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: tools/studio-v3
+          fetch-depth: 1
+      - name: Test exact candidate core with SHA-256
+        run: node --test tools/studio-v3/core.test.mjs
+      - name: Fetch pinned public V2 commit
+        run: git fetch --no-tags --depth=1 origin 1657b2caa6b1a955319538ce3a8b2906398599b3
+      - name: Replay rejection, pivot, independent checks and scratch persistence
+        run: node tools/studio-v3/replay.mjs
+      - name: Verify tracked files unchanged
+        run: git diff --exit-code

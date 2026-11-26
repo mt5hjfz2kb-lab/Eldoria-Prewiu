@@ -13,5 +13,8 @@ Separate scope: tools/studio-v3 only. Frozen V2 source: 1657b2caa6b1a955319538ce
 ## Verification
 `node --test tools/studio-v3/core.test.mjs` (Node SHA-256). See evidence/core-fixture-20261126.json for actual core execution with fixture adapters in a JS isolate; it is not a Node CI or live-agent benchmark. First run failed on mutable retry state; corrected and retested.
 
+## Pinned-input replay
+Run `node tools/studio-v3/replay.mjs` in a checkout that has the pinned V2 commit. This read-only fixture uses the actual V2 lessons and quality decision, deliberately proposes two invalid changes, pivots, and writes only an append-only candidate and journal to a fresh temporary directory. It does not update V2 learning automatically. The separate offline workflow runs Node tests and replay without secrets or Windows.
+
 ## Pending
-Add a trusted scratch/persistence adapter and prove it on actual pinned V2 inputs; then attach V2 role/economics and explicit budget gates, with no automatic paid retries. Use a paired real product task against a single agent, identical validation and blind quality review. Unity/Blender adapters require their own isolated execution and resource lease. Permanent lessons require evidence and independent curation. No measured productivity or artistic gains yet.
+Attach V2 role/economics and explicit budget gates, with no automatic paid retries. Use a paired real product task against a single agent, identical validation and blind quality review. Unity/Blender adapters require their own isolated execution and resource lease. Permanent lessons require evidence and independent curation. No measured productivity or artistic gains yet.
