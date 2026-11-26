@@ -1458,6 +1458,25 @@ namespace Eldoria.Tests
                 Call(nav,"SetZoomLevel",view.Item2,true);Call(nav,"PanTo",pos);Call(canon,"RefreshForCapture");
                 yield return null;yield return null;
                 SaveRetainedSectorFrame(camera,Path.Combine(output,view.Item1),390,844);
+                // Reversible colour-only proof: identical camera, scene and frame.
+                if(Environment.GetEnvironmentVariable("ELDORIA_REGIONAL_COLOUR_AB")=="1"){
+                    var paintedMaterials=world.GetComponentsInChildren<MeshRenderer>(true)
+                        .SelectMany(renderer=>renderer.sharedMaterials)
+                        .Where(material=>material && material.HasProperty("_RegionalColourPass"))
+                        .Distinct().ToArray();
+                    Assert.That(paintedMaterials.Length,Is.GreaterThan(0),"No regional colour material to compare");
+                    var oldValues=paintedMaterials.Select(material=>material.GetFloat("_RegionalColourPass")).ToArray();
+                    try{
+                        foreach(var material in paintedMaterials)material.SetFloat("_RegionalColourPass",0);
+                        SaveRetainedSectorFrame(camera,Path.Combine(output,"colour-original-"+view.Item1),390,844,null,pos);
+                        foreach(var material in paintedMaterials)material.SetFloat("_RegionalColourPass",1);
+                        SaveRetainedSectorFrame(camera,Path.Combine(output,"colour-candidate-"+view.Item1),390,844,null,pos);
+                    }
+                    finally{
+                        for(int i=0;i<paintedMaterials.Length;i++)
+                            paintedMaterials[i].SetFloat("_RegionalColourPass",oldValues[i]);
+                    }
+                }
             }
             var routes=(Eldoria.Application.IWorldMarchRoutes)Member(placement,"MarchRoutes");
             var state=gateway.Snapshot();
