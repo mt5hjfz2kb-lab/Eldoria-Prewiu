@@ -1,0 +1,553 @@
+{
+  "schema": 1,
+  "status": "VERIFIED_OFFLINE_CALIBRATION_LIVE_COMPARISON_PENDING",
+  "calibration_run": 45892128146,
+  "calibration_job": 140157079371,
+  "calibration_head": "884bfd5f5cbb9541620046fb88261ab3f945108b",
+  "offline_run": 45892613293,
+  "offline_head": "9093c7d32c80123936ca20060c18760ef205a04a",
+  "offline_tests": {
+    "core_node": 37,
+    "python_guard": 9,
+    "visual_orchestration_and_runtime_node": 8,
+    "visual_session_guard_python": 7
+  },
+  "calibration_tests": [],
+  "proof": {
+    "schema": 1,
+    "target": "SENDA_UI_VISUAL_SYSTEM",
+    "mode": "hand-authored-calibration",
+    "engine": "actual Senda Three.js WebGL in Chromium",
+    "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+    "source_sha256": "a688814c5442903f5e861216374800dc3d8b67b28904902c06ae4869a0f73432",
+    "reference_sha": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+    "material_source_sha": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+    "material_sha256": "2e3cebad9c72fb1bfe2c79936fcfd88bde8369bf2018f6a94c1db081df6f901d",
+    "actual_game_logic_unchanged": true,
+    "matched_fixtures": 11,
+    "total_frames": 33,
+    "viewports": [
+      [
+        "phone",
+        390,
+        844
+      ],
+      [
+        "compact",
+        320,
+        700
+      ],
+      [
+        "horizontal",
+        844,
+        390
+      ]
+    ],
+    "variants": [
+      {
+        "variant": "baseline",
+        "frames": 11,
+        "issues": [
+          {
+            "fixture": "phone-intro",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "phone-intro",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "phone-intro",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "phone-intro",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "phone-gates",
+            "issue": "small-control:#pause"
+          },
+          {
+            "fixture": "phone-gates",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "phone-gates",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "phone-gates",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "phone-gates",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "phone-battle",
+            "issue": "small-control:#pause"
+          },
+          {
+            "fixture": "phone-battle",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "phone-battle",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "phone-battle",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "phone-battle",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "compact-intro",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "compact-intro",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "compact-intro",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "compact-intro",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "compact-gates",
+            "issue": "small-control:#pause"
+          },
+          {
+            "fixture": "compact-gates",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "compact-gates",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "compact-gates",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "compact-gates",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "compact-battle",
+            "issue": "small-control:#pause"
+          },
+          {
+            "fixture": "compact-battle",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "compact-battle",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "compact-battle",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "compact-battle",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "horizontal-intro",
+            "issue": "small-control:#play"
+          },
+          {
+            "fixture": "horizontal-intro",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "horizontal-intro",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "horizontal-intro",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "horizontal-intro",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "horizontal-intro",
+            "issue": "modal-footer-overlap"
+          },
+          {
+            "fixture": "horizontal-gates",
+            "issue": "small-control:#pause"
+          },
+          {
+            "fixture": "horizontal-gates",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "horizontal-gates",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "horizontal-gates",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "horizontal-gates",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "horizontal-battle",
+            "issue": "small-control:#pause"
+          },
+          {
+            "fixture": "horizontal-battle",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "horizontal-battle",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "horizontal-battle",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "horizontal-battle",
+            "issue": "small-stat-label:PUNTOS"
+          }
+        ],
+        "hud_pct": [
+          {
+            "viewport": "phone",
+            "pct": 18.8
+          },
+          {
+            "viewport": "compact",
+            "pct": 22.2
+          },
+          {
+            "viewport": "horizontal",
+            "pct": 19
+          }
+        ],
+        "all_controls": true,
+        "min_stat_label_px": 7
+      },
+      {
+        "variant": "variant-72",
+        "frames": 11,
+        "issues": [],
+        "hud_pct": [
+          {
+            "viewport": "phone",
+            "pct": 18.2
+          },
+          {
+            "viewport": "compact",
+            "pct": 21.5
+          },
+          {
+            "viewport": "horizontal",
+            "pct": 15
+          }
+        ],
+        "all_controls": true,
+        "min_stat_label_px": 9
+      },
+      {
+        "variant": "variant-19",
+        "frames": 11,
+        "issues": [],
+        "hud_pct": [
+          {
+            "viewport": "phone",
+            "pct": 18.1
+          },
+          {
+            "viewport": "compact",
+            "pct": 21.5
+          },
+          {
+            "viewport": "horizontal",
+            "pct": 14.7
+          }
+        ],
+        "all_controls": true,
+        "min_stat_label_px": 9
+      }
+    ],
+    "interactions": [
+      {
+        "variant": "baseline",
+        "lane_buttons": true,
+        "pause": true,
+        "resume": true,
+        "replay": true
+      },
+      {
+        "variant": "variant-72",
+        "lane_buttons": true,
+        "pause": true,
+        "resume": true,
+        "replay": true
+      },
+      {
+        "variant": "variant-19",
+        "lane_buttons": true,
+        "pause": true,
+        "resume": true,
+        "replay": true
+      }
+    ],
+    "errors": [],
+    "live_model_roles": false,
+    "blind_scoring_performed": false,
+    "visual_scores": null,
+    "art_approved": false,
+    "production_promoted": false,
+    "physical_iphone": false
+  },
+  "inputs": {
+    "schema": 1,
+    "mode": "offline calibration",
+    "production_evidence": {
+      "primary_sha256": "584ea87bcfd63cd6923dae244ceb20b4e2e44040a1b8eedb5964dbfed73538dd",
+      "secondary_sha256": "5c8c1bf49440ff5bbb8513c6c5849b2912339282f042c425494bdb16cc3cc27d",
+      "reference_text_sha256": "141650f4f5f7bf035af29b86168711a3c9052da3bab83dd11a59169692cf9fe1"
+    },
+    "judge_evidence": {
+      "primary_sha256": "a04d74c8090db3afa82978a7aaf5b9cf56a268d70aa321c941b881913dec7b20",
+      "secondary_sha256": "70cd0b38a5e541623d192849b0bd04bae831d52205582b0f4b13f6f9fbacc77a",
+      "reference_text_sha256": "141650f4f5f7bf035af29b86168711a3c9052da3bab83dd11a59169692cf9fe1"
+    },
+    "prepared_roles": [
+      {
+        "role": "single",
+        "request_digest": "b0fba94726391a50dd7011dbccd1a3f853c9f57d40c38ec8cb285754a8dbed6e"
+      },
+      {
+        "role": "director",
+        "request_digest": "3d426167cfb2d86a8edf4f28860c03593e4e171ee10bf952199a2ad3bd529943"
+      },
+      {
+        "role": "illustrator",
+        "request_digest": "7f9f7919961ecce3decee1fb094bbe934f73991deec807e6d41307d1b51d2fb9"
+      },
+      {
+        "role": "integrator",
+        "request_digest": "a89d93afa060dd6c59dd0bcd31aa7d1682a0373ab4e14373e19f483135913c63"
+      },
+      {
+        "role": "judge",
+        "request_digest": "59a554db57502ecd9f1a9f60edb4995edf437600d5d79ae598a181faf5ee34d4"
+      }
+    ],
+    "fixture_role_receipts": [
+      {
+        "role": "single",
+        "request_digest": "b0fba94726391a50dd7011dbccd1a3f853c9f57d40c38ec8cb285754a8dbed6e",
+        "payload_digest": "5e1ac7ba26add8c0a1172ba2ebf672e803feaf32fbf1fffd9ed78e7353d1a4d1"
+      },
+      {
+        "role": "director",
+        "request_digest": "3d426167cfb2d86a8edf4f28860c03593e4e171ee10bf952199a2ad3bd529943",
+        "payload_digest": "b7083b00d3321d4db7133186c7977739ff9c95fef7456f79fdc660b563d233cc"
+      },
+      {
+        "role": "illustrator",
+        "request_digest": "7f9f7919961ecce3decee1fb094bbe934f73991deec807e6d41307d1b51d2fb9",
+        "payload_digest": "24993b388c4251f527824bfa3f467b806385fea583cf0fd2f416d86f8e518dbe"
+      },
+      {
+        "role": "integrator",
+        "request_digest": "a89d93afa060dd6c59dd0bcd31aa7d1682a0373ab4e14373e19f483135913c63",
+        "payload_digest": "e84dc926647f617f2a009569cb77bc47ab61bed574789116e1e407b6ee4766b9"
+      }
+    ],
+    "design_hashes": [
+      {
+        "css_sha256": "572f3b70fba4b24187fb5af0f3b73a6672797ba8b1bb91ab9b9dce14ba9cce42",
+        "art_sha256": "71d9e85f3c03fa0983b02889f4fe04cbfbeaca269362bc49ab04d523e952efb2"
+      },
+      {
+        "css_sha256": "ea98011764d08f40f2f5ae1c37c3e4d4d90e72f32c3dec54bd1f1045929395f3",
+        "art_sha256": "ff621a080a9d062e480cc0fb14a2614a338b49b8c0c1280b11e0d7bdcc63e0fe"
+      }
+    ],
+    "judge_invoked": false,
+    "api_calls": 0,
+    "scores": null
+  },
+  "payload": {
+    "schema": 1,
+    "mode": "actual V2 payload dry run",
+    "roles": [
+      {
+        "role": "single",
+        "request_digest": "b0fba94726391a50dd7011dbccd1a3f853c9f57d40c38ec8cb285754a8dbed6e",
+        "model": "gpt-6.2-sol",
+        "images": [
+          {
+            "type": "image/jpeg",
+            "sha256": "584ea87bcfd63cd6923dae244ceb20b4e2e44040a1b8eedb5964dbfed73538dd",
+            "bytes": 442103
+          },
+          {
+            "type": "image/jpeg",
+            "sha256": "5c8c1bf49440ff5bbb8513c6c5849b2912339282f042c425494bdb16cc3cc27d",
+            "bytes": 87287
+          }
+        ],
+        "text": {
+          "type": "text",
+          "sha256": "1b19c3a4c29773375322e216ae23aa5a94c2e37d19d7d8a24c73ed5b5cea8f7a",
+          "bytes": 11315
+        },
+        "max_output_tokens": 2400,
+        "image_detail": "high"
+      },
+      {
+        "role": "director",
+        "request_digest": "3d426167cfb2d86a8edf4f28860c03593e4e171ee10bf952199a2ad3bd529943",
+        "model": "gpt-6.1-terra",
+        "images": [
+          {
+            "type": "image/jpeg",
+            "sha256": "584ea87bcfd63cd6923dae244ceb20b4e2e44040a1b8eedb5964dbfed73538dd",
+            "bytes": 442103
+          },
+          {
+            "type": "image/jpeg",
+            "sha256": "5c8c1bf49440ff5bbb8513c6c5849b2912339282f042c425494bdb16cc3cc27d",
+            "bytes": 87287
+          }
+        ],
+        "text": {
+          "type": "text",
+          "sha256": "7fe0980a09e870f5c8299840aa1632ee566359e4844e0260b770947dc45bc5dd",
+          "bytes": 10571
+        },
+        "max_output_tokens": 2400,
+        "image_detail": "high"
+      },
+      {
+        "role": "illustrator",
+        "request_digest": "7f9f7919961ecce3decee1fb094bbe934f73991deec807e6d41307d1b51d2fb9",
+        "model": "gpt-6.2-sol",
+        "images": [
+          {
+            "type": "image/jpeg",
+            "sha256": "584ea87bcfd63cd6923dae244ceb20b4e2e44040a1b8eedb5964dbfed73538dd",
+            "bytes": 442103
+          },
+          {
+            "type": "image/jpeg",
+            "sha256": "5c8c1bf49440ff5bbb8513c6c5849b2912339282f042c425494bdb16cc3cc27d",
+            "bytes": 87287
+          }
+        ],
+        "text": {
+          "type": "text",
+          "sha256": "1e56461971aa394e24b339e8382b922e5d8200349353a8535235aab59a4a55b1",
+          "bytes": 11032
+        },
+        "max_output_tokens": 2400,
+        "image_detail": "high"
+      },
+      {
+        "role": "integrator",
+        "request_digest": "a89d93afa060dd6c59dd0bcd31aa7d1682a0373ab4e14373e19f483135913c63",
+        "model": "gpt-6.2-sol",
+        "images": [
+          {
+            "type": "image/jpeg",
+            "sha256": "584ea87bcfd63cd6923dae244ceb20b4e2e44040a1b8eedb5964dbfed73538dd",
+            "bytes": 442103
+          },
+          {
+            "type": "image/jpeg",
+            "sha256": "5c8c1bf49440ff5bbb8513c6c5849b2912339282f042c425494bdb16cc3cc27d",
+            "bytes": 87287
+          }
+        ],
+        "text": {
+          "type": "text",
+          "sha256": "c247e8c7f2bf86d296f2edebb46f80ecf64739824b43e70e3a7c25c4b829a149",
+          "bytes": 11607
+        },
+        "max_output_tokens": 2400,
+        "image_detail": "high"
+      },
+      {
+        "role": "judge",
+        "request_digest": "59a554db57502ecd9f1a9f60edb4995edf437600d5d79ae598a181faf5ee34d4",
+        "model": "gpt-6.1-terra",
+        "images": [
+          {
+            "type": "image/jpeg",
+            "sha256": "a04d74c8090db3afa82978a7aaf5b9cf56a268d70aa321c941b881913dec7b20",
+            "bytes": 1048189
+          },
+          {
+            "type": "image/jpeg",
+            "sha256": "70cd0b38a5e541623d192849b0bd04bae831d52205582b0f4b13f6f9fbacc77a",
+            "bytes": 386745
+          }
+        ],
+        "text": {
+          "type": "text",
+          "sha256": "a94022466c37b0776a8b1fe5875eec9f6e912020fc2c43eb1b1028bf42cc7f77",
+          "bytes": 10793
+        },
+        "max_output_tokens": 2400,
+        "image_detail": "high"
+      }
+    ],
+    "api_calls": 0,
+    "live_model_roles": false,
+    "scores": null
+  },
+  "artifact_verification": {
+    "independently_downloaded_and_checked": true,
+    "blind": {
+      "id": 15152775209,
+      "sha256": "8d9d090c870a2fae235be245393479592166c3ea137c0f003a363617e9b9976e"
+    },
+    "receipts": {
+      "id": 15152810075,
+      "sha256": "368b07e3634f88574c6cebd2bc4e729208b6f3fe2ab4227d6160197a577652a4"
+    },
+    "all_33_png_sha256_verified": true,
+    "all_11_state_groups_matched": true,
+    "visual_inspection": "Actual frames inspected: moderate hierarchy, consistency and legibility improvement. No commercial-quality or multi-agent superiority claim."
+  },
+  "earlier_failure": {
+    "run": 45891568629,
+    "reason": "Each control candidate had two clipped final-score label occurrences; fixed line box and padding without weakening gate.",
+    "new_run": 45892128146
+  },
+  "limitations": [
+    "Control candidates hand-authored, not agent-generated. No real judge or live comparison.",
+    "Scope is declarative UI styling and original vector ornament with original raster asset reuse; no newly generated raster, 3D or native Unity proof.",
+    "Live authenticated one-shot dispatch integration and fresh owner spending grant remain pending.",
+    "Prior technical reservation closed, Corona/V2 reservations untouched."
+  ],
+  "proposed_grant_usd": {
+    "total": "2.00",
+    "single": "0.80",
+    "studio": "0.80",
+    "common_judges": "0.40",
+    "authorized": false,
+    "spent": "0.00"
+  },
+  "next": "With fresh owner authorization, complete and verify live dispatch, run paired production and bounded corrective loop, render exact candidates, then two blind independent judges against fixed reference and baseline; compare quality, calls, time, actual attributed estimated spend and technical regressions; no promotion."
+}
