@@ -467,6 +467,23 @@ namespace Eldoria.HeroesUI
         }
         void HallNavIcon(Button button,int iconId,float cell,float height,bool selected)
         {
+            // Corona's narrow rune/arcane ribbons already contain their
+            // authored ornament. Do not put a second rectangular medallion
+            // and a competing glyph over the same small silhouette.
+            if(coronaTypography)
+            {
+                foreach(var label in button.GetComponentsInChildren<Text>())
+                {
+                    if(label.name!=button.name+" label")continue;
+                    Place(label.rectTransform,9f,2f,Mathf.Max(1f,cell-18f),height-4f);
+                    label.font=compactFont;
+                    label.alignment=TextAnchor.MiddleCenter;
+                    label.color=CoronaFinish.Ivory;
+                    CoronaFinish.FitSingleLine(label,cell<140f?18:22,12);
+                    break;
+                }
+                return;
+            }
             // Reuse the canonical vector Royal Gold pictograms rather than
             // pasting the concept sheet's button icons into a flat screenshot.
             // These are visual-only children of genuine state-bound buttons.
@@ -1436,12 +1453,17 @@ namespace Eldoria.HeroesUI
                     RoyalGoldV3LayeredFinish.Scene.Panel,card.childCount);
                 // A freestanding engraved frame, not an opaque UI rectangle
                 // flattened into the architectural background.
-                Surface("Hall / card inner bronze bevel",card,4f,4f,cardW-8f,2f,
-                    new Color(.84f,.60f,.24f,.75f)).GetComponent<Image>().raycastTarget=false;
-                Surface("Hall / card left bevel",card,4f,6f,2f,cardH-12f,
-                    new Color(.82f,.55f,.21f,.43f)).GetComponent<Image>().raycastTarget=false;
-                Surface("Hall / card right bevel",card,cardW-6f,6f,2f,cardH-12f,
-                    new Color(.82f,.55f,.21f,.43f)).GetComponent<Image>().raycastTarget=false;
+                // One finished metal edge is enough. The fallback still
+                // receives its hand-built bevel if the authored art is absent.
+                if(!coronaTypography || !hallFrameSprite)
+                {
+                    Surface("Hall / card inner bronze bevel",card,4f,4f,cardW-8f,2f,
+                        new Color(.84f,.60f,.24f,.75f)).GetComponent<Image>().raycastTarget=false;
+                    Surface("Hall / card left bevel",card,4f,6f,2f,cardH-12f,
+                        new Color(.82f,.55f,.21f,.43f)).GetComponent<Image>().raycastTarget=false;
+                    Surface("Hall / card right bevel",card,cardW-6f,6f,2f,cardH-12f,
+                        new Color(.82f,.55f,.21f,.43f)).GetComponent<Image>().raycastTarget=false;
+                }
                 bool unlocked=real&&heroes[i].Unlocked;
                 Sprite portrait=real?heroes[i].Portrait:(ApprovedFuturePortrait(i-heroes.Length)??futureSlotArt);
                 bool lateral=phoneLandscape;
@@ -1480,7 +1502,10 @@ namespace Eldoria.HeroesUI
                         TextAnchor.MiddleCenter);
                     namePlate.color=gold;
                     if(coronaTypography)
+                    {
                         namePlate.font=CoronaFinish.ResolveFont(true,font);
+                        namePlate.color=unlocked?CoronaFinish.StatusGold:CoronaFinish.Muted;
+                    }
                     if(lateral)namePlate.resizeTextForBestFit=false;
                     bool largeCard=!lateral&&cardH>=260f&&identityH>=72f&&cardW>=200f;
                     if(largeCard)
@@ -1536,6 +1561,13 @@ namespace Eldoria.HeroesUI
                         compactReserve?15:lateral&&cardW<210f?16:lateral?19:
                             tightLocked?13:15,TextAnchor.MiddleCenter);
                     lockedState.color=new Color(.79f,.77f,.73f);
+                    if(coronaTypography)
+                    {
+                        lockedTitle.font=CoronaFinish.ResolveFont(false,compactFont);
+                        lockedTitle.color=CoronaFinish.Muted;
+                        lockedState.font=CoronaFinish.ResolveFont(false,compactFont);
+                        lockedState.color=CoronaFinish.Muted;
+                    }
                     if(lateral){lockedTitle.resizeTextForBestFit=false;lockedState.resizeTextForBestFit=false;}
                 }
                 // Authored 9-slice metallic artwork is a reusable,
@@ -1556,14 +1588,15 @@ namespace Eldoria.HeroesUI
                     metal.pixelsPerUnitMultiplier=cardW<220f?2.2f:1f;
                     metal.fillCenter=false;
                     metal.raycastTarget=false;
-                    metal.color=unlocked?Color.white:
-                        new Color(.73f,.70f,.64f,.90f);
+                    metal.color=unlocked?Color.white:coronaTypography?
+                        new Color(.62f,.65f,.69f,.60f):new Color(.73f,.70f,.64f,.90f);
                 }
                 // Retain the original thin structural rim behind authored art.
-                Surface("Hall / card heraldic top",card,8f,6f,
-                    Mathf.Max(12f,cardW-16f),1.5f,
-                    new Color(.89f,.72f,.38f,unlocked ? .82f : .37f))
-                    .GetComponent<Image>().raycastTarget=false;
+                if(!coronaTypography || !hallFrameSprite)
+                    Surface("Hall / card heraldic top",card,8f,6f,
+                        Mathf.Max(12f,cardW-16f),1.5f,
+                        new Color(.89f,.72f,.38f,unlocked ? .82f : .37f))
+                        .GetComponent<Image>().raycastTarget=false;
                 if(real){
                     var hero=heroes[i];
                     var hit=Surface("Select hero "+hero.Id,card,0,0,cardW,cardH,Color.clear);
@@ -1590,9 +1623,13 @@ namespace Eldoria.HeroesUI
             var navBack=Button("Hall / nav return","VOLVER",navLeft,navY,navCell,navHeight,Close);
             HallControlArt(navBack.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navBack,12,navCell,navHeight,false);
-            Surface("Hall / selected heroes tab glow",content,
-                navLeft+navCell+navGap,navY,navCell,navHeight,
-                new Color(.47f,.25f,.065f,.91f)).GetComponent<Image>().raycastTarget=false;
+            // The orange rectangular legacy glow is clearly visible outside
+            // the transparent Corona ribbon in the actual 390px capture.
+            // The active arcane sprite itself is the selection indicator.
+            if(!coronaTypography)
+                Surface("Hall / selected heroes tab glow",content,
+                    navLeft+navCell+navGap,navY,navCell,navHeight,
+                    new Color(.47f,.25f,.065f,.91f)).GetComponent<Image>().raycastTarget=false;
             var selected=Button("Hall / nav heroes",
                 "HÉROES",
                 navLeft+navCell+navGap,navY,navCell,navHeight,()=>Select(Page.Salon));
