@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "source_run": 45772954576,
+  "source_artifact": 15094293865,
+  "source_sha256": "a3dd116483690cb6a048d16ae054748526923ef4f895d0414e4d17e1600d48aa",
+  "texture_sha256": "69dc527d9b1df5bef5b452ff77b32991f9f4f3c543f70ed2d9ee9f868de417ba",
+  "size": [
+    968,
+    994
+  ],
+  "alpha_crop": [
+    27,
+    13,
+    995,
+    1007
+  ],
+  "opaque_fraction": 0.4461183547973633,
+  "scope": "candidate rejected as low parapet; alternative one isolated roadside arch outside play lanes, requires visual A/B",
+  "art_approved": false
+}
