@@ -34,10 +34,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
         static readonly List<string> Defects=new List<string>();
         [Serializable] sealed class Frame {public string file,sha256,fixture,variant;public int width,height;public bool actualCamera,playMode;public int t1,t2,selectedQuantity,selectedTier;public string selectedHero;public long revision;public string[] metrics;}
         [Serializable] sealed class Control {public string frame,name;public float width,height;public bool interactable,hit;}
-        [Serializable] sealed class Report {public string sourceSha,engine,engineVersion,prefabPath,assetSha;public bool actualPrefab,actualGateway,artApproved,physicalIphone,fullBrowserJourney;public Frame[] frames;public Control[] controls;public string[] checks,defects;}
+        [Serializable] sealed class Report {public string sourceSha,harnessSha,engine,engineVersion,prefabPath,assetSha;public bool actualPrefab,actualGateway,artApproved,physicalIphone,fullBrowserJourney;public Frame[] frames;public Control[] controls;public string[] checks,defects;}
         sealed class Clock:IClock {public long UtcTicks{get;set;}=new DateTime(2026,11,26,12,0,0,DateTimeKind.Utc).Ticks;}
         sealed class Memory:IStateStore {public PlayerState Stored;public PlayerState Load()=>Stored;public void Save(PlayerState s){Stored=s;}}
-        static MarchStudioNativeEvidence()=>EditorApplication.playModeStateChanged+=OnPlay;
+        static IEnumerator routine;
+        static double lastHeartbeat;
+        static MarchStudioNativeEvidence()
+        {
+            EditorApplication.update-=Tick;
+            EditorApplication.update+=Tick;
+        }
         static void Need(bool condition,string message)
         {
             if(!condition)throw new InvalidOperationException(message);
@@ -59,45 +65,64 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 // Only this scratch project's build settings. Exactly the
                 // combined player's existing Corona activation condition.
                 EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(City,true),new EditorBuildSettingsScene(Region,true)};
-                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+                // A saved scratch scene avoids the prior unsaved Temp/Backup scene.
+                // Arm first; enter only on a later Editor update after project startup.
+                var scratch=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+                const string probe="Assets/Experimentos/ValoriaModular25D/Scenes/MarchStudioDisposableProbe.unity";
+                if(File.Exists(probe))throw new InvalidOperationException("Refuse to overwrite a probe scene");
+                Need(EditorSceneManager.SaveScene(scratch,probe),"Saved isolated disposable probe scene");
                 SessionState.SetBool(Flag,true);
-                EditorApplication.EnterPlaymode();
+                SessionState.SetString(Flag+"Phase","armed");
+                SessionState.SetFloat(Flag+"Deadline",(float)(EditorApplication.timeSinceStartup+420));
+                Debug.Log("MARCH_STUDIO_ARMED saved scene; editor update will enter PlayMode");
             }
             catch(Exception ex){Fail(ex);}
         }
-        static void OnPlay(PlayModeStateChange change)
+        static void Tick()
         {
-            if(change!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(Flag,false))return;
-            SessionState.SetBool(Flag,false);
-            EditorApplication.delayCall+=()=>{
-                try
+            if(!SessionState.GetBool(Flag,false))return;
+            try
+            {
+                var now=EditorApplication.timeSinceStartup;
+                var phase=SessionState.GetString(Flag+"Phase","");
+                if(now>=SessionState.GetFloat(Flag+"Deadline",0f))
+                    throw new TimeoutException("Native March editor-update watchdog: phase="+phase+
+                        ", playing="+EditorApplication.isPlaying+", compiling="+EditorApplication.isCompiling);
+                if(now-lastHeartbeat>=20)
                 {
+                    lastHeartbeat=now;
+                    Debug.Log("MARCH_STUDIO_HEARTBEAT phase="+phase+" playing="+EditorApplication.isPlaying);
+                }
+                if(!EditorApplication.isPlaying)
+                {
+                    if(phase=="armed"&&!EditorApplication.isPlayingOrWillChangePlaymode&&
+                        !EditorApplication.isCompiling&&!EditorApplication.isUpdating)
+                    {
+                        SessionState.SetString(Flag+"Phase","entering");
+                        Debug.Log("MARCH_STUDIO_ENTER_REQUEST");
+                        EditorApplication.EnterPlaymode();
+                    }
+                    return;
+                }
+                if(routine==null)
+                {
+                    SessionState.SetString(Flag+"Phase","rendering");
+                    Debug.Log("MARCH_STUDIO_PLAYMODE_ENTERED via Editor update");
                     Need(RoyalGoldV2Hud.UseCoronaArt,"Real combined-player Corona condition is active");
                     SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
                     Need(SliceContentProfiles.ActiveRuntimeProfile==SliceContentProfiles.OwnerIiiId,"Actual combined-player content profile, disposable fixture only");
                     var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(SessionState.GetString(Flag+"Prefab",""));
                     Need(prefab&&prefab.GetComponent<RoyalHUD>(),"Actual source-pinned room prefab exists");
-                    // A coroutine host is the real military component of
-                    // an inactive-in-layout disposable prefab, not an invented room.
                     var host=Object.Instantiate(prefab);
-                    var manager=host.GetComponent<RoyalGoldV3ManagementScreens>()??host.AddComponent<RoyalGoldV3ManagementScreens>();
                     host.GetComponent<Canvas>().enabled=false;
-                    manager.StartCoroutine(Guard(host,prefab));
+                    routine=Exercise(host,prefab);
                 }
-                catch(Exception ex){Fail(ex);}
-            };
-        }
-        static IEnumerator Guard(GameObject host,GameObject prefab)
-        {
-            var e=Exercise(host,prefab);
-            while(true)
-            {
-                bool more;object next=null;
-                try{more=e.MoveNext();if(more)next=e.Current;}
-                catch(Exception ex){Fail(ex);yield break;}
-                if(!more)yield break;
-                yield return next;
+                // This existing enumerator only yields null; one real frame per Editor update.
+                if(routine.MoveNext())return;
+                SessionState.SetBool(Flag,false);
+                EditorApplication.Exit(0);
             }
+            catch(Exception ex){Fail(ex);}
         }
         static PlayerState Fixture(bool mixed)
         {
@@ -223,12 +248,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 Need(!manager.VisibleRoot.GetComponentsInChildren<Text>(false).Any(t=>t.name.StartsWith("Studio / real metric label ")),"Landscape retains original metric path");
                 room.SetActive(false);Object.Destroy(room);cam.targetTexture=null;target.Release();Object.Destroy(target);yield return null;
             }
-            var report=new Report{sourceSha=Source,engine="Unity",engineVersion=UnityEngine.Application.unityVersion,prefabPath=SessionState.GetString(Flag+"Prefab",""),assetSha=Digest(File.ReadAllBytes(originalAsset)),
+            var report=new Report{sourceSha=Source,harnessSha=Environment.GetEnvironmentVariable("MARCH_STUDIO_HARNESS_SHA")??Source,engine="Unity",engineVersion=UnityEngine.Application.unityVersion,prefabPath=SessionState.GetString(Flag+"Prefab",""),assetSha=Digest(File.ReadAllBytes(originalAsset)),
                 actualPrefab=true,actualGateway=true,artApproved=false,physicalIphone=false,fullBrowserJourney=false,
                 frames=Frames.ToArray(),controls=Controls.ToArray(),checks=Checks.ToArray(),defects=Defects.ToArray()};
             File.WriteAllText(Path.Combine(Out,"evidence.json"),JsonUtility.ToJson(report,true));
             Debug.Log("MARCH_STUDIO_CAPTURE_COMPLETE frames="+Frames.Count+" defects="+Defects.Count);
-            EditorApplication.Exit(0);
         }
         static void CaptureFrame(RoyalGoldV3ManagementScreens manager,LocalGateway gateway,Camera cam,RenderTexture rt,string fixture,string variant,int width,int height,bool checkTargets)
         {
@@ -269,6 +293,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
         }
         static void Fail(Exception ex)
         {
+            SessionState.SetBool(Flag,false);
             Directory.CreateDirectory(Out);File.WriteAllText(Path.Combine(Out,"failure.txt"),ex.ToString());
             Debug.LogException(ex);EditorApplication.Exit(1);
         }
