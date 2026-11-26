@@ -18,12 +18,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-          sparse-checkout: tools/studio-v3
+          sparse-checkout: |
+            tools/studio-v3
+            tools/openai-development-studio
           fetch-depth: 1
       - name: Test exact candidate core with SHA-256
-        run: node --test tools/studio-v3/core.test.mjs tools/studio-v3/role-bridge.test.mjs
+        run: node --test tools/studio-v3/core.test.mjs tools/studio-v3/role-bridge.test.mjs tools/studio-v3/v2-role-adapter.test.mjs
       - name: Fetch pinned public V2 commit
         run: git fetch --no-tags --depth=1 origin 1657b2caa6b1a955319538ce3a8b2906398599b3
+      - name: Verify V2 client unchanged from pinned source
+        run: git diff --exit-code 1657b2caa6b1a955319538ce3a8b2906398599b3 HEAD -- tools/openai-development-studio
       - name: Replay rejection, pivot, independent checks and scratch persistence
         run: node tools/studio-v3/replay.mjs
       - name: Verify tracked files unchanged
