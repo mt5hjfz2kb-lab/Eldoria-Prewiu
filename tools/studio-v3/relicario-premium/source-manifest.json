@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "commit": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "path": "tools/relicario-premium-v2/app.js",
+      "destination": "template/app.js",
+      "blob_sha": "22885528b6fe84dbf765be40026692dd24b29480",
+      "size": 5325
+    },
+    {
+      "commit": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "path": "tools/relicario-premium-v2/styles.css",
+      "destination": "template/styles.css",
+      "blob_sha": "e9ee185463094d5f20edab3f0881bb6d8e952f70",
+      "size": 5599
+    },
+    {
+      "commit": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "path": "tools/relicario-premium-v2/polish.css",
+      "destination": "template/polish.css",
+      "blob_sha": "651d2cf59cfd449e01b1da7a463c25886f779fd0",
+      "size": 4768
+    },
+    {
+      "commit": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "path": "tools/relicario-premium-v2/stat-plaques.js",
+      "destination": "template/stat-plaques.js",
+      "blob_sha": "42cf306c69a21ae31e10fc39803b13748f191d2f",
+      "size": 3091
+    },
+    {
+      "commit": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "path": "tools/relicario-premium-v2/card_data.json",
+      "destination": "template/card_data.json",
+      "blob_sha": "1771d2e7a5683f5e57fb3ced82e90df3bd229a89",
+      "size": 446
+    },
+    {
+      "commit": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "path": "tools/relicario-premium-v2/assets/approved_board_original.webp",
+      "destination": "template/assets/approved_board_original.webp",
+      "blob_sha": "4f8935ec9f69bb24448336b1b34de6609acd5ebc",
+      "size": 397492
+    },
+    {
+      "commit": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "path": "tools/relicario-premium-v2/assets/bosque_valoria_art.jpg",
+      "destination": "template/assets/bosque_valoria_art.jpg",
+      "blob_sha": "992a4208f1621bd8a70909f484d41bbe54cee58f",
+      "size": 248751
+    },
+    {
+      "commit": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "path": "tools/relicario-premium-v2/assets/frame_legendary.webp",
+      "destination": "template/assets/frame_legendary.webp",
+      "blob_sha": "a4ee950ba1324c93842ffd8341f01e10ab903688",
+      "size": 54176
+    },
+    {
+      "commit": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "path": "tools/relicario-premium-v2/assets/frame_common.webp",
+      "destination": "template/assets/frame_common.webp",
+      "blob_sha": "155331f0155d96c0171812b4c1a945cff2b6f446",
+      "size": 46634
+    },
+    {
+      "commit": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "path": "tools/relicario-premium-v2/assets/overlay_indestructible.svg",
+      "destination": "template/assets/overlay_indestructible.svg",
+      "blob_sha": "912b8a51544ea239af2276b7234fada55950c8ff",
+      "size": 3515
+    },
+    {
+      "commit": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "path": "tools/relicario-premium-v2/assets/icon_wood.svg",
+      "destination": "template/assets/icon_wood.svg",
+      "blob_sha": "5f224379301281ba9e652549a6c06dfdf301144a",
+      "size": 1058
+    },
+    {
+      "commit": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "path": "docs/relicario-premium-v2/ART_DIRECTION.md",
+      "destination": "references/ART_DIRECTION.md",
+      "blob_sha": "5ed732006f4acaa1a18cec046f0076e3f59391d8",
+      "size": 6563
+    },
+    {
+      "commit": "3303504d1ec7fcd49b2efd94daee9bd620b01c01",
+      "path": "v0220/js/relicario-system.js",
+      "destination": "catalog/relicario-system.js",
+      "blob_sha": "46eda84ce91839d69446fec6208a7486599fc659",
+      "size": 20582
+    },
+    {
+      "commit": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+      "path": "docs/valoria-modular-25d/CORONA_BRECHA_ART_DIRECTION_20261120.md",
+      "destination": "references/CORONA_BRECHA_ART_DIRECTION_20261120.md",
+      "blob_sha": "ec5e91fd5d842165ebe48d6eecd85a827001f87b",
+      "size": 6485
+    },
+    {
+      "commit": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+      "path": "docs/valoria-modular-25d/CORONA_SHARED_STANDARD_20261126.md",
+      "destination": "references/CORONA_SHARED_STANDARD_20261126.md",
+      "blob_sha": "b99495cc6542ddf408235926b7b8592d45e79a90",
+      "size": 2700
+    }
+  ]
+}

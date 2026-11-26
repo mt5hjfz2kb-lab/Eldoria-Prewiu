@@ -1,0 +1,9 @@
+# Orden de producción Studio V3 — Corona de Valoria
+Misión aprobada por el propietario: crear una carta nueva en arte, **realmente premium** y coherente con Eldoria. El registro del juego manda sobre la presentación. No añadir una carta con estadísticas inventadas.
+
+- Carta existente: Corona de Valoria, legendaria; N8 E6 S7 O7, +50% de velocidad de construcción durante 4 horas; sin habilidad de duelo; se conoce a Bastión 10. La propiedad indestructible es transversal y solo se prueba visualmente.
+- Leer `mission.json`, `source-manifest.json` y los dos contratos de Corona/Relicario. Referencia exacta: PR #189, versión V2.5 candidata. No modificarla ni alterar catálogo, drop, guardado, economía, duelo, beta o Main.
+- Activos de calidad: autoría nueva de la ilustración, no otro ajuste CSS. Conservar 5:8, marco legendario de metal solar, panel bajo, texto y N/E/S/O dinámicos, sello ∞ opcional e independiente. No copiar referencias comerciales ni hornear texto en la imagen.
+- Permiso explícito para nuestras herramientas **Blender MCP y Unity MCP**, condicionado a sesión verificada, proyecto aislado y recursos disponibles. Blender: usar operaciones de autoría real y fuentes editables. Unity: comprobar herramientas anunciadas y editor aislado, importar capas RGBA con textos vivos, comprobar captura a escala real. Windows sigue reservado para Corona; no interrumpir. No confundir un trabajo bpy directo con una conexión MCP.
+- La evaluación artística manda: ver el render, analizar defectos, corregir, cambiar estrategia tras dos ciclos sin progreso. Aspirar a 9/10; no declarar logrado por exportación ni CI.
+- El diseño de calibración incluido es de este chat, para probar la producción de arte en Blender y la composición real. No se contará como resultado de los especialistas. La misión de modelos reales requiere una reserva nueva, porque ambas anteriores están cerradas. **Ningún coste nuevo de API autorizado o consumido aquí.**

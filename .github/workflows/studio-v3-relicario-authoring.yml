@@ -1,0 +1,52 @@
+name: Studio V3 Relicario creative tool proof
+on:
+  push:
+    branches: [pilot/eldoria-studio-v3-autonomous-execution-20261126]
+    paths:
+      - 'tools/studio-v3/relicario-premium/**'
+      - '.github/workflows/studio-v3-relicario-authoring.yml'
+permissions:
+  contents: read
+concurrency:
+  group: studio-v3-relicario-creative-tool-proof
+  cancel-in-progress: false
+jobs:
+  crown:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          sparse-checkout: tools/studio-v3/relicario-premium
+          fetch-depth: 1
+      - name: Exact source catalog and original master reference
+        run: |
+          set -euo pipefail
+          python3 tools/studio-v3/relicario-premium/materialize.py "$RUNNER_TEMP/relicario-input"
+          mkdir -p "$RUNNER_TEMP/relicario-output"
+          node tools/studio-v3/relicario-premium/catalog.mjs "$RUNNER_TEMP/relicario-input/catalog/relicario-system.js" "$RUNNER_TEMP/relicario-output/card-data.json"
+      - name: Isolated actual Blender and Chromium tooling, no Windows reservation
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends blender > /tmp/relicario-blender-install.log 2>&1
+          python3 -m pip install --quiet playwright pillow
+          python3 -m playwright install chromium
+      - name: Author editable crown and render original illustration in Blender
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/studio-v3/relicario-premium/author-crown.py -- tools/studio-v3/relicario-premium/calibration-design.json "$RUNNER_TEMP/relicario-output/art"
+          mv "$RUNNER_TEMP/relicario-output/art/illustration.png" "$RUNNER_TEMP/relicario-output/illustration.png"
+      - name: Compose actual V2.5 card with live catalog stats and verify ten renders
+        run: python3 tools/studio-v3/relicario-premium/compose-card.py "$RUNNER_TEMP/relicario-input" "$RUNNER_TEMP/relicario-output"
+      - name: Retain exact editable sources, renders and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relicario-corona-valoria-isolated-calibration
+          path: ${{ runner.temp }}/relicario-output
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Verify tracked game source unchanged
+        if: always()
+        run: git diff --exit-code
