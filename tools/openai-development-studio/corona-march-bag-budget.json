@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "cycle": {
+    "starts": "2026-11-25",
+    "ends_exclusive": "2026-12-17",
+    "pilot_cap_usd": "0.50",
+    "automatic_reset": false
+  },
+  "scope": "Single bounded three-role Corona mission. Mirrored existing transfer, no additional budget, no retry.",
+  "reservations": [
+    {
+      "id": "corona-march-bag-review-20261126",
+      "run_id": "corona-march-bag-review-20261126",
+      "status": "authorized_once",
+      "reserve_usd": "0.50"
+    }
+  ]
+}

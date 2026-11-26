@@ -20,6 +20,13 @@
       "status": "closed_reserved",
       "reserve_usd": "0.01",
       "reason": "Owner transferred Studio and resources from PR195 to Corona. Earmarked existing unused authorization only, not API spend; never reclaim or count again in combined ledger."
+    },
+    {
+      "id": "transfer-corona-march-bag-review-20261126",
+      "run_id": "transfer-corona-march-bag-review-20261126",
+      "status": "closed_reserved",
+      "reserve_usd": "0.50",
+      "reason": "Owner reassigned existing Studio resources from paused PR195 to Corona; no new ceiling; mirrored allocation counted once."
     }
   ]
 }

@@ -1,0 +1,85 @@
+name: Studio - Corona march and bag visual review
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths: ['.github/workflows/eldoria-openai-studio-corona-march-bag.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-studio-corona-march-bag-once
+  cancel-in-progress: false
+jobs:
+  review:
+    if: >-
+      ${{ github.run_attempt == 1 && github.event.before == '20ab3a32b118d221b77764db891e1677b661bfac' && github.event.head_commit.message == 'Studio Corona bounded march and bag visual mission' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: tools/openai-development-studio
+      - name: Verify live ownership and conserved total reservation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          cd tools/openai-development-studio
+          python3 budget_guard.py --self-test
+          python3 mission.py --self-test
+          python3 - <<'PY'
+          import base64,json,subprocess,os,datetime
+          from decimal import Decimal as D
+          import budget_guard
+          def gh(p):return json.loads(subprocess.check_output(['gh','api',p],timeout=60))
+          repo=os.environ['GITHUB_REPOSITORY']
+          meta=gh(f'repos/{repo}/contents/pipeline/active-workstreams.json?ref=main')
+          blob=gh(f'repos/{repo}/git/blobs/{meta["sha"]}')
+          assert blob['sha']==meta['sha']
+          reg=json.loads(base64.b64decode(blob['content']))
+          a=next(a for a in reg['active'] if a['id']=='eldoria-openai-development-studio-20261125')
+          assert a['owner']=='chatgpt-corona-brecha-commercial-20261126' and a['ownership_revision']==18 and a['phase']=='CORONA_UI_AGENT_MISSION'
+          assert gh(f'repos/{repo}/git/ref/heads/pilot/eldoria-openai-development-studio-20261125')['object']['sha']==os.environ['GITHUB_SHA']
+          docs=[json.load(open(n)) for n in ('budget-cycle.json','senda-benchmark-budget.json','senda-portal-budget.json','senda-final-review-budget.json')]
+          for d in docs:budget_guard.validate(d,datetime.datetime.now(datetime.timezone.utc).date())
+          rows=[r for d in docs for r in d['reservations']]
+          assert sum(D(r['reserve_usd']) for r in rows)==D('14.91')
+          moved=[r for r in rows if r['id']=='transfer-corona-march-bag-review-20261126']
+          assert len(moved)==1 and moved[0]['status']=='closed_reserved' and D(moved[0]['reserve_usd'])==D('.50')
+          current=json.load(open('corona-march-bag-budget.json'))
+          budget_guard.authorize(current,datetime.datetime.now(datetime.timezone.utc).date(),'corona-march-bag-review-20261126','corona-march-bag-review-20261126',1,D('.50'))
+          PY
+          gh run download 45638738009 --repo "$GITHUB_REPOSITORY" --name ciudad-region-recorrido --dir /tmp/corona-baseline
+      - name: Execute real director, programmer and auditor
+        id: live
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ELDORIA_AUTH_EVENT: corona-march-bag-review-20261126
+        run: |
+          set -eu
+          date -u +%Y-%m-%dT%H:%M:%SZ > /tmp/corona-march-bag-start
+          cd tools/openai-development-studio
+          python3 corona_march_bag_review.py /tmp/corona-baseline /tmp/corona-march-bag-result
+      - name: Record measured usage, even on partial failure
+        if: always() && steps.live.outcome != 'skipped'
+        env:
+          LIVE_STATUS: ${{ steps.live.outcome }}
+        run: |
+          mkdir -p /tmp/corona-march-bag-economics
+          python3 tools/openai-development-studio/intervention_report.py collect --root /tmp/corona-march-bag-result --run "$GITHUB_RUN_ID" --request corona-march-bag-review-20261126 --started "$(cat /tmp/corona-march-bag-start)" --finished "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --source-run 45638738009 --status "$LIVE_STATUS" --out "/tmp/corona-march-bag-economics/run-$GITHUB_RUN_ID.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-march-bag-review-result
+          path: /tmp/corona-march-bag-result/
+          retention-days: 30
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-march-bag-review-economics
+          path: /tmp/corona-march-bag-economics/
+          retention-days: 30
+          if-no-files-found: warn
