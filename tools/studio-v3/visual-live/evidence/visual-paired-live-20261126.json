@@ -1,0 +1,749 @@
+{
+  "schema": 1,
+  "status": "REAL_PAIRED_VISUAL_TRIAL_COMPLETE_NO_CLEAR_WINNER",
+  "run_id": 45901310692,
+  "job_id": 140187480873,
+  "verified_commit": "43c8155c552f8a98203484716dea014872b1f61d",
+  "prepared_offline_run": 45901231891,
+  "artifact": {
+    "id": 15155258493,
+    "digest": "sha256:2f5755e34f5756fa96d3bd7b7eb7a953fa187dfe24a6ba6b2c5e83fb4773eda7",
+    "size_bytes": 14007091
+  },
+  "dispatch": {
+    "run_id": 45901310692,
+    "head": "43c8155c552f8a98203484716dea014872b1f61d",
+    "parent": "5e107881e0fcd7efc734268189e32c59095c1076",
+    "offline_run": 45901231891,
+    "registry_blob": "7523347dbbb60b3972d3dd96bc063451a6ff5ec2",
+    "calibration_run": 45892128146,
+    "grant_sha256": "f5fb7dc1bfd6295fbcf1ef6849594bf36b828973593470ead55bf00ee91fee57",
+    "budget_sha256": "426aa145b0a3a4f3c1e326d792341fd5b753e68655449e31686c766fd5d8adc4"
+  },
+  "proof": {
+    "schema": 1,
+    "live_model_roles": true,
+    "error": null,
+    "technical_gate_passed": true,
+    "visual_decision": "no_clear_agreement",
+    "judge_scores": [
+      {
+        "baseline": {
+          "weighted_score": 7,
+          "findings": [
+            "Las placas biseladas azul oscuro y doradas acompañan los estandartes de la escena.",
+            "La entrada y los resultados usan paneles distintos; la acción principal es dorada, no turquesa.",
+            "Las estadísticas están separadas, pero sus rótulos son pequeños.",
+            "En horizontal, el HUD y el texto de entrada se ven muy pequeños en la lámina."
+          ],
+          "confidence": "medium"
+        },
+        "variant-72": {
+          "weighted_score": 7.25,
+          "findings": [
+            "Los paneles violetas y las acciones turquesa se repiten en entrada, victoria y derrota.",
+            "Los valores del HUD compacto destacan, aunque las etiquetas siguen siendo pequeñas.",
+            "Los marcos rectangulares son más simples que los biseles de la escena y del baseline.",
+            "En horizontal, la entrada se desplaza a la derecha y su texto resulta diminuto en la lámina."
+          ],
+          "confidence": "medium"
+        },
+        "variant-19": {
+          "weighted_score": 7.1,
+          "findings": [
+            "El fondo casi negro, los filetes dorados y la amatista mantienen una paleta consistente.",
+            "La entrada incorpora escudos ornamentales adicionales y un título centrado en dos líneas.",
+            "En derrota, los escudos laterales quedan muy próximos al título; en victoria también comprimen el encabezado.",
+            "El HUD compacto destaca los valores, pero las etiquetas y el texto horizontal son pequeños.",
+            "La acción turquesa contrasta claramente con los paneles oscuros."
+          ],
+          "confidence": "medium"
+        }
+      },
+      {
+        "baseline": {
+          "weighted_score": 6.9,
+          "findings": [
+            "El escudo de cabecera repite el motivo dorado de los pendones de la escena.",
+            "Los biseles angulares dan relieve al HUD y a las flechas, pero los paneles de resultado cambian a esquinas redondeadas y fondos lisos.",
+            "Las cifras se distinguen bien en retrato compacto; los rótulos con serifas quedan pequeños, sobre todo en horizontal.",
+            "En horizontal, la entrada ocupa el centro inferior del camino; las variantes la desplazan a la derecha.",
+            "Los botones dorados destacan sobre el fondo oscuro, aunque comparten color con títulos y marcos."
+          ],
+          "confidence": "high"
+        },
+        "variant-72": {
+          "weighted_score": 7.75,
+          "findings": [
+            "El sello amatista de entrada y la filigrana violeta enlazan el panel con los tonos de la brecha.",
+            "Los filetes rectos y los fondos violetas se repiten en HUD, controles y paneles, aunque tienen menos relieve que los biseles de baseline.",
+            "El turquesa distingue la acción principal; en los resultados, la puntuación es el texto de mayor tamaño.",
+            "La alineación izquierda deja los títulos de resultado libres de ornamentos; la nota secundaria de entrada queda muy pequeña.",
+            "El tramo marfil de la barra es más luminoso que el indicador de avance y dificulta distinguir el progreso de un vistazo.",
+            "El panel de entrada horizontal queda a la derecha y deja más camino visible en el centro."
+          ],
+          "confidence": "high"
+        },
+        "variant-19": {
+          "weighted_score": 8.03,
+          "findings": [
+            "Los sellos dorados con centro amatista se repiten en la entrada y en ambos resultados.",
+            "El fondo casi negro, los filetes dorados y los acentos amatista forman un conjunto más uniforme que en baseline.",
+            "La pista oscura de progreso separa mejor el tramo coloreado que la pista marfil de variant-72.",
+            "La puntuación centrada y el botón turquesa dominan los resultados sin competir entre sí.",
+            "Los sellos de esquina dejan poco margen a los títulos de resultado e invaden visualmente los extremos del título de derrota.",
+            "En horizontal, el panel lateral deja visible el centro del camino, pero el texto secundario se ve muy pequeño."
+          ],
+          "confidence": "high"
+        }
+      }
+    ],
+    "judge_differences": [
+      {
+        "studio_minus_single": -0.15,
+        "studio_vs_baseline": 0.1,
+        "single_vs_baseline": 0.25
+      },
+      {
+        "studio_minus_single": 0.28,
+        "studio_vs_baseline": 1.13,
+        "single_vs_baseline": 0.85
+      }
+    ],
+    "rounds": [
+      {
+        "round": 1,
+        "report": {
+          "schema": 1,
+          "target": "SENDA_UI_VISUAL_SYSTEM",
+          "mode": "external-design-packet",
+          "engine": "actual Senda Three.js WebGL in Chromium",
+          "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+          "source_sha256": "a688814c5442903f5e861216374800dc3d8b67b28904902c06ae4869a0f73432",
+          "reference_sha": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+          "material_source_sha": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+          "material_sha256": "2e3cebad9c72fb1bfe2c79936fcfd88bde8369bf2018f6a94c1db081df6f901d",
+          "actual_game_logic_unchanged": true,
+          "matched_fixtures": 11,
+          "total_frames": 33,
+          "viewports": [
+            [
+              "phone",
+              390,
+              844
+            ],
+            [
+              "compact",
+              320,
+              700
+            ],
+            [
+              "horizontal",
+              844,
+              390
+            ]
+          ],
+          "variants": [
+            {
+              "variant": "baseline",
+              "frames": 11,
+              "issues": [
+                {
+                  "fixture": "phone-intro",
+                  "issue": "small-stat-label:GUARDIA"
+                },
+                {
+                  "fixture": "phone-intro",
+                  "issue": "small-stat-label:ATAQUE"
+                },
+                {
+                  "fixture": "phone-intro",
+                  "issue": "small-stat-label:ESCUDOS"
+                },
+                {
+                  "fixture": "phone-intro",
+                  "issue": "small-stat-label:PUNTOS"
+                },
+                {
+                  "fixture": "phone-gates",
+                  "issue": "small-control:#pause"
+                },
+                {
+                  "fixture": "phone-gates",
+                  "issue": "small-stat-label:GUARDIA"
+                },
+                {
+                  "fixture": "phone-gates",
+                  "issue": "small-stat-label:ATAQUE"
+                },
+                {
+                  "fixture": "phone-gates",
+                  "issue": "small-stat-label:ESCUDOS"
+                },
+                {
+                  "fixture": "phone-gates",
+                  "issue": "small-stat-label:PUNTOS"
+                },
+                {
+                  "fixture": "phone-battle",
+                  "issue": "small-control:#pause"
+                },
+                {
+                  "fixture": "phone-battle",
+                  "issue": "small-stat-label:GUARDIA"
+                },
+                {
+                  "fixture": "phone-battle",
+                  "issue": "small-stat-label:ATAQUE"
+                },
+                {
+                  "fixture": "phone-battle",
+                  "issue": "small-stat-label:ESCUDOS"
+                },
+                {
+                  "fixture": "phone-battle",
+                  "issue": "small-stat-label:PUNTOS"
+                },
+                {
+                  "fixture": "compact-intro",
+                  "issue": "small-stat-label:GUARDIA"
+                },
+                {
+                  "fixture": "compact-intro",
+                  "issue": "small-stat-label:ATAQUE"
+                },
+                {
+                  "fixture": "compact-intro",
+                  "issue": "small-stat-label:ESCUDOS"
+                },
+                {
+                  "fixture": "compact-intro",
+                  "issue": "small-stat-label:PUNTOS"
+                },
+                {
+                  "fixture": "compact-gates",
+                  "issue": "small-control:#pause"
+                },
+                {
+                  "fixture": "compact-gates",
+                  "issue": "small-stat-label:GUARDIA"
+                },
+                {
+                  "fixture": "compact-gates",
+                  "issue": "small-stat-label:ATAQUE"
+                },
+                {
+                  "fixture": "compact-gates",
+                  "issue": "small-stat-label:ESCUDOS"
+                },
+                {
+                  "fixture": "compact-gates",
+                  "issue": "small-stat-label:PUNTOS"
+                },
+                {
+                  "fixture": "compact-battle",
+                  "issue": "small-control:#pause"
+                },
+                {
+                  "fixture": "compact-battle",
+                  "issue": "small-stat-label:GUARDIA"
+                },
+                {
+                  "fixture": "compact-battle",
+                  "issue": "small-stat-label:ATAQUE"
+                },
+                {
+                  "fixture": "compact-battle",
+                  "issue": "small-stat-label:ESCUDOS"
+                },
+                {
+                  "fixture": "compact-battle",
+                  "issue": "small-stat-label:PUNTOS"
+                },
+                {
+                  "fixture": "horizontal-intro",
+                  "issue": "small-control:#play"
+                },
+                {
+                  "fixture": "horizontal-intro",
+                  "issue": "small-stat-label:GUARDIA"
+                },
+                {
+                  "fixture": "horizontal-intro",
+                  "issue": "small-stat-label:ATAQUE"
+                },
+                {
+                  "fixture": "horizontal-intro",
+                  "issue": "small-stat-label:ESCUDOS"
+                },
+                {
+                  "fixture": "horizontal-intro",
+                  "issue": "small-stat-label:PUNTOS"
+                },
+                {
+                  "fixture": "horizontal-intro",
+                  "issue": "modal-footer-overlap"
+                },
+                {
+                  "fixture": "horizontal-gates",
+                  "issue": "small-control:#pause"
+                },
+                {
+                  "fixture": "horizontal-gates",
+                  "issue": "small-stat-label:GUARDIA"
+                },
+                {
+                  "fixture": "horizontal-gates",
+                  "issue": "small-stat-label:ATAQUE"
+                },
+                {
+                  "fixture": "horizontal-gates",
+                  "issue": "small-stat-label:ESCUDOS"
+                },
+                {
+                  "fixture": "horizontal-gates",
+                  "issue": "small-stat-label:PUNTOS"
+                },
+                {
+                  "fixture": "horizontal-battle",
+                  "issue": "small-control:#pause"
+                },
+                {
+                  "fixture": "horizontal-battle",
+                  "issue": "small-stat-label:GUARDIA"
+                },
+                {
+                  "fixture": "horizontal-battle",
+                  "issue": "small-stat-label:ATAQUE"
+                },
+                {
+                  "fixture": "horizontal-battle",
+                  "issue": "small-stat-label:ESCUDOS"
+                },
+                {
+                  "fixture": "horizontal-battle",
+                  "issue": "small-stat-label:PUNTOS"
+                }
+              ],
+              "hud_pct": [
+                {
+                  "viewport": "phone",
+                  "pct": 18.8
+                },
+                {
+                  "viewport": "compact",
+                  "pct": 22.2
+                },
+                {
+                  "viewport": "horizontal",
+                  "pct": 19
+                }
+              ],
+              "all_controls": true,
+              "min_stat_label_px": 7
+            },
+            {
+              "variant": "variant-72",
+              "frames": 11,
+              "issues": [],
+              "hud_pct": [
+                {
+                  "viewport": "phone",
+                  "pct": 17.5
+                },
+                {
+                  "viewport": "compact",
+                  "pct": 21.3
+                },
+                {
+                  "viewport": "horizontal",
+                  "pct": 15
+                }
+              ],
+              "all_controls": true,
+              "min_stat_label_px": 9
+            },
+            {
+              "variant": "variant-19",
+              "frames": 11,
+              "issues": [],
+              "hud_pct": [
+                {
+                  "viewport": "phone",
+                  "pct": 17.7
+                },
+                {
+                  "viewport": "compact",
+                  "pct": 21
+                },
+                {
+                  "viewport": "horizontal",
+                  "pct": 15
+                }
+              ],
+              "all_controls": true,
+              "min_stat_label_px": 9
+            }
+          ],
+          "interactions": [
+            {
+              "variant": "baseline",
+              "lane_buttons": true,
+              "pause": true,
+              "resume": true,
+              "replay": true
+            },
+            {
+              "variant": "variant-72",
+              "lane_buttons": true,
+              "pause": true,
+              "resume": true,
+              "replay": true
+            },
+            {
+              "variant": "variant-19",
+              "lane_buttons": true,
+              "pause": true,
+              "resume": true,
+              "replay": true
+            }
+          ],
+          "errors": [],
+          "live_model_roles": false,
+          "blind_scoring_performed": false,
+          "visual_scores": null,
+          "art_approved": false,
+          "production_promoted": false,
+          "physical_iphone": false
+        },
+        "design_hashes": [
+          {
+            "alias": "variant-72",
+            "packet_index": 0,
+            "css_sha256": "3a1a5339bfa1c1a0cd53b60804fe6a7f5df628a5dde52ab01e273d836bf5b624",
+            "art_sha256": "5e6ccee681b09cabc351004b2d8e5b54ac32aadc9bec34f8eefbd5c6fc0ce494",
+            "design_sha256": "8360f5bdc6746178c273583edef33e6adb7b0c068635bdc74b14c7357b2ec50b"
+          },
+          {
+            "alias": "variant-19",
+            "packet_index": 1,
+            "css_sha256": "c69ec4b3678cebe7c759085b1ae0668ec35ceac867e2b584b8ff117246cc5ab3",
+            "art_sha256": "fab58b0a1b43a9837aab2a39ec54dbe5cf39d64d85a01fe717553681baba1ea8",
+            "design_sha256": "71b9647124e443b2acb3400e927081f528d39462b8c48f6ad72c5b940f34ce20"
+          }
+        ]
+      }
+    ],
+    "repair_performed": false,
+    "role_receipts": [
+      {
+        "slot": "single-1",
+        "role": "single",
+        "attempt": 1,
+        "request_digest": "b0fba94726391a50dd7011dbccd1a3f853c9f57d40c38ec8cb285754a8dbed6e",
+        "receipt_ref": "v3-senda-visual-paired-20261126:single-1",
+        "origin": "real_api"
+      },
+      {
+        "slot": "director-1",
+        "role": "director",
+        "attempt": 1,
+        "request_digest": "3d426167cfb2d86a8edf4f28860c03593e4e171ee10bf952199a2ad3bd529943",
+        "receipt_ref": "v3-senda-visual-paired-20261126:director-1",
+        "origin": "real_api"
+      },
+      {
+        "slot": "illustrator-1",
+        "role": "illustrator",
+        "attempt": 1,
+        "request_digest": "efc66aadaaa4771162b43daba6ace8b9ada1a5d820ba714e69882d6c8914ddb9",
+        "receipt_ref": "v3-senda-visual-paired-20261126:illustrator-1",
+        "origin": "real_api"
+      },
+      {
+        "slot": "integrator-1",
+        "role": "integrator",
+        "attempt": 1,
+        "request_digest": "d93f23bff25bf72ef76ca3f2e304fb32a05f680c24c45973797b269291812c13",
+        "receipt_ref": "v3-senda-visual-paired-20261126:integrator-1",
+        "origin": "real_api"
+      },
+      {
+        "slot": "judge-1",
+        "role": "judge",
+        "attempt": 1,
+        "request_digest": "8c5d972d927d4a6ea8b0113653b844d7a63cf4d04227e2705f7e13affb2cefb6",
+        "receipt_ref": "v3-senda-visual-paired-20261126:judge-1",
+        "origin": "real_api"
+      },
+      {
+        "slot": "judge-2",
+        "role": "judge",
+        "attempt": 2,
+        "request_digest": "7730233db11beae2f70be711f1bd51bf6dd1c02152aec4c7a5d60eef345ddfd8",
+        "receipt_ref": "v3-senda-visual-paired-20261126:judge-2",
+        "origin": "real_api"
+      }
+    ],
+    "call_count": 6,
+    "api_responses": 6,
+    "estimated_cost_usd": 0.11173775,
+    "totals": {
+      "single": {
+        "calls": 1,
+        "completed": 1,
+        "estimated_usd": 0.0237735,
+        "reserved_usd": 0.4,
+        "api_duration_ms": 10832
+      },
+      "studio": {
+        "calls": 3,
+        "completed": 3,
+        "estimated_usd": 0.04899375,
+        "reserved_usd": 0.52,
+        "api_duration_ms": 15218
+      },
+      "common-judge": {
+        "calls": 2,
+        "completed": 2,
+        "estimated_usd": 0.0389705,
+        "reserved_usd": 0.4,
+        "api_duration_ms": 20124
+      }
+    },
+    "ledger_entries": [
+      {
+        "slot": "single-1",
+        "arm": "single",
+        "role": "single",
+        "model_requested": "gpt-6.2-sol",
+        "request_digest": "b0fba94726391a50dd7011dbccd1a3f853c9f57d40c38ec8cb285754a8dbed6e",
+        "reserved_usd": "0.40",
+        "estimated_usd": "0.0237735",
+        "state": "completed",
+        "api_status": "completed",
+        "usage": {
+          "input_tokens": 6450,
+          "input_tokens_details": {
+            "cache_write_tokens": 6287,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 6287
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 773,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 7223
+        },
+        "duration_ms": 10832,
+        "model_returned": "gpt-6.2-sol",
+        "payload_sha256": "95995608113470a3548c695f6f84c998895c861b0d1cc46ffede0e963e442edd",
+        "receipt_ref": "v3-senda-visual-paired-20261126:single-1",
+        "api_response_received": true
+      },
+      {
+        "slot": "director-1",
+        "arm": "studio",
+        "role": "director",
+        "model_requested": "gpt-6.1-terra",
+        "request_digest": "3d426167cfb2d86a8edf4f28860c03593e4e171ee10bf952199a2ad3bd529943",
+        "reserved_usd": "0.16",
+        "estimated_usd": "0.00886675",
+        "state": "completed",
+        "api_status": "completed",
+        "usage": {
+          "input_tokens": 6202,
+          "input_tokens_details": {
+            "cache_write_tokens": 6199,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 6199
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 223,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 6425
+        },
+        "duration_ms": 4415,
+        "model_returned": "gpt-6.1-terra",
+        "payload_sha256": "b6f5472ec79415a1776cac601b1dab79db12f65f436f9bc536209352c80af98c",
+        "receipt_ref": "v3-senda-visual-paired-20261126:director-1",
+        "api_response_received": true
+      },
+      {
+        "slot": "illustrator-1",
+        "arm": "studio",
+        "role": "illustrator",
+        "model_requested": "gpt-6.2-sol",
+        "request_digest": "efc66aadaaa4771162b43daba6ace8b9ada1a5d820ba714e69882d6c8914ddb9",
+        "reserved_usd": "0.18",
+        "estimated_usd": "0.021292",
+        "state": "completed",
+        "api_status": "completed",
+        "usage": {
+          "input_tokens": 6421,
+          "input_tokens_details": {
+            "cache_write_tokens": 6260,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 6260
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 532,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 6953
+        },
+        "duration_ms": 7841,
+        "model_returned": "gpt-6.2-sol",
+        "payload_sha256": "487e765af59a466469a872e0a87fc4ab1e888e488f2f612e80e31a7093897cf1",
+        "receipt_ref": "v3-senda-visual-paired-20261126:illustrator-1",
+        "api_response_received": true
+      },
+      {
+        "slot": "integrator-1",
+        "arm": "studio",
+        "role": "integrator",
+        "model_requested": "gpt-6.2-sol",
+        "request_digest": "d93f23bff25bf72ef76ca3f2e304fb32a05f680c24c45973797b269291812c13",
+        "reserved_usd": "0.18",
+        "estimated_usd": "0.018835",
+        "state": "completed",
+        "api_status": "completed",
+        "usage": {
+          "input_tokens": 6915,
+          "input_tokens_details": {
+            "cache_write_tokens": 6770,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 6770
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 162,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 7077
+        },
+        "duration_ms": 2962,
+        "model_returned": "gpt-6.2-sol",
+        "payload_sha256": "f8924f1957ab9384c20cc2ab70ab3a5e8879cbc8bd3f14230ddde44df1d36af4",
+        "receipt_ref": "v3-senda-visual-paired-20261126:integrator-1",
+        "api_response_received": true
+      },
+      {
+        "slot": "judge-1",
+        "arm": "common-judge",
+        "role": "judge",
+        "model_requested": "gpt-6.1-terra",
+        "request_digest": "8c5d972d927d4a6ea8b0113653b844d7a63cf4d04227e2705f7e13affb2cefb6",
+        "reserved_usd": "0.20",
+        "estimated_usd": "0.011988",
+        "state": "completed",
+        "api_status": "completed",
+        "usage": {
+          "input_tokens": 7867,
+          "input_tokens_details": {
+            "cache_write_tokens": 7864,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 7864
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 431,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 8298
+        },
+        "duration_ms": 7332,
+        "model_returned": "gpt-6.1-terra",
+        "payload_sha256": "c860b6e434ca2db620b550f4e84b37bc37d00dcfe04b3b05180ce47bdd8d9ad8",
+        "receipt_ref": "v3-senda-visual-paired-20261126:judge-1",
+        "api_response_received": true
+      },
+      {
+        "slot": "judge-2",
+        "arm": "common-judge",
+        "role": "judge",
+        "model_requested": "gpt-6.2-sol",
+        "request_digest": "7730233db11beae2f70be711f1bd51bf6dd1c02152aec4c7a5d60eef345ddfd8",
+        "reserved_usd": "0.20",
+        "estimated_usd": "0.0269825",
+        "state": "completed",
+        "api_status": "completed",
+        "usage": {
+          "input_tokens": 7857,
+          "input_tokens_details": {
+            "cache_write_tokens": 7677,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 7677
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 743,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 8600
+        },
+        "duration_ms": 12792,
+        "model_returned": "gpt-6.2-sol",
+        "payload_sha256": "54bfdd577d399d7843fcc45a1c968ef5f5d8a31ccab0ac4210c71c473cdb68c1",
+        "receipt_ref": "v3-senda-visual-paired-20261126:judge-2",
+        "api_response_received": true
+      }
+    ],
+    "max_reservation_usd": "2.00",
+    "billing_verified": false,
+    "art_approved": false,
+    "promoted": false,
+    "physical_iphone": false
+  },
+  "verified_artifact_checks": {
+    "zip_sha256": true,
+    "role_receipts_and_response_payload_hashes": true,
+    "actual_role_outputs_equal_final_candidate_packets": true,
+    "judge_weighted_scores_recomputed": true,
+    "all_33_png_hashes_and_decode": true,
+    "matched_11_game_states": true,
+    "exact_rendered_css_svg_sha256": true,
+    "inspected_phone_and_landscape": true
+  },
+  "judge_evidence_sha256": {
+    "primary": "90cad1d747fa0bd9eed97aec1338a04b39b9498cca895076a9d58b65d2d02678",
+    "secondary": "d0dc363deb1c99b47dc663b98e23f956af53acd87317d644d6054c8873d1dede"
+  },
+  "render_duration_ms": 220703,
+  "comparison": {
+    "mean_baseline": 6.95,
+    "mean_single": 7.5,
+    "mean_studio": 7.565,
+    "studio_minus_single": 0.065,
+    "studio_minus_original": 0.615,
+    "single_minus_original": 0.55,
+    "judge_agreement": false,
+    "production_cost_ratio": 2.0608555744841945,
+    "production_api_duration_ratio": 1.4049113737075332
+  },
+  "limitations": [
+    "Same fixed CSS and SVG design grammar; original scenery and raster resources preserved. No test of newly generated raster/3D assets, animation, native Unity or physical iPhone.",
+    "Both production arms technically passed first time; live corrective loop not exercised.",
+    "One paired trial, two separate model judge calls with anonymous aliases; models overlap with producers, not independent human assessments. No general productivity or commercial quality certification.",
+    "Cost estimated from token receipts, not reconciled invoice. API times exclude shared runtime render; no parallelism claim.",
+    "One judge slightly favored single; other slightly favored studio. Predeclared >=0.5 point agreement threshold not met."
+  ],
+  "visual_inspection": "Both candidates improve action hierarchy, coherent purple/obsidian frames and HUD readability; original has richer bevel and distinct resource tiles. Studio crest-and-corners ornaments compete with result titles, especially defeat; single leaves headings clear but pale progress track is weak. Differences are minor, not a major commercial leap.",
+  "decision": "Do not promote either candidate or routinely invoke all roles. For similar tightly bounded UI work, prefer one competent producer plus deterministic QA. Reserve multi-specialist flow for tasks where new complementary assets or different implementation capabilities can plausibly change quality; compare actual native renders with independent assessment. Keep remaining authorization closed; no automatic reallocation."
+}

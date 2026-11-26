@@ -11,8 +11,18 @@
       "id": "v3-senda-visual-paired-20261126",
       "run_id": "v3-senda-visual-paired-20261126",
       "reserve_usd": "2.00",
-      "status": "authorized_once",
+      "status": "closed_reserved",
       "request_sha256": "f5fb7dc1bfd6295fbcf1ef6849594bf36b828973593470ead55bf00ee91fee57"
     }
-  ]
+  ],
+  "closeout": {
+    "run_id": 45901310692,
+    "verified_commit": "43c8155c552f8a98203484716dea014872b1f61d",
+    "estimated_usd": "0.11173775",
+    "api_calls": 6,
+    "billing_verified": false,
+    "automatic_reset": false,
+    "unused_ceiling_usd": "1.88826225",
+    "note": "Closed after successful paired trial; do not reuse unused ceiling without fresh authorization."
+  }
 }

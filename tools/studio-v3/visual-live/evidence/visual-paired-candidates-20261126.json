@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "target": "SENDA_UI_VISUAL_SYSTEM",
+  "packets": [
+    {
+      "schema": 1,
+      "target": "SENDA_UI_VISUAL_SYSTEM",
+      "direction": {
+        "palette": {
+          "ink": "#1A1428",
+          "surface": "#30223F",
+          "light": "#F1E9D4",
+          "trim": "#C99C54",
+          "text": "#F1E9D4",
+          "muted": "#CBBED2",
+          "action": "#63D9CF",
+          "action_text": "#152222",
+          "shield": "#A85BEB"
+        },
+        "identity": "Corona de la Brecha: conserva el blasón de Valoria y a Sir Aldric. Obsidiana, oro envejecido y amatista; serif solo en títulos, turquesa solo en iniciar o rejugar. HUD compacto y controles separados del arte. En retrato, entrada baja; en horizontal, panel lateral fuera de los carriles. Victoria y derrota comparten marco.",
+        "title_font": "serif",
+        "frame": "angular",
+        "texture": "obsidian"
+      },
+      "art": {
+        "placement": "crest",
+        "paths": [
+          {
+            "d": "M 50 7 L 84 20 L 82 56 Q 78 77 50 93 Q 22 77 18 56 L 16 20 Z",
+            "fill": "surface",
+            "stroke": "trim",
+            "width": 3
+          },
+          {
+            "d": "M 50 14 L 77 25 L 75 55 Q 72 72 50 85 Q 28 72 25 55 L 23 25 Z",
+            "fill": "none",
+            "stroke": "trim",
+            "width": 1
+          },
+          {
+            "d": "M 34 29 H 41 V 36 H 46 V 29 H 54 V 36 H 59 V 29 H 66 V 47 L 62 51 V 66 H 55 V 55 Q 50 48 45 55 V 66 H 38 V 51 L 34 47 Z",
+            "fill": "trim",
+            "stroke": "none",
+            "width": 0
+          },
+          {
+            "d": "M 50 65 L 56 73 L 50 81 L 44 73 Z",
+            "fill": "shield",
+            "stroke": "trim",
+            "width": 1
+          },
+          {
+            "d": "M 50 67 L 50 73 L 46 73 Z",
+            "fill": "light",
+            "stroke": "none",
+            "width": 0
+          }
+        ]
+      },
+      "layout": {
+        "gutter": 12,
+        "gap": 5,
+        "title": 21,
+        "label": 11,
+        "value": 19,
+        "stat_height": 44,
+        "control": 48,
+        "modal_width": 306,
+        "modal_padding": 16,
+        "footer_gap": 8,
+        "hud_pad": 8,
+        "stat_style": "strip",
+        "icon_position": "left",
+        "panel_align": "left"
+      }
+    },
+    {
+      "schema": 1,
+      "target": "SENDA_UI_VISUAL_SYSTEM",
+      "direction": {
+        "palette": {
+          "ink": "#100D19",
+          "surface": "#1A1428",
+          "light": "#30223F",
+          "trim": "#C99C54",
+          "text": "#F1E9D4",
+          "muted": "#BDB4C3",
+          "action": "#63D9CF",
+          "action_text": "#102024",
+          "shield": "#A85BEB"
+        },
+        "identity": "Eldoria: La Senda de la Brecha, expedición de Valoria. Fantasía medieval adulta: obsidiana, oro envejecido y amatista; emblema de Aldric y acción principal turquesa. HUD y paneles compactos y legibles en retrato y horizontal, sin ocultar la escena 3D ni alterar estadísticas, etiquetas, controles, lógica o rutas.",
+        "title_font": "serif",
+        "frame": "angular",
+        "texture": "obsidian"
+      },
+      "art": {
+        "paths": [
+          {
+            "d": "M 50 7 L 61 15 H 76 L 83 23 L 79 61 Q 75 77 50 91 Q 25 77 21 61 L 17 23 L 24 15 H 39 Z",
+            "fill": "surface",
+            "stroke": "trim",
+            "width": 3
+          },
+          {
+            "d": "M 50 16 L 59 23 H 73 L 75 26 L 71 59 Q 67 72 50 82 Q 33 72 29 59 L 25 26 L 27 23 H 41 Z",
+            "fill": "light",
+            "stroke": "none",
+            "width": 0
+          },
+          {
+            "d": "M 33 34 H 40 V 41 H 46 V 34 H 54 V 41 H 60 V 34 H 67 V 48 L 62 53 V 66 H 54 V 58 Q 50 52 46 58 V 66 H 38 V 53 L 33 48 Z",
+            "fill": "trim",
+            "stroke": "none",
+            "width": 0
+          },
+          {
+            "d": "M 50 69 L 56 74 L 50 79 L 44 74 Z",
+            "fill": "shield",
+            "stroke": "none",
+            "width": 0
+          },
+          {
+            "d": "M 50 21 L 54 26 L 50 31 L 46 26 Z",
+            "fill": "shield",
+            "stroke": "trim",
+            "width": 1
+          },
+          {
+            "d": "M 4 23 V 12 L 12 4 H 28 L 23 9 H 14 L 9 14 V 19 Z M 96 23 V 12 L 88 4 H 72 L 77 9 H 86 L 91 14 V 19 Z M 4 77 V 88 L 12 96 H 28 L 23 91 H 14 L 9 86 V 81 Z M 96 77 V 88 L 88 96 H 72 L 77 91 H 86 L 91 86 V 81 Z",
+            "fill": "trim",
+            "stroke": "none",
+            "width": 0
+          }
+        ],
+        "placement": "crest-and-corners"
+      },
+      "layout": {
+        "gutter": 10,
+        "gap": 4,
+        "title": 19,
+        "label": 11,
+        "value": 18,
+        "stat_height": 48,
+        "control": 46,
+        "modal_width": 294,
+        "modal_padding": 14,
+        "footer_gap": 8,
+        "hud_pad": 6,
+        "stat_style": "strip",
+        "icon_position": "left",
+        "panel_align": "center"
+      }
+    }
+  ],
+  "source_run": 45901310692,
+  "not_promoted": true
+}
