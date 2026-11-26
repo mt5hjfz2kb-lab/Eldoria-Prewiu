@@ -1,0 +1,51 @@
+name: Studio V3 Senda paired live pilot
+on:
+  push:
+    branches: [pilot/eldoria-studio-v3-autonomous-execution-20261126]
+    paths:
+      - 'tools/studio-v3/live-requests/senda-paired-20261126.json'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: studio-v3-senda-paired-once
+  cancel-in-progress: false
+jobs:
+  paired:
+    if: github.run_attempt == 1 && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/studio-v3
+            tools/openai-development-studio
+          fetch-depth: 3
+      - name: Fetch exact public source and pinned V2 client
+        run: |
+          git fetch --no-tags --depth=1 origin e1d3b9892e1a75a9e7bfbafd0db225de7aacba74
+          git fetch --no-tags --depth=1 origin 1657b2caa6b1a955319538ce3a8b2906398599b3
+      - name: Verify immutable grant, CI proof, registry and live head without API key
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 tools/studio-v3/pilot-dispatch.py --preflight
+      - name: Real paired producer and Studio roles through reserved V2 transport
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: node tools/studio-v3/senda-pilot.mjs --live "$RUNNER_TEMP/studio-v3-senda-live"
+      - name: Archive sanitized proof, ledgers and candidate source
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-v3-senda-paired-live
+          path: ${{ runner.temp }}/studio-v3-senda-live
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Verify tracked sources unchanged
+        if: always()
+        run: git diff --exit-code

@@ -104,8 +104,9 @@ export function validator(src,baseline){
   const candidate=files[PATH];
   try{guardCandidate(src,candidate)}catch(e){return [row("safe-edit",false,"Candidate rejected by exact safe-guard allowlist"),row("malformed-states",false,"Not run: unsafe candidate"),row("route-parity",false,"Not run: unsafe candidate")]}
   // Run only the identical pinned source plus the trusted canonical guard.
-  const c=loadRules(candidate),inv=badStates(c),rr=routes(c);
-  return [row("safe-edit",true,"Exact single allowlisted guard insertion"),row("malformed-states",inv.failed.length===0,"Rejected "+(inv.count-inv.failed.length)+"/"+inv.count+" invalid states; failed IDs: "+inv.failed.join(",")),row("route-parity",rr.digest===baseline.routes.digest,"All 729 terminal states and reports hash "+rr.digest+"; wins "+rr.wins+"; losses "+rr.losses)];
+  const c=loadRules(candidate),inv=badStates(c);let rr=null;
+  try{rr=routes(c)}catch(e){/* trusted route runner caught a regression */}
+  return [row("safe-edit",true,"Exact single allowlisted guard insertion"),row("malformed-states",inv.failed.length===0,"Rejected "+(inv.count-inv.failed.length)+"/"+inv.count+" invalid states; failed IDs: "+inv.failed.join(",")),row("route-parity",rr!==null&&rr.digest===baseline.routes.digest,rr===null?"A formerly valid route threw an error":"All 729 terminal states and reports hash "+rr.digest+"; wins "+rr.wins+"; losses "+rr.losses)];
  };
 }
 function specFor(g){return {schema:1,id:g.mission_id,mode:"offline",budget_usd:0,source_sha:g.source_sha,target:g.target,objective:g.objective,max_attempts:g.max_attempts,quality_required:false,required_checks:g.required_checks,producer:g.producer,auditor:g.auditor,files:[{path:PATH,digest:g.files[PATH]}]}}
@@ -115,7 +116,7 @@ async function armRun(method,grant,src,baseline,ask,root){
  const receipts=[];
  function elapsed(){return performance.now()-start}
  async function invoke(role,input){
-  need(elapsed()<TIME_LIMIT*1000,"Arm time limit");
+  need(elapsed()<(TIME_LIMIT-95)*1000,"Arm time limit (reserve network timeout)");
   const req=requestFor({spec,role,attempt,input});
   const packet=await ask(grant.id,req);
   const payload=unwrap(req,packet);
@@ -165,7 +166,7 @@ export async function paired(root,live){
   const l=ledgers.find(x=>x.grant_id===r.grant_id);need(l,"Missing role ledger");
   const entries=l.entries;
   need(r.role_receipts.every(rr=>entries.some(e=>e.receipt_ref===rr.receipt_ref&&e.packet_digest===rr.payload_digest)),"Receipt mismatch");
-  return {...r,api_calls:live?entries.length:0,fixture_calls:live?0:entries.length,estimated_cost_usd:live?(entries.every(e=>e.estimated_usd!==null)?entries.reduce((n,e)=>n+Number(e.estimated_usd),0):null):0,reserved_usd:l.reserved_usd,halted:l.halted,ledger_entries:entries};
+  return {...r,api_call_attempts:live?entries.length:0,api_responses:live?entries.filter(e=>e.api_status!==undefined&&e.api_status!==null).length:0,fixture_calls:live?0:entries.length,estimated_cost_usd:live?(entries.every(e=>e.estimated_usd!==null)?entries.reduce((n,e)=>n+Number(e.estimated_usd),0):null):0,reserved_usd:l.reserved_usd,halted:l.halted,ledger_entries:entries};
  });
  const report={schema:1,id:plan.id,live_model_roles:live,source_sha:SOURCE,source_sha256:digest(src),baseline:base,arms:final,max_total_reservation_usd:plan.max_total_reservation_usd,both_accepted:final.every(x=>x.accepted),independent_common_judge:true,quality_score:null,art_approved:false,promoted:false,published:false,billing_verified:false,limitations:"One paired technical task; constrained edit grammar, same budget/time ceiling but additional model audit only in Studio. No aesthetic or general productivity inference."};
  write(join(root,"paired-report.json"),report);
