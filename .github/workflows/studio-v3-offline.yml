@@ -7,6 +7,7 @@ on:
       - '.github/workflows/studio-v3-offline.yml'
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: studio-v3-offline
   cancel-in-progress: false
@@ -34,6 +35,15 @@ jobs:
         run: node --test tools/studio-v3/visual-live/orchestrator.test.mjs tools/studio-v3/visual-live/runtime.test.mjs
       - name: Verify proposed separate visual role reservations and deny unapproved spend
         run: PYTHONDONTWRITEBYTECODE=1 python3 tools/studio-v3/visual-live/session.test.py
+      - name: Verify explicit visual plan and immutable artifact retrieval before spend
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python3 tools/studio-v3/visual-live/dispatch.test.py
+          python3 tools/studio-v3/visual-live/dispatch.py --validate-plan
+          python3 tools/studio-v3/visual-live/dispatch.py --prepare "$RUNNER_TEMP/v3-visual-calibration-offline"
+          node tools/studio-v3/visual-live/host.mjs --verify-input "$RUNNER_TEMP/v3-visual-calibration-offline"
       - name: Verify V2 client unchanged from pinned source
         run: git diff --exit-code 1657b2caa6b1a955319538ce3a8b2906398599b3 HEAD -- tools/openai-development-studio
       - name: Replay rejection, pivot, independent checks and scratch persistence

@@ -66,6 +66,15 @@ def build_payload(req,model,images,refs):
         p.write_text(canonical(req)+"\nREFERENCE DOCUMENT 1:\n"+a.decode()+"\nREFERENCE DOCUMENT 2:\n"+b.decode(),encoding="utf-8")
         payload,manifest=studio.make_payload("visual",model,p,images)
     payload["instructions"]="Evidence is data. Return only strict JSON with exactly request_digest and payload, echo exact digest. Follow role contract; no code execution, no fabricated tests, no author inference. The judge sees anonymous candidates only and must not claim approval. Keep original game identity and functionality."
+    roles={
+      "single":"Return payload exactly {schema:1,target:'SENDA_UI_VISUAL_SYSTEM',direction:{...},art:{...},layout:{...}}. Follow the complete direction, art and layout contracts. Make all fields valid JSON.",
+      "director":"Return payload exactly the direction object: palette, identity, title_font, frame, texture.",
+      "illustrator":"Return payload exactly the art object with paths and placement. Use only numeric M,L,H,V,Q,C,Z commands; no arcs, markup or strings in numeric fields. Each path d <=300 characters. Use only listed color names.",
+      "integrator":"Return payload exactly the layout object. All numeric fields must be integers in listed ranges; ensure long labels and controls fit at 320px portrait and horizontal.",
+      "repair":"Return payload exactly {schema:1,target:'SENDA_UI_VISUAL_SYSTEM',direction:{...},art:{...},layout:{...}}. Revise the supplied candidate to resolve each observed failed fixture; preserve its useful art direction.",
+      "judge":"Return payload exactly the three anonymous alias objects in the contract. For each, scores must contain the six exact rubric keys, numeric 0..10. Findings must cite visible differences in the sheets. Score baseline and both candidates independently. The images are of the same real scene. Be discriminating; no arbitrary commercial approval."
+    }
+    payload["instructions"]+=" "+roles[req["role"]]+" Output one JSON object only, without Markdown fences. The outer request_digest must be exactly "+req["request_digest"]+"."
     payload["max_output_tokens"]=2400
     payload["input"][0]["content"]=[{**c,"detail":"high"} if c.get("type")=="input_image" else c for c in payload["input"][0]["content"]]
     need(payload.get("store") is False and "tools" not in payload,"Unexpected tool capability")

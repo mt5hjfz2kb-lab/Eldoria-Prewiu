@@ -1,0 +1,18 @@
+{
+  "v3_visual_isolated": true,
+  "cycle": {
+    "starts": "2026-11-26",
+    "ends_exclusive": "2026-12-01",
+    "pilot_cap_usd": "2.00",
+    "automatic_reset": false
+  },
+  "reservations": [
+    {
+      "id": "v3-senda-visual-paired-20261126",
+      "run_id": "v3-senda-visual-paired-20261126",
+      "reserve_usd": "2.00",
+      "status": "authorized_once",
+      "request_sha256": "f5fb7dc1bfd6295fbcf1ef6849594bf36b828973593470ead55bf00ee91fee57"
+    }
+  ]
+}
