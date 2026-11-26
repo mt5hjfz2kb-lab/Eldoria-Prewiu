@@ -1,0 +1,92 @@
+name: Corona supplemental real building and Council visual evidence
+on:
+  push:
+    branches: [candidate/corona-march-legibility-repair-20261126]
+    paths: ['.github/workflows/corona-auxiliary-evidence.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  capture:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - variant: original
+            source_run: '45638738009'
+            source_sha: '5ef2aee67cf8fde57ba2fc4b3d929b517ee67944'
+          - variant: corona
+            source_run: '45824434222'
+            source_sha: '3486754d5f4c28db2ae4ffa2a7def3b0f000fb3c'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/corona-art-iteration
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 3486754d5f4c28db2ae4ffa2a7def3b0f000fb3c
+          path: harness
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - name: Verify and reuse exact Unity-built WebGL without a new native run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ matrix.source_run }}
+          SOURCE_SHA: ${{ matrix.source_sha }}
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN" --jq .head_sha)" = "$SOURCE_SHA"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN/jobs" --jq '.jobs[] | select(.name=="unity") | .conclusion' | grep -x success
+          gh run download "$SOURCE_RUN" --repo "$GITHUB_REPOSITORY" --name valoria-region1-webgl --dir player
+      - name: Capture five previously unscored actual screens at real Bastion progression
+        env:
+          VALORIA_DPR: '1'
+          VALORIA_EVIDENCE: evidence
+          VALORIA_TEST_REGION: '1'
+          SOURCE_RUN: ${{ matrix.source_run }}
+          SOURCE_SHA: ${{ matrix.source_sha }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet playwright==1.56.0 Pillow==11.3.0
+          python3 -m playwright install ffmpeg
+          python3 tools/corona-art-iteration/extra_visual_capture.py patch harness/tools/valoria-modular25d/journey-browser.py extra-journey.py
+          python3 harness/tools/valoria-modular25d/journey-serve.py player 8824 &
+          python3 -u extra-journey.py 'http://127.0.0.1:8824/index.html?journey-qa'
+          python3 tools/corona-art-iteration/extra_visual_capture.py manifest evidence "$SOURCE_SHA" "$SOURCE_RUN"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-auxiliary-${{ matrix.variant }}
+          path: |
+            evidence/extra-*.png
+            evidence/extra-manifest.json
+            evidence/journey.json
+            evidence/last.png
+          if-no-files-found: warn
+  compare:
+    needs: capture
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/corona-art-iteration
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: corona-auxiliary-original
+          path: original
+      - uses: actions/download-artifact@v4
+        with:
+          name: corona-auxiliary-corona
+          path: corona
+      - run: |
+          python3 -m pip install --quiet Pillow==11.3.0
+          python3 tools/corona-art-iteration/extra_visual_capture.py pairs original corona pairs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: corona-auxiliary-real-ab
+          path: pairs/
