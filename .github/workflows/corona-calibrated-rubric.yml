@@ -8,7 +8,8 @@ permissions:
   actions: read
 jobs:
   calibrated-art-review:
-    if: ${{ github.run_attempt == 1 && github.event.before == '4cf80d439bba248b0e0125f4cd42798602d43d7d' && github.event.head_commit.message == 'Studio: independently remeasure 33 rendered roles with original 24 November weighted rubric' }}
+    if: >-
+      ${{ github.run_attempt == 1 && github.event.before == 'e520da0905bbdda6aa3033081ce76cc2222d98d8' && github.event.head_commit.message == 'Studio calibrated original rubric audit - corrected workflow syntax' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
