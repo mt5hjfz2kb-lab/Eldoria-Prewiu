@@ -1,0 +1,47 @@
+name: Corona - read real visual comparisons without paid calls
+on:
+  push:
+    branches: [qa/corona-evidence-reader-20261126]
+    paths: ['.github/workflows/corona-visual-evidence-reader.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [hud, management, narrative, auxiliary]
+    steps:
+      - name: Retrieve verified existing screenshots
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GROUP: ${{ matrix.group }}
+        run: |
+          set -euo pipefail
+          gh run download 45802472999 --repo "$GITHUB_REPOSITORY" --name corona-before-after-dpr1 --dir evidence
+          gh run download 45802472999 --repo "$GITHUB_REPOSITORY" --name ciudad-region-recorrido --dir journey
+          python3 -m pip install --quiet Pillow==11.3.0
+          python3 - <<'PY'
+          import base64,hashlib,io,json,os,pathlib
+          from PIL import Image
+          root=pathlib.Path('evidence')
+          manifest=json.loads((root/'manifest.json').read_text())
+          assert manifest['candidate_sha']=='91b8de9874aed87219d733efa6e8e0aa56207f1e' and not manifest['missing'] and manifest['dpr']==1
+          groups={'hud':['hud-b1','hud-b5','tutorial','construction'],'management':['march','bag','mail','heroes','training'],'narrative':['name','daily','scouts','vigilants'],'auxiliary':[]}
+          for row in manifest['pairs']:
+              if row['role'] not in groups[os.environ['GROUP']]:continue
+              source=pathlib.Path('journey')/({'hud-b1':'bastion-1','hud-b5':'bastion-5-completo','tutorial':'guia-iniciar-obra','construction':'temporizador-en-parcela','name':'nombre-inicial'}.get(row['role'],'sistema-'+row['role'])+'.png')
+              assert hashlib.sha256(source.read_bytes()).hexdigest()==row['candidate_sha256']
+              pair=Image.open(root/row['file']).convert('RGB')
+              pair.thumbnail((660,780))
+              buffer=io.BytesIO();pair.save(buffer,format='JPEG',quality=76,optimize=True)
+              data=base64.b64encode(buffer.getvalue()).decode()
+              for i in range(0,len(data),8000):print('CORONA_FRAME '+row['role']+' '+str(i//8000)+' '+data[i:i+8000])
+          if os.environ['GROUP']=='auxiliary':
+              j=json.loads(pathlib.Path('journey/journey.json').read_text())
+              print('CORONA_JOURNEY_CHECKS '+json.dumps([x for x in j['log'] if any(k in x for k in ('room_landscape','room_traversed','daily_claim_ceremony','chromium_camera_frame_intervals','display_at_launch','region_phase'))],ensure_ascii=False))
+              print('CORONA_JOURNEY_ERRORS '+json.dumps(j['errors'],ensure_ascii=False))
+          PY
