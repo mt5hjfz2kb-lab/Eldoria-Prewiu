@@ -1,0 +1,2 @@
+# Paid review hold
+The existing native job 45868076540 may finish its exact source-pinned test unchanged. The additional $2 reservation in the prior material workflow has not been verified against an explicit owner authorization. Do not spend the proposed $0.30 review reserve. This documentation-only head advance intentionally prevents the old review script's pre-request exact branch guard from accepting the superseded budget. Preserve all native evidence and the source commit. No new paid requests.
