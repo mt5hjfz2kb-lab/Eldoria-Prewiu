@@ -12,7 +12,7 @@ concurrency:
 jobs:
   artistic-production:
     if: >-
-      ${{ github.run_attempt == 1 && github.event.before == '62a8a6e97eb587721986c27a03d40e78dd951cb9' && github.event.head_commit.message == 'Corona: authorize real agent material production within unused allocation' }}
+      ${{ github.run_attempt == 1 && github.event.before == '4b4b69f7fa5f3ad2bb530841c6e376621f13c086' && github.event.head_commit.message == 'Corona: preserve artist proportions and complete unused agent roles' }}
     runs-on: ubuntu-latest
     timeout-minutes: 18
     steps:
@@ -37,18 +37,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh run download 45802472999 --repo "$GITHUB_REPOSITORY" --name corona-before-after-dpr1 --dir evidence
-          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-art-plan --dir references
+          gh run download 45823248364 --repo "$GITHUB_REPOSITORY" --name corona-agent-material-production --dir previous
           python3 -m pip install --quiet Pillow==11.3.0
           python3 -m py_compile tools/corona-studio-material/produce.py
           python3 studio-source/tools/openai-development-studio/budget_guard.py --self-test
-      - name: Real director, artist, implementation programmer and independent auditor
+      - name: Resume only programmer and independent auditor on existing real artwork
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          python3 tools/corona-studio-material/produce.py run --root . --studio studio-source/tools/openai-development-studio --source evidence --reference references --out result
+          python3 tools/corona-studio-material/produce.py resume --root . --studio studio-source/tools/openai-development-studio --source previous --out result
           cat result/handoff.json
           cat result/audit-decision.json
       - uses: actions/upload-artifact@v4

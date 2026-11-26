@@ -28,10 +28,14 @@ def prepare_texture(raw):
     l,t,r,b=bbox
     if l<4 or t<4 or r>im.width-4 or b>im.height-4:raise ValueError("Art touches image edge; no clean isolated sprite")
     aspect=(r-l)/(b-t)
-    if not 2.6<=aspect<=5.5:raise ValueError("Not a horizontal control, reject rather than distort")
-    crop=im.crop((l,t,r,b)).resize((512,128),Image.Resampling.LANCZOS)
-    result=Image.new("RGBA",(528,144));result.alpha_composite(crop,(8,8))
-    if any(result.getpixel(p)[3]<220 for p in ((264,72),(150,72),(378,72),(264,48),(264,96))):raise ValueError("Text interior must be opaque")
+    # The actual artist output is 1001x178 (5.62:1). Keep its
+    # proportions instead of squeezing it to a nominal 4:1 rectangle.
+    if not 2.6<=aspect<=6.0:raise ValueError("Not a horizontal control")
+    im.putalpha(alpha.point(lambda v:0 if v<=16 else v))
+    width=round(aspect*128)
+    crop=im.crop((l,t,r,b)).resize((width,128),Image.Resampling.LANCZOS)
+    result=Image.new("RGBA",(width+16,144));result.alpha_composite(crop,(8,8))
+    if any(result.getpixel((round(result.width*x),y))[3]<220 for x,y in ((.5,72),(.3,72),(.7,72),(.5,48),(.5,96))):raise ValueError("Text interior must be opaque")
     out=BytesIO();result.save(out,format="PNG",optimize=True)
     return out.getvalue()
 def montage(source,out):
@@ -52,7 +56,17 @@ def previews(original,new,out):
         for row,(w,h,caption) in enumerate(((90,30,"USAR"),(126,38,"HÉROES"),(176,45,"VOLVER"))):
             x=col*390+45;y=85+row*115
             # Mock at actual target sizes: evaluation of skin, not game proof.
-            layer=im.resize((w,h),Image.Resampling.LANCZOS)
+            # Simulate the same 9-slice at phone scale, without distorting bevels.
+            bx,by=(20,20) if col==0 else (32,28)
+            ax,ay=im.size
+            dx,dy=min(8,w//3),min(7,h//3)
+            xs=(0,bx,ax-bx,ax);ys=(0,by,ay-by,ay)
+            xd=(0,dx,w-dx,w);yd=(0,dy,h-dy,h)
+            layer=Image.new("RGBA",(w,h))
+            for yy in range(3):
+                for xx in range(3):
+                    part=im.crop((xs[xx],ys[yy],xs[xx+1],ys[yy+1])).resize((xd[xx+1]-xd[xx],yd[yy+1]-yd[yy]),Image.Resampling.LANCZOS)
+                    layer.paste(part,(xd[xx],yd[yy]))
             sheet.paste(layer,(x,y),layer)
             d.text((x+w/2,y+h/2),caption,fill=(250,239,213),anchor="mm")
             d.text((x,y+h+12),str(w)+" x "+str(h)+" px / skin preview",fill=(170,174,180))
@@ -113,6 +127,8 @@ def run(studio,source,reference,out,root):
     meta.update(estimated_usd=str(cost),quality="medium",art_approved=False)
     write(out/"artist.json",meta)
     ledger.complete(row,cost,meta.get("usage"))
+    finish(raw,direction,game,original,root,out,ledger,mission,api)
+def finish(raw,direction,game,original,root,out,ledger,mission,api):
     candidate=prepare_texture(raw)
     (out/"secondary_quiet.png").write_bytes(candidate)
     new=Image.open(BytesIO(candidate)).convert("RGBA")
@@ -140,6 +156,35 @@ def run(studio,source,reference,out,root):
     if set(audit)!={"accept","contexts","reason"} or type(audit["accept"]) is not bool or not isinstance(audit["contexts"],list) or len(set(audit["contexts"]))!=len(audit["contexts"]) or not set(audit["contexts"])<=set(plan["contexts"]) or not isinstance(audit["reason"],str):raise ValueError("Invalid auditor decision")
     write(out/"audit-decision.json",audit)
     write(out/"handoff.json",{"accepted_for_candidate":audit["accept"] and bool(audit["contexts"]),"contexts":audit["contexts"],"candidate_sha256":sha(candidate),"gameplay_changed":False,"unity_verified":False,"art_approved":False,"source_sha":CFG["source_sha"],"implementation_base":CFG["base"]})
+def resume(studio,source,out,root):
+    sys.path.insert(0,str(studio.resolve()))
+    import mission,studio as api
+    proof=verify_budget(studio)
+    repo=os.environ["GITHUB_REPOSITORY"]
+    run=gh(f"repos/{repo}/actions/runs/45823248364")
+    assert run["status"]=="completed" and run["conclusion"]=="failure" and run["run_attempt"]==1
+    assert run["head_sha"]=="4b4b69f7fa5f3ad2bb530841c6e376621f13c086"
+    old=json.loads((source/"ledger.json").read_text())
+    assert D(old["cap_usd"])==D("1.25")
+    rows=old["reservations"]
+    assert [x["role"] for x in rows]==["director","artist"]
+    assert all(x["state"]=="completed" for x in rows)
+    assert sum(D(x["reserve_usd"]) for x in rows)==D(".90")
+    raw=(source/"artist-original.png").read_bytes()
+    meta=json.loads((source/"artist.json").read_text())
+    assert sha(raw)==meta["image_sha256"]=="24a2229af8fc9d25d82b967c667b029a602534746ccbca00ddd23fbaf169a9ba"
+    # Validate preprocessing BEFORE any remaining paid request.
+    candidate=prepare_texture(raw)
+    out.mkdir(exist_ok=False)
+    proof.update(resumed_run=45823248364,prior_reserved_usd=".90",resume_reserved_usd=".35",no_new_artist_call=True)
+    write(out/"budget-transfer.json",proof)
+    write(out/"prior-ledger.json",old)
+    for name in ("artist-original.png","artist.json","director.json","game.jpg"):
+        (out/name).write_bytes((source/name).read_bytes())
+    direction=json.loads((source/"director.json").read_text())["response"]
+    original=Image.open(root/CFG["artdir"]/"world_rune.png").convert("RGBA")
+    ledger=mission.Ledger(out/"ledger.json",D(".35"))
+    finish(raw,direction,out/"game.jpg",original,root,out,ledger,mission,api)
 def apply(root,source,out):
     plan=json.loads((source/"implementation-plan.json").read_text())
     audit=json.loads((source/"audit-decision.json").read_text())
@@ -151,7 +196,7 @@ def apply(root,source,out):
     if not handoff["accepted_for_candidate"]:
         write(out,{"applied":False,"reason":audit["reason"],"art_approved":False});return
     with Image.open(BytesIO(candidate)) as im:
-        assert im.mode=="RGBA" and im.size==(528,144)
+        assert im.mode=="RGBA" and im.height==144 and 348<=im.width<=784
     changes={}
     for key in audit["contexts"]:
         path=CFG["paths"][key];s=(root/path).read_text(encoding="utf-8")
@@ -168,7 +213,8 @@ def apply(root,source,out):
     for path,s in changes.items():(root/path).write_text(s,encoding="utf-8")
     write(out,{"applied":True,"contexts":audit["contexts"],"changed_files":list(changes)+[str(material.relative_to(root)),str(meta.relative_to(root))],"candidate_sha256":sha(candidate),"artist_generated_asset":True,"agent_selected_contexts":True,"gameplay_changed":False,"unity_verified":False,"art_approved":False,"audit_reason":audit["reason"]})
 def main():
-    p=argparse.ArgumentParser();p.add_argument("mode",choices=["run","apply"]);p.add_argument("--studio",type=Path);p.add_argument("--source",type=Path,required=True);p.add_argument("--reference",type=Path);p.add_argument("--out",type=Path,required=True);p.add_argument("--root",type=Path,required=True);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("mode",choices=["run","resume","apply"]);p.add_argument("--studio",type=Path);p.add_argument("--source",type=Path,required=True);p.add_argument("--reference",type=Path);p.add_argument("--out",type=Path,required=True);p.add_argument("--root",type=Path,required=True);a=p.parse_args()
     if a.mode=="run":run(a.studio,a.source,a.reference,a.out,a.root)
+    elif a.mode=="resume":resume(a.studio,a.source,a.out,a.root)
     else:apply(a.root,a.source,a.out)
 if __name__=="__main__":main()
