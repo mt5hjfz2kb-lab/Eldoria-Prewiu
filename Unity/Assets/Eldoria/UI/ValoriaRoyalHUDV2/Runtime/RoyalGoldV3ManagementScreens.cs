@@ -766,6 +766,12 @@ namespace Eldoria.UI.RoyalGold.V2
                     approvedHeroes[i].sprite=RoyalGoldV41SourceArt.Get("hero-support");
                     heroSlotLabels[i].Put((i==0?"LÍDER · ":"APOYO · ")+HeroName(heroSlots[i])+" · CARGANDO RETRATO");
                 }
+                if(RoyalGoldV2Hud.UseCoronaArt)
+                {
+                    bool locked=!heroSlotButtons[i].interactable;
+                    approvedHeroes[i].color=locked?new Color(.72f,.75f,.78f,.72f):Color.white;
+                    heroSlotLabels[i].color=locked?CoronaFinish.Muted:CoronaFinish.Ivory;
+                }
                 approvedHeroes[i].gameObject.SetActive(!training);
             }
             approvedTroopRow.gameObject.SetActive(!training);
@@ -835,7 +841,11 @@ namespace Eldoria.UI.RoyalGold.V2
                     "VIDA\n"+power.Health
                 };
                 for(int i=0;i<marchMetricValues.Length;i++)
-                    marchMetricValues[i].Put(liveMetric[i]);
+                {
+                    if(RoyalGoldV2Hud.UseCoronaArt)
+                        CoronaFinish.PresentMetric(marchMetricValues[i],liveMetric[i],root.rect.height>root.rect.width);
+                    else marchMetricValues[i].Put(liveMetric[i]);
+                }
                 int occupied=MarchCapacityRules.ActiveCount(s,utcTicks());
                 // Keep every authoritative value in compact landscape but
                 // condense the labels into three legible lines. The former
@@ -1301,6 +1311,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 pad+7f,sliderY,orderW-pad*2f-14f,wide?16f:22f);
             Place(summary.rectTransform,pad,summaryY,
                 orderW-pad*2f,summaryH);
+            if(RoyalGoldV2Hud.UseCoronaArt && !wide)
+            {
+                trainingCostCard.gameObject.SetActive(true);
+                Place(trainingCostCard,pad-5f,summaryY-2f,orderW-pad*2f+10f,summaryH+4f);
+                trainingCostCard.GetComponent<Image>().color=new Color(.035f,.055f,.075f,.83f);
+                trainingCostCard.SetSiblingIndex(Mathf.Min(trainingOrderBoard.GetSiblingIndex()+1,right.childCount-1));
+                summary.color=CoronaFinish.Ivory;
+                summary.font=CoronaFinish.ResolveFont(false);
+            }
             Place(tierButton.transform as RectTransform,
                 pad,tierY,orderW-pad*2f,tierH);
             Place(status.rectTransform,pad,trainingStatusY,orderW-pad*2f,statusH);

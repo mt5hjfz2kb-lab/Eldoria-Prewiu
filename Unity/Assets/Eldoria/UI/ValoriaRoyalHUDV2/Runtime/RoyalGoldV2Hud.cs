@@ -38,6 +38,47 @@ namespace Eldoria.UI.RoyalGold.V2
             if (modal.Secondary) ApplyButtonFeedback(modal.Secondary);
         }
 
+        // Disjoint top-left logical bands within the existing saved-packet cell.
+        public static void InventoryBands(float width,float height,float actionHeight,
+            out Rect icon,out Rect caption,out Rect action)
+        {
+            float actionY=height-actionHeight-5f;
+            float captionH=Mathf.Clamp(height*.19f,24f,40f);
+            float captionY=Mathf.Max(10f,actionY-captionH-4f);
+            float side=Mathf.Min(width*.64f,Mathf.Max(1f,captionY-8f));
+            icon=new Rect((width-side)*.5f,Mathf.Max(4f,(captionY-side)*.5f),side,side);
+            caption=new Rect(5f,captionY,Mathf.Max(1f,width-10f),captionH);
+            action=new Rect(6f,actionY,Mathf.Max(1f,width-12f),actionHeight);
+        }
+
+        // Two typographic levels on the six EXISTING military metrics.
+        public static void PresentMetric(Text label,string value,bool portrait)
+        {
+            if(!portrait)
+            {
+                label.supportRichText=false;
+                if(label.text!=value)label.text=value;
+                return;
+            }
+            int split=value.IndexOf('\n');
+            if(split<0)return;
+            label.supportRichText=true;
+            label.font=ResolveFont(false);
+            label.fontStyle=FontStyle.Normal;
+            int title=22,number=34;
+            string left=value.Substring(0,split),right=value.Substring(split+1);
+            while(true)
+            {
+                string styled="<size="+title+"><color=#C9CDC0>"+left+
+                    "</color></size>\n<size="+number+"><color=#FAEFD5>"+right+"</color></size>";
+                if(label.text!=styled)label.text=styled;
+                if((label.preferredWidth<=label.rectTransform.rect.width-2f &&
+                    label.preferredHeight<=label.rectTransform.rect.height) ||
+                    (title<=17 && number<=26))break;
+                title=Mathf.Max(17,title-1);number=Mathf.Max(26,number-2);
+            }
+        }
+
         // Numeric and dock text are single-line semantic roles. Measure actual
         // glyphs instead of assuming that a disjoint RectTransform ensures fit.
         // Preserve the complete string; a below-floor width is not certified.

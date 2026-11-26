@@ -226,7 +226,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 r.Frame=Rect("Issue186 aged metal",r.Root);
                 if(corona)
                 {
-                    var pocket=Art(r.Frame,new Color(.76f,.73f,.70f,.90f));
+                    var pocket=Art(r.Frame,new Color(.66f,.68f,.70f,.83f));
                     pocket.sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/panel_obsidian");
                 }
                 else if(sharedTheme)
@@ -257,6 +257,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 r.New=Art(Rect("Issue186 authentic novelty badge",r.Root),Color.white);
                 r.Use=Action("Issue186 saved packet USE "+i,r.Root,"USAR",
                     ()=>Use(index),out r.UseText);
+                if(corona && r.Use.targetGraphic is Image useSurface)
+                {
+                    var quiet=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/world_rune");
+                    if(quiet)
+                    {
+                        useSurface.sprite=quiet;
+                        useSurface.type=quiet.border.sqrMagnitude>0f?Image.Type.Sliced:Image.Type.Simple;
+                        useSurface.color=new Color(.87f,.89f,.92f,1f);
+                    }
+                }
                 rows.Add(r);
             }
             prev=Action("Issue186 bag previous",panel,"ANTERIOR",
@@ -354,7 +364,14 @@ namespace Eldoria.UI.RoyalGold.V2
                     cardsTop+line*(cellHeight+rowGap),cell,cellHeight);
                 At(item.Frame,2f,2f,cell-4f,cellHeight-4f);
                 At((RectTransform)item.Seen.transform,0f,0f,cell,cellHeight);
+                float useH=RoyalGoldV2Hud.UseCoronaArt?Mathf.Clamp(cell*.24f,35f,54f):Mathf.Max(22f,cell*.20f);
                 float icon=cell*(portraitCorona?.64f:.53f),iconY=cell*(portraitCorona?0f:.13f);
+                UnityEngine.Rect iconBand=default,captionBand=default,actionBand=default;
+                if(portraitCorona)
+                {
+                    CoronaFinish.InventoryBands(cell,cellHeight,useH,out iconBand,out captionBand,out actionBand);
+                    icon=iconBand.width;iconY=iconBand.y;
+                }
                 At(item.Icon.rectTransform,(cell-icon)*.5f,iconY,icon,icon);
                 At(item.Quantity.rectTransform,(cell-icon)*.5f+icon*.15f,
                     iconY+icon*.73f,icon*.70f,icon*.18f);
@@ -369,15 +386,17 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     // Reserve the quiet strip between the illustration and the action.
                     // Keep the number away from the filigree and the novelty seal.
-                    float captionY = cellHeight * .52f;
-                    float captionH = cellHeight * .18f;
-                    At(item.Name.rectTransform, cell * .08f, captionY, cell * .44f, captionH);
-                    At(item.Amount.rectTransform, cell * .56f, captionY, cell * .36f, captionH);
-                    item.Name.alignment = TextAnchor.MiddleRight;
-                    item.Amount.alignment = TextAnchor.MiddleLeft;
-                    item.Amount.resizeTextForBestFit = true;
-                    item.Amount.resizeTextMinSize = 9;
-                    item.Amount.resizeTextMaxSize = item.Amount.fontSize;
+                    float half=(captionBand.width-4f)*.5f;
+                    At(item.Name.rectTransform,captionBand.x,captionBand.y,half,captionBand.height);
+                    At(item.Amount.rectTransform,captionBand.x+half+4f,captionBand.y,half,captionBand.height);
+                    item.Name.alignment=TextAnchor.MiddleRight;
+                    item.Amount.alignment=TextAnchor.MiddleLeft;
+                    item.Name.font=CoronaFinish.ResolveFont(false);
+                    item.Name.color=CoronaFinish.Muted;
+                    item.Amount.color=CoronaFinish.Ivory;
+                    item.Name.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.115f,12f,21f));
+                    item.Amount.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.16f,15f,27f));
+                    item.Amount.resizeTextForBestFit=false;
                 }
                 else
                 {
@@ -386,8 +405,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 // Novelty is already represented by the original badge.
                 // Keep source state available without duplicating a text line.
                 item.Detail.gameObject.SetActive(false);
-                float useH=RoyalGoldV2Hud.UseCoronaArt?Mathf.Clamp(cell*.24f,35f,54f):Mathf.Max(22f,cell*.20f);
-                At((RectTransform)item.Use.transform,6f,cellHeight-useH-5f,cell-12f,useH);
+                if(portraitCorona)
+                    At((RectTransform)item.Use.transform,actionBand.x,actionBand.y,actionBand.width,actionBand.height);
+                else
+                    At((RectTransform)item.Use.transform,6f,cellHeight-useH-5f,cell-12f,useH);
                 item.UseText.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.10f,11f,17f));
                 var skin=item.Use.targetGraphic as Image;
                 if(skin&&skin.sprite)
@@ -495,6 +516,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 slot.Name.text=packet.Kind=="wood"?"MADERA":
                     packet.Kind=="stone"?"PIEDRA":"COMIDA";
                 slot.Amount.text=packet.AmountText;
+                if(RoyalGoldV2Hud.UseCoronaArt && panel.rect.height>panel.rect.width)
+                {
+                    CoronaFinish.FitSingleLine(slot.Name,slot.Name.fontSize,10);
+                    CoronaFinish.FitSingleLine(slot.Amount,slot.Amount.fontSize,10);
+                }
                 slot.Detail.text=packet.New?"NUEVO":"Guardado";
                 slot.Use.interactable=packet.CanUse;
                 slot.UseText.text=packet.CanUse?"USAR":"SIN ESPACIO";

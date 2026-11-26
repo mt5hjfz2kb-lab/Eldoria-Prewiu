@@ -100,6 +100,19 @@ namespace Eldoria.Tests
             finally {Object.DestroyImmediate(root);}
         }
 
+        [TestCase(90f,128f,35f)]
+        [TestCase(140f,140f,35f)]
+        [TestCase(210f,210f,50f)]
+        public void InventoryVisualBandsDoNotOverlap(float width,float height,float actionHeight)
+        {
+            CoronaFinish.InventoryBands(width,height,actionHeight,out Rect icon,out Rect caption,out Rect action);
+            Assert.That(icon.yMax,Is.LessThanOrEqualTo(caption.yMin-2f));
+            Assert.That(caption.yMax,Is.LessThanOrEqualTo(action.yMin-3f));
+            Assert.That(action.yMax,Is.LessThanOrEqualTo(height));
+            Assert.That(icon.xMin,Is.GreaterThanOrEqualTo(0f));
+            Assert.That(icon.xMax,Is.LessThanOrEqualTo(width));
+        }
+
         [TestCase("12.4K",64)]
         [TestCase("999",46)]
         [TestCase("MARCHAS",100)]
