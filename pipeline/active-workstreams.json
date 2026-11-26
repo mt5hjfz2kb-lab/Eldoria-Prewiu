@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-26T09:50:00Z",
+  "updated_at": "2026-11-26T19:46:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10337,6 +10337,31 @@
           "reason": "Owner expressly prioritizes Corona de la Brecha and transfers Studio and resources from PR195."
         }
       ]
+    },
+    {
+      "id": "eldoria-studio-v3-autonomous-execution-20261126",
+      "title": "Eldoria Development Studio V3 — isolated autonomous execution benchmark",
+      "owner": "chatgpt-studio-v3-autonomy-20261126",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
+      "status": "active",
+      "phase": "V3_BOUNDED_EXECUTION_AND_CORRECTION",
+      "claimed_at": "2026-11-26T19:46:00Z",
+      "base_main_sha": "58ec6108b9fdb23d2ee2505ab17c8c19662ba37a",
+      "base_studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
+      "user_authorization": "Owner approved V3 roadmap: autonomous execution, independent evaluation, corrective cycles, evidence-based learning; distinct from active Corona art missions. No new API spend, Unity runner, deployment or merge.",
+      "scope": [
+        "tools/studio-v3/**"
+      ],
+      "resources": [],
+      "delivery_definition": {
+        "deliverable": "Isolated executable V3 core with bounded declarative edits, verified evidence, rejection/retry/pivot, reproducible local tests and baseline-vs-studio benchmark contract.",
+        "evidence": "Actual source changes in scratch and tests; no live model autonomy or artistic gain claims without controlled live experiment.",
+        "handoff": "Preserve V2/Corona owner and budgets; no main game modifications; release only own scope after validation."
+      },
+      "art_approved": false
     }
   ],
   "history": [
