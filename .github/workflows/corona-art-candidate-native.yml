@@ -440,9 +440,9 @@ jobs:
   final-art-audit:
     needs: [unity, mobile-journey]
     if: >-
-      ${{ github.run_attempt == 1 && github.event.before == '3617241a8a2c82a1482a30d943d1fee542751578' && github.event.head_commit.message == 'Corona: fix actual compilation dependency and retry orientation proof' }}
+      ${{ always() && needs.unity.result == 'success' && github.run_attempt == 1 && github.event.before == '856c1eb2376251a0bd69ce1b64f62da07b62750f' && github.event.head_commit.message == 'Corona: final source-pinned visual validation and independent scoring' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 18
     permissions:
       contents: read
       actions: read
@@ -459,52 +459,32 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          name: ciudad-region-recorrido
-          path: after
-      - uses: actions/download-artifact@v4
-        with:
           name: corona-before-after-dpr1
           path: paired
-      - name: Verify same source-pinned original agent evidence and new genuine screenshots
+      - uses: actions/download-artifact@v4
+        with:
+          name: ciudad-region-recorrido
+          path: after
+      - name: Get exact original reference evidence and completed agent production receipts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           python3 -m pip install --quiet Pillow==11.3.0
-          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-art-plan --dir plan
-          python3 - <<'PY'
-          import hashlib,json,os,pathlib
-          m=json.load(open('paired/manifest.json'))
-          assert m['candidate_sha']==os.environ['GITHUB_SHA'] and not m['missing'] and len(m['pairs'])==13 and m['dpr']==1
-          names={'hud-b1':'bastion-1','hud-b5':'bastion-5-completo','tutorial':'guia-iniciar-obra','construction':'temporizador-en-parcela','name':'nombre-inicial'}
-          for row in m['pairs']:
-              file=pathlib.Path('after')/(names.get(row['role'],'sistema-'+row['role'])+'.png')
-              assert hashlib.sha256(file.read_bytes()).hexdigest()==row['candidate_sha256']
-          receipt=json.load(open('plan/plan-reservation.json'))
-          assert receipt['state']=='completed' and receipt['no_retry']
-          PY
-      - name: Confirm previous audit was skipped before using its single unused reservation
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          for id in 45813873347 45815809905; do
-            gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/jobs" --jq '.jobs[] | select(.name=="final-art-audit") | .conclusion' | grep -x skipped
-          done
-      - name: Actual independent visual evaluation, remaining reserved 0.05 USD
+          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-art-plan --dir references
+          gh run download 45823822067 --repo "$GITHUB_REPOSITORY" --name corona-agent-material-production --dir artist
+          gh run download 45823822067 --repo "$GITHUB_REPOSITORY" --name corona-agent-material-integration --dir implemented
+          python3 -m py_compile tools/corona-art-iteration/final_visual_review.py
+      - name: Three independent art evaluations of original and final actual frames
         env:
           GH_TOKEN: ${{ github.token }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MOBILE_RESULT: ${{ needs.mobile-journey.result }}
         run: |
-          python3 tools/corona-art-iteration/iterate.py audit --studio studio-source/tools/openai-development-studio --source after --plan plan/plan.json --out audit
-          python3 - <<'PY'
-          import json
-          a=json.load(open('audit/audit.json'))
-          print('CORONA_FINAL_ART_EVALUATION',json.dumps(a,ensure_ascii=False))
-          PY
+          python3 tools/corona-art-iteration/final_visual_review.py --studio studio-source/tools/openai-development-studio --paired paired --after after --references references --artist artist --implemented implemented --out final
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: corona-final-art-evaluation
-          path: audit/
+          name: corona-final-independent-visual-review
+          path: final/
           if-no-files-found: warn
