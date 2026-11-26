@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "source_run": 45771904456,
+  "source_artifact": 15094351746,
+  "source_sha256": "d19c6b26545887b9e405126af28af5ccbf02f91ee6780c81a051ad3a67afcca4",
+  "texture_sha256": "0e7145b9a6c0a3a5b81936a0499a4ef0197225da63d6797aa39b3f0c154212ad",
+  "size": [
+    1007,
+    835
+  ],
+  "alpha_crop": [
+    9,
+    84,
+    1016,
+    919
+  ],
+  "opaque_fraction": 0.4127540588378906,
+  "scope": "one spatial horizon landmark, no sky or background overlay",
+  "art_approved": false
+}
