@@ -1,0 +1,2 @@
+# Latest Corona candidate verification
+The 309caad4 native/visual run remains source-pinned and unchanged. This subsequent candidate includes the hero gallery and quantity slider visual corrections. Reuse the proven Unity and WebGL journey for the latest source, including both DPR1 and DPR3 actual captures and shared presentation tests. Do not start another paid visual audit: the previous 0.05 USD reservation is bound to run 45813873347 and its exact event condition. A technical pass does not grant art approval. No main merge or beta publication.

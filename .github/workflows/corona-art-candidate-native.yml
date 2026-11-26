@@ -1,4 +1,4 @@
-name: Corona - isolated structural art candidate native and independent audit
+name: Corona - isolated structural art candidate and final UI validation
 on:
   push:
     branches: [candidate/corona-auxiliary-modals-20261126]
