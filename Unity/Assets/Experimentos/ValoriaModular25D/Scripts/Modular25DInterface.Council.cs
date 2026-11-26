@@ -194,10 +194,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if (i == orderRows.Count)
                 {
                     int slot = i;
-                    var row = ButtonPlate("Orden " + i, orderList, "", slatePlate,
+                    var createdRow = ButtonPlate("Orden " + i, orderList, "", slatePlate,
                         new Vector2(.5f, 1), new Vector2(.5f, 1), new Vector2(0, -50f*i),
                         new Vector2(245f, 46f), () => ExecuteOrder(slot));
-                    orderRows.Add(row);
+                    orderRows.Add(createdRow);
                 }
                 orderRows[i].gameObject.SetActive(true);
                 orderRows[i].interactable = orders[i].command.Length > 0;
