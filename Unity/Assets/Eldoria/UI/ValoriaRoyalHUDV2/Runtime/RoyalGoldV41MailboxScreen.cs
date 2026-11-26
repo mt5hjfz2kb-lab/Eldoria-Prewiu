@@ -557,7 +557,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 messageSubtitles[i].fontSize=Pixels(Mathf.Clamp(
                     Mathf.RoundToInt((wide?17f:21f)*fontScale),15,25));
                 messageDates[i].fontSize=Pixels(Mathf.Clamp(
-                    Mathf.RoundToInt((wide?14f:16f)*fontScale),13,18));
+                    Mathf.RoundToInt((wide?14f:stackedDate?18f:16f)*fontScale),
+                    stackedDate?15:13,stackedDate?20:18));
             }
             float actionH=Mathf.Clamp(available*.13f,40f,57f);
             float detailPad=layoutUnit>1f?12f/scale:Mathf.Clamp(usable*.038f,15f,35f);
@@ -1101,7 +1102,7 @@ namespace Eldoria.UI.RoyalGold.V2
                         messageSurfaces[i].color=msg.Read?new Color(.23f,.27f,.28f):new Color(.27f,.33f,.36f);
                         messageLabels[i].color=msg.Read?CoronaFinish.Muted:CoronaFinish.Ivory;
                         messageSubtitles[i].color=CoronaFinish.Muted;
-                        messageDates[i].color=CoronaFinish.Brass;
+                        messageDates[i].color=CoronaFinish.StatusGold;
                     }
                     string preview=recordedBattle==null?msg.Subtitle:
                         (recordedBattle.EffectiveOutcome=="draw"?"Empate ante ":recordedBattle.EffectiveOutcome=="victory"?"Victoria contra ":"Derrota ante ")+TargetName(recordedBattle.TargetId);

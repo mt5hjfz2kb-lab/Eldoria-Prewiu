@@ -796,6 +796,13 @@ namespace Eldoria.UI.RoyalGold.V2
                     (s.RecruitmentCompletesUtcTicks-utcTicks())/(double)TimeSpan.TicksPerSecond)):0;
                 summary.Put(
                     "Madera "+wood+" · Piedra "+stone+"\nTiempo total  "+Clock(seconds));
+                if(RoyalGoldV2Hud.UseCoronaArt && root.rect.height>root.rect.width)
+                {
+                    summary.fontSize=30;
+                    while(summary.fontSize>26 &&
+                        summary.preferredHeight>summary.rectTransform.rect.height-2f)
+                        summary.fontSize--;
+                }
                 trainingProgress.gameObject.SetActive(busy);
                 if(busy)
                 {
@@ -1300,7 +1307,7 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(trainingProgress,pad,trainingStatusY-11f,orderW-pad*2f,7f);
             Place(action.transform as RectTransform,pad,
                 actionY,orderW-pad*2f,wide?52f:78f);
-            summary.fontSize=wide?21:26;
+            summary.fontSize=wide?21:RoyalGoldV2Hud.UseCoronaArt?30:26;
             status.fontSize=wide?16:23;
             actionLabel.fontSize=wide?18:25;
             float qw=quantityRow.rect.width;

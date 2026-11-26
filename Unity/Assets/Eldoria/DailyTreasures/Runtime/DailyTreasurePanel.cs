@@ -2194,7 +2194,11 @@ namespace Eldoria.DailyTreasures
             Place(calendar,.5f,.5f,.5f,.5f,0f,
                 (-gridTop+gridBottom)*.5f,panelW,gridHeight);
             calendarChest.gameObject.SetActive(cofferH>0f);
-            Place(calendarChest.rectTransform,.5f,1f,.5f,0f,0f,0f,cofferH*1.6f,cofferH);
+            // Enlarge only non-interactive art in tall Corona panels. Keep its
+            // bottom fixed at the grid edge so the reward rows remain intact.
+            float cofferArtH=cofferH*(CoronaPresentation.Active && portrait &&
+                panelH>=620f?1.10f:1f);
+            Place(calendarChest.rectTransform,.5f,1f,.5f,0f,0f,0f,cofferArtH*1.6f,cofferArtH);
             for(int i=0;i<7;i++)
             {
                 int column=i%cols,row=i/cols;

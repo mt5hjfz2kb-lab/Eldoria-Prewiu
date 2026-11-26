@@ -12,6 +12,8 @@ namespace Eldoria.UI.RoyalGold.V2
         public static readonly Color32 Ivory=Eldoria.DailyTreasures.CoronaPresentation.Ivory;
         public static readonly Color32 Muted=Eldoria.DailyTreasures.CoronaPresentation.Muted;
         public static readonly Color32 Brass=Eldoria.DailyTreasures.CoronaPresentation.Brass;
+        public static readonly Color32 StatusGold=Eldoria.DailyTreasures.CoronaPresentation.StatusGold;
+        public static readonly Color32 InProgress=Eldoria.DailyTreasures.CoronaPresentation.InProgress;
         public static Font HeadingFont => Eldoria.DailyTreasures.CoronaPresentation.Heading;
         public static Font BodyFont => Eldoria.DailyTreasures.CoronaPresentation.Body;
         public static Font ResolveFont(bool heading,Font fallback=null) =>

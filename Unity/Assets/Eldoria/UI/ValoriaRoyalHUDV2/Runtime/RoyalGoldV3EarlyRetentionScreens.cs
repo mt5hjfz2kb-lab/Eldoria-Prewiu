@@ -701,7 +701,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     scoutInsetLip[i].enabled=false;
                     scoutInsetUnder[i].enabled=false;
                     scoutTitles[i].color=Ivory;
-                    scoutCards[i].color=new Color(.90f,.88f,.78f);
+                    scoutCards[i].color=CoronaFinish.Ivory;
                 }
                 cell.name="Scout / live contract "+(i+1);
             }
@@ -1705,6 +1705,11 @@ namespace Eldoria.UI.RoyalGold.V2
                     "Disponibles: "+s.Available.Total+" · Ajusta la selección"));
                 reward.Put("Al vencer: "+(30+stage*2)+" madera · "+(10+stage)+
                     " piedra · "+(20+stage/5*3)+" XP");
+                if(RoyalGoldV2Hud.UseCoronaArt)
+                {
+                    formation.color=eligibleTroops?CoronaFinish.Ivory:CoronaFinish.StatusGold;
+                    reward.color=CoronaFinish.StatusGold;
+                }
                 int xp=EarlyRetentionRules.UnclaimedIdleXp(p,now());
                 // Preserve true XP and cap while guaranteeing the original
                 // mobile font never shrinks below 12 physical pixels.
@@ -1760,6 +1765,8 @@ namespace Eldoria.UI.RoyalGold.V2
                         if(scoutThumbnails[i])scoutThumbnails[i].enabled=false;
                         scoutTitles[i].Put("SIN ENCARGOS NUEVOS");
                         t.Put("Vuelve a consultar la mesa más tarde.");
+                        if(RoyalGoldV2Hud.UseCoronaArt && scoutSheets[i])
+                            t.color=CoronaFinish.Muted;
                         a.interactable=false;label.Put("ESPERAR");scoutIds[i]="";
                         continue;
                     }
@@ -1828,6 +1835,9 @@ namespace Eldoria.UI.RoyalGold.V2
                         "Regreso en "+TimeSpan.FromTicks(order.EndsUtcTicks-now()).ToString(@"hh\:mm\:ss");
                     scoutTitles[i].Put(EarlyRetentionRules.ScoutTitle(order.Kind));
                     t.Put(EarlyRetentionRules.ScoutRewardText(order.Kind)+"\n"+state);
+                    if(RoyalGoldV2Hud.UseCoronaArt && scoutSheets[i])
+                        t.color=order.StartedUtcTicks==0?CoronaFinish.Ivory:
+                            order.EndsUtcTicks<=now()?CoronaFinish.StatusGold:CoronaFinish.InProgress;
                     bool hasParty=MarchCapacityRules.Fits(party,s.Available,capacity)&&
                         (route==0||party.Total>=required);
                     bool hasSlot=MarchCapacityRules.CanStart(s,now());

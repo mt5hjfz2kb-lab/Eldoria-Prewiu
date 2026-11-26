@@ -14,6 +14,9 @@ namespace Eldoria.DailyTreasures
         public static readonly Color32 Ivory=new Color32(250,239,213,255);
         public static readonly Color32 Muted=new Color32(201,205,192,255);
         public static readonly Color32 Brass=new Color32(192,159,106,255);
+        // Ornamental brass is not a small-text colour.
+        public static readonly Color32 StatusGold=new Color32(234,207,151,255);
+        public static readonly Color32 InProgress=new Color32(210,231,238,255);
         public static bool Active =>
             SceneUtility.GetBuildIndexByScenePath("Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity")==0 &&
             SceneUtility.GetBuildIndexByScenePath("Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity")==1;
