@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-26T06:57:54.628Z",
+  "updated_at": "2026-11-26T07:03:34.600Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9633,9 +9633,11 @@
       "ownership_revision": 12,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "COMMERCIAL_VALORIA_HORIZON_AND_LIGHTING",
+      "phase": "COMMERCIAL_NATIVE_PORTAL_LANDMARK_AND_SHADOWS",
       "claimed_at": "2026-11-25T22:58:00.051Z",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "tools/senda-brecha/**",
         "docs/events/senda-brecha/**",
@@ -21377,14 +21379,14 @@
   },
   "resource_rotation": {
     "resource": "windows-runner-heavy",
-    "authorized_by": "Owner requested continued actual development on PR195; no production merge.",
+    "authorized_by": "Owner requests continued PR195 visual development; prior native job completed and cleanup successful.",
     "authorized_at": "2026-11-25T21:44:55.392Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": null,
+    "current_workstream": "eldoria-senda-brecha-lane-event-20261115",
     "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "available_after_senda_native_parity_pass",
+    "status": "senda_native_commercial_art_reserved",
     "rules": [
       "Isolated native proof, same PR, no beta or main gameplay change.",
       "Check live lease and idle processes. No cancellation of other work."
