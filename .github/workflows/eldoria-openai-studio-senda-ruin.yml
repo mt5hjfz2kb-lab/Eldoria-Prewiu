@@ -1,0 +1,77 @@
+name: Studio - Valoria roadside architectural asset
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths: ['tools/openai-development-studio/senda-ruin-request.json']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: studio-senda-ruin-production
+  cancel-in-progress: false
+jobs:
+  benchmark:
+    if: github.run_attempt == 1 && github.event.before == '7089e8d24c57dab31bb28b36a549a09d426df4a4' && github.event.head_commit.message == 'Run bounded Senda Valoria ruin mission once'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Verify actual evidence and cumulative authorized ceiling
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          cd tools/openai-development-studio
+          python3 test_economics_v2.py
+          python3 - <<'PY'
+          import json,datetime
+          from decimal import Decimal as D
+          import budget_guard
+          a=json.load(open('senda-benchmark-budget.json'));b=json.load(open('senda-portal-budget.json'))
+          for x in (a,b): budget_guard.validate(x,datetime.datetime.now(datetime.timezone.utc).date())
+          assert all(r['status']!='authorized_once' for r in a['reservations'])
+          assert sum(D(r['reserve_usd']) for x in (a,b) for r in x['reservations'])<=D('10.00')
+          PY
+          gh run download 45772369711 --repo "$GITHUB_REPOSITORY" --name senda-brecha-web3d-dbe15e6c7f3f5c7400663103b0e0b0514a9c8fa1 --dir /tmp/senda-portal-baseline
+          python3 prepare_senda_ruin.py /tmp/senda-portal-baseline /tmp/senda-packet
+          python3 mission_packet.py --packet /tmp/senda-packet/packet.json
+      - name: Five agents with bounded portal production reservation
+        id: live
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ELDORIA_AUTH_EVENT: senda-valoria-ruin-v1
+        run: |
+          set -eu
+          date -u +%Y-%m-%dT%H:%M:%SZ > /tmp/senda-start
+          cd tools/openai-development-studio
+          cp senda-portal-budget.json budget-cycle.json
+          python3 - <<'PY'
+          import studio,mission_packet
+          studio.MAX_OUTPUT=2200
+          mission_packet.execute("/tmp/senda-packet/packet.json","/tmp/senda-ruin-result",True,"senda-valoria-ruin-v1")
+          PY
+      - name: Record measured usage even on partial failure
+        if: always() && steps.live.outcome != 'skipped'
+        env:
+          LIVE_STATUS: ${{ steps.live.outcome }}
+        run: |
+          mkdir -p /tmp/senda-economics
+          python3 tools/openai-development-studio/intervention_report.py collect --root /tmp/senda-ruin-result --run "$GITHUB_RUN_ID" --request senda-valoria-ruin-v1 --started "$(cat /tmp/senda-start)" --finished "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --source-run 45772369711 --status "$LIVE_STATUS" --out "/tmp/senda-economics/run-$GITHUB_RUN_ID.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: senda-ruin-result-${{ github.run_id }}
+          path: /tmp/senda-ruin-result/
+          retention-days: 30
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: senda-ruin-economics-${{ github.run_id }}
+          path: /tmp/senda-economics/
+          retention-days: 30
+          if-no-files-found: warn

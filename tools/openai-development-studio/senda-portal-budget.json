@@ -28,6 +28,13 @@
       "estimated_usd": "0.07791050",
       "result_artifact_id": 15094351746,
       "quality_result": "Generated geological landmark, alpha inspected and archived; runtime visual acceptance pending."
+    },
+    {
+      "id": "senda-valoria-ruin-v1",
+      "reserve_usd": "1.45",
+      "status": "authorized_once",
+      "run_id": "senda-valoria-ruin-v1",
+      "reason": "High-impact foreground military ruin; existing $10 ceiling, no auto retry."
     }
   ],
   "estimated_total_usd": "0.15497850",
