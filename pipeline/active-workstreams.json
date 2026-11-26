@@ -10337,6 +10337,192 @@
           "reason": "Owner expressly prioritizes Corona de la Brecha and transfers Studio and resources from PR195."
         }
       ]
+    },
+    {
+      "id": "eldoria-studio-v3-autonomous-execution-20261126",
+      "title": "Eldoria Development Studio V3 — isolated autonomous execution benchmark",
+      "owner": "chatgpt-studio-v3-relicario-premium-20261126",
+      "ownership_state": "claimed",
+      "ownership_revision": 9,
+      "write_scope_released": false,
+      "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
+      "status": "active",
+      "phase": "RELICARIO_CARD_CREATIVE_TOOL_MISSION",
+      "claimed_at": "2026-11-26T19:46:00Z",
+      "base_main_sha": "58ec6108b9fdb23d2ee2505ab17c8c19662ba37a",
+      "base_studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
+      "user_authorization": "Owner explicitly commissions Studio V3 to create a premium Relicario card, with Unity and Blender MCP capabilities permitted. Candidate only; preserve catalog and all other workstreams. No new paid amount expressly assigned; previous grants closed. Use no-spend hosted authoring and validation first. Windows remains reserved to Corona; no native access without exclusive lease.",
+      "scope": [
+        "tools/studio-v3/**",
+        ".github/workflows/studio-v3-offline.yml",
+        ".github/workflows/studio-v3-live-pilot.yml",
+        ".github/workflows/studio-v3-visual-benchmark.yml",
+        ".github/workflows/studio-v3-visual-live.yml",
+        ".github/workflows/studio-v3-relicario-authoring.yml"
+      ],
+      "resources": [],
+      "delivery_definition": {
+        "deliverable": "Isolated executable V3 core with bounded declarative edits, verified evidence, rejection/retry/pivot, reproducible local tests and baseline-vs-studio benchmark contract.",
+        "evidence": "Actual source changes in scratch and tests; no live model autonomy or artistic gain claims without controlled live experiment. GitHub-hosted read-only offline Node CI using pinned actual V2 input; no API secret, paid model or Windows runner.",
+        "handoff": "Preserve V2/Corona owner and budgets; no main game modifications; release only own scope after validation."
+      },
+      "art_approved": false,
+      "previous_owner": "chatgpt-studio-v3-visual-live-20261126",
+      "delivery_head": "3fb6487a43f42030530912d4cba6a8f3fdacbe15",
+      "evidence": {
+        "final_run": 45887946346,
+        "final_job": 140143228373,
+        "earlier_runs": [
+          45887151636,
+          45887441892,
+          45887654921
+        ],
+        "node_tests_passed": 32,
+        "python_guard_tests_passed": 9,
+        "failed_tests": 0,
+        "pinned_v2_source_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
+        "replay_attempts": 3,
+        "technical_rejections": 2,
+        "pivoted_after_repeated_failure": true,
+        "checkpoints": 4,
+        "source_unchanged": true,
+        "base_lessons_preserved": 6,
+        "candidate_lessons": 7,
+        "candidate_promoted": false,
+        "new_api_calls": 0,
+        "live_model_roles": false,
+        "art_approved": false,
+        "windows_runner": false
+      },
+      "remaining": "No superiority demonstrated in tightly constrained UI or simple technical paired tests. Multi-role autonomous production verified for bounded CSS/SVG only; native Unity/Blender, new raster/3D and live corrective artistic cycles unproven. No additional spending or production promotion authorized.",
+      "next": "Use single producer plus deterministic QA for narrow tasks. Test complementary specialist work on materially different actual art/technical scope only when real candidate improvement is plausibly larger; compare with independent blind evidence, same controls and fresh authorization. Do not reuse closed grants.",
+      "pilot": {
+        "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+        "source_path": "tools/senda-brecha/src/rules.js",
+        "target": "SENDA_STATE_VALIDATION",
+        "max_total_reservation_usd": "1.05",
+        "mode": "candidate only",
+        "note": "Read pinned source from paused Senda branch; all generated candidates and tools stay in isolated V3 branch/artifacts. No Senda writes."
+      },
+      "live_pilot_evidence": {
+        "run": 45889150854,
+        "job": 140147222266,
+        "artifact": 15150528146,
+        "final_ci": 45889396315,
+        "tests_passed": 46,
+        "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+        "source_sha256": "0a2de34c510cd2a9f7d0bfad4bc285763b375a06945410a5479df6bec8012d23",
+        "candidate_sha256": "3a8114d68f8588e383d09bf5134c9735655435a12cd5b23826e9f73cb0a27b84",
+        "baseline_invalid_states_rejected": 0,
+        "candidate_invalid_states_rejected": 22,
+        "route_parity": 729,
+        "single": {
+          "api_calls": 1,
+          "elapsed_ms": 7840,
+          "estimated_cost_usd": "0.009006"
+        },
+        "studio": {
+          "api_calls": 2,
+          "elapsed_ms": 7956,
+          "estimated_cost_usd": "0.015524"
+        },
+        "total_estimated_api_usd": "0.024530",
+        "billing_verified": false,
+        "approved_reservation_usd": "1.05",
+        "reservation_state": "closed_reserved",
+        "same_candidate": true,
+        "extra_quality": false,
+        "real_correction_loop_not_exercised": true,
+        "candidate_promoted": false,
+        "art_approved": false
+      },
+      "visual_benchmark": {
+        "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+        "source_run": 45777504799,
+        "source_path": "tools/senda-brecha/visual-3d/index.html",
+        "target": "SENDA_UI_VISUAL_SYSTEM",
+        "max_new_api_spend_usd": "2.00",
+        "mode": "authorized real visual comparison",
+        "scope": "Same existing WebGL actual scene, visual presentation only; baseline/candidate frames, reuse authorized original assets, compare intro/combat/result; no code changes to original Senda or Corona.",
+        "calibration_run": 45892128146
+      },
+      "visual_calibration_evidence": {
+        "run": 45892128146,
+        "job": 140157079371,
+        "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+        "blind_artifact": 15152775209,
+        "receipts_artifact": 15152810075,
+        "frames": 33,
+        "matched_fixtures": 11,
+        "issue_occurrences": [
+          44,
+          0,
+          0
+        ],
+        "minimum_labels_px": [
+          7,
+          9,
+          9
+        ],
+        "all_interactions_pass": true,
+        "all_frame_hashes_verified": true,
+        "actual_game_logic_unchanged": true,
+        "final_offline_run": 45892909082,
+        "offline_tests": 61,
+        "real_v2_payload_dry_run": true,
+        "new_api_calls": 0,
+        "new_api_spend_usd": "0.00",
+        "live_model_roles": false,
+        "blind_scoring_performed": false,
+        "art_approved": false,
+        "physical_iphone": false,
+        "production_promoted": false,
+        "proposed_reservation_usd": "2.00",
+        "proposed_reservation_authorized": false
+      },
+      "visual_live_evidence": {
+        "run": 45901310692,
+        "job": 140187480873,
+        "artifact": 15155258493,
+        "final_ci": 45902134125,
+        "frames": 33,
+        "matched_fixtures": 11,
+        "incidences": [
+          44,
+          0,
+          0
+        ],
+        "mean_scores": [
+          6.95,
+          7.5,
+          7.565
+        ],
+        "judge_agreement": false,
+        "actual_api_calls": 6,
+        "estimated_total_usd": "0.11173775",
+        "production_single_usd": "0.0237735",
+        "production_studio_usd": "0.04899375",
+        "shared_judges_usd": "0.0389705",
+        "reservation_usd": "2.00",
+        "reservation_state": "closed_reserved",
+        "billing_verified": false,
+        "actual_game_logic_unchanged": true,
+        "repair_needed": false,
+        "art_approved": false,
+        "physical_iphone": false,
+        "production_promoted": false,
+        "artifact_and_roles_verified": true
+      },
+      "relicario_mission": {
+        "card_id": "corona-valoria",
+        "card_name": "Corona de Valoria",
+        "catalog_ref": "3303504d1ec7fcd49b2efd94daee9bd620b01c01",
+        "template_ref": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+        "template_pr": 189,
+        "mode": "new card illustration, actual Blender editable source and modular card candidate, no production changes",
+        "new_paid_api_usd": "0.00",
+        "native_resources": false
+      }
     }
   ],
   "history": [
