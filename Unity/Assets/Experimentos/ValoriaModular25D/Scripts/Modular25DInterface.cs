@@ -1019,7 +1019,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 identity.pivot=new Vector2(0f,1f);
                 identity.anchoredPosition=new Vector2(stripLeft+6f,-top-1f);
                 lastLayout=new Vector4(width,left,safeWidth,top);
-                float identityWidth=Mathf.Clamp(title.preferredWidth+46f,102f,Mathf.Max(102f,stripWidth-182f));
+                // Protect all three economy cells before allocating extra nickname width.
+                // Full nickname remains in PlayerState; this is only HUD geometry.
+                float economyFloor=Mathf.Min(234f,Mathf.Max(0f,stripWidth-119f));
+                float identityMax=Mathf.Max(102f,stripWidth-economyFloor-17f);
+                float identityWidth=Mathf.Clamp(title.preferredWidth+46f,102f,identityMax);
                 identity.sizeDelta=new Vector2(identityWidth,44f);
                 title.rectTransform.sizeDelta=new Vector2(identityWidth-44f,22f);
                 level.rectTransform.sizeDelta=new Vector2(identityWidth-44f,16f);
@@ -1031,7 +1035,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 // 27%. Cap all orientations at 270pt. This is SMALLER,
                 // preserves premium artist proportions and liberates map.
                 float economyWidth=Mathf.Min(270f,
-                    Mathf.Max(145f,stripWidth-identityWidth-17f));
+                    Mathf.Max(15f,stripWidth-identityWidth-17f));
                 resourceRow.sizeDelta=new Vector2(economyWidth,40f);
                 float chipWidth=(economyWidth-12f)/3f;
                 float sourceAspect=resourcePlate.rect.height/
@@ -1047,20 +1051,22 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     chip.sizeDelta=new Vector2(chipWidth,chipWidth*sourceAspect);
                     chip.anchoredPosition=new Vector2(i*(chipWidth+6f),0f);
                     chip.GetComponent<Image>().preserveAspect=true;
-                    float d=Mathf.Clamp(chipWidth*.32f,20f,28f);
+                    // Reserve disjoint icon and value intervals, with an explicit gap.
+                    const float iconInset=5f, valueInset=5f, contentGap=4f;
+                    float d=Mathf.Clamp(chipWidth*.30f,18f,26f);
                     var art=chip.Find((i==0?"MADERA":i==1?"PIEDRA":"COMIDA")+
                         " original resource art") as RectTransform;
                     if(art!=null)
                     {
-                        art.anchoredPosition=new Vector2(8f,0f);
+                        art.anchoredPosition=new Vector2(iconInset,0f);
                         art.sizeDelta=new Vector2(d,d);
                     }
                     var number=i==0?woodValue:i==1?stoneValue:foodValue;
                     if(number!=null)
                     {
-                        number.rectTransform.anchoredPosition=new Vector2(-8f,0f);
-                        number.rectTransform.sizeDelta=new Vector2(
-                            Mathf.Clamp(chipWidth-d-13f,24f,52f),31f);
+                        number.rectTransform.anchoredPosition=new Vector2(-valueInset,0f);
+                        float valueWidth=Mathf.Max(1f,chipWidth-iconInset-d-contentGap-valueInset);
+                        number.rectTransform.sizeDelta=new Vector2(valueWidth,31f);
                         number.fontSize=chipWidth<82f?16:18;
                         number.resizeTextMaxSize=number.fontSize;
                     }

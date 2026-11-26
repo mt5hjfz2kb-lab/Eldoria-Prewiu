@@ -58,6 +58,8 @@ jobs:
             Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources
             Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Models
           persist-credentials: false
+      - name: Check HUD ribbon mathematical layout (not visual acceptance)
+        run: python tools/valoria-modular25d/test-corona-ribbon.py
       - name: Check legacy texture staging against every real donor and compare geometry bytes
         run: python tools/valoria-modular25d/pack-hidden-geography.py Unity --combined-player --donors-only
   preflight:
@@ -87,8 +89,8 @@ jobs:
           leases=[x for x in state["active"] if "windows-runner-heavy" in x.get("resources",[])]
           branch=gh("git/ref/heads/"+os.environ["GITHUB_REF_NAME"])
           ok=(len(leases)==1 and leases[0]["id"]==ident and
-             leases[0].get("ownership_revision")==15 and leases[0].get("ownership_state")=="claimed" and
-             leases[0].get("owner")=="chatgpt-valoria-umbrales-20261124" and
+             leases[0].get("ownership_revision")==16 and leases[0].get("ownership_state")=="claimed" and
+             leases[0].get("owner")=="chatgpt-corona-brecha-commercial-20261126" and
              state.get("resource_rotation",{}).get("current_workstream")==ident and
              branch["object"]["sha"]==os.environ["GITHUB_SHA"])
           with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write("allowed="+str(ok).lower()+"\n")
@@ -119,8 +121,8 @@ jobs:
           $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
           $held=@($reg.active|Where-Object{@($_.resources) -contains 'windows-runner-heavy'})
           $id='eldoria-valoria-modular25d-bastion1-20261119'
-          if($held.Count -ne 1 -or $held[0].id -ne $id -or $held[0].ownership_revision -ne 15 -or
-             $held[0].owner -ne 'chatgpt-valoria-umbrales-20261124' -or
+          if($held.Count -ne 1 -or $held[0].id -ne $id -or $held[0].ownership_revision -ne 16 -or
+             $held[0].owner -ne 'chatgpt-corona-brecha-commercial-20261126' -or
              $reg.resource_rotation.current_workstream -ne $id){throw 'Lease not ours'}
           if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
             throw 'Existing Windows native process: refuse interference'}
@@ -409,6 +411,7 @@ jobs:
           PY
 
   package:
+    if: ${{ false }} # Corona validation: no review release or publication in this phase
     needs: unity
     env:
       SOURCE: ${{ github.sha }}
