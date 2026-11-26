@@ -214,7 +214,18 @@ namespace Eldoria.UI.RoyalGold.V2
             manuscript.gameObject.SetActive(true);
 
             if (!chronicleFont) chronicleFont = Resources.Load<Font>("EldoriaRetention/reference-serif");
-            if (chronicleFont)
+            if (RoyalGoldV2Hud.UseCoronaArt)
+            {
+                // Preserve the manuscript, bust, text, page/reveal logic,
+                // colour (including Orin), and all existing fit calculations.
+                // Only the type family follows the Corona presentation contract.
+                modal.Title.font=CoronaFinish.ResolveFont(true,chronicleFont);
+                modal.Body.font=CoronaFinish.ResolveFont(false,chronicleFont);
+                if (role) role.font=CoronaFinish.ResolveFont(false,chronicleFont);
+                if (modal.ExtraLabel)
+                    modal.ExtraLabel.font=CoronaFinish.ResolveFont(false,chronicleFont);
+            }
+            else if (chronicleFont)
             {
                 modal.Title.font = chronicleFont;
                 modal.Body.font = chronicleFont;

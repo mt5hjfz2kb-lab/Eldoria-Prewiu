@@ -1,3 +1,4 @@
+using Eldoria.UI.RoyalGold;
 using Eldoria.UI.RoyalGold.V2;
 using NUnit.Framework;
 using UnityEngine;
@@ -47,6 +48,56 @@ namespace Eldoria.Tests
                 button.onClick.Invoke();
                 Assert.AreEqual(1,called);
             } finally { Object.DestroyImmediate(go); }
+        }
+
+        [Test]
+        public void ExistingModalGetsSharedFontsWithoutChangingItsActionsOrCopy()
+        {
+            var root=new GameObject("Existing modal",typeof(RectTransform));
+            root.SetActive(false);
+            try
+            {
+                var modal=root.AddComponent<ModalWindow>();
+                RoyalText Label(string name,string value)
+                {
+                    var g=new GameObject(name,typeof(RectTransform),typeof(RoyalText));
+                    g.transform.SetParent(root.transform,false);
+                    var text=g.GetComponent<RoyalText>();text.Put(value);return text;
+                }
+                RoyalButton Action(string name)
+                {
+                    var g=new GameObject(name,typeof(RectTransform),typeof(Image),typeof(RoyalButton));
+                    g.transform.SetParent(root.transform,false);
+                    var button=g.GetComponent<RoyalButton>();button.targetGraphic=g.GetComponent<Image>();return button;
+                }
+                modal.Title=Label("Title","AJUSTES");
+                modal.Body=Label("Body","Idioma / Language");
+                modal.ExtraLabel=Label("Action","Cambiar a inglés");
+                modal.SecondaryLabel=Label("Confirm","CONFIRM RESET");
+                modal.Close=Action("Close");
+                modal.Extra=Action("Extra");
+                modal.Secondary=Action("Secondary");
+                modal.Secondary.interactable=false;
+                modal.Secondary.gameObject.SetActive(false);
+                var originalTarget=modal.Extra.targetGraphic;
+                var originalRect=modal.Body.rectTransform.sizeDelta;
+                int invoked=0;
+                modal.Extra.onClick.AddListener(()=>invoked++);
+                CoronaFinish.ApplyModalTypography(modal);
+                Assert.AreSame(CoronaFinish.HeadingFont,modal.Title.font);
+                Assert.AreSame(CoronaFinish.BodyFont,modal.Body.font);
+                Assert.AreSame(CoronaFinish.BodyFont,modal.ExtraLabel.font);
+                Assert.AreSame(CoronaFinish.BodyFont,modal.SecondaryLabel.font);
+                Assert.AreEqual("Idioma / Language",modal.Body.text);
+                Assert.AreEqual("CONFIRM RESET",modal.SecondaryLabel.text);
+                Assert.AreEqual(originalRect,modal.Body.rectTransform.sizeDelta);
+                Assert.AreSame(originalTarget,modal.Extra.targetGraphic);
+                Assert.IsFalse(modal.Secondary.interactable);
+                Assert.IsFalse(modal.Secondary.gameObject.activeSelf);
+                modal.Extra.onClick.Invoke();
+                Assert.AreEqual(1,invoked);
+            }
+            finally {Object.DestroyImmediate(root);}
         }
 
         [TestCase("12.4K",64)]

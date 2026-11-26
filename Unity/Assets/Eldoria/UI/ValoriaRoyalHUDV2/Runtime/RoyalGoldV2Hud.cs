@@ -23,6 +23,21 @@ namespace Eldoria.UI.RoyalGold.V2
         public static Sprite ResourceIcon(string kind) =>
             Eldoria.DailyTreasures.CoronaPresentation.ResourceIcon(kind);
 
+        // The original ModalWindow is also used for settings, confirmation,
+        // army and narrative. Do not instantiate a replacement or change
+        // any listener, target, label value, navigation or enabled state.
+        public static void ApplyModalTypography(ModalWindow modal)
+        {
+            if (!modal) return;
+            if (modal.Title) modal.Title.font=ResolveFont(true);
+            if (modal.Body) modal.Body.font=ResolveFont(false);
+            if (modal.ExtraLabel) modal.ExtraLabel.font=ResolveFont(false);
+            if (modal.SecondaryLabel) modal.SecondaryLabel.font=ResolveFont(false);
+            if (modal.Close) ApplyButtonFeedback(modal.Close);
+            if (modal.Extra) ApplyButtonFeedback(modal.Extra);
+            if (modal.Secondary) ApplyButtonFeedback(modal.Secondary);
+        }
+
         // Numeric and dock text are single-line semantic roles. Measure actual
         // glyphs instead of assuming that a disjoint RectTransform ensures fit.
         // Preserve the complete string; a below-floor width is not certified.
@@ -210,6 +225,11 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!anchor) return;
             safe = anchor.transform as RectTransform;
             if (!safe) return;
+            if (UseCoronaArt)
+            {
+                CoronaFinish.ApplyModalTypography(Source.Modal);
+                if (Source.Feedback) Source.Feedback.font=CoronaFinish.ResolveFont(false);
+            }
             // Original approved footer has five real destinations visible even
             // before unlock. Blocked destinations remain disabled; no gameplay
             // permission, reward or automatic resource action is created.
