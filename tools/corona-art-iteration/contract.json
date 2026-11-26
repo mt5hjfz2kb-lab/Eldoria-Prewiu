@@ -1,0 +1,305 @@
+{
+  "schema": 1,
+  "source_sha": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+  "source_run": 45802472999,
+  "branch": "candidate/corona-auxiliary-modals-20261126",
+  "base": "d26bcf0646c35815efca6c6c723b26545dfea4f5",
+  "studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
+  "budget": {
+    "prior_reserved": "4.90",
+    "new_reserved": "0.10",
+    "total": "5.00",
+    "plan": "0.05",
+    "audit": "0.05",
+    "no_retries": true
+  },
+  "screens": [
+    [
+      "hud-b1",
+      "bastion-1.png",
+      "hud"
+    ],
+    [
+      "hud-b5",
+      "bastion-5-completo.png",
+      "hud"
+    ],
+    [
+      "tutorial",
+      "guia-iniciar-obra.png",
+      "tutorial"
+    ],
+    [
+      "construction",
+      "temporizador-en-parcela.png",
+      "construction"
+    ],
+    [
+      "name",
+      "nombre-inicial.png",
+      "name"
+    ],
+    [
+      "march",
+      "sistema-march.png",
+      "march"
+    ],
+    [
+      "bag",
+      "sistema-bag.png",
+      "bag"
+    ],
+    [
+      "mail",
+      "sistema-mail.png",
+      "mail"
+    ],
+    [
+      "daily",
+      "sistema-daily.png",
+      "daily"
+    ],
+    [
+      "heroes",
+      "sistema-heroes.png",
+      "heroes"
+    ],
+    [
+      "training",
+      "sistema-training.png",
+      "training"
+    ],
+    [
+      "scouts",
+      "sistema-scouts.png",
+      "scouts"
+    ],
+    [
+      "vigilants",
+      "sistema-vigilants.png",
+      "vigilants"
+    ]
+  ],
+  "references": [
+    [
+      "WOS HUD",
+      "hud",
+      "https://i0.wp.com/www.levelwinner.com/wp-content/uploads/2023/05/whiteout-survival-military-camps-500x889-1.webp?resize=500%2C889&ssl=1",
+      "https://www.levelwinner.com/whiteout-survival-beginners-guide-tips-tricks-strategies/"
+    ],
+    [
+      "WOS heroes/march",
+      "heroes,march",
+      "https://youre.outof.games/media/uploads/97/2d/972d6394-fe10-455b-8a96-365257584d1e/whiteout-survival-mercenary-prestige-gina.jpg",
+      "https://outof.games/realms/whiteoutsurvival/guides/493-mercenary-prestige-in-whiteout-survival/"
+    ],
+    [
+      "WOS mail",
+      "mail",
+      "https://stat.ameba.jp/user_images/20250703/22/luidasbar/2d/2d/p/o0561102515628084729.png",
+      "https://ameblo.jp/luidasbar/entry-12914347748.html"
+    ],
+    [
+      "WOS rewards (analog)",
+      "daily",
+      "https://youre.outof.games/media/uploads/ec/91/ec91efd5-e63f-4261-8ff0-037376679761/whiteout-survival-alliance-activity-triumph-daily-missions-rewards.jpg",
+      "https://outof.games/realms/whiteoutsurvival/guides/476-alliance-activity-triumph-in-whiteout-survival/"
+    ],
+    [
+      "COD training",
+      "training",
+      "https://res.ldrescdn.com/rms/ldplayer/process/img/0c81debd6ab7491e9a71cd74b6a473421680030630.webp?x-oss-process=image%2Fformat%2Cwebp%2Fquality%2CQ_100%2Fresize%2Cw_1024",
+      "https://www.ldplayer.net/blog/call-of-dragons-tips-and-tricks.html"
+    ],
+    [
+      "COD inventory",
+      "bag",
+      "https://epicnpc.b-cdn.net/s3/xf/internal_data/attachments/8960/8960634-18f3ed46155831f7feb1f15fc1e9f35f.png",
+      "https://www.epicnpc.com/threads/s2-11m-account-250-spent-call-of-dragons.2970473/"
+    ],
+    [
+      "COD scouting (analog)",
+      "scouts",
+      "https://cdn-www.bluestacks.com/bs-images/COD_Tips_FR_2.jpeg",
+      "https://www.bluestacks.com/fr/blog/game-guides/call-of-dragons/cdg-tips-tricks-fr.html"
+    ],
+    [
+      "COD hero",
+      "heroes",
+      "https://cdn-www.bluestacks.com/bs-images/call-of-dragons-battle-heroes-ru-2.jpg",
+      "https://www.bluestacks.com/ru/blog/game-guides/call-of-dragons/cdg-battle-heroes-ru.html"
+    ]
+  ],
+  "knobs": {
+    "hud_caption": {
+      "screen": "hud",
+      "file": "Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DInterface.cs",
+      "variants": {
+        "keep": [],
+        "larger": [
+          [
+            "word.fontSize=14;",
+            "word.fontSize=15;"
+          ],
+          [
+            "CoronaFinish.FitSingleLine(word,14,11);",
+            "CoronaFinish.FitSingleLine(word,15,11);"
+          ]
+        ]
+      }
+    },
+    "hud_quantity": {
+      "screen": "hud",
+      "file": "Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DInterface.cs",
+      "variants": {
+        "keep": [],
+        "larger": [
+          [
+            "int preferred=chipWidth<82f?16:18;",
+            "int preferred=chipWidth<82f?17:19;"
+          ],
+          [
+            "CoronaFinish.FitSingleLine(label,chipWidth<82f?16:18,10);",
+            "CoronaFinish.FitSingleLine(label,chipWidth<82f?17:19,10);"
+          ]
+        ]
+      }
+    },
+    "march_capacity": {
+      "screen": "march",
+      "file": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs",
+      "variants": {
+        "keep": [],
+        "larger": [
+          [
+            "marchMetricValues[i].fontSize=wide?18:21;",
+            "marchMetricValues[i].fontSize=wide?18:23;"
+          ]
+        ]
+      }
+    },
+    "bag_caption": {
+      "screen": "bag",
+      "file": "Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186BagOverlay.cs",
+      "variants": {
+        "keep": [],
+        "larger": [
+          [
+            "item.Name.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.09f,10f,17f));",
+            "item.Name.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.10f,10f,18f));"
+          ]
+        ]
+      }
+    },
+    "mail_subject": {
+      "screen": "mail",
+      "file": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs",
+      "variants": {
+        "keep": [],
+        "larger": [
+          [
+            "Mathf.RoundToInt((wide?23f:26f)*fontScale),18,30));",
+            "Mathf.RoundToInt((wide?23f:28f)*fontScale),18,32));"
+          ]
+        ]
+      }
+    },
+    "hero_label": {
+      "screen": "heroes",
+      "file": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs",
+      "variants": {
+        "keep": [],
+        "larger": [
+          [
+            "heroSlotLabels[i].fontSize=leader?30:24;",
+            "heroSlotLabels[i].fontSize=leader?32:25;"
+          ]
+        ]
+      }
+    },
+    "training_cost": {
+      "screen": "training",
+      "file": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs",
+      "variants": {
+        "keep": [],
+        "contrast": [
+          [
+            "summary.fontSize=wide?21:RoyalGoldV2Hud.UseCoronaArt?30:26;",
+            "summary.fontSize=wide?21:RoyalGoldV2Hud.UseCoronaArt?30:26;\n            if(RoyalGoldV2Hud.UseCoronaArt)summary.color=CoronaFinish.Ivory;"
+          ]
+        ]
+      }
+    },
+    "scout_title": {
+      "screen": "scouts",
+      "file": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs",
+      "variants": {
+        "keep": [],
+        "larger": [
+          [
+            "scoutTitles[i].fontSize=portrait?30:21;",
+            "scoutTitles[i].fontSize=portrait?32:21;"
+          ]
+        ]
+      }
+    },
+    "vigilant_reward": {
+      "screen": "vigilants",
+      "file": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs",
+      "variants": {
+        "keep": [],
+        "larger": [
+          [
+            "reward.fontSize=height>width?26:compactLandscape?20:23;",
+            "reward.fontSize=height>width?28:compactLandscape?20:23;"
+          ]
+        ]
+      }
+    },
+    "daily_coffer": {
+      "screen": "daily",
+      "file": "Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePanel.cs",
+      "variants": {
+        "keep": [],
+        "smaller": [
+          [
+            "panelH>=620f?1.10f:1f);",
+            "panelH>=620f?1.05f:1f);"
+          ]
+        ],
+        "larger": [
+          [
+            "panelH>=620f?1.10f:1f);",
+            "panelH>=620f?1.15f:1f);"
+          ]
+        ]
+      }
+    },
+    "name_field": {
+      "screen": "name",
+      "file": "Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DInterface.cs",
+      "variants": {
+        "keep": [],
+        "darker": [
+          [
+            "inscription.color=new Color(.80f,.79f,.86f,.92f);",
+            "inscription.color=new Color(.67f,.67f,.74f,.96f);"
+          ]
+        ]
+      }
+    },
+    "feedback": {
+      "screen": "auxiliary",
+      "file": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
+      "variants": {
+        "keep": [],
+        "larger": [
+          [
+            "int size = portrait ? 19 : 20;",
+            "int size = UseCoronaArt && portrait ? 21 : portrait ? 19 : 20;"
+          ]
+        ]
+      }
+    }
+  }
+}
