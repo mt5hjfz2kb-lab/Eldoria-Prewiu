@@ -73,6 +73,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 try
                 {
                     Need(RoyalGoldV2Hud.UseCoronaArt,"Real combined-player Corona condition is active");
+                    SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
+                    Need(SliceContentProfiles.ActiveRuntimeProfile==SliceContentProfiles.OwnerIiiId,"Actual combined-player content profile, disposable fixture only");
                     var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(SessionState.GetString(Flag+"Prefab",""));
                     Need(prefab&&prefab.GetComponent<RoyalHUD>(),"Actual source-pinned room prefab exists");
                     // A coroutine host is the real military component of

@@ -9,7 +9,7 @@ permissions:
 jobs:
   native-march:
     if: >-
-      ${{ github.run_attempt == 1 && github.event.before == '6a6bc8d219de95d423d5743609fcf84cba089173' && github.event.head_commit.message == 'Studio: run corrected portrait-preserving native March A-B and blind scoring' }}
+      ${{ github.run_attempt == 1 && github.event.before == '955f8816c639d73f3b38ffcf6f4bc83f0044c724' && github.event.head_commit.message == 'QA: use exact live content profile for pending matched March fixture' }}
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     concurrency:
       group: eldoria-modular25d-exclusive-unity-native
