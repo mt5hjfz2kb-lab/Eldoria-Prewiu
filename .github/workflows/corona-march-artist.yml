@@ -1,0 +1,45 @@
+name: Studio March original material production
+on:
+  push:
+    branches: [candidate/corona-march-high-impact-studio-20261126]
+    paths: ['.github/workflows/corona-march-artist.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  artist:
+    if: >-
+      ${{ github.run_attempt == 1 && github.event.before == 'faa1aee1cb51b47bc5958305dd357b22f946cdbe' && github.event.head_commit.message == 'Studio: produce and review an original March command-table material under additional owner budget' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/corona-art-iteration
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 1657b2caa6b1a955319538ce3a8b2906398599b3
+          path: studio-source
+          sparse-checkout: tools/openai-development-studio
+          persist-credentials: false
+      - name: Retrieve actual screen and director decision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow==11.3.0
+          gh run download 45864197708 --repo "$GITHUB_REPOSITORY" --name corona-march-high-impact-studio-plan --dir plan
+          gh run download 45851071206 --repo "$GITHUB_REPOSITORY" --name recovery-ciudad-region-recorrido --dir actual
+          python3 -m py_compile tools/corona-art-iteration/march_studio_artist.py
+      - name: Real artist asset and independent material review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python3 tools/corona-art-iteration/march_studio_artist.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-march-original-studio-art
+          path: march-artist/
+          if-no-files-found: warn
