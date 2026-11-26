@@ -1,0 +1,342 @@
+{
+  "schema": 1,
+  "run": 45891568629,
+  "job": 140155259504,
+  "verified_commit": "9800675387cc8aaae6b131740fd526180c5b6876",
+  "status": "REJECTED_CALIBRATION_FIRST_PASS",
+  "artifacts": [
+    {
+      "id": 15152645230,
+      "sha256": "7c50c05fe132e068936e0a341a693eb8d0b55360fe7a47180e79202c5262ef81",
+      "downloaded_zip_hash_verified": true
+    },
+    {
+      "id": 15151593083,
+      "sha256": "baf7700cc533eb2dbe92d1f9e461b02040c73061f57c7d4282f00e34e2906793",
+      "downloaded_zip_hash_verified": true
+    }
+  ],
+  "proof": {
+    "schema": 1,
+    "target": "SENDA_UI_VISUAL_SYSTEM",
+    "mode": "hand-authored-calibration",
+    "engine": "actual Senda Three.js WebGL in Chromium",
+    "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+    "source_sha256": "a688814c5442903f5e861216374800dc3d8b67b28904902c06ae4869a0f73432",
+    "reference_sha": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+    "material_source_sha": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+    "material_sha256": "2e3cebad9c72fb1bfe2c79936fcfd88bde8369bf2018f6a94c1db081df6f901d",
+    "actual_game_logic_unchanged": true,
+    "matched_fixtures": 11,
+    "total_frames": 33,
+    "viewports": [
+      [
+        "phone",
+        390,
+        844
+      ],
+      [
+        "compact",
+        320,
+        700
+      ],
+      [
+        "horizontal",
+        844,
+        390
+      ]
+    ],
+    "variants": [
+      {
+        "variant": "baseline",
+        "frames": 11,
+        "issues": [
+          {
+            "fixture": "phone-intro",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "phone-intro",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "phone-intro",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "phone-intro",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "phone-gates",
+            "issue": "small-control:#pause"
+          },
+          {
+            "fixture": "phone-gates",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "phone-gates",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "phone-gates",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "phone-gates",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "phone-battle",
+            "issue": "small-control:#pause"
+          },
+          {
+            "fixture": "phone-battle",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "phone-battle",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "phone-battle",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "phone-battle",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "compact-intro",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "compact-intro",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "compact-intro",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "compact-intro",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "compact-gates",
+            "issue": "small-control:#pause"
+          },
+          {
+            "fixture": "compact-gates",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "compact-gates",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "compact-gates",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "compact-gates",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "compact-battle",
+            "issue": "small-control:#pause"
+          },
+          {
+            "fixture": "compact-battle",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "compact-battle",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "compact-battle",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "compact-battle",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "horizontal-intro",
+            "issue": "small-control:#play"
+          },
+          {
+            "fixture": "horizontal-intro",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "horizontal-intro",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "horizontal-intro",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "horizontal-intro",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "horizontal-intro",
+            "issue": "modal-footer-overlap"
+          },
+          {
+            "fixture": "horizontal-gates",
+            "issue": "small-control:#pause"
+          },
+          {
+            "fixture": "horizontal-gates",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "horizontal-gates",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "horizontal-gates",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "horizontal-gates",
+            "issue": "small-stat-label:PUNTOS"
+          },
+          {
+            "fixture": "horizontal-battle",
+            "issue": "small-control:#pause"
+          },
+          {
+            "fixture": "horizontal-battle",
+            "issue": "small-stat-label:GUARDIA"
+          },
+          {
+            "fixture": "horizontal-battle",
+            "issue": "small-stat-label:ATAQUE"
+          },
+          {
+            "fixture": "horizontal-battle",
+            "issue": "small-stat-label:ESCUDOS"
+          },
+          {
+            "fixture": "horizontal-battle",
+            "issue": "small-stat-label:PUNTOS"
+          }
+        ],
+        "hud_pct": [
+          {
+            "viewport": "phone",
+            "pct": 18.8
+          },
+          {
+            "viewport": "compact",
+            "pct": 22.2
+          },
+          {
+            "viewport": "horizontal",
+            "pct": 19
+          }
+        ],
+        "all_controls": true,
+        "min_stat_label_px": 7
+      },
+      {
+        "variant": "variant-72",
+        "frames": 11,
+        "issues": [
+          {
+            "fixture": "phone-victory",
+            "issue": "clipped-label:#finalScore:2366 PUNTOS"
+          },
+          {
+            "fixture": "phone-defeat",
+            "issue": "clipped-label:#finalScore:1702 PUNTOS"
+          }
+        ],
+        "hud_pct": [
+          {
+            "viewport": "phone",
+            "pct": 18.2
+          },
+          {
+            "viewport": "compact",
+            "pct": 21.5
+          },
+          {
+            "viewport": "horizontal",
+            "pct": 15
+          }
+        ],
+        "all_controls": true,
+        "min_stat_label_px": 9
+      },
+      {
+        "variant": "variant-19",
+        "frames": 11,
+        "issues": [
+          {
+            "fixture": "phone-victory",
+            "issue": "clipped-label:#finalScore:2366 PUNTOS"
+          },
+          {
+            "fixture": "phone-defeat",
+            "issue": "clipped-label:#finalScore:1702 PUNTOS"
+          }
+        ],
+        "hud_pct": [
+          {
+            "viewport": "phone",
+            "pct": 18.1
+          },
+          {
+            "viewport": "compact",
+            "pct": 21.5
+          },
+          {
+            "viewport": "horizontal",
+            "pct": 14.7
+          }
+        ],
+        "all_controls": true,
+        "min_stat_label_px": 9
+      }
+    ],
+    "interactions": [
+      {
+        "variant": "baseline",
+        "lane_buttons": true,
+        "pause": true,
+        "resume": true,
+        "replay": true
+      },
+      {
+        "variant": "variant-72",
+        "lane_buttons": true,
+        "pause": true,
+        "resume": true,
+        "replay": true
+      },
+      {
+        "variant": "variant-19",
+        "lane_buttons": true,
+        "pause": true,
+        "resume": true,
+        "replay": true
+      }
+    ],
+    "errors": [],
+    "live_model_roles": false,
+    "blind_scoring_performed": false,
+    "visual_scores": null,
+    "art_approved": false,
+    "production_promoted": false,
+    "physical_iphone": false
+  },
+  "diagnosis": "Both candidates preserved controls and matching runtime states; finalScore text-range fit failed in victory/defeat. Actual image inspection shows score visible, so fix available line box rather than weakening the test. Original minimum stat label 7px and undersized pause/landscape start. Both candidates improve minimum label to 9px, compact HUD, touch targets and match scene. Visual uplift modest and subjective; no agent quality claim.",
+  "correction": "Increase result-score line height from 1.1 to 1.4 and add vertical padding; rerun all fixtures unchanged."
+}

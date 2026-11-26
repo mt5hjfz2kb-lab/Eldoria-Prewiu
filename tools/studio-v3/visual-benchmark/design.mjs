@@ -85,7 +85,7 @@ export function assemble(packet){
 #crest{width:56px;height:56px;margin:0 auto 12px;display:block}
 #play,#again{width:100%;min-height:48px;display:block;margin-top:14px;padding:10px 12px;border:1px solid ${p.trim};border-radius:${frame};background:linear-gradient(155deg,${p.action},${p.action}dd);color:${p.action_text};font:850 14px/1.2 system-ui,sans-serif;letter-spacing:.02em;box-shadow:inset 0 1px #ffffff44,0 4px 10px #0006}
 #end{background:${p.ink}d9;padding:${l.gutter}px}
-#end b{font:800 29px/1.1 system-ui,sans-serif;color:${p.text};margin:15px 0}
+#end b{font:800 29px/1.4 system-ui,sans-serif;color:${p.text};margin:12px 0;padding:2px 0;overflow-wrap:normal}
 #end>div{min-height:0}
 #notice{font:750 19px/1.15 ${font};color:${p.text};max-width:94%;white-space:normal}
 ${svgAsCorner?"#modal:before,#end>div:before,#modal:after,#end>div:after{content:\"\";position:absolute;pointer-events:none;width:34px;height:34px;background:"+data+" center/contain no-repeat;opacity:.8;z-index:-1}#modal:before,#end>div:before{top:6px;left:6px}#modal:after,#end>div:after{top:6px;right:6px;transform:scaleX(-1)}":""}
