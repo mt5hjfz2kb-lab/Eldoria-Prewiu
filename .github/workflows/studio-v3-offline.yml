@@ -31,7 +31,7 @@ jobs:
       - name: Test isolated V3 budget and call guard with fixture transport only
         run: PYTHONDONTWRITEBYTECODE=1 python3 tools/studio-v3/live-role-guard.test.py
       - name: Verify visual trial production, correction and blinded judge orchestration offline
-        run: node --test tools/studio-v3/visual-live/orchestrator.test.mjs
+        run: node --test tools/studio-v3/visual-live/orchestrator.test.mjs tools/studio-v3/visual-live/runtime.test.mjs
       - name: Verify proposed separate visual role reservations and deny unapproved spend
         run: PYTHONDONTWRITEBYTECODE=1 python3 tools/studio-v3/visual-live/session.test.py
       - name: Verify V2 client unchanged from pinned source

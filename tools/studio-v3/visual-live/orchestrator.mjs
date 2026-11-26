@@ -46,6 +46,7 @@ export async function runVisualTrial(productionEvidence,adapters,{mode="fixture"
   pack.packets[i]=r.payload;repaired=true;
  }
  if(repaired)report=await doRender(2);
+ pack.render_hashes=pack.packets.map(p=>{const d=assemble(p);return {css_sha256:d.css_sha256,art_sha256:d.art_sha256}});
  const eligible=report.variants.slice(1).every(x=>x.issues.length===0&&x.all_controls===true);
  const result={schema:1,target:TARGET,mode,source_sha:SOURCE,source_evidence:productionEvidence,pack,role_receipts:calls,renders:rounds,technical_gate_passed:eligible,repair_performed:repaired,judge_scores:null,visual_decision:"not_scored",art_approved:false,promoted:false};
  if(!eligible){await record({phase:"technical-reject",result});return result}
