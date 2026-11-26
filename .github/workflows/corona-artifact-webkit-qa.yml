@@ -1,0 +1,83 @@
+name: Corona - artifact-only WebKit and name layout
+on:
+  push:
+    branches: [qa/corona-brecha-webkit-20261126]
+    paths: ['.github/workflows/corona-artifact-webkit-qa.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: corona-artifact-webkit-qa
+  cancel-in-progress: false
+jobs:
+  package-private:
+    if: >-
+      ${{ github.run_attempt == 1 && github.event.before == '91b8de9874aed87219d733efa6e8e0aa56207f1e' && github.event.head_commit.message == 'Corona QA: private source-pinned WebKit and name viewport test' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: '91b8de9874aed87219d733efa6e8e0aa56207f1e'
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - name: Download exact Unity artifact without publishing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          repo="repos/$GITHUB_REPOSITORY/actions/runs/45802472999"
+          test "$(gh api "$repo" --jq .head_sha)" = '91b8de9874aed87219d733efa6e8e0aa56207f1e'
+          ready=false
+          for i in $(seq 1 300); do
+            if gh api "$repo/artifacts" --jq '.artifacts[].name' | grep -Fxq valoria-region1-webgl; then
+              ready=true
+              break
+            fi
+            test "$(gh api "$repo" --jq .status)" != completed || exit 1
+            sleep 30
+          done
+          test "$ready" = true
+          gh run download 45802472999 --repo "$GITHUB_REPOSITORY" -n valoria-region1-webgl -D player
+          src=tools/valoria-modular25d
+          python3 -m pip install --quiet UnityPy==1.25.4
+          python3 "$src/pack-embedded-region-mips.py" player/Build/RegionModular.data.unityweb
+          python3 "$src/bound-webgl-uploads.py" player/Build/RegionModular.framework.js.unityweb
+          python3 "$src/package-mobile-review.py" player mobile "$src/review-mobile-template.html" '91b8de9874aed87219d733efa6e8e0aa56207f1e' '91b8de9-m2'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: corona-private-mobile-package
+          path: mobile/
+          retention-days: 7
+  webkit:
+    needs: package-private
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: corona-private-mobile-package
+          path: mobile
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exercise actual Unity WebGL on desktop WebKit with iPhone 13 emulation
+        run: |
+          set -euo pipefail
+          export VALORIA_TEST_EDITION=91b8de9-m2
+          python -m pip install -q playwright==1.56.0
+          python -m playwright install webkit
+          python -u tools/valoria-modular25d/corona-name-webkit-qa.py
+      - if: failure()
+        run: |
+          /usr/bin/log show --last 6m --style compact --predicate '(process CONTAINS[c] "WebKit.GPU" OR process == "kernel") AND (eventMessage CONTAINS[c] "GPU" OR eventMessage CONTAINS[c] "memory" OR eventMessage CONTAINS[c] "fault" OR eventMessage CONTAINS[c] "terminate")' | tail -65 || true
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: corona-webkit-name-and-first-journey
+          path: evidence-webkit/
+          retention-days: 14
