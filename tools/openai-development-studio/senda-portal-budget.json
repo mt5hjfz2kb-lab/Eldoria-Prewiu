@@ -22,12 +22,15 @@
     {
       "id": "senda-breach-landmark-v1",
       "reserve_usd": "1.45",
-      "status": "authorized_once",
-      "run_id": "senda-breach-landmark-v1",
-      "reason": "High-impact separate geological Breach landmark; current owner request and existing ceiling."
+      "status": "executed",
+      "run_id": 45771904456,
+      "reason": "High-impact separate geological Breach landmark; current owner request and existing ceiling.",
+      "estimated_usd": "0.07791050",
+      "result_artifact_id": 15094351746,
+      "quality_result": "Generated geological landmark, alpha inspected and archived; runtime visual acceptance pending."
     }
   ],
-  "estimated_total_usd": "0.07706800",
-  "cumulative_pr195_estimated_usd": "0.25250825",
+  "estimated_total_usd": "0.15497850",
+  "cumulative_pr195_estimated_usd": "0.33041875",
   "billing_verified": false
 }
