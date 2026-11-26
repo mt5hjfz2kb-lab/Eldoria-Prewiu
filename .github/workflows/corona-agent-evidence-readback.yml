@@ -1,0 +1,37 @@
+name: Corona - verify direct agent implementation and evidence
+on:
+  push:
+    branches: [candidate/corona-auxiliary-modals-20261126]
+    paths: ['.github/workflows/corona-agent-evidence-readback.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read exact results from completed direct agent run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          run=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/45812100129")
+          test "$(jq -r .head_sha <<< "$run")" = "3cdbc481b2e5d65a38bede3c3c560f56c4d1f622"
+          test "$(jq -r .conclusion <<< "$run")" = success
+          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-art-plan --dir plan
+          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-implementation --dir applied
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          plan=json.loads(pathlib.Path('plan/plan.json').read_text())
+          applied=json.loads(pathlib.Path('applied/applied.json').read_text())
+          receipt=json.loads(pathlib.Path('plan/plan-reservation.json').read_text())
+          refs=json.loads(pathlib.Path('plan/reference-manifest.json').read_text())
+          assert set(plan['choices'])==set(applied['choices'])
+          assert applied['agent_plan_applied'] and not applied['mechanics_edited']
+          print('CORONA_VERIFIED_PLAN',json.dumps(plan,ensure_ascii=False))
+          print('CORONA_VERIFIED_APPLIED',json.dumps(applied,ensure_ascii=False))
+          print('CORONA_VERIFIED_RECEIPT',json.dumps(receipt,ensure_ascii=False))
+          print('CORONA_VERIFIED_REFERENCE_MANIFEST',json.dumps(refs,ensure_ascii=False))
+          print('CORONA_PATCH_BYTES',pathlib.Path('applied/agent-implementation.patch').stat().st_size)
+          PY
