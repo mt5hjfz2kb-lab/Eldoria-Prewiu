@@ -18,6 +18,13 @@
       "estimated_usd": "0.07706800",
       "result_artifact_id": 15070712509,
       "quality_result": "Auditor rejected direct cladding due to contour mismatch; actual alpha inspection confirms transparent aperture. Independent physical extrusion adaptation required. No art approval."
+    },
+    {
+      "id": "senda-breach-landmark-v1",
+      "reserve_usd": "1.45",
+      "status": "authorized_once",
+      "run_id": "senda-breach-landmark-v1",
+      "reason": "High-impact separate geological Breach landmark; current owner request and existing ceiling."
     }
   ],
   "estimated_total_usd": "0.07706800",
