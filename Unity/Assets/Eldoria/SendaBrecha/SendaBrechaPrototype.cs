@@ -63,7 +63,11 @@ namespace Eldoria.SendaBrecha
         public GameObject CanonicalAldric, CanonicalTower, CanonicalWall, CanonicalGate, CanonicalSpawnling;
         public AnimationClip CanonicalWalk, CanonicalAttack, GuardWalk, GuardAttack;
         public GameObject CanonicalGuard;
-        public Texture2D StudioSlate, CanonicalBastion, CanonicalRuinA, CanonicalRuinB;
+        public Texture2D StudioSlate, StudioBreach, StudioPortal, CanonicalBastion, CanonicalRuinA, CanonicalRuinB;
+        public bool NativeBreachInstalled {get;private set;}
+        public int StudioPortalCount {get;private set;}
+        public int ActorShadowCasters {get;private set;}
+        private readonly MaterialPropertyBlock portalProps=new MaterialPropertyBlock();
         public int NativeGuardRigs {get;private set;}
         public int GuardTriangles {get;private set;}
         public bool SlateInstalled {get;private set;}
@@ -97,7 +101,7 @@ namespace Eldoria.SendaBrecha
         private int shotCursor;
         private bool initialized;
         private float sessionSpeed = 1f;
-        private readonly Color night = new Color(.17f, .22f, .31f);
+        private readonly Color night = new Color(.25f, .29f, .38f);
         private Transform[][] soldierLimbs, enemyLimbs;
         private Transform[] laneMarkers;
         private UnityEngine.Mesh taperedMesh;
@@ -190,6 +194,7 @@ namespace Eldoria.SendaBrecha
                 shots[i].transform.localRotation = Quaternion.Euler(90,0,0);
             }
             InstallCanonicalModels();
+            ConfigureActorShadows();
             RefreshWorld();
         }
         private void Awake() { Initialize(); }
@@ -200,18 +205,19 @@ namespace Eldoria.SendaBrecha
             SceneCamera = cameraObject.AddComponent<Camera>();
             SceneCamera.fieldOfView = 49;
             SceneCamera.nearClipPlane = .18f;
-            SceneCamera.farClipPlane = 95;
-            SceneCamera.clearFlags = CameraClearFlags.SolidColor;
+            SceneCamera.farClipPlane = 150;
+            var skyShader=Shader.Find("Eldoria/Senda/Sky");if(skyShader){var sky=new Material(skyShader);canonicalMaterials.Add(sky);RenderSettings.skybox=sky;}
+            SceneCamera.clearFlags = RenderSettings.skybox?CameraClearFlags.Skybox:CameraClearFlags.SolidColor;
             SceneCamera.backgroundColor = night;
             SceneCamera.transform.localPosition = new Vector3(0, 7.8f, -13.7f);
             SceneCamera.transform.LookAt(new Vector3(0,1.5f,15f));
             var sun = new GameObject("Slanted cold-sun with warm highlights");
             sun.transform.SetParent(world,false);
             var light = sun.AddComponent<Light>();
-            light.type=LightType.Directional; light.color=new Color(.91f,.82f,.75f);
-            light.intensity=1.25f;
+            light.type=LightType.Directional; light.color=new Color(1f,.83f,.65f);
+            light.intensity=1.45f;light.shadows=LightShadows.Soft;light.shadowStrength=.72f;light.shadowBias=.035f;light.shadowNormalBias=.24f;
             var cool=Empty("Sky rim",world,Vector3.zero);var fill=cool.gameObject.AddComponent<Light>();fill.type=LightType.Directional;fill.color=new Color(.65f,.76f,1);fill.intensity=.42f;cool.rotation=Quaternion.Euler(32,140,0);
-            sun.transform.rotation=Quaternion.Euler(51,-37,0);
+            sun.transform.rotation=Quaternion.Euler(54,140,0);
             var rimObject = new GameObject("Rift fill");rimObject.transform.SetParent(world,false);
             var rim=rimObject.AddComponent<Light>();rim.type=LightType.Point;
             rim.color=new Color(.43f,.25f,.68f);rim.range=13;rim.intensity=2.1f;
@@ -221,7 +227,7 @@ namespace Eldoria.SendaBrecha
             RenderSettings.fog=true;
             RenderSettings.fogColor=night;
             RenderSettings.fogMode=FogMode.ExponentialSquared;
-            RenderSettings.fogDensity=.016f;
+            RenderSettings.fogDensity=.0115f;
         }
         // Shared tapered geometry (one reusable mesh) and deterministic textured
         // materials replace the flat primitive-demo look. No external art or gameplay dependencies.
@@ -312,15 +318,15 @@ namespace Eldoria.SendaBrecha
                 }
                 else
                 {
-                    float v=.82f+(i%5)*.14f;
+                    float v=.80f+(i%7)*.12f;
                     if(CanonicalPines!=null&&CanonicalPines.Length>0&&CanonicalPines[i%CanonicalPines.Length])
                     {
                         var sprite=GameObject.CreatePrimitive(PrimitiveType.Quad);
                         sprite.name="Valoria original painted pine / world plane";sprite.transform.SetParent(scenic,false);
                         sprite.transform.localPosition=new Vector3(0,2.4f*v,0);sprite.transform.localScale=new Vector3(2.8f*v,4.8f*v,1);
-                        sprite.transform.localRotation=Quaternion.Euler(0,180,0);
-                        var shader=Shader.Find("Unlit/Transparent Cutout");if(!shader)shader=Shader.Find("Sprites/Default");
-                        var m=new Material(shader);m.mainTexture=CanonicalPines[i%CanonicalPines.Length];canonicalMaterials.Add(m);
+                        sprite.transform.localRotation=Quaternion.identity;
+                        var shader=Shader.Find("Eldoria/Senda/WorldSprite");if(!shader)throw new InvalidOperationException("World foliage shader unavailable");
+                        var m=new Material(shader){mainTexture=CanonicalPines[i%CanonicalPines.Length],color=new Color(.62f,.73f,.69f,1f)};canonicalMaterials.Add(m);
                         sprite.GetComponent<MeshRenderer>().sharedMaterial=m;
                         var col=sprite.GetComponent<Collider>();if(col){if(UnityEngine.Application.isPlaying)Destroy(col);else DestroyImmediate(col);}
                         CanonicalFoliageCount++;
@@ -339,6 +345,7 @@ namespace Eldoria.SendaBrecha
             }
             environment=features.ToArray();
             AddValoriaLandmarks(parent);
+            if(CanonicalPines!=null&&CanonicalPines.Length==3)for(int layer=0;layer<3;layer++)for(int i=0;i<14;i++){int side=i%2==0?-1:1;Landmark("Distant Valoria forest",CanonicalPines[(i+layer)%3],new Vector3(side*(8.1f+(i/2)*3.7f),0,59+layer*18+(i%4)*4),4.8f+layer*3.2f+(i%5)*.46f,new Color(.42f+layer*.035f,.53f+layer*.02f,.58f+layer*.025f,1));}
             for(int n=0;n<9;n++)foreach(int side in new[]{-1,1})
             {
                 float z=2+n*11.9f,x=side*4.55f;
@@ -402,13 +409,14 @@ namespace Eldoria.SendaBrecha
                 rock.transform.localRotation=Quaternion.Euler(i*3,i*31,0);
             }
             var fissure=Empty("Brecha geological outcrop",parent,new Vector3(10,0,43));
-            for(int i=0;i<9;i++){
+            for(int i=0;i<9 && !StudioBreach;i++){
                 var r=Taper("Fractured bedrock",fissure,new Vector3(-3+i*.72f,1.5f+(i%3)*.37f,(i%4)*.6f),new Vector3(1.8f,4.4f+(i%4)*.7f,2),new Color(.19f,.19f,.25f));
                 r.transform.localRotation=Quaternion.Euler(0,i*29,(i-4)*7);
                 var shard=Taper("Violet crystal rooted in terrain",fissure,new Vector3(-2.6f+i*.62f,1.45f+(i%3)*.8f,-.7f),new Vector3(.6f,2.8f+(i%3)*.7f,.65f),new Color(.52f,.30f,.73f),.25f);
                 shard.transform.localRotation=Quaternion.Euler(0,i*24,(i-4)*5);
                 shard.GetComponent<MeshRenderer>().sharedMaterial=Mat(new Color(.52f,.30f,.73f),.25f,.25f,true);
             }
+            if(StudioBreach)NativeBreachInstalled=Landmark("Studio geological Breach landmark",StudioBreach,new Vector3(10.7f,.10f,54),12.8f,new Color(.85f,.84f,.94f,1));
             for(int i=0;i<8;i++){
                 int side=i%2==0?-1:1;var pole=Empty("Valorian expedition standard",parent,new Vector3(side*4.75f,0,5+(i/2)*12.5f));
                 Mesh("Bronze pole",PrimitiveType.Cylinder,pole,new Vector3(0,1.65f,0),new Vector3(.11f,1.65f,.11f),new Color(.43f,.34f,.22f),.4f);
@@ -441,13 +449,13 @@ namespace Eldoria.SendaBrecha
             wrapper.localRotation=Quaternion.Euler(0,yaw,0);
             return model;
         }
-        private bool Landmark(string name,Texture2D tex,Vector3 foot,float height)
+        private bool Landmark(string name,Texture2D tex,Vector3 foot,float height,Color? tint=null)
         {
             if(!tex)return false;
             var g=GameObject.CreatePrimitive(PrimitiveType.Quad);g.name=name;g.transform.SetParent(world,false);
             g.transform.localPosition=foot+Vector3.up*height*.5f;g.transform.localScale=new Vector3(height*tex.width/tex.height,height,1);
-            var shader=Shader.Find("Sprites/Default");if(!shader)throw new InvalidOperationException("Valoria sprite material unavailable");
-            var mat=new Material(shader){mainTexture=tex,color=new Color(.76f,.80f,.84f,1)};canonicalMaterials.Add(mat);g.GetComponent<MeshRenderer>().sharedMaterial=mat;
+            var shader=Shader.Find("Eldoria/Senda/WorldSprite");if(!shader)throw new InvalidOperationException("Valoria sprite material unavailable");
+            var mat=new Material(shader){mainTexture=tex,color=tint??new Color(.86f,.88f,.88f,1)};canonicalMaterials.Add(mat);g.GetComponent<MeshRenderer>().sharedMaterial=mat;
             var c=g.GetComponent<Collider>();if(c){if(UnityEngine.Application.isPlaying)Destroy(c);else DestroyImmediate(c);}return true;
         }
         private static Transform Bone(GameObject model,string name)
@@ -509,7 +517,7 @@ namespace Eldoria.SendaBrecha
                 for(int i=1;i<soldierBodies.Length;i++)guardModels[i]=CreateGuard(soldierBodies[i],false);
                 for(int i=1;i<enemies.Length;i++)enemyGuards[i]=CreateGuard(enemies[i].transform,true);
             }
-            if(Landmark("Original painted Bastion",CanonicalBastion,new Vector3(-10.4f,3,46),11))CanonicalArchitectureCount++;
+            if(Landmark("Original painted Bastion",CanonicalBastion,new Vector3(-10.0f,2.8f,49),11.3f))CanonicalArchitectureCount++;
             else if(FitCanonical(CanonicalGate,world,8.5f,new Vector3(-8.5f,2.8f,41),180))CanonicalArchitectureCount++;
             if(Landmark("Valoria ruins west",CanonicalRuinA,new Vector3(5.5f,0,13),5))CanonicalArchitectureCount++;
             else if(FitCanonical(CanonicalTower,world,10,new Vector3(-12.7f,2.8f,42),180))CanonicalArchitectureCount++;
@@ -531,8 +539,60 @@ namespace Eldoria.SendaBrecha
             ids.AddRange(new[]{0,2,1,1,2,3,12,13,14,13,15,14});
             var mesh=new UnityEngine.Mesh{name="Senda radial masonry segment"};mesh.SetVertices(v);mesh.SetTriangles(ids,0);mesh.RecalculateNormals();mesh.RecalculateBounds();archMeshes.Add(mesh);return mesh;
         }
+        private void ConfigureActorShadows()
+        {
+            foreach(var r in world.GetComponentsInChildren<Renderer>(true)){r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;r.receiveShadows=r.gameObject.name=="Worn slate roadway";}
+            foreach(var r in world.GetComponentsInChildren<SkinnedMeshRenderer>(true)){
+                if(!r.name.Contains("SirAldric_Tripo")&&!r.name.Contains("Cape_Main"))continue;
+                r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;ActorShadowCasters++;
+            }
+        }
+        private UnityEngine.Mesh PortalFace(float[] coords,int[] tris,bool aperture)
+        {
+            int n=coords.Length/2;var verts=new Vector3[aperture?n:n*2];var uv=new Vector2[verts.Length];var indices=new List<int>();
+            for(int i=0;i<n;i++){
+                float x=coords[2*i],y=coords[2*i+1];
+                verts[i]=new Vector3(x*SendaPortalGeometry.Width,y*SendaPortalGeometry.Height,aperture?.03f:-SendaPortalGeometry.Depth*.5f);
+                var rect=SendaPortalGeometry.Bounds;
+                uv[i]=aperture?new Vector2(x+.5f,y):new Vector2((rect.x+(x+.5f)*(rect.width-1))/1024f,1-(rect.y+(1-y)*(rect.height-1))/1024f);
+                if(!aperture){verts[n+i]=new Vector3(verts[i].x,verts[i].y,SendaPortalGeometry.Depth*.5f);uv[n+i]=uv[i];}
+            }
+            for(int i=0;i<tris.Length;i+=3){indices.Add(tris[i]);indices.Add(tris[i+2]);indices.Add(tris[i+1]);if(!aperture){indices.Add(n+tris[i]);indices.Add(n+tris[i+1]);indices.Add(n+tris[i+2]);}}
+            var m=new UnityEngine.Mesh{name=aperture?"Measured magical aperture":"Exact Valoria portal front/back"};m.vertices=verts;m.uv=uv;m.triangles=indices.ToArray();m.RecalculateNormals();m.RecalculateBounds();archMeshes.Add(m);return m;
+        }
+        private UnityEngine.Mesh PortalSides()
+        {
+            var coords=SendaPortalGeometry.Outer;int n=coords.Length/2;var v=new List<Vector3>();var uv=new List<Vector2>();var tri=new List<int>();
+            for(int i=0;i<n;i++){
+                int j=(i+1)%n,k=v.Count;float x=coords[2*i]*SendaPortalGeometry.Width,y=coords[2*i+1]*SendaPortalGeometry.Height;
+                float x2=coords[2*j]*SendaPortalGeometry.Width,y2=coords[2*j+1]*SendaPortalGeometry.Height;float z=SendaPortalGeometry.Depth*.5f;
+                v.AddRange(new[]{new Vector3(x,y,-z),new Vector3(x2,y2,-z),new Vector3(x2,y2,z),new Vector3(x,y,z)});
+                uv.AddRange(new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up});tri.AddRange(new[]{k,k+1,k+2,k,k+2,k+3});
+            }
+            var m=new UnityEngine.Mesh{name="Physical extruded masonry sides .42m"};m.SetVertices(v);m.SetUVs(0,uv);m.SetTriangles(tri,0);m.RecalculateNormals();m.RecalculateBounds();archMeshes.Add(m);return m;
+        }
+        private void BuildStudioPortal(Transform parent)
+        {
+            var frontShader=Shader.Find("Eldoria/Senda/WorldSprite");var energyShader=Shader.Find("Eldoria/Senda/PortalEnergy");
+            if(!frontShader||!energyShader)throw new InvalidOperationException("Studio portal shaders unavailable");
+            var f=Empty("Studio portal physical facade",parent,Vector3.zero);
+            f.gameObject.AddComponent<MeshFilter>().sharedMesh=PortalFace(SendaPortalGeometry.Outer,SendaPortalGeometry.OuterTriangles,false);
+            var face=new Material(frontShader){mainTexture=StudioPortal,color=new Color(.94f,.93f,.91f,1)};canonicalMaterials.Add(face);
+            f.gameObject.AddComponent<MeshRenderer>().sharedMaterial=face;
+            var side=Empty("Studio portal extruded stone sides",parent,Vector3.zero);side.gameObject.AddComponent<MeshFilter>().sharedMesh=PortalSides();
+            side.gameObject.AddComponent<MeshRenderer>().sharedMaterial=Mat(new Color(.36f,.33f,.28f));
+            var aperture=Empty("Rift blade",parent,Vector3.zero);aperture.gameObject.AddComponent<MeshFilter>().sharedMesh=PortalFace(SendaPortalGeometry.Opening,SendaPortalGeometry.OpeningTriangles,true);
+            var energy=new Material(energyShader);canonicalMaterials.Add(energy);aperture.gameObject.AddComponent<MeshRenderer>().sharedMaterial=energy;
+            Mesh("Gate inscription bronze rim",PrimitiveType.Cube,parent,new Vector3(0,2.08f,-.27f),new Vector3(1.68f,.74f,.08f),new Color(.69f,.53f,.30f),.45f);
+            Mesh("Gate inscription dark plaque",PrimitiveType.Cube,parent,new Vector3(0,2.08f,-.32f),new Vector3(1.60f,.66f,.04f),new Color(.07f,.15f,.18f));
+            var inscription=Empty("Actual numbered gate label",parent,new Vector3(0,2.08f,-.36f));
+            var text=inscription.gameObject.AddComponent<TextMesh>();text.text="REFUERZOS\n+10";text.fontSize=100;text.characterSize=.027f;
+            text.anchor=TextAnchor.MiddleCenter;text.alignment=TextAlignment.Center;text.color=new Color(.99f,.94f,.80f);
+            StudioPortalCount++;
+        }
         private void BuildGate(Transform parent)
         {
+            if(StudioPortal){BuildStudioPortal(parent);return;}
             var masonry=new Color(.43f,.39f,.33f);
             foreach(int side in new[]{-1,1})
             {
@@ -675,9 +735,9 @@ namespace Eldoria.SendaBrecha
                 Color c=gate.Type==GateType.Trap?new Color(.69f,.22f,.31f):gate.Type==GateType.Power?
                     new Color(.72f,.53f,.24f):gate.Type==GateType.Ward?new Color(.46f,.25f,.72f):new Color(.14f,.49f,.48f);
                 var blade=portals[i].transform.Find("Rift blade")?.GetComponent<MeshRenderer>();
-                if(blade)blade.sharedMaterial=Mat(c,.12f,.38f,false);
+                if(blade){if(StudioPortal){blade.GetPropertyBlock(portalProps);portalProps.SetColor("_Tint",c*1.5f);portalProps.SetFloat("_Phase",Elapsed);blade.SetPropertyBlock(portalProps);}else blade.sharedMaterial=Mat(c,.12f,.38f,false);}
                 var label=portals[i].GetComponentInChildren<TextMesh>();
-                if(label){string kind=gate.Type==GateType.Trap?"TRAMPA":gate.Type==GateType.Recruit?"REFUERZOS":gate.Type==GateType.Power?"ATAQUE":"ESCUDO";label.text=gate.Label+"\n"+kind;label.color=new Color(.97f,.92f,.79f);}
+                if(label){string kind=gate.Type==GateType.Trap?"TRAMPA":gate.Type==GateType.Recruit?"REFUERZOS":gate.Type==GateType.Power?"ATAQUE":"ESCUDO";label.text=StudioPortal?kind+"\n"+gate.Label:gate.Label+"\n"+kind;label.color=new Color(.97f,.92f,.79f);}
             }
             bool showEnemies=running && StageTime>=FightStart && StageTime<WaveLength;
             float enemyTravel=Mathf.Clamp01((StageTime-FightStart)/(FightResolve-FightStart));

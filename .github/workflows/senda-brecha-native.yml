@@ -178,6 +178,11 @@ jobs:
           $slate=Join-Path $env:GITHUB_WORKSPACE 'tools/senda-brecha/visual-3d/art/senda-worn-slate.png'
           if((Get-FileHash -LiteralPath $slate -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'd61cc7c6a9b171d7168d0385c89f52f44364ca895f425c042c3a292bdadfb4d5'){throw 'Studio slate mismatch'}
           Copy-Item -LiteralPath $slate -Destination $assetRoot
+          $art=Join-Path $env:GITHUB_WORKSPACE 'tools/senda-brecha/visual-3d/art'
+          foreach($pair in @(@('senda-breach-landmark.png','0e7145b9a6c0a3a5b81936a0499a4ef0197225da63d6797aa39b3f0c154212ad'),@('senda-valoria-portal.png','d748cef798a69403f3b49fc48725e0c0eb1524b299b1b963f7eac5a8f57d33d9'))){
+            $asset=Join-Path $art $pair[0];if((Get-FileHash -LiteralPath $asset -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pair[1]){throw 'Studio art digest mismatch'}
+            Copy-Item -LiteralPath $asset -Destination $assetRoot
+          }
           Write-Host 'SENDA_ORIGINAL_ASSETS_PINNED: exact original verified, only temporary Aldric import adds proven normals'
 
           "mini=$mini" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
@@ -198,7 +203,7 @@ jobs:
           $report=Join-Path $out 'proof.json'
           if(-not(Test-Path -LiteralPath $report)){throw 'Real Unity proof report absent; Editor exit alone is not success'}
           $p=Get-Content $report -Raw | ConvertFrom-Json
-          if($p.nativeGuardRigs -ne 24 -or $p.guardTriangles -lt 1000 -or $p.guardTriangles -gt 12000 -or !$p.slateInstalled -or $p.originalAldricSkins -lt 1 -or $p.originalArchitecture -ne 3 -or $p.originalFoliage -lt 25 -or !$p.originalEnemy -or !$p.originalAnimationSampled -or $p.capturedPng -ne 9 -or !$p.positiveGateChangesVisibleActors -or !$p.victoryRouteChecked -or !$p.defeatRouteChecked -or
+          if(!$p.studioBreachInstalled -or $p.studioPortalCount -ne 3 -or $p.actorShadowCasters -lt 11 -or $p.nativeGuardRigs -ne 24 -or $p.guardTriangles -lt 1000 -or $p.guardTriangles -gt 12000 -or !$p.slateInstalled -or $p.originalAldricSkins -lt 1 -or $p.originalArchitecture -ne 3 -or $p.originalFoliage -lt 25 -or !$p.originalEnemy -or !$p.originalAnimationSampled -or $p.capturedPng -ne 9 -or !$p.positiveGateChangesVisibleActors -or !$p.victoryRouteChecked -or !$p.defeatRouteChecked -or
              $p.result -ne 'VictoryAndDefeatNativeSimulationPass' -or $p.mainSceneModified -or $p.artApproved -or $p.physicalIphoneTested){throw 'Exact event native proof contract failed'}
           $png=@(Get-ChildItem -LiteralPath $out -Filter '*.png')
           if($png.Count -ne 9){throw "Expected 9 independent GPU PNG images, got $($png.Count)"}

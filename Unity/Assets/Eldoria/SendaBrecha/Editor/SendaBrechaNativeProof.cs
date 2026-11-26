@@ -28,7 +28,8 @@ namespace Eldoria.SendaBrecha.Editor
             public bool artApproved;
             public int capturedPng;
             public int originalAldricSkins, originalArchitecture, originalFoliage, nativeGuardRigs, guardTriangles;
-            public bool slateInstalled;
+            public bool slateInstalled,studioBreachInstalled;
+            public int studioPortalCount,actorShadowCasters;
             public bool originalEnemy, originalAnimationSampled;
             public bool positiveGateChangesVisibleActors;
             public bool victoryRouteChecked;
@@ -113,6 +114,8 @@ namespace Eldoria.SendaBrecha.Editor
             game.CanonicalAldric=Canonical<GameObject>(hero,heroPath);
             game.CanonicalGuard=AssetDatabase.LoadAssetAtPath<GameObject>(Mini+"Valoria_Guard_Rigged_LOD.glb");
             game.StudioSlate=AssetDatabase.LoadAssetAtPath<Texture2D>(Mini+"senda-worn-slate.png");
+            game.StudioBreach=AssetDatabase.LoadAssetAtPath<Texture2D>(Mini+"senda-breach-landmark.png");
+            game.StudioPortal=AssetDatabase.LoadAssetAtPath<Texture2D>(Mini+"senda-valoria-portal.png");
             game.CanonicalBastion=Canonical<Texture2D>("bastion_i.png",Full+"bastion_i.png");
             game.CanonicalRuinA=Canonical<Texture2D>("ruin_arch_0.png",Full+"ruin_arch_0.png");
             game.CanonicalRuinB=Canonical<Texture2D>("ruin_arch_1.png",Full+"ruin_arch_1.png");
@@ -169,8 +172,10 @@ namespace Eldoria.SendaBrecha.Editor
                 var root=new GameObject("SendaBrecha isolated native QA root");
                 var game=root.AddComponent<SendaBrechaPrototype>();
                 ConfigureCanonical(game);
-                Need(game.CanonicalAldric&&game.CanonicalWalk&&game.CanonicalAttack&&game.CanonicalPaving&&game.CanonicalMeadow&&game.CanonicalCrest&&game.CanonicalPanel&&game.CanonicalGuard&&game.GuardWalk&&game.GuardAttack&&game.StudioSlate&&game.CanonicalBastion&&game.CanonicalRuinA&&game.CanonicalRuinB,"Original imported assets / clips missing");
+                Need(game.CanonicalAldric&&game.CanonicalWalk&&game.CanonicalAttack&&game.CanonicalPaving&&game.CanonicalMeadow&&game.CanonicalCrest&&game.CanonicalPanel&&game.CanonicalGuard&&game.GuardWalk&&game.GuardAttack&&game.StudioSlate&&game.CanonicalBastion&&game.CanonicalRuinA&&game.CanonicalRuinB&&game.StudioBreach&&game.StudioPortal,"Original imported assets / clips missing");
+                QualitySettings.shadows=ShadowQuality.All;QualitySettings.shadowDistance=38;QualitySettings.shadowResolution=ShadowResolution.Medium;
                 game.Initialize();
+                Need(game.NativeBreachInstalled&&game.StudioPortalCount==3&&game.ActorShadowCasters>10,"Native landmark, actual portal contour and actor shadows required");
                 Need(game.CanonicalSkinCount>0&&game.CanonicalArchitectureCount==3&&game.CanonicalFoliageCount>25&&game.CanonicalEnemyInstalled&&game.CanonicalAnimationSampled&&game.NativeGuardRigs==24&&game.GuardTriangles>1000&&game.GuardTriangles<=12000&&game.SlateInstalled,"Original guard rigs and Studio slate not installed in real scene");
                 Need(game.SceneCamera!=null && game.SceneCamera.gameObject.scene==SceneManager.GetActiveScene(),
                     "Generated camera must belong to isolated scene");
@@ -228,7 +233,7 @@ namespace Eldoria.SendaBrecha.Editor
                 var report=new ProofReport
                 {
                     mainSceneModified=false,physicalIphoneTested=false,artApproved=false,
-                    nativeGuardRigs=game.NativeGuardRigs,guardTriangles=game.GuardTriangles,slateInstalled=game.SlateInstalled,originalAldricSkins=game.CanonicalSkinCount,originalArchitecture=game.CanonicalArchitectureCount,originalFoliage=game.CanonicalFoliageCount,originalEnemy=game.CanonicalEnemyInstalled,originalAnimationSampled=game.CanonicalAnimationSampled,
+                    studioBreachInstalled=game.NativeBreachInstalled,studioPortalCount=game.StudioPortalCount,actorShadowCasters=game.ActorShadowCasters,nativeGuardRigs=game.NativeGuardRigs,guardTriangles=game.GuardTriangles,slateInstalled=game.SlateInstalled,originalAldricSkins=game.CanonicalSkinCount,originalArchitecture=game.CanonicalArchitectureCount,originalFoliage=game.CanonicalFoliageCount,originalEnemy=game.CanonicalEnemyInstalled,originalAnimationSampled=game.CanonicalAnimationSampled,
                     capturedPng=9,finalSoldiers=victorySoldiers,totalStages=6,
                     positiveGateChangesVisibleActors=true,victoryRouteChecked=true,defeatRouteChecked=true,
                     result="VictoryAndDefeatNativeSimulationPass"
