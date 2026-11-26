@@ -32,7 +32,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
         static readonly List<Control> Controls=new List<Control>();
         static readonly List<string> Checks=new List<string>();
         static readonly List<string> Defects=new List<string>();
-        [Serializable] sealed class Frame {public string file,sha256,fixture,variant;public int width,height;public bool actualCamera,playMode;public int t1,t2;public string selectedHero;public long revision;}
+        [Serializable] sealed class Frame {public string file,sha256,fixture,variant;public int width,height;public bool actualCamera,playMode;public int t1,t2,selectedQuantity,selectedTier;public string selectedHero;public long revision;public string[] metrics;}
         [Serializable] sealed class Control {public string frame,name;public float width,height;public bool interactable,hit;}
         [Serializable] sealed class Report {public string sourceSha,engine,engineVersion,prefabPath,assetSha;public bool actualPrefab,actualGateway,artApproved,physicalIphone,fullBrowserJourney;public Frame[] frames;public Control[] controls;public string[] checks,defects;}
         sealed class Clock:IClock {public long UtcTicks{get;set;}=new DateTime(2026,11,26,12,0,0,DateTimeKind.Utc).Ticks;}
@@ -238,7 +238,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             finally{RenderTexture.active=prev;Object.Destroy(tex);}
             string file=fixture+"-"+variant+".png";File.WriteAllBytes(Path.Combine(Out,file),bytes);
             Need(bytes.Length>12000,"Actual native camera PNG "+file);
-            var s=gateway.Snapshot();Frames.Add(new Frame{file=file,sha256=Digest(bytes),fixture=fixture,variant=variant,width=width,height=height,actualCamera=true,playMode=EditorApplication.isPlaying,t1=s.Available.ArcherT1,t2=s.Available.ArcherT2,selectedHero=s.PreparedHeroId,revision=s.Revision});
+            var s=gateway.Snapshot();
+            var allText=manager.VisibleRoot.GetComponentsInChildren<Text>(true);
+            var metricText=new string[6];
+            for(int i=0;i<6;i++)
+            {
+                var value=allText.First(t=>t.name=="March / live metric "+i);
+                var caption=allText.FirstOrDefault(t=>t.name=="Studio / real metric label "+i&&t.gameObject.activeInHierarchy);
+                metricText[i]=caption?caption.text+"\n"+value.text:value.text;
+            }
+            Frames.Add(new Frame{file=file,sha256=Digest(bytes),fixture=fixture,variant=variant,width=width,height=height,actualCamera=true,playMode=EditorApplication.isPlaying,t1=s.Available.ArcherT1,t2=s.Available.ArcherT2,selectedHero=s.PreparedHeroId,revision=s.Revision,selectedQuantity=manager.SelectedQuantity,selectedTier=manager.SelectedTier,metrics=metricText});
             foreach(var button in manager.VisibleRoot.GetComponentsInChildren<Button>(false))
             {
                 if(!button.gameObject.activeInHierarchy)continue;

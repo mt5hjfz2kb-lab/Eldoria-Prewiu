@@ -157,7 +157,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 var card=(RectTransform)heroSlotButtons[i].transform;
                 Place(card,14+i*(cardW+cardGap),cardTop,cardW,cardH);
                 HideDecorations(card);
-                StudioPlate("hero slot "+i,card,1,1,cardW-2,cardH-2,i==0?new Color32(31,57,64,255):StudioInk);
+                StudioPlate("hero slot "+i,card,1,1,cardW-2,cardH-2,i==0?(Color)new Color32(31,57,64,255):StudioInk);
                 float captionH=90f,artW2=cardW-12,artH2=cardH-captionH-10;
                 Place(heroPortraitViewports[i],6,6,artW2,artH2);
                 var sprite=approvedHeroes[i].sprite;
@@ -227,7 +227,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(cap.rectTransform,4,4,tileW-8,tileH*.34f);
                 var value=marchMetricValues[i];
                 Place(value.rectTransform,4,tileH*.35f,tileW-8,tileH*.60f);
-                StudioText(value,38,i==2?StudioBrass:CoronaFinish.Ivory,TextAnchor.MiddleCenter);
+                StudioText(value,38,i==2?StudioBrass:(Color)CoronaFinish.Ivory,TextAnchor.MiddleCenter);
             }
             float sy=rh-statusH-4f;
             StudioPlate("readiness strip",right,12,sy,rw-24,statusH-6,StudioSlate);

@@ -1,0 +1,186 @@
+name: Studio March corrected native pilot and blind measurement
+on:
+  push:
+    branches: [candidate/corona-march-studio-r2-20261126]
+    paths: ['.github/workflows/corona-march-studio-r2-native.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  native-march:
+    if: >-
+      ${{ github.run_attempt == 1 && github.event.before == '6a6bc8d219de95d423d5743609fcf84cba089173' && github.event.head_commit.message == 'Studio: run corrected portrait-preserving native March A-B and blind scoring' }}
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    concurrency:
+      group: eldoria-modular25d-exclusive-unity-native
+      cancel-in-progress: false
+    timeout-minutes: 65
+    env:
+      MARCH_STUDIO_SOURCE_SHA: ${{ github.sha }}
+    steps:
+      - name: Recheck owner, Windows process safety and installed Unity
+        shell: powershell
+        env:
+          GH_TOKEN: ${{github.token}}
+        run: |
+          $ErrorActionPreference='Stop'
+          $api="https://api.github.com/repos/$env:GITHUB_REPOSITORY/"
+          $h=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json'}
+          $meta=Invoke-RestMethod -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main') -Headers $h
+          $blob=Invoke-RestMethod -Uri ($api+'git/blobs/'+$meta.sha) -Headers $h
+          if($blob.sha -ne $meta.sha){throw 'Registry changed unexpectedly'}
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
+          $held=@($reg.active|Where-Object{@($_.resources) -contains 'windows-runner-heavy'})
+          $id='eldoria-valoria-modular25d-bastion1-20261119'
+          if($held.Count -ne 1 -or $held[0].id -ne $id -or $held[0].ownership_revision -ne 16 -or
+             $held[0].owner -ne 'chatgpt-corona-brecha-commercial-20261126' -or
+             $reg.resource_rotation.current_workstream -ne $id){throw 'Lease not ours'}
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
+            throw 'Existing Windows native process: refuse interference'}
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){
+            throw 'Unity editor executable unavailable'}
+          # Do not clean another run's project, Unity cache or Library.
+          if((Get-Item $env:RUNNER_TEMP).PSDrive.Free -lt 7GB){throw 'Insufficient scratch disk'}
+          Write-Host 'SAFE_NATIVE_PC_AND_OWNER_PASS'
+      - name: Restore GitHub Desktop Git to PATH for Unity Package Manager
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $paths=@(Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object{Test-Path $_})
+            if(-not $paths.Count){throw 'No installed Git; do not download software'}
+            $dir=Split-Path $paths[0]
+            $env:PATH="$dir;$env:PATH"
+          } else {$dir=Split-Path $git.Source}
+          Add-Content -Path $env:GITHUB_PATH -Value $dir
+          git --version
+      - name: Materialize source-pinned isolated Unity project without modifying main
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:RUNNER_TEMP ('eldoria-march-studio-r2-'+$env:GITHUB_RUN_ID)
+          if(Test-Path $root){throw 'Refuse to overwrite existing scratch'}
+          git init -q $root
+          git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          # Reuse only immutable Git objects from the completed, source-pinned
+          # diagnostic checkout. Do not modify its source, index or Unity Library.
+          $prior=Join-Path $env:RUNNER_TEMP 'eldoria-march-studio-45867113963'
+          if((Test-Path (Join-Path $prior '.git/objects')) -and (git -C $prior rev-parse HEAD).Trim() -eq '0a31a5f5f00a7e4d3ec583d07c7c78adaeb6e643'){
+            $objects=(Join-Path $prior '.git/objects').Replace('\','/')
+            $alternates=Join-Path $root '.git/objects/info/alternates'
+            $objects|Set-Content -Encoding ascii $alternates
+            Write-Host 'Read-only Git object cache from exact completed diagnostic'
+          }
+          $includes=@('/docs/evidence/valoria-layered-construction-20261016/playable-entry-v3/complete-playerstate-before-reset.json','/tools/valoria-modular25d/','/tools/bastion-iii/author-frontier.py',
+           '/Unity/Assets/Experimentos/ValoriaModular25D/',
+           '/Unity/Assets/Experimentos/ValoriaModular25D.meta','/Unity/Assets/Experimentos.meta',
+           '/Unity/Assets/Eldoria/','/Unity/Assets/Eldoria.meta',
+           '/Unity/Assets/EmaceArt/Slavic World Free/Meshes/','/Unity/Assets/EmaceArt/Slavic World Free/Materials/',
+           '/Unity/Assets/EmaceArt/Slavic World Free/Texture/','/Unity/Assets/EmaceArt/Slavic World Free/URP_Support/','/Unity/Assets/EmaceArt/Slavic World Free/Prefabs/Village/Building/Shed/',
+           '/Unity/Assets/Holotna/','/Unity/Assets/Holotna.meta','/Unity/Assets/StreamingAssets/','/Unity/Assets/StreamingAssets.meta',
+           '/Unity/Assets/Plugins/','/Unity/Assets/Plugins.meta',
+           '/Unity/Assets/DefaultVolumeProfile.asset',
+           '/Unity/Assets/UniversalRenderPipelineGlobalSettings.asset',
+           '/Unity/Packages/','/Unity/ProjectSettings/')
+          git -C $root sparse-checkout set --no-cone @includes
+          if($LASTEXITCODE){throw 'Sparse checkout setup failed'}
+          git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:MARCH_STUDIO_SOURCE_SHA
+          if($LASTEXITCODE){throw 'Git fetch failed'}
+          # Windows schannel can drop a promisor-blob response near the end
+          # of an otherwise correct sparse checkout (run 44545156060).
+          # Retry only this RUN's own scratch checkout. Never reuse, delete
+          # or touch another workstream's Git/Unity folders.
+          git -C $root config http.version HTTP/1.1
+          $checkoutOk=$false
+          for($attempt=1;$attempt -le 3;$attempt++){
+            git -C $root checkout -q --detach $env:MARCH_STUDIO_SOURCE_SHA
+            if($LASTEXITCODE -eq 0){$checkoutOk=$true;break}
+            Write-Warning ('Transient promisor-blob checkout failure; same SHA retry '+$attempt)
+            Start-Sleep -Seconds (4*$attempt)
+          }
+          if(-not $checkoutOk -or (git -C $root rev-parse HEAD).Trim() -ne $env:MARCH_STUDIO_SOURCE_SHA){
+            throw 'SHA-pinned checkout unresolved after bounded retries'}
+          foreach($p in @('Unity/Packages/manifest.json','Unity/ProjectSettings/ProjectVersion.txt',
+           'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i.png',
+           'Unity/Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity',
+           'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DNativeCapture.cs')){
+             if(-not(Test-Path (Join-Path $root $p))){throw "Missing SHA-pinned Unity input $p"}
+          }
+          "MOD25D_SOURCE=$root"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "MOD25D_CHECKOUT_PINNED $env:MARCH_STUDIO_SOURCE_SHA"
+      - name: Run actual target room native A-B (no full world or WebGL rebuild)
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $env:MARCH_STUDIO_NATIVE_OUT=Join-Path $env:RUNNER_TEMP ('march-studio-proof-'+$env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Force $env:MARCH_STUDIO_NATIVE_OUT|Out-Null
+          "MARCH_STUDIO_NATIVE_OUT=$env:MARCH_STUDIO_NATIVE_OUT"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          $log=Join-Path $env:MARCH_STUDIO_NATIVE_OUT 'native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',$project,'-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.MarchStudioNativeEvidence.Capture','-logFile',$log)
+          $proc=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $proc.WaitForExit(1800000)){$proc.Kill();throw 'Targeted native proof timed out'}
+          if($proc.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 160};throw 'Actual native proof failed'}
+          $e=Get-Content (Join-Path $env:MARCH_STUDIO_NATIVE_OUT 'evidence.json') -Raw|ConvertFrom-Json
+          if($e.sourceSha -ne $env:MARCH_STUDIO_SOURCE_SHA -or $e.engineVersion -ne '6000.3.23f1' -or -not $e.actualPrefab -or -not $e.actualGateway -or $e.frames.Count -ne 6){throw 'Incomplete actual source evidence'}
+          foreach($f in $e.frames){
+            $p=Join-Path $env:MARCH_STUDIO_NATIVE_OUT $f.file
+            if(-not $f.actualCamera -or -not $f.playMode -or (Get-FileHash -Algorithm SHA256 $p).Hash.ToLowerInvariant() -ne $f.sha256){throw 'Invalid actual camera frame'}
+          }
+          Write-Host "MARCH_NATIVE_SOURCE_PROOF $env:MARCH_STUDIO_SOURCE_SHA"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: march-studio-native-evidence
+          path: ${{ env.MARCH_STUDIO_NATIVE_OUT }}/
+          if-no-files-found: warn
+
+  blind-review:
+    needs: native-march
+    if: github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/corona-art-iteration
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 1657b2caa6b1a955319538ce3a8b2906398599b3
+          path: studio-source
+          sparse-checkout: tools/openai-development-studio
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: march-studio-native-evidence
+          path: native
+      - name: Retrieve reviewed original art and references; verify prior audit was superseded
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 20); do
+            status=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/45867301712" --jq .status)
+            if [ "$status" = completed ]; then break; fi
+            sleep 10
+          done
+          test "$status" = completed
+          python3 -m pip install --quiet Pillow==11.3.0
+          gh run download 45866050061 --repo "$GITHUB_REPOSITORY" --name corona-march-original-studio-art --dir artist
+          gh run download 45812100129 --repo "$GITHUB_REPOSITORY" --name corona-agent-art-plan --dir refs
+          python3 -m py_compile tools/corona-art-iteration/march_studio_r2_review.py
+      - name: Two blind independent reviewers, exactly the reserved 0.30 USD
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python3 tools/corona-art-iteration/march_studio_r2_review.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-march-studio-r2-scorecard
+          path: review/
+          if-no-files-found: warn
