@@ -9,7 +9,7 @@ permissions:
 jobs:
   import-r4-material:
     if: >-
-      ${{ github.run_attempt == 1 && github.event.before == '5217126f5952820162d40d316b2068bd5ae2ba96' && github.event.head_commit.message == 'Implement R4 modular gallery, true tier character layers and source-pinned A/B' }}
+      ${{ github.run_attempt == 1 && github.event.before == '00e1cda024b67862729fb48a93d355c1257a94bb' && github.event.head_commit.message == 'QA: exclude 15GB historical evidence from R4 asset import; keep exact production receipts' }}
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -27,7 +27,6 @@ jobs:
           sparse-checkout: |
             tools/corona-art-iteration
             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha
-            docs/evidence
       - name: Verify exact agent receipts, grade rejected asset and import only derived original art
         id: pin
         env:
@@ -35,6 +34,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/candidate/corona-march-r4-modular25d-20261126" --jq .object.sha)" = "$GITHUB_SHA"
           test "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/45907960440" --jq .head_sha)" = "5217126f5952820162d40d316b2068bd5ae2ba96"
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/45907960440" --jq .conclusion | grep -x success
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/45907960440/artifacts" --jq '.artifacts[] | select(.id==15159060997 and .expired==false) | .id' | grep -x 15159060997
@@ -53,8 +53,8 @@ jobs:
           python3 tools/corona-art-iteration/prepare_march_r4_gallery.py /tmp/r4-source/march_command_gallery.png /tmp/r4-derived
           cp /tmp/r4-derived/march_command_gallery.png 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/march_command_gallery.png'
           cp /tmp/r4-derived/march_gallery_contact.png 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/march_gallery_contact.png'
-          cp /tmp/r4-derived/manifest.json docs/evidence/CORONA_MARCH_R4_DERIVED_ASSETS.json
-          git add 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/march_command_gallery.png' 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/march_gallery_contact.png' docs/evidence/CORONA_MARCH_R4_DERIVED_ASSETS.json
+          cp /tmp/r4-derived/manifest.json tools/corona-art-iteration/march_r4_derived_assets.json
+          git add 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/march_command_gallery.png' 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/march_gallery_contact.png' tools/corona-art-iteration/march_r4_derived_assets.json
           test "$(git diff --cached --name-only | wc -l)" -eq 3
           git -c user.name='Eldoria Studio evidence' -c user.email='studio-evidence@users.noreply.github.com' commit -m 'Art: import source-verified graded modular gallery and independent alpha contact'
           git push origin HEAD:refs/heads/candidate/corona-march-r4-modular25d-20261126
