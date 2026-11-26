@@ -1,0 +1,34 @@
+name: Corona - inspect actual primary-action source artwork
+on:
+  push:
+    branches: [qa/corona-evidence-reader-20261126]
+    paths: ['.github/workflows/corona-primary-action-material-inspection.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 309caad4400c0830db7dbb75b5f21930d98f2702
+          sparse-checkout: Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha
+          persist-credentials: false
+      - name: Inspect original PNG alpha and actual visible material
+        run: |
+          python3 -m pip install --quiet Pillow==11.3.0
+          python3 - <<'PY'
+          import base64,io,json,pathlib
+          from PIL import Image
+          root=pathlib.Path('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha')
+          for key in ('action_arcane','world_rune','wallet_inset','panel_obsidian','nav_medallion'):
+              image=Image.open(root/(key+'.png')).convert('RGBA')
+              a=image.getchannel('A')
+              print('CORONA_ASSET '+json.dumps({'key':key,'size':image.size,'alpha_bounds':a.getbbox(),'strong_alpha_bounds':a.point(lambda x:255 if x>192 else 0).getbbox()}))
+              im=image.copy();im.thumbnail((600,240))
+              sample=Image.new('RGB',im.size,'#17151e');sample.paste(im,(0,0),im)
+              output=io.BytesIO();sample.save(output,format='JPEG',quality=85)
+              raw=base64.b64encode(output.getvalue()).decode()
+              for i in range(0,len(raw),8000):print('CORONA_TEXTURE '+key+' '+str(i//8000)+' '+raw[i:i+8000])
+          PY
