@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "verified_commit": "8eeb8093d88b2cad7bcbca937212656501978c69",
+  "run_id": 45887654921,
+  "job_id": 140142286877,
+  "run_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/45887654921",
+  "node_tests": {
+    "passed": 32,
+    "failed": 0
+  },
+  "replay": {
+    "schema": 1,
+    "kind": "pinned-real-input-offline-replay",
+    "source_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
+    "source_file": "tools/openai-development-studio/lessons.json",
+    "source_sha256": "e9151747ef63636240cffc4ecb6adccb8905a1d67d0608a58aa29ef398c2d1fe",
+    "evidence_file_sha256": "8acf6d201a39f6c406aa38e365f411c7dc65a92a76e0f1aafcc7852585a819b4",
+    "candidate_sha256": "1226b05c02bd7b9f41702c447e41c4b208bde28958dbd390bb2d06bd3a4081ca",
+    "candidate_snapshot_sha256": "c12372397b37d732c60aa7fab7602bb7a27d052893ca508dd664fbb789ce8a16",
+    "baseline_lessons": 6,
+    "candidate_lessons": 7,
+    "source_unchanged": true,
+    "checkpoints": 4,
+    "attempts": [
+      {
+        "attempt": 1,
+        "strategy": "direct-append",
+        "outcome": "technical_reject",
+        "failed_checks": [
+          "evidence-link"
+        ],
+        "pivot_required": false
+      },
+      {
+        "attempt": 2,
+        "strategy": "direct-append",
+        "outcome": "technical_reject",
+        "failed_checks": [
+          "preserve-existing"
+        ],
+        "pivot_required": true
+      },
+      {
+        "attempt": 3,
+        "strategy": "append-only-evidence",
+        "outcome": "accepted_candidate",
+        "failed_checks": [],
+        "pivot_required": false
+      }
+    ],
+    "scratch_files": [
+      "baseline.json",
+      "candidate.json",
+      "checkpoint-01.json",
+      "checkpoint-02.json",
+      "checkpoint-03.json",
+      "checkpoint-04.json",
+      "decision-reference.json",
+      "journal.json"
+    ],
+    "api_calls": 0,
+    "art_approved": false,
+    "promoted": false,
+    "live_model_roles": false
+  },
+  "limits": [
+    "No real model calls: V2 fixture outputs, actual V2 payload/report/routing/accounting modules.",
+    "No production promotion or visual quality result."
+  ]
+}
