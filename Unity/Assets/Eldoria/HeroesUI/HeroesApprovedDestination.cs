@@ -448,13 +448,13 @@ namespace Eldoria.HeroesUI
         void HallControlArt(Transform parent,string asset,float w,float h,bool button=false)
         {
             var source=coronaTypography ? Resources.Load<Texture2D>("ValoriaModular25D/UI/CoronaBrecha/"+
-                (asset=="gold-button" || asset=="tab-active" ? "action_arcane" : "world_rune"))
+                (asset=="gold-button" || asset=="tab-active" ? "action_arcane" : "secondary_quiet"))
                 : Resources.Load<Texture2D>("EldoriaV41/"+asset);
             if(!source)return;
             if(coronaTypography && parent.TryGetComponent<Image>(out var baseImage))
             {
                 baseImage.sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/"+
-                    (asset=="gold-button" || asset=="tab-active" ? "action_arcane" : "world_rune"));
+                    (asset=="gold-button" || asset=="tab-active" ? "action_arcane" : "secondary_quiet"));
                 baseImage.type=Image.Type.Sliced;
                 return;
             }
