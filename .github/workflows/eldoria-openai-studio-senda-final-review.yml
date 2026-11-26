@@ -1,0 +1,77 @@
+name: Studio - Senda independent commercial visual review
+on:
+  push:
+    branches: [pilot/eldoria-openai-development-studio-20261125]
+    paths: ['tools/openai-development-studio/senda-final-review-request.json']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: studio-senda-final-review
+  cancel-in-progress: false
+jobs:
+  review:
+    if: github.run_attempt == 1 && github.event.before == '313e4360897fbfc2f95351824b1ccd954cdbbb55' && github.event.head_commit.message == 'Run one bounded Senda commercial review'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/openai-development-studio
+      - name: Verify combined budget and exact rendered evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          cd tools/openai-development-studio
+          python3 test_economics_v2.py
+          python3 - <<'PY'
+          import json,datetime
+          from decimal import Decimal as D
+          import budget_guard
+          docs=[json.load(open(n)) for n in ('senda-benchmark-budget.json','senda-portal-budget.json','senda-final-review-budget.json')]
+          for d in docs:budget_guard.validate(d,datetime.datetime.now(datetime.timezone.utc).date())
+          assert sum(D(r['reserve_usd']) for d in docs for r in d['reservations'])==D('9.40')
+          assert sum(r['status']=='authorized_once' for d in docs for r in d['reservations'])==1
+          PY
+          gh run download 45775081888 --repo "$GITHUB_REPOSITORY" --name senda-brecha-web3d-caa270d54ee77359cf9adcf38c223c5104f60d8e --dir /tmp/senda-review-baseline
+          python3 prepare_senda_final_review.py /tmp/senda-review-baseline /tmp/senda-packet
+          python3 mission_packet.py --packet /tmp/senda-packet/packet.json
+      - name: Four specialist review within remaining authorization
+        id: live
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ELDORIA_AUTH_EVENT: senda-commercial-review-v1
+        run: |
+          set -eu
+          date -u +%Y-%m-%dT%H:%M:%SZ > /tmp/senda-start
+          cd tools/openai-development-studio
+          cp senda-final-review-budget.json budget-cycle.json
+          python3 - <<'PY'
+          import studio,mission_packet
+          studio.MAX_OUTPUT=2200
+          mission_packet.execute("/tmp/senda-packet/packet.json","/tmp/senda-final-review",True,"senda-commercial-review-v1")
+          PY
+      - name: Record measured usage even on partial failure
+        if: always() && steps.live.outcome != 'skipped'
+        env:
+          LIVE_STATUS: ${{ steps.live.outcome }}
+        run: |
+          mkdir -p /tmp/senda-economics
+          python3 tools/openai-development-studio/intervention_report.py collect --root /tmp/senda-final-review --run "$GITHUB_RUN_ID" --request senda-commercial-review-v1 --started "$(cat /tmp/senda-start)" --finished "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --source-run 45775081888 --status "$LIVE_STATUS" --out "/tmp/senda-economics/run-$GITHUB_RUN_ID.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: senda-commercial-review-result-${{ github.run_id }}
+          path: /tmp/senda-final-review/
+          retention-days: 30
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: senda-commercial-review-economics-${{ github.run_id }}
+          path: /tmp/senda-economics/
+          retention-days: 30
+          if-no-files-found: warn

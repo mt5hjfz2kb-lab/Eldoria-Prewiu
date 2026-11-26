@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "cycle": {
+    "starts": "2026-11-25",
+    "ends_exclusive": "2026-12-17",
+    "pilot_cap_usd": "1.30",
+    "automatic_reset": false
+  },
+  "scope": "Unallocated remainder of existing combined $10 PR195 limit. Prior $8.70 reservations remain reserved. Read-only review; no new art generation or automatic retry.",
+  "reservations": [
+    {
+      "id": "senda-commercial-review-v1",
+      "run_id": "senda-commercial-review-v1",
+      "reserve_usd": "0.70",
+      "status": "authorized_once"
+    }
+  ]
+}
