@@ -1296,7 +1296,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 opponent.fontSize=height>width?27:compactLandscape?22:26;
                 formation.fontSize=height>width?26:compactLandscape?20:23;
                 // Real 390px mobile -> .4875 room scale: min ~12.7px.
-                reward.fontSize=height>width?26:compactLandscape?20:23;
+                reward.fontSize=height>width?(RoyalGoldV2Hud.UseCoronaArt?28:26):compactLandscape?20:23;
                 passive.fontSize=height>width?26:compactLandscape?19:21;
                 battleFeedback.fontSize=height>width?23:compactLandscape?18:21;
                 if(compactLandscape)
@@ -1391,10 +1391,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     TL(cell,12f,head+i*spacing,iw-24f,spacing-5f);
                     float cellW=iw-24f;
-                    float titleTop=portrait?12f:13f;
-                    TL(scoutTitles[i].rectTransform,32f,titleTop,cellW-64f,portrait?62f:36f);
-                    float detailTop=portrait?72f:54f;
-                    float imageW=portrait?128f:70f;
+                    bool coronaPortrait=portrait&&RoyalGoldV2Hud.UseCoronaArt;
+                    float titleTop=coronaPortrait?8f:portrait?12f:13f;
+                    TL(scoutTitles[i].rectTransform,32f,titleTop,cellW-64f,coronaPortrait?54f:portrait?62f:36f);
+                    float detailTop=coronaPortrait?64f:portrait?72f:54f;
+                    float imageW=coronaPortrait?110f:portrait?128f:70f;
                     float imageH=portrait?98f:50f;
                     TL(scoutThumbnails[i].rectTransform,32f,detailTop,imageW,imageH);
                     TL(scoutInsetUnder[i].rectTransform,
@@ -1410,7 +1411,8 @@ namespace Eldoria.UI.RoyalGold.V2
                         cellW-buttonW-18f,detailTop+4f,buttonW,portrait?88f:40f);
                     scoutTitles[i].fontSize=portrait?30:21;
                     scoutTitles[i].alignment=TextAnchor.MiddleLeft;
-                    scoutCards[i].fontSize=portrait?26:18;
+                    scoutCards[i].fontSize=coronaPortrait?28:portrait?26:18;
+                    if(coronaPortrait)scoutCards[i].font=CoronaFinish.ResolveFont(false);
                     scoutCards[i].alignment=TextAnchor.MiddleLeft;
                     scoutActionLabels[i].fontSize=portrait?26:18;
                 }

@@ -466,6 +466,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     tabsY,tabW,tabH);
                 tabLabels[i].fontSize=Pixels(Mathf.Clamp(
                     Mathf.RoundToInt(tabW*(wide?.112f:.135f)),15,27));
+                if(RoyalGoldV2Hud.UseCoronaArt)tabLabels[i].font=CoronaFinish.ResolveFont(false);
                 tabLabels[i].horizontalOverflow=HorizontalWrapMode.Wrap;
                 Position((RectTransform)tabBadges[i].transform.parent,
                     tabW-23f,-9f,27f,27f);
@@ -537,23 +538,29 @@ namespace Eldoria.UI.RoyalGold.V2
                 float textX=iconX+iconSize+Mathf.Clamp(w*.016f,10f,22f);
                 float arrowW=wide?37f:27f;
                 float copyWidth=Mathf.Max(70f,innerW-textX-arrowW-16f);
-                Position(messageLabels[i].rectTransform,textX,
-                    Mathf.Max(6f,rowH*.12f),copyWidth,rowH*.35f);
-                Position(messageSubtitles[i].rectTransform,textX,rowH*.52f,
-                    Mathf.Max(45f,copyWidth-(wide?130f:72f)),rowH*.31f);
-                float dateW=wide?119f:65f;
                 bool stackedDate=RoyalGoldV2Hud.UseCoronaArt && !wide && rowH>82f;
-                if(stackedDate)
-                    Position(messageSubtitles[i].rectTransform,textX,rowH*.43f,copyWidth,rowH*.24f);
+                // Former title ended at 47% and excerpt began at 43%.
+                Position(messageLabels[i].rectTransform,textX,
+                    Mathf.Max(6f,rowH*(stackedDate?.08f:.12f)),copyWidth,rowH*(stackedDate?.32f:.35f));
+                Position(messageSubtitles[i].rectTransform,textX,
+                    stackedDate?rowH*.43f:rowH*.52f,
+                    stackedDate?copyWidth:Mathf.Max(45f,copyWidth-(wide?130f:72f)),
+                    rowH*(stackedDate?.23f:.31f));
+                float dateW=wide?119f:65f;
                 Position(messageDates[i].rectTransform,
-                    stackedDate?textX:textX+copyWidth-dateW,stackedDate?rowH*.68f:rowH*.53f,stackedDate?copyWidth:dateW,stackedDate?rowH*.22f:rowH*.29f);
+                    stackedDate?textX:textX+copyWidth-dateW,stackedDate?rowH*.70f:rowH*.53f,stackedDate?copyWidth:dateW,stackedDate?rowH*.22f:rowH*.29f);
                 messageDates[i].alignment=stackedDate?TextAnchor.MiddleLeft:TextAnchor.MiddleRight;
                 Position(messageArrows[i].rectTransform,
                     innerW-arrowW-7f,(rowH-6f-36f)*.50f,
                     arrowW,36f);
                 messageArrows[i].fontSize=Pixels(28);
+                if(RoyalGoldV2Hud.UseCoronaArt)
+                {
+                    messageLabels[i].font=CoronaFinish.ResolveFont(false);
+                    messageLabels[i].fontStyle=FontStyle.Normal;
+                }
                 messageLabels[i].fontSize=Pixels(Mathf.Clamp(
-                    Mathf.RoundToInt((wide?23f:26f)*fontScale),18,30));
+                    Mathf.RoundToInt((wide?23f:stackedDate?28f:26f)*fontScale),18,32));
                 messageSubtitles[i].fontSize=Pixels(Mathf.Clamp(
                     Mathf.RoundToInt((wide?17f:21f)*fontScale),15,25));
                 messageDates[i].fontSize=Pixels(Mathf.Clamp(

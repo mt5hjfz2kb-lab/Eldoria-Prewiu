@@ -322,16 +322,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if (Eldoria.ReferenceClean.ValoriaTravelSession.CombinedPlayer)
             {
                 districtClock = Plate("Plazo de la obra", hudCanvas.transform, slatePlate,
-                    new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(158f,38f));
+                    new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(174f,41f));
                 districtClock.GetComponent<Image>().color=new Color(.61f,.66f,.73f,1f);
-                districtClockText = Label("", districtClock, 17, false, WarmWhite, TextAnchor.MiddleCenter,
-                    Vector2.zero, new Vector2(148f,32f));
+                districtClockText = Label("", districtClock, 20, false, WarmWhite, TextAnchor.MiddleCenter,
+                    Vector2.zero, new Vector2(164f,34f));
                 districtClock.gameObject.SetActive(false);
                 var hand = Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/guante_guia");
                 if (hand)
                 {
                     firstBuildGuide = Plate("Guía de la primera obra",sawmillTag,hand,new Vector2(.68f,.18f),
-                        new Vector2(.21f,.86f),Vector2.zero,new Vector2(74f,74f));
+                        new Vector2(.21f,.86f),Vector2.zero,new Vector2(82f,82f));
                     var guideImage = firstBuildGuide.GetComponent<Image>();
                     guideImage.preserveAspect = true;
                     guideImage.raycastTarget = false;
@@ -393,14 +393,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // The InputField and its clipping, placeholder and keyboard stay intact.
             inscription.sprite=resourcePlate;
             inscription.type=resourcePlate.border.sqrMagnitude>0?Image.Type.Sliced:Image.Type.Simple;
-            inscription.color=new Color(.80f,.79f,.86f,.92f);
+            inscription.color=new Color(.65f,.67f,.75f,.98f);
             var rim = inscription.GetComponent<Outline>();
-            rim.effectColor = new Color(.59f,.51f,.35f,.86f);
+            rim.effectColor = new Color(.86f,.73f,.48f,.98f);
+            rim.effectDistance=new Vector2(1.4f,-1.4f);
             var editor = inscription.GetComponent<InputField>();
             editor.textComponent.alignment = TextAnchor.MiddleCenter;
+            editor.textComponent.color=Eldoria.UI.RoyalGold.V2.CoronaFinish.Ivory;
             var hint = (Text)editor.placeholder;
             hint.alignment = TextAnchor.MiddleCenter;
-            hint.color = new Color(.81f,.78f,.69f);
+            hint.color = new Color(.88f,.85f,.77f);
             var confirm = frame.Find("Confirm your name").GetComponent<Image>();
             confirm.sprite = actionPlate;
             confirm.color = Color.white;
@@ -629,6 +631,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 { districtClockBuilding = world.SawmillRenderer; name = "ASERRADERO"; }
                 long seconds = Math.Max(0L,(long)Math.Ceiling((deadline-DateTime.UtcNow.Ticks)/(double)TimeSpan.TicksPerSecond));
                 districtClockText.text = name + "  " + (seconds/60L) + ":" + (seconds%60L).ToString("00");
+                Eldoria.UI.RoyalGold.V2.CoronaFinish.FitSingleLine(districtClockText,20,13);
             }
             if(sawmillTag!=null && sawmillTagText!=null)
             {
@@ -644,11 +647,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 // The gilded end caps and hammer sit inside the painted width.
                 // Measure the localized caption so a completed mill can show its
                 // level without projecting past the right cap.
+                sawmillTagText.fontSize=constructing?18:14;
+                sawmillTagText.color=constructing?WarmWhite:PaleGold;
                 float captionWidth=Mathf.Max(74f,Mathf.Ceil(sawmillTagText.preferredWidth));
                 float plateWidth=captionWidth+43f;
-                sawmillTag.sizeDelta=new Vector2(plateWidth,27f);
+                sawmillTag.sizeDelta=new Vector2(plateWidth,constructing?34f:27f);
                 sawmillTagText.rectTransform.anchoredPosition=new Vector2(9f,constructing?3f:0f);
-                sawmillTagText.rectTransform.sizeDelta=new Vector2(captionWidth,constructing?23f:30f);
+                sawmillTagText.rectTransform.sizeDelta=new Vector2(captionWidth,constructing?27f:30f);
+                var workGlyph=sawmillTag.Find("Sawmill nameplate original icon") as RectTransform;
+                if(workGlyph)workGlyph.anchoredPosition=new Vector2(-plateWidth*.5f+16f,constructing?2f:0f);
+                if(worldProgressTrack)worldProgressTrack.anchoredPosition=new Vector2(0f,constructing?-13f:-11f);
                 if(worldProgressTrack!=null)
                     worldProgressTrack.gameObject.SetActive(constructing);
                 if (constructing && worldProgressFill)

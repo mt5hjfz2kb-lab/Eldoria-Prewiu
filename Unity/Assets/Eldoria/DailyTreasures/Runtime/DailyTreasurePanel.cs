@@ -966,10 +966,12 @@ namespace Eldoria.DailyTreasures
                 bool newCycle=daily.CycleDay==7 && upcoming==1 && reward.IsValid;
                 bool collected=!newCycle && daily.CycleDay>0 && i+1<=daily.CycleDay;
                 dayHead[i].text="DÍA "+(i+1)+(collected?"  OK":next?"  HOY":"");
-                dayHead[i].color=next?Ivory:collected?Muted:Gold;
+                dayHead[i].color=next?Ivory:collected?Muted:
+                    CoronaPresentation.Active?CoronaPresentation.StatusGold:Gold;
                 if(dayBack[i].sprite)
                     dayBack[i].color=next?Color.white:
                         collected?new Color(.62f,.62f,.59f,1f):
+                        CoronaPresentation.Active?new Color(.72f,.76f,.79f,1f):
                         new Color(.60f,.65f,.68f,1f);
                 else
                     dayBack[i].color=next?new Color(.42f,.29f,.16f,1f):
@@ -2251,6 +2253,12 @@ namespace Eldoria.DailyTreasures
                             (iconSide+10f)*.5f,itemY,textWidth,cellH*.64f);
                         dayBody[i].alignment=TextAnchor.MiddleLeft;
                         dayBody[i].fontSize=roomy?17:15;
+                        if(CoronaPresentation.Active)
+                        {
+                            dayBody[i].resizeTextForBestFit=true;
+                            dayBody[i].resizeTextMinSize=14;
+                            dayBody[i].resizeTextMaxSize=roomy?19:17;
+                        }
                         continue;
                     }
                     dayBody[i].alignment=TextAnchor.MiddleCenter;
