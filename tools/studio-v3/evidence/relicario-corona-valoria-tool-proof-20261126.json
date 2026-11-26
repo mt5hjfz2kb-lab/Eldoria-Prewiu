@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "status": "TOOL_PROOF_PASS_ARTISTIC_CALIBRATION_REJECTED_REAL_SPECIALISTS_NOT_DISPATCHED",
+  "mission_id": "v3-relicario-corona-valoria-premium-20261126",
+  "verified_commit": "94315fff75ffb219dba49febe5069dd73353b4f3",
+  "run_id": 45908522263,
+  "job_id": 140210992950,
+  "artifact": {
+    "id": 15159117302,
+    "digest": "sha256:357463b6db48fc4287b4014a65c294c1b637a43756fb252d684f5e63f62209a4",
+    "size_bytes": 3851135,
+    "downloaded_zip_hash_verified": true,
+    "blend_and_render_hashes_verified": true,
+    "card_master_dimensions_verified": true
+  },
+  "catalog": {
+    "count": 15,
+    "record": {
+      "schema": "eldoria.relicario.card.v1",
+      "id": "corona-valoria",
+      "name": "Corona de Valoria",
+      "rarity": "legendary",
+      "values": {
+        "N": 8,
+        "E": 6,
+        "S": 7,
+        "O": 7
+      },
+      "effectKey": "construction50",
+      "effect": "Aumenta un 50 % la velocidad de construcción durante exactamente 4 horas.",
+      "effectShort": "+50 % velocidad de construcción · 4 h.",
+      "effectIcon": "assets/icon_construction.svg",
+      "illustration": "assets/illustration.png",
+      "duel": null
+    },
+    "unlock_level": 10,
+    "normal_consumed": true,
+    "indestructible_preserved": true,
+    "duration_hours": 4,
+    "percent": 50,
+    "real_catalog": true,
+    "production_state_changed": false
+  },
+  "blender": {
+    "schema": 1,
+    "source": "actual direct bpy on isolated hosted runner",
+    "authorship": "current assistant calibration, NOT paid independent roles",
+    "blender_version": "4.0.2",
+    "blend_sha256": "a3ce7c89614e5f505d3b097a3dd9c922539110627a9732052ce415f9c8e07990",
+    "illustration_sha256": "70c8df8881347be7f1c9e617c768e168841df4ca02bfbd213f19535273824c41",
+    "plan_sha256": "5288e4b15fb2841f9ad3543aba36ae699015cff3fcc206723602be61f7a0ecb0",
+    "editable_meshes": 52,
+    "materials": [
+      "Ancient black slate",
+      "Faceted ember amber",
+      "Faceted royal amethyst",
+      "Midnight amethyst enamel",
+      "Oxidised recesses",
+      "Polished hammered gold edges",
+      "Royal violet velvet",
+      "Valoria • chased antique gold"
+    ],
+    "render_px": [
+      768,
+      864
+    ],
+    "blender_mcp_executed": false,
+    "unity_mcp_executed": false,
+    "new_api_calls": 0,
+    "art_approved": false
+  },
+  "card": {
+    "cases": 10,
+    "clipped": 0,
+    "same_values": true,
+    "rare": "legendary",
+    "master_px": [
+      640,
+      1024
+    ],
+    "art_approved": false
+  },
+  "prior_failures": [
+    {
+      "run": 45908125394,
+      "cause": "Ubuntu Blender built without OpenImageDenoiser",
+      "correction": "Native adaptive Cycles sampling"
+    },
+    {
+      "run": 45908266105,
+      "cause": "Missing libEGL.so.1, abort code 134; Blender 4.0 weighted normals need Auto Smooth",
+      "correction": "Installed explicit EGL/Mesa runtime, software surfaceless EGL and enabled mesh Auto Smooth where supported"
+    }
+  ],
+  "visual_review": {
+    "reviewer": "current assistant inspecting actual 640x1024 card and approved reference",
+    "decision": "REJECT_AS_PREMIUM",
+    "findings": [
+      "The crown reads as repeated jagged planar leaves instead of distinctive crafted royal goldwork; visible backing plates catch excessive light and flatten form.",
+      "Large simple faceted stones resemble toy gems; absence of fine settings, optical depth and ornamental craftsmanship.",
+      "The still-life pedestal and almost empty violet backdrop lack the rich atmosphere and fine material integration of the approved painted reference.",
+      "The legacy template frame is ornate but the dynamic plaques are markedly flatter and visually oversized against it; the title/effect bars are heavy. Retain canonical placement/data; integrate treatments without changing gameplay.",
+      "All geometry and live data are technically verified, but the technical proof is not a model-agent result or commercial-quality evidence."
+    ],
+    "next_strategy": "Give independent specialists freedom to replace the entire central illustration and author a materially richer crown, rather than tweak the fixed calibration shape. Prefer a reference-led pictorial illustration (original asset, not an entire baked card) or genuinely crafted Blender mesh/curves/shaders if they can exceed the reference; compare rendered result and reject shortcuts. Existing safe typed full Blender toolbox may be used in an isolated scratch project; do not revive rejected Qwen model. Reuse V2.5 frame, real stats, effect, title, separate overlay, original catalogue. Unity MCP integration only after verified isolated editor and a legitimate resource lease."
+  },
+  "live_roles": {
+    "called": 0,
+    "api_spend_usd": "0.00",
+    "state": "NOT_DISPATCHED",
+    "reason": "Prior USD 2.00 and technical USD 1.05 grants are closed; a new specific API budget is required. Native Windows/Unity remains exclusively reserved for Corona. No Unity/Blender MCP connector exposed in the current session; previous verified BlenderMCP route and Unity MCP discovery are cited in the mission, not claimed as current execution.",
+    "proposed_new_cap_usd": "2.00",
+    "proposed_not_authorized": true
+  },
+  "production_changed": false,
+  "art_approved": false,
+  "promoted": false
+}
