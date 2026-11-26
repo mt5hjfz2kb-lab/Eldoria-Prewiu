@@ -30,6 +30,8 @@ jobs:
         run: git fetch --no-tags --depth=1 origin 1657b2caa6b1a955319538ce3a8b2906398599b3
       - name: Test isolated V3 budget and call guard with fixture transport only
         run: PYTHONDONTWRITEBYTECODE=1 python3 tools/studio-v3/live-role-guard.test.py
+      - name: Verify proposed separate visual role reservations and deny unapproved spend
+        run: PYTHONDONTWRITEBYTECODE=1 python3 tools/studio-v3/visual-live/session.test.py
       - name: Verify V2 client unchanged from pinned source
         run: git diff --exit-code 1657b2caa6b1a955319538ce3a8b2906398599b3 HEAD -- tools/openai-development-studio
       - name: Replay rejection, pivot, independent checks and scratch persistence

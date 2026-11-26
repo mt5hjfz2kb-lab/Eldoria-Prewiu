@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "status": "PROPOSED_NOT_AUTHORIZED",
+  "owner_authorized": false,
+  "id": "v3-senda-visual-paired-20261126",
+  "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
+  "reference_sha": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+  "target": "SENDA_UI_VISUAL_SYSTEM",
+  "total_reservation_usd": "2.00",
+  "arm_max_usd": "0.80",
+  "shared_two_blind_judges_max_usd": "0.40",
+  "slots": {
+    "single": {
+      "complete": "0.40",
+      "optional_repair": "0.40"
+    },
+    "studio": {
+      "director": "0.16",
+      "illustrator": "0.18",
+      "integrator": "0.18",
+      "optional_repair": "0.28"
+    },
+    "judge": {
+      "first": "0.20",
+      "second": "0.20"
+    }
+  },
+  "no_reuse_prior_reservations": true,
+  "no_secret_bearing_trigger": true,
+  "gate": "Fresh owner approval, exact certified calibration run, immutable new grant, unique first push, verified active scope, two equally capped arms, candidate rendering and blind evidence before judges",
+  "notes": "These are conservative maximum reservations and not billed cost. Actual first trial has not run. A final authenticated host workflow and final exact preflight must be configured only after approval."
+}
