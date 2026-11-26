@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "kind": "executable core fixture tests in JS isolate",
+  "source_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
+  "tests": [
+    {
+      "name": "exact edit",
+      "pass": true
+    },
+    {
+      "name": "scope traversal",
+      "pass": true
+    },
+    {
+      "name": "duplicate match",
+      "pass": true
+    },
+    {
+      "name": "target drift",
+      "pass": true
+    },
+    {
+      "name": "wrong source digest",
+      "pass": true
+    },
+    {
+      "name": "paid mode denied",
+      "pass": true
+    },
+    {
+      "name": "reviewer independence",
+      "pass": true
+    },
+    {
+      "name": "no-op",
+      "pass": true
+    },
+    {
+      "name": "sensitive paths",
+      "pass": true
+    },
+    {
+      "name": "technical rejection then correction",
+      "pass": true
+    },
+    {
+      "name": "pivot after two failures",
+      "pass": true
+    },
+    {
+      "name": "reject recycled candidate",
+      "pass": true
+    },
+    {
+      "name": "wrong evidence binding",
+      "pass": true
+    },
+    {
+      "name": "auditor rejects valid candidate",
+      "pass": true
+    },
+    {
+      "name": "quality cannot be skipped",
+      "pass": true
+    },
+    {
+      "name": "no game publication",
+      "pass": true
+    },
+    {
+      "name": "checkpoint failure stops run",
+      "pass": true
+    },
+    {
+      "name": "benchmark unknown metrics",
+      "pass": true
+    },
+    {
+      "name": "benchmark mismatch",
+      "pass": true
+    }
+  ],
+  "passed": 19,
+  "total": 19,
+  "prior_failure": "12/18 passed; mutable retry state was declared const. Corrected and retested.",
+  "limitations": [
+    "Fixture agents, not live model calls.",
+    "Fixture digest not cryptographic; Node adapter uses SHA256.",
+    "No Unity, Blender, game changes, or artistic acceptance."
+  ]
+}
