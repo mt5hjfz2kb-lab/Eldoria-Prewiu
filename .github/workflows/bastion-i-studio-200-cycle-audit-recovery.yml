@@ -1,0 +1,61 @@
+name: Issue200 recover native I-V scores without rerender
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/bastion-i-studio-200-cycle-audit-recovery.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: issue200-cycle-audit-recovery
+  cancel-in-progress: false
+jobs:
+  evidence:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Recover I-V artistic evaluation from immutable Unity frames'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify exact native artifact and prior audit stopped before API calls
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$REPO/actions/artifacts/15237685131" --jq .digest)" = sha256:50ad8215763adcbe7241aecdb007c081ffb258e249f7c3db59c777ca1cc9145d
+          test "$(gh api "repos/$REPO/actions/artifacts/15236392348" --jq .digest)" = sha256:d8f6a6f1cab05852841f458def2bc702b808d2872eea3007d14efb53f8b90f35
+          test "$(gh api "repos/$REPO/actions/runs/46080267768/jobs" --jq '.jobs[]|select(.name=="native-proof")|.conclusion')" = success
+          test "$(gh api "repos/$REPO/actions/runs/46080267768/jobs" --jq '.jobs[]|select(.name=="evidence")|.conclusion')" = failure
+          mkdir -p "$RUNNER_TEMP/studio" "$RUNNER_TEMP/cycle-delivery"
+          cd "$RUNNER_TEMP/studio"
+          for f in studio.py economics.py rates-20261125.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$f?ref=9fbdb203269b951a252de58d7a0357d71a841480" > "$f"
+          done
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/evaluate-cycle-recovery.py?ref=b68ce869347ee1c00826b57eb014ba9a0809da23" > evaluate.py
+          python3 -m pip install --quiet pillow
+          python3 -m py_compile evaluate.py
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-cycle-native
+          run-id: 46080267768
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/native
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-cycle-production-source
+          run-id: 46080267768
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/production
+      - name: Verify all frame bytes once and score the actual matched images
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/studio"
+          python3 -u evaluate.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-cycle-recovered-audit
+          path: ${{ runner.temp }}/cycle-delivery
+          if-no-files-found: warn
+          retention-days: 30
