@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "pr198-atelier-20261127",
+  "owner_authorized": true,
+  "source_sha": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+  "mission_cap_usd": "5.00",
+  "prior_estimated_usd": "0.61061740",
+  "production_reservation_usd": "3.20",
+  "audit_reservation_usd": "0.35",
+  "expiry": "2026-12-02"
+}
