@@ -776,6 +776,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 approvedHeroes[i].gameObject.SetActive(!training);
                 if(!training&&studioMarchActive)
                 {
+                    PutStudioHeroArt(i);
                     if(!string.IsNullOrEmpty(heroSlots[i]))
                         heroSlotLabels[i].Put(heroSlotLabels[i].text.Replace(" · ","\n"));
                     FitStudioText(heroSlotLabels[i],27,24);

@@ -19,7 +19,7 @@ namespace Eldoria.UI.RoyalGold.V2
         readonly RoyalText[] studioMetricCaptions=new RoyalText[6];
         Image studioBackdrop;
         RectTransform studioGalleryWindow;
-        Sprite studioArcherT1,studioArcherT2;
+        Sprite studioArcherT1,studioArcherT2,studioHeroAldric,studioHeroLyra;
         static readonly Color StudioSlate=new Color32(24,40,48,242);
         static readonly Color StudioInk=new Color32(14,25,33,245);
         static readonly Color StudioBrass=new Color32(218,191,143,255);
@@ -108,6 +108,26 @@ namespace Eldoria.UI.RoyalGold.V2
             shadow.type=Image.Type.Simple;shadow.color=new Color(0,0,0,opacity);
             shadow.raycastTarget=false;
             shadow.transform.SetSiblingIndex(behind.GetSiblingIndex()+1);
+        }
+        // Candidate-only independent hero foregrounds, imported only
+        // after visual identity and genuine alpha asset gates. No new hero IDs.
+        void PutStudioHeroArt(int i)
+        {
+            if(!studioMarchActive || string.IsNullOrEmpty(heroSlots[i]))return;
+            Sprite chosen=null;
+            if(heroSlots[i]=="aldric")
+            {
+                if(!studioHeroAldric)studioHeroAldric=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/march_aldric_foreground");
+                chosen=studioHeroAldric;
+            }
+            else if(heroSlots[i]=="lyra")
+            {
+                if(!studioHeroLyra)studioHeroLyra=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/march_lyra_foreground");
+                chosen=studioHeroLyra;
+            }
+            else return; // Do not redefine other hero identities.
+            if(!chosen)throw new InvalidOperationException("Missing reviewed candidate hero foreground "+heroSlots[i]);
+            approvedHeroes[i].sprite=chosen;
         }
         void PutStudioTroopArt()
         {
@@ -229,56 +249,45 @@ namespace Eldoria.UI.RoyalGold.V2
             StudioText(unitTitle,30,StudioBrass,TextAnchor.MiddleLeft,true);
             Place((RectTransform)heroesButton.transform,lw-220,2,210,92);
             StudioButton(heroesButton,StudioInk,28);
-            float cardGap=12f;
-            float cardsW=lw-28f-cardGap,leaderW=cardsW*.55f,wingW=cardsW-leaderW;
-            float wingX=14f+leaderW+cardGap;
-            float leaderBottom=heroH*.94f,wingTop=102f;
-            float wingH=(leaderBottom-wingTop-cardGap)*.5f;
-            // A shared physical dossier rack supports the two secondary
-            // slots; they are not floating or pretending to be scenery.
-            var stand=StudioPlate("secondary dossier rack",left,wingX-5f,wingTop-6f,wingW+10f,leaderBottom-wingTop+12f,new Color32(35,28,25,245));
-            stand.transform.SetSiblingIndex(studioGalleryWindow.GetSiblingIndex()+1);
+            // Actual independent alpha foregrounds share the architectural
+            // gallery, common foot line and lighting. Closed source portraits
+            // are never pasted over the scene. All three real slots remain.
+            float cardGap=9f,cardsW=lw-28f-2f*cardGap;
+            float leaderW=cardsW*.44f,supportW=cardsW*.34f,lockW=cardsW-leaderW-supportW;
+            float baseY=heroH*.94f;
             for(int i=0;i<3;i++)
             {
-                // Preserve the director's triptych, but correct the visibly
-                // diminished commander's portrait in the authentic R3 frame.
-                float cardW=i==0?leaderW:wingW;
-                float cardX=i==0?14f:wingX;
-                float cardTop=i==0?94f:wingTop+(i-1)*(wingH+cardGap);
-                float cardH=i==0?leaderBottom-cardTop:wingH;
-                float baseY=cardTop+cardH;
+                float cardW=i==0?leaderW:i==1?supportW:lockW;
+                float cardX=i==0?14f:i==1?14f+leaderW+cardGap:14f+leaderW+supportW+2f*cardGap;
+                float cardTop=i==0?94f:i==1?118f:158f;
+                float cardH=baseY-cardTop;
                 var card=(RectTransform)heroSlotButtons[i].transform;
                 Place(card,cardX,cardTop,cardW,cardH);
-                StudioContact("gallery contact "+i,left,studioGalleryWindow,cardX-4f,baseY-8f,cardW+8f,34f,i==0?.95f:.78f);
+                StudioContact("gallery contact "+i,left,studioGalleryWindow,cardX-4f,baseY-10f,cardW+8f,36f,i==0?.95f:.78f);
                 HideDecorations(card);
                 var heroButton=heroSlotButtons[i];
                 var oldTarget=heroButton.targetGraphic;
                 if(oldTarget)HideStudioGraphic(oldTarget);
-                Color brass=i==0?new Color32(172,137,83,255):new Color32(116,100,77,255);
-                var edge=StudioPlate("hero physical edge "+i,card,0,0,cardW,cardH,brass);
+                bool portrait=heroSlots[i]=="aldric"||heroSlots[i]=="lyra";
+                var edge=StudioPlate("hero physical edge "+i,card,0,0,cardW,cardH,StudioInk,true,portrait?"portrait_ring":"panel_obsidian");
+                if(portrait&&edge.type==Image.Type.Sliced)edge.fillCenter=false;
                 edge.raycastTarget=true;heroButton.targetGraphic=edge;
                 studioRestore.Add(()=>{if(heroButton)heroButton.targetGraphic=oldTarget;if(edge)edge.raycastTarget=false;});
-                var backing=StudioPlate("hero physical backing "+i,card,3,3,cardW-6,cardH-6,new Color32(26,26,30,255));
+                var backing=StudioPlate("hero physical backing "+i,card,3,3,cardW-6,cardH-6,portrait?new Color32(24,24,28,32):new Color32(26,26,30,255));
                 backing.transform.SetSiblingIndex(edge.transform.GetSiblingIndex()+1);
-                float captionH=80f;
-                float artW2=i==0?cardW-10:cardW*.47f-8f;
-                float artH2=i==0?cardH-captionH-8:cardH-10;
-                Place(heroPortraitViewports[i],5,5,artW2,artH2);
+                var original=approvedHeroes[i].sprite;
+                int slot=i;
+                studioRestore.Add(()=>{if(approvedHeroes[slot])approvedHeroes[slot].sprite=original;});
+                if(portrait)PutStudioHeroArt(i);
+                float captionH=i==2?104f:76f,artW2=cardW-12f,artH2=cardH-captionH-8f;
+                Place(heroPortraitViewports[i],6,4,artW2,artH2);
                 var sprite=approvedHeroes[i].sprite;
                 float ar=sprite?sprite.rect.width/sprite.rect.height:1f;
-                bool portrait=!string.IsNullOrEmpty(heroSlots[i]);
-                float pw=portrait?Mathf.Max(artW2,artH2*ar):Mathf.Min(artW2,artH2*ar);
-                float ph=pw/ar;
-                Place(approvedHeroes[i].rectTransform,(artW2-pw)*.5f,portrait?0:(artH2-ph)*.5f,pw,ph);
-                // No repeated massive violet frames. The thin physical
-                // brass edge and dark plaque provide the visual anchoring.
-                float labelX=i==0?4f:artW2+9f;
-                float labelY=i==0?cardH-captionH:4f;
-                float labelW=i==0?cardW-8f:cardW-labelX-4f;
-                float labelH=i==0?captionH-4f:cardH-8f;
-                var ribbon=StudioPlate("hero caption "+i,card,labelX,labelY,labelW,labelH,new Color32(28,25,28,255));
+                float pw=Mathf.Min(artW2,artH2*ar),ph=pw/ar;
+                Place(approvedHeroes[i].rectTransform,(artW2-pw)*.5f,portrait?artH2-ph:(artH2-ph)*.5f,pw,ph);
+                var ribbon=StudioPlate("hero caption "+i,card,4,cardH-captionH,cardW-8,captionH-4,StudioInk,true,"secondary_quiet");
                 ribbon.transform.SetAsLastSibling();
-                Place(heroSlotLabels[i].rectTransform,labelX+3f,labelY+3f,labelW-6f,labelH-6f);
+                Place(heroSlotLabels[i].rectTransform,7,cardH-captionH+2f,cardW-14,captionH-7f);
                 StudioText(heroSlotLabels[i],27,i==2?CoronaFinish.Muted:CoronaFinish.Ivory,TextAnchor.MiddleCenter);
                 heroSlotLabels[i].transform.SetAsLastSibling();
             }
@@ -295,7 +304,9 @@ namespace Eldoria.UI.RoyalGold.V2
             studioRestore.Add(()=>{if(approvedTroopRow)approvedTroopRow.sprite=oldTroopSprite;});
             PutStudioTroopArt();
             Place(approvedTroopRow.rectTransform,13,ty+15,artWidth,troopH-32f);
-            StudioContact("troop contact",left,troopDossier.transform,26,ty+troopH-45f,artWidth-24f,28,.90f);
+            var troopRecess=StudioPlate("troop warm material recess",left,10,ty+9,artWidth+6f,troopH-18f,new Color32(94,76,56,230));
+            troopRecess.transform.SetSiblingIndex(troopDossier.transform.GetSiblingIndex()+1);
+            StudioContact("troop contact",left,troopRecess.transform,26,ty+troopH-45f,artWidth-24f,28,.90f);
             Place(unitDetail.rectTransform,infoX,ty+42,controlW,42);
             StudioText(unitDetail,30,CoronaFinish.Ivory,TextAnchor.MiddleLeft);
             float smallGap=8f,half=(controlW-smallGap)*.5f,qh=94f;
@@ -354,7 +365,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(card,16+(i%2)*(tileW+tileGap),tileY,tileW,tileH);
                 // One shared summary surface with quiet separators,
                 // not six competing illustrated frames.
-                var tile=StudioPlate("metric tile "+i,card,0,0,tileW,tileH,new Color(.028f,.039f,.049f,i==2?.67f:.35f));
+                var tile=StudioPlate("metric tile "+i,card,0,0,tileW,tileH,StudioInk,true,"secondary_quiet");
+                tile.color=i==2?new Color(.99f,.94f,.79f,1f):new Color(.86f,.89f,.89f,.96f);
                 var separator=StudioPlate("metric divider "+i,card,10,tileH-2f,tileW-20f,2f,new Color(.72f,.59f,.39f,i==2?.8f:.32f));
                 separator.transform.SetAsLastSibling();
                 if(!studioMetricCaptions[i])
