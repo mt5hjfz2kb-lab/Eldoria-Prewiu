@@ -1,0 +1,54 @@
+name: Studio V3 PR198 premium atelier
+on:
+  push:
+    branches: [pilot/eldoria-studio-v3-autonomous-execution-20261126]
+    paths:
+      - 'tools/studio-v3/rankings-premium/atelier/**'
+      - '.github/workflows/studio-v3-rankings-atelier.yml'
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+concurrency:
+  group: pr198-premium-atelier
+  cancel-in-progress: false
+jobs:
+  produce:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/studio-v3/rankings-premium
+            tools/openai-development-studio
+          fetch-depth: 2
+      - name: Verify frozen PR and source contracts
+        run: |
+          python3 -m pip install --quiet pillow
+          python3 tools/studio-v3/rankings-premium/materialize.py "$RUNNER_TEMP/pr198-source"
+          python3 -m py_compile tools/studio-v3/rankings-premium/atelier/produce.py
+      - name: Rehearse without paid calls
+        if: github.event.head_commit.message != 'Launch PR198 atelier production with distinct premium original art'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/studio-v3/rankings-premium/atelier/produce.py --fixture "$RUNNER_TEMP/pr198-source" "$RUNNER_TEMP/pr198-atelier"
+      - name: Verify immutable grant before paid production
+        if: github.event.head_commit.message == 'Launch PR198 atelier production with distinct premium original art'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/studio-v3/rankings-premium/atelier/produce.py --gate
+      - name: Actual director, painter, asset auditor and native technical artist
+        if: github.event.head_commit.message == 'Launch PR198 atelier production with distinct premium original art'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python3 tools/studio-v3/rankings-premium/atelier/produce.py --live "$RUNNER_TEMP/pr198-source" "$RUNNER_TEMP/pr198-atelier"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr198-atelier-art
+          path: ${{ runner.temp }}/pr198-atelier
+          if-no-files-found: warn
+          retention-days: 14
