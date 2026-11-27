@@ -1,0 +1,97 @@
+name: Bastion I issue 200 - isolated evidence preparation
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/bastion-i-studio-200-preflight.yml']
+permissions:
+  contents: read
+  actions: read
+  issues: read
+concurrency:
+  group: bastion-i-research-200
+  cancel-in-progress: false
+jobs:
+  evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      EXP_SHA: 91b8de9874aed87219d733efa6e8e0aa56207f1e
+      MAIN_SHA: 8f8df581bdb17152cc36f22f9f872101aca179c7
+      NATIVE_SHA: 348b19f958d5bbd447db59e16fc30e7c554cc72a
+    steps:
+      - name: Freeze mission and exact source evidence without any paid calls
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/packet/source"
+          cd "$RUNNER_TEMP/packet"
+          gh api "repos/$REPO/issues/200" --jq .body > brief.md
+          gh api "repos/$REPO/commits/$EXP_SHA" --jq .sha > experimental-sha.txt
+          gh api "repos/$REPO/commits/$MAIN_SHA" --jq .sha > main-sha.txt
+          gh api "repos/$REPO/actions/artifacts/15108055403" > native-metadata.json
+          python3 - <<'PY'
+          import os,json
+          from pathlib import Path
+          m=json.loads(Path('native-metadata.json').read_text())
+          assert not m['expired']
+          assert m['workflow_run']['id']==45797567514
+          assert m['workflow_run']['head_sha']==os.environ['NATIVE_SHA']
+          assert m['digest']=='sha256:a454310897899a24c86646e0cf85a038dbb9ada93d8b2fc125171e29ac35fd71'
+          PY
+          for f in PRODUCTION_GUIDE_BASTION_I_20261120.md ART_GROUNDING_RULES.md DECISIONS.md; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/docs/valoria-modular-25d/$f?ref=$EXP_SHA" > "source/$f"
+          done
+          for f in Modular25DArt.cs Modular25DGround.cs Modular25DLandscape.cs Modular25DWorld.cs Modular25DCameraInput.cs Modular25DArchitecturalShadow.cs Modular25DWalker.cs ValoriaUrbanPlan.cs; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/Unity/Assets/Experimentos/ValoriaModular25D/Scripts/$f?ref=$EXP_SHA" > "source/$f"
+          done
+          cat > scope.txt <<'EOF'
+          Preparation only. No AI API secret, paid calls, Unity, Windows, game changes or publish.
+          Native screenshots from 26 Nov are historical and must not be attributed to current experimental HEAD.
+          Main screenshots matched by camera and progression still required before scoring.
+          Research references: Unity Sprite Renderer, Sprite Atlas, URP 2D sorting and official game screenshots.
+          Next: independently reserved artist mission; investigate first, then audit and three visual concepts.
+          EOF
+      - name: Recover historical native captures
+        uses: actions/download-artifact@v4
+        with:
+          name: ciudad-cinco-bastiones-unity
+          run-id: 45797567514
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/native
+      - name: Inventory and preserve selected source screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os,json,hashlib,shutil
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP'])
+          p=root/'packet'
+          files=sorted((root/'native').rglob('*.png'))
+          assert files, 'No PNG in native archive'
+          rows=[]
+          selected=[]
+          for f in files:
+              rel=f.relative_to(root/'native').as_posix()
+              rows.append({'path':rel,'bytes':f.stat().st_size,'sha256':hashlib.sha256(f.read_bytes()).hexdigest()})
+              lower=rel.lower()
+              if any(x in lower for x in ('bastion1','bastion-i','bastion_i','bastion-1','bastion i','bastion_1','bastion01','b1-','b1_','b1/')):
+                  selected.append(f)
+          (p/'native-png-inventory.json').write_text(json.dumps(rows,indent=2))
+          d=p/'candidate-historical-b1'
+          d.mkdir()
+          for i,f in enumerate(selected[:16]):
+              shutil.copyfile(f,d/(str(i)+'-'+f.name))
+          report={'native_png_count':len(files),'b1_candidates_by_filename':len(selected),'copied':min(16,len(selected)),'source_sha':os.environ['NATIVE_SHA'],'current_experimental_sha':os.environ['EXP_SHA'],'main_sha':os.environ['MAIN_SHA'],'artist_calls':0,'visual_validation':'pending; filenames only, not artist reviewed'}
+          (p/'preflight.json').write_text(json.dumps(report,indent=2))
+          print(json.dumps(report))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-bastion-i-research-packet
+          path: ${{ runner.temp }}/packet
+          retention-days: 14
+          if-no-files-found: error
