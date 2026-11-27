@@ -1,0 +1,142 @@
+[
+  {
+    "commit": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+    "path": "Unity/Assets/Eldoria/LegacyProgression/BestiaryProjection.cs",
+    "destination": "domain/BestiaryProjection.cs",
+    "blob_sha": "559dbafe737686c0a89ebe815e7028a029827916",
+    "size": 2129
+  },
+  {
+    "commit": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+    "path": "Unity/Assets/Eldoria/LegacyProgression/LegacyProgressionRules.cs",
+    "destination": "domain/LegacyProgressionRules.cs",
+    "blob_sha": "edf2e4fb3e9f464a87dc2aa0d098538e27e0b5de",
+    "size": 10713
+  },
+  {
+    "commit": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+    "path": "Unity/Assets/Eldoria/LegacyProgression/LegacyReceiptLedger.cs",
+    "destination": "domain/LegacyReceiptLedger.cs",
+    "blob_sha": "9ca40b35d6663b98bd5e84d4c59d06500994a5f9",
+    "size": 3773
+  },
+  {
+    "commit": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+    "path": "Unity/Assets/Eldoria/LegacyProgression/LegacySavedProgress.cs",
+    "destination": "domain/LegacySavedProgress.cs",
+    "blob_sha": "90d13eb7571eec2389869e9e1d547ff2bd1bae4c",
+    "size": 4689
+  },
+  {
+    "commit": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+    "path": "Unity/Assets/Eldoria/LegacyProgression/ProfilePresentation.cs",
+    "destination": "domain/ProfilePresentation.cs",
+    "blob_sha": "7af9dc9c6beb79d24853d63f76c9cf23770490e6",
+    "size": 10693
+  },
+  {
+    "commit": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+    "path": "Unity/Assets/Eldoria/LegacyProgression/VerifiedRankings.cs",
+    "destination": "domain/VerifiedRankings.cs",
+    "blob_sha": "63e6e16fccc645d075abbd404b1c95fdbbd629f8",
+    "size": 2606
+  },
+  {
+    "commit": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+    "path": "Unity/Assets/Eldoria/LegacyProgression/UI/LegacyProfilePanel.cs",
+    "destination": "contracts/LegacyProfilePanel.cs",
+    "blob_sha": "498a0e93998c6899a38443a331653ae1b10eaaa7",
+    "size": 5265
+  },
+  {
+    "commit": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+    "path": "Unity/Assets/Eldoria/LegacyProgression/UI/LegacyProfileRow.cs",
+    "destination": "contracts/LegacyProfileRow.cs",
+    "blob_sha": "6bcc194a7a5cd8079bab4ae18c1fd2e0f7584262",
+    "size": 1228
+  },
+  {
+    "commit": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/action_arcane.png",
+    "destination": "assets/action_arcane.png",
+    "blob_sha": "e4585d6343705bad924be368416338908d932792",
+    "size": 95877
+  },
+  {
+    "commit": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/icon_city.png",
+    "destination": "assets/icon_city.png",
+    "blob_sha": "710dca1aa8175541b8ec842f2654c3e2d8ca4ab6",
+    "size": 90571
+  },
+  {
+    "commit": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/icon_scroll.png",
+    "destination": "assets/icon_scroll.png",
+    "blob_sha": "de31594a44dcbe7ceeef8df271d1729adf709c4c",
+    "size": 104684
+  },
+  {
+    "commit": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/icon_task.png",
+    "destination": "assets/icon_task.png",
+    "blob_sha": "e0c55e4f1190861274740c4d4dcb8b7647c6f62b",
+    "size": 71336
+  },
+  {
+    "commit": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/identity_crest.png",
+    "destination": "assets/identity_crest.png",
+    "blob_sha": "c9f43bf5816f60d33528871db1c80ba62fa699f8",
+    "size": 98843
+  },
+  {
+    "commit": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/nav_medallion.png",
+    "destination": "assets/nav_medallion.png",
+    "blob_sha": "d8613176706d6b05b347a6ecb74dd1b258231f71",
+    "size": 93680
+  },
+  {
+    "commit": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/objective_rune.png",
+    "destination": "assets/objective_rune.png",
+    "blob_sha": "7e0066259d76f3e3735a6077e85094a8752e5c3b",
+    "size": 126941
+  },
+  {
+    "commit": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/panel_obsidian.png",
+    "destination": "assets/panel_obsidian.png",
+    "blob_sha": "232b5d94967106be8e076eaa501193a767ca185f",
+    "size": 137869
+  },
+  {
+    "commit": "5ef2aee67cf8fde57ba2fc4b3d929b517ee67944",
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/world_rune.png",
+    "destination": "assets/world_rune.png",
+    "blob_sha": "a689155939dd60e39ec04e62eb036c6df411ba90",
+    "size": 78227
+  },
+  {
+    "commit": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+    "path": "docs/legacy-progression/IMPLEMENTATION.md",
+    "destination": "contracts/IMPLEMENTATION.md",
+    "blob_sha": "2397cd25ca05d079b39374d0d3e5257fd352ec81",
+    "size": 8812
+  },
+  {
+    "commit": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+    "path": "docs/valoria-modular-25d/CORONA_BRECHA_ART_DIRECTION_20261120.md",
+    "destination": "contracts/ART_DIRECTION.md",
+    "blob_sha": "ec5e91fd5d842165ebe48d6eecd85a827001f87b",
+    "size": 6485
+  },
+  {
+    "commit": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+    "path": "docs/valoria-modular-25d/CORONA_SHARED_STANDARD_20261126.md",
+    "destination": "contracts/SHARED_STANDARD.md",
+    "blob_sha": "b99495cc6542ddf408235926b7b8592d45e79a90",
+    "size": 2700
+  }
+]

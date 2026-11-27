@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "id": "v3-pr198-premium-20261127",
+  "pr": 198,
+  "source_sha": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+  "studio_base": "95e5d431bc89995ec22019017627637b1ea9e852",
+  "reference_sha": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+  "owner_authorized": true,
+  "cap_usd": "5.00",
+  "expiry": "2026-12-02",
+  "source_owner": "chatgpt-eldoria-collections-rankings-20261124",
+  "scope": "isolated V3 production candidate; no write to PR198 before coordinated handoff",
+  "sections": [
+    "Overview",
+    "Rankings",
+    "Trophies",
+    "Discoveries",
+    "Heraldry",
+    "Monuments"
+  ],
+  "detail": "DiscoveryEntries",
+  "budget": {
+    "director": "1.20",
+    "ux": "1.20",
+    "artist": "1.10",
+    "integrator": "1.10",
+    "audit": "0.40"
+  },
+  "constraints": [
+    "No fabricated public ranking, positions, opponents, rewards, alliance or season screens. Rankings unavailable until backend.",
+    "Keep actual labels, commands, locks and hidden lore. Existing independent Bestiary VII projection not a new profile tab.",
+    "Use real domain projection for all data, synthetic QA fixture only; no claim of actual player data.",
+    "Original modular art and live text. No full-screen generated UI, no unlicensed assets.",
+    "Permission to use Unity MCP and Blender MCP only in verified isolated tool session with lease; no actual MCP in this chat, native Windows reserved; hosted browser candidate is not Unity integration.",
+    "No merge, release, publishing or production source writes.",
+    "Quality target highest in project; technical gate separate from artist approval. Reject inadequate results, perform one bounded revision if appropriate."
+  ]
+}
