@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-27T16:21:55.625830+00:00",
+  "updated_at": "2026-11-27T16:40:47.564913+00:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10027,7 +10027,7 @@
       },
       "owner": "chatgpt-corona-brecha-commercial-20261126",
       "ownership_state": "claimed",
-      "ownership_revision": 19,
+      "ownership_revision": 20,
       "write_scope_released": false,
       "branch": "experiment/valoria-ciudad-region-unificada-20261121",
       "status": "active",
@@ -10042,7 +10042,9 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_approved": false,
       "device_qa": "PENDING physical Safari iPhone",
       "delivery_definition": {
@@ -10153,7 +10155,7 @@
       },
       "previous_owner": "chatgpt-valoria-umbrales-20261124",
       "next": "HUD first; native matched A/B on exact branch, shared presentation controls; preserve mechanics and best screens.",
-      "resource_handoff_note": "Owner explicitly confirmed no other work and reassigned only PC resources to Eldoria Development Studio. Source ownership unchanged.",
+      "resource_handoff_note": "Issue200 isolated Studio native proof terminal; resource returned only; no write ownership change.",
       "native_resource_handoff": {
         "reason": "Owner on 2026-11-27 explicitly asks ranking agents to claim PC if required; actual installed-tool idle probe 45966455876 and no active Corona run. Temporary resource-only transfer; no cancellation or scope ownership change.",
         "temporary_to": "eldoria-studio-v3-autonomous-execution-20261126",
@@ -10350,7 +10352,7 @@
       "title": "Eldoria Development Studio V3 — isolated autonomous execution benchmark",
       "owner": "chatgpt-studio-v3-rankings-premium-20261127",
       "ownership_state": "claimed",
-      "ownership_revision": 15,
+      "ownership_revision": 16,
       "write_scope_released": false,
       "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
       "status": "active",
@@ -10366,9 +10368,7 @@
         ".github/workflows/studio-v3-rankings-native.yml",
         ".github/workflows/studio-v3-rankings-atelier.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "delivery_definition": {
         "deliverable": "Isolated executable V3 core with bounded declarative edits, verified evidence, rejection/retry/pivot, reproducible local tests and baseline-vs-studio benchmark contract.",
         "evidence": "Actual source changes in scratch and tests; no live model autonomy or artistic gain claims without controlled live experiment. GitHub-hosted read-only offline Node CI using pinned actual V2 input; no API secret, paid model or Windows runner.",
@@ -10723,7 +10723,7 @@
         "scope": "scratch only B castle and C sawmill; no writes to game/PR198/experimental",
         "owner_authorization": "27 Nov: owner selected B+C and explicitly instructed execution using available connections; same Studio holder, no cancellation",
         "asset_run": 46032398265,
-        "state": "native_reserved",
+        "state": "resource_returned",
         "reserved_at": "2026-11-27T16:21:55.625830+00:00",
         "prior_rotation": {
           "resource": "windows-runner-heavy",
@@ -10759,7 +10759,10 @@
             "Check live claim and native processes before launch; no production project changes.",
             "Return to Corona after isolated render."
           ]
-        }
+        },
+        "terminal_native_job": 140621228968,
+        "native_conclusion": "success",
+        "returned_at": "2026-11-27T16:40:47.564913+00:00"
       }
     }
   ],
@@ -22654,50 +22657,64 @@
   "resource_rotation": {
     "resource": "windows-runner-heavy",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": "eldoria-studio-v3-autonomous-execution-20261126",
-    "current_run_id": 46032921829,
-    "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
-    "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-    "status": "issue200_bastion_i_native_proof",
-    "authorized_by": "Owner-directed Issue200 real Unity proof using same studio temporary PC reservation; no scope transfer",
+    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+    "current_run_id": null,
+    "next_workstream": null,
+    "return_to": null,
+    "status": "corona_native_reserved",
+    "authorized_by": "Existing designated return after Issue200 studio native proof terminal",
     "previous_rotation": {
       "resource": "windows-runner-heavy",
       "mode": "exclusive_one_workstream_at_a_time",
-      "authorized_by": "Owner-directed continued PR198 improvement; PC probe 45971461555 idle; temporary rotation",
       "current_workstream": "eldoria-studio-v3-autonomous-execution-20261126",
-      "current_run_id": null,
-      "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+      "current_run_id": 46032921829,
       "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
-      "status": "pr198_atelier_native",
+      "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+      "status": "issue200_bastion_i_native_proof",
+      "authorized_by": "Owner-directed Issue200 real Unity proof using same studio temporary PC reservation; no scope transfer",
       "previous_rotation": {
         "resource": "windows-runner-heavy",
-        "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
-        "authorized_at": "2026-11-26T09:50:00Z",
         "mode": "exclusive_one_workstream_at_a_time",
-        "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+        "authorized_by": "Owner-directed continued PR198 improvement; PC probe 45971461555 idle; temporary rotation",
+        "current_workstream": "eldoria-studio-v3-autonomous-execution-20261126",
         "current_run_id": null,
-        "next_workstream": null,
-        "return_to": null,
-        "status": "corona_native_reserved",
-        "previous_completed_run": 45969181310,
+        "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+        "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+        "status": "pr198_atelier_native",
+        "previous_rotation": {
+          "resource": "windows-runner-heavy",
+          "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
+          "authorized_at": "2026-11-26T09:50:00Z",
+          "mode": "exclusive_one_workstream_at_a_time",
+          "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+          "current_run_id": null,
+          "next_workstream": null,
+          "return_to": null,
+          "status": "corona_native_reserved",
+          "previous_completed_run": 45969181310,
+          "rules": [
+            "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
+            "Preserve Senda work; no cancellation or automatic return."
+          ],
+          "pr198_native_rotation_closed": {
+            "run": 45969181310,
+            "at": "2026-11-27T08:55:00Z",
+            "resource_only": true
+          }
+        },
         "rules": [
-          "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
-          "Preserve Senda work; no cancellation or automatic return."
-        ],
-        "pr198_native_rotation_closed": {
-          "run": 45969181310,
-          "at": "2026-11-27T08:55:00Z",
-          "resource_only": true
-        }
+          "Check live claim and native processes before launch; no production project changes.",
+          "Return to Corona after isolated render."
+        ]
       },
       "rules": [
-        "Check live claim and native processes before launch; no production project changes.",
-        "Return to Corona after isolated render."
+        "Check actual PC processes before Unity; scratch only",
+        "Return resource to canonical Bastion/Corona after terminal native job, no other write scope changes"
       ]
     },
     "rules": [
-      "Check actual PC processes before Unity; scratch only",
-      "Return resource to canonical Bastion/Corona after terminal native job, no other write scope changes"
+      "No game changes or art approval from resource return",
+      "Recheck actual owner and native processes"
     ]
   }
 }
