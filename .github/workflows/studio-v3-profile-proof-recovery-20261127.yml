@@ -1,0 +1,73 @@
+name: Studio V3 PR198 profile prestige recovery proof
+on:
+  push:
+    branches: [pilot/eldoria-studio-v3-autonomous-execution-20261126]
+    paths:
+      - '.github/workflows/studio-v3-profile-proof-recovery-20261127.yml'
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+concurrency:
+  group: studio-v3-pr198-profile-proof-20261127-once
+  cancel-in-progress: false
+jobs:
+  profile:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Launch recovered PR198 profile proof after zero-spend gate failure'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          sparse-checkout: |
+            tools/studio-v3/rankings-premium
+            tools/openai-development-studio
+            .github/workflows/studio-v3-profile-proof-recovery-20261127.yml
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Validate unique authorization, exact source, studio lease and budget
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python3 -m pip install --quiet pillow playwright==1.55.0
+          python3 tools/studio-v3/rankings-premium/profile-proof-recovery-20261127.py --gate
+      - name: Recover pinned baseline and compile exact C sharp profile projection
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          tool=tools/studio-v3/rankings-premium
+          python3 "$tool/materialize.py" "$RUNNER_TEMP/pr198-source"
+          cp "$tool/Projection.cs" "$tool/Projection.csproj" "$RUNNER_TEMP/pr198-source/domain/"
+          dotnet build "$RUNNER_TEMP/pr198-source/domain/Projection.csproj" --configuration Release --nologo
+          dotnet "$RUNNER_TEMP/pr198-source/domain/bin/Release/net8.0/Projection.dll" > "$RUNNER_TEMP/pr198-projection.json"
+          python3 -m playwright install chromium
+          python3 "$tool/profile-proof-recovery-20261127.py" --baseline "$RUNNER_TEMP/pr198-profile-baseline"
+      - name: No spend baseline replay and technical QA
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python3 tools/studio-v3/rankings-premium/profile-proof-recovery-20261127.py --fixture "$RUNNER_TEMP/pr198-source" "$RUNNER_TEMP/pr198-projection.json" "$RUNNER_TEMP/pr198-profile-baseline" "$RUNNER_TEMP/pr198-profile-fixture"
+      - name: Three independent artistic proposals and independent weighted audit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python3 tools/studio-v3/rankings-premium/profile-proof-recovery-20261127.py --live "$RUNNER_TEMP/pr198-source" "$RUNNER_TEMP/pr198-projection.json" "$RUNNER_TEMP/pr198-profile-baseline" "$RUNNER_TEMP/pr198-profile-proof"
+      - name: Preserve original assets, compositions, actual screenshots and cost receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr198-profile-prestige-proof
+          path: ${{ runner.temp }}/pr198-profile-proof
+          if-no-files-found: warn
+          retention-days: 14
+      - name: No tracked game files modified
+        if: always()
+        run: git diff --exit-code
