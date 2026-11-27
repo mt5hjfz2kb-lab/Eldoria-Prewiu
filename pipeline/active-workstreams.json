@@ -10347,14 +10347,15 @@
       "write_scope_released": false,
       "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
       "status": "active",
-      "phase": "PR198_PREMIUM_ART_SPECIALISTS",
+      "phase": "PR198_PREMIUM_MACRO_PIVOT",
       "claimed_at": "2026-11-26T19:46:00Z",
       "base_main_sha": "58ec6108b9fdb23d2ee2505ab17c8c19662ba37a",
       "base_studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
       "user_authorization": "Owner explicitly commissions Studio agents to produce premium visual screens for existing PR198. USD 5 isolated ceiling authorized by request to assign budget and proceed. No invented game functions, no earlier budget reuse. Allow safe verified Unity/Blender MCP, respect existing native resource lease. PR198 source read-only until coordinated handoff, no merge or release.",
       "scope": [
         "tools/studio-v3/rankings-premium/**",
-        ".github/workflows/studio-v3-rankings-premium.yml"
+        ".github/workflows/studio-v3-rankings-premium.yml",
+        ".github/workflows/studio-v3-rankings-pivot.yml"
       ],
       "resources": [],
       "delivery_definition": {
@@ -10547,7 +10548,21 @@
         "cap_usd": "5.00",
         "target": "all existing ProfilePresentation sections and discovery detail",
         "native_runner": "occupied by Corona; no native claims",
-        "artifact_only": true
+        "artifact_only": true,
+        "first_run": {
+          "run": 45959632425,
+          "estimated_usd": "0.17856840",
+          "quality": "rejected",
+          "api_calls": 9,
+          "artifact": 15180067001
+        },
+        "followup": {
+          "cap_usd": "3.00",
+          "prior_estimated_usd": "0.17856840",
+          "aggregate_max_estimated_usd": "3.17856840",
+          "reason": "Same owner-approved $5 mission, new bounded sub-stage after all prior cost receipts known; not automatic rollover, no external budget.",
+          "goal": "Creative page structure and CSS by agents, differentiated original asset atlases, full render and independent QA"
+        }
       }
     }
   ],
