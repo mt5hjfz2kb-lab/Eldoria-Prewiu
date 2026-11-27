@@ -14,6 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   prepare:
+    if: github.event.head_commit.message != 'Resume PR198 native tools using existing paid artifact'
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
@@ -83,6 +84,67 @@ jobs:
         run: |
           $p=Join-Path $env:RUNNER_TEMP ("pr198-native-input-"+$env:GITHUB_RUN_ID)
           $o=Join-Path $env:RUNNER_TEMP ("pr198-native-result-"+$env:GITHUB_RUN_ID)
+          & (Join-Path $p 'native.ps1') -InputRoot $p -OutRoot $o
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr198-native-result
+          path: ${{ runner.temp }}/pr198-native-result-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 14
+
+  resume-native:
+    if: github.event.head_commit.message == 'Resume PR198 native tools using existing paid artifact' && github.run_attempt == 1
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 25
+    steps:
+      - name: Verify live exclusive native lease and no existing processes
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28'}
+          $meta=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main' -Headers $h
+          $blob=Invoke-RestMethod -Uri ('https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/'+$meta.sha) -Headers $h
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s','')))|ConvertFrom-Json
+          $holder=@($reg.active|Where-Object {@($_.resources) -contains 'windows-runner-heavy'})
+          if($holder.Count -ne 1 -or $holder[0].id -ne 'eldoria-studio-v3-autonomous-execution-20261126' -or $holder[0].owner -ne 'chatgpt-studio-v3-rankings-premium-20261127' -or $holder[0].ownership_revision -ne 12){throw 'Native lease moved'}
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager,UnityCrashHandler64 -ErrorAction SilentlyContinue).Count){throw 'Existing native processes; no interruption'}
+          Write-Host 'PR198_NATIVE_EXCLUSIVE_LEASE_PASS'
+      - name: Confirm immutable existing paid input
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $a=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/15184075850' -Headers $h
+          if($a.expired -or $a.digest -ne 'sha256:2a4e9525616af0dea53dea4c3bdc1fae9d6447b0913bf140ffe26ec431e05430' -or $a.workflow_run.id -ne 45967270833){throw 'Original paid artifact identity changed'}
+          Write-Host 'ORIGINAL_PAID_ARTIFACT_VERIFIED_NO_NEW_SPEND'
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr198-native-input-internal
+          github-token: ${{ github.token }}
+          run-id: 45967270833
+          path: ${{ runner.temp }}/pr198-native-input-${{ github.run_id }}
+      - name: Correct PowerShell argument binding and execute existing agent output
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $p=Join-Path $env:RUNNER_TEMP ("pr198-native-input-"+$env:GITHUB_RUN_ID)
+          $o=Join-Path $env:RUNNER_TEMP ("pr198-native-result-"+$env:GITHUB_RUN_ID)
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $u='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/tools/studio-v3/rankings-premium/native/native.ps1?ref='+$env:GITHUB_SHA
+          $meta=Invoke-RestMethod -Uri $u -Headers $h
+          $raw=[Convert]::FromBase64String(($meta.content -replace '\s',''))
+          $prefix=[Text.Encoding]::ASCII.GetBytes("blob "+$raw.Length+[char]0)
+          $hash=[BitConverter]::ToString([Security.Cryptography.SHA1]::Create().ComputeHash([byte[]]($prefix+$raw))).Replace('-','').ToLower()
+          if($hash -ne $meta.sha){throw 'Native launcher Git blob hash mismatch'}
+          [IO.File]::WriteAllBytes((Join-Path $p 'native.ps1'),$raw)
+          Remove-Item Env:GH_TOKEN -ErrorAction SilentlyContinue
           & (Join-Path $p 'native.ps1') -InputRoot $p -OutRoot $o
       - uses: actions/upload-artifact@v4
         if: always()

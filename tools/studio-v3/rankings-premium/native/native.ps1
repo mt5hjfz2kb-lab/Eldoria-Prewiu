@@ -11,14 +11,14 @@ $bc=Get-Command blender.exe -ErrorAction SilentlyContinue
 if($bc){$blender=$bc.Source}else{$blender=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -Directory | ForEach-Object {Join-Path $_.FullName 'blender.exe'} | Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1}
 $addon=Join-Path $env:APPDATA 'Blender Foundation\Blender\5.2\scripts\addons\blender_mcp.py'
 if(-not(Test-Path -LiteralPath $addon) -or (Get-FileHash -Algorithm SHA256 -LiteralPath $addon).Hash.ToLower() -ne 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5'){throw 'Installed Blender MCP hash changed'}
-function Run-Child($exe,$args,$seconds,$label){
- $p=Start-Process -FilePath $exe -ArgumentList $args -PassThru -RedirectStandardOutput (Join-Path $root ($label+'.stdout.txt')) -RedirectStandardError (Join-Path $root ($label+'.stderr.txt'))
+function Run-Child([string]$exe,[string[]]$argList,[int]$seconds,[string]$label){
+ $p=Start-Process -FilePath $exe -ArgumentList $argList -PassThru -RedirectStandardOutput (Join-Path $root ($label+'.stdout.txt')) -RedirectStandardError (Join-Path $root ($label+'.stderr.txt'))
  if(-not $p.WaitForExit($seconds*1000)){Stop-Process -Id $p.Id -ErrorAction SilentlyContinue;throw ($label+' timed out (only own process stopped)')}
  if($p.ExitCode -ne 0){Get-Content (Join-Path $root ($label+'.stderr.txt')) -Tail 30;throw ($label+' exit '+$p.ExitCode)}
 }
 function Q([string]$v){return ('"'+$v+'"')}
 $blenderOut=Join-Path $root 'blender'
-Run-Child $blender @('-b','-t','4','--python-exit-code','1','--python',(Q (Join-Path $InputRoot 'blender_author.py')),'--',(Q (Join-Path $InputRoot 'native-design.json')),(Q $blenderOut),(Q $addon)) 480 'blender'
+Run-Child -exe $blender -argList @('-b','-t','4','--python-exit-code','1','--python',(Q (Join-Path $InputRoot 'blender_author.py')),'--',(Q (Join-Path $InputRoot 'native-design.json')),(Q $blenderOut),(Q $addon)) -seconds 480 -label 'blender'
 if(-not(Test-Path (Join-Path $blenderOut 'blender-proof.json'))){throw 'Blender MCP proof missing'}
 Get-Content (Join-Path $blenderOut 'blender-proof.json')
 # Create a new minimal UGUI project. No game worktree is opened.
