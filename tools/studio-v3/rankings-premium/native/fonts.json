@@ -1,0 +1,16 @@
+[
+  {
+    "commit": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/Fonts/CormorantGaramond-SemiBold.ttf",
+    "destination": "Cormorant.ttf",
+    "blob_sha": "c30cb04d87c0abdb7bb86db19272d6790ed46758",
+    "size": 891380
+  },
+  {
+    "commit": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/Fonts/SourceSans3-Semibold.ttf",
+    "destination": "SourceSans.ttf",
+    "blob_sha": "4aff9a3aea9b5f1e746f03ed40e1b293740dc8a2",
+    "size": 425904
+  }
+]
