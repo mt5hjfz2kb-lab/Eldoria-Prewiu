@@ -1,0 +1,69 @@
+name: Studio V3 PR198 premium art production
+on:
+  push:
+    branches: [pilot/eldoria-studio-v3-autonomous-execution-20261126]
+    paths:
+      - 'tools/studio-v3/rankings-premium/**'
+      - '.github/workflows/studio-v3-rankings-premium.yml'
+      - 'tools/studio-v3/live-requests/pr198-premium-20261127.json'
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+concurrency:
+  group: studio-v3-pr198-premium-once
+  cancel-in-progress: false
+jobs:
+  production:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 23
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/studio-v3/rankings-premium
+            tools/studio-v3/live-requests
+            tools/openai-development-studio
+          fetch-depth: 2
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Pin original PR and Corona evidence, compile exact C# domain projection
+        run: |
+          set -euo pipefail
+          tool=tools/studio-v3/rankings-premium
+          python3 "$tool/materialize.py" "$RUNNER_TEMP/pr198-source"
+          cp "$tool/Projection.cs" "$tool/Projection.csproj" "$RUNNER_TEMP/pr198-source/domain/"
+          dotnet build "$RUNNER_TEMP/pr198-source/domain/Projection.csproj" --configuration Release --nologo
+          dotnet "$RUNNER_TEMP/pr198-source/domain/bin/Release/net8.0/Projection.dll" > "$RUNNER_TEMP/pr198-projection.json"
+          python3 -m json.tool "$RUNNER_TEMP/pr198-projection.json" > /dev/null
+          python3 -m pip install --quiet pillow playwright==1.55.0
+          python3 -m playwright install chromium
+      - name: No-spend calibration on actual domain and 21 browser frames
+        if: github.event.head_commit.message != 'Authorize isolated Studio PR198 premium production within USD 5.00'
+        run: python3 tools/studio-v3/rankings-premium/run.py --fixture "$RUNNER_TEMP/pr198-source" "$RUNNER_TEMP/pr198-projection.json" "$RUNNER_TEMP/pr198-art"
+      - name: Verify one-shot authorization before exposing API key
+        if: github.event.head_commit.message == 'Authorize isolated Studio PR198 premium production within USD 5.00'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 tools/studio-v3/rankings-premium/run.py --preflight
+      - name: Real specialist roles, original image production, actual rendering, independent QA
+        if: github.event.head_commit.message == 'Authorize isolated Studio PR198 premium production within USD 5.00'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 tools/studio-v3/rankings-premium/run.py --live "$RUNNER_TEMP/pr198-source" "$RUNNER_TEMP/pr198-projection.json" "$RUNNER_TEMP/pr198-art"
+      - name: Retain real artifacts, live text preview, receipts and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr198-studio-premium
+          path: ${{ runner.temp }}/pr198-art
+          if-no-files-found: warn
+          retention-days: 14
+      - name: No tracked game files modified
+        if: always()
+        run: git diff --exit-code
