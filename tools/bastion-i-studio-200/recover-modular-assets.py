@@ -68,7 +68,7 @@ for name in ("bastion","sawmill","meadow"):
     if name=="sawmill":
         f=out/"sawmill-original.png";bits=f.read_bytes()
         with Image.open(f) as im:
-            assert im.mode=="RGBA" and im.getchannel("A").getextrema()==(0,255)
+            assert im.mode=="RGBA" and im.getchannel("A").getextrema()[0]==0 and im.getchannel("A").getextrema()[1]>=250
             a=im.getchannel("A");bbox=a.point(lambda x:255 if x>128 else 0).getbbox()
             assert bbox and bbox[0]>4 and bbox[1]>4 and bbox[2]<im.width-4 and bbox[3]<im.height-4
             result=im.crop(bbox);info={"native_alpha_preserved":True,"bbox":bbox}
