@@ -1,0 +1,109 @@
+name: Issue 200 recover actual Unity evidence and finish audit
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/bastion-i-studio-200-evidence-recovery.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: issue200-evidence-recovery
+  cancel-in-progress: false
+env:
+  REPO: ${{ github.repository }}
+jobs:
+  evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-real-unity-native
+          run-id: 46032921829
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/native
+      - name: Verify matched camera, produce side by side native evidence and actual video
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet pillow imageio-ffmpeg
+          ffmpeg_bin=$(python3 -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())')
+          mkdir -p "$RUNNER_TEMP/delivery"
+          python3 - <<'PY'
+          import json,os,hashlib
+          from pathlib import Path
+          from PIL import Image,ImageDraw
+          root=Path(os.environ["RUNNER_TEMP"]);src=root/"native";out=root/"delivery"
+          a=json.loads((src/"baseline/evidence.json").read_text());b=json.loads((src/"candidate/evidence.json").read_text())
+          assert len(a["frames"])==len(b["frames"])==96
+          for x,y in zip(a["frames"],b["frames"]):
+              assert all(x[k]==y[k] for k in ("name","width","height","orthographicSize","cameraX","cameraY"))
+              for folder,row in [("baseline",x),("candidate",y)]:
+                  p=src/folder/row["file"];assert hashlib.sha256(p.read_bytes()).hexdigest()==row["sha256"]
+          for name in ["home","registered-entry","retina","wide","keep-close","mill-close"]:
+              ims=[Image.open(src/d/(name+".png")).convert("RGB") for d in ("baseline","candidate")]
+              w,h=ims[0].size
+              im=Image.new("RGB",(w*2,h+38),"#171717");d=ImageDraw.Draw(im)
+              for i,part in enumerate(ims):im.paste(part,(w*i,38));d.text((w*i+10,10),["BASELINE UNITY","CANDIDATE B+C UNITY"][i],fill="white")
+              im.save(out/(name+"-comparison.png"))
+          assert a["frames"][0]["sha256"]!=b["frames"][0]["sha256"]
+          (out/"evidence-summary.json").write_text(json.dumps({"source_sha":a["sourceSha"],"native_unity":True,"matched_frames":96,"art_approved":False,"playmode":False,"note":"Actual Unity Editor scene; same cameras and canonical built fixture, not a WebGL or device test."},indent=2))
+          PY
+          "$ffmpeg_bin" -loglevel error -framerate 15 -i "$RUNNER_TEMP/native/baseline/motion-%03d.png" -framerate 15 -i "$RUNNER_TEMP/native/candidate/motion-%03d.png" -filter_complex hstack=inputs=2 -c:v libx264 -pix_fmt yuv420p -movflags +faststart "$RUNNER_TEMP/delivery/native-pan-zoom-comparison.mp4"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: issue200-native-comparison-delivery
+          path: ${{ runner.temp }}/delivery
+          if-no-files-found: error
+          retention-days: 14
+  audit:
+    needs: evidence
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Recover existing Unity captures and complete unpaid pending audit'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Confirm original audit never reached paid stage
+        run: |
+          set -euo pipefail
+          gh api "repos/$REPO/actions/runs/46033247521/jobs" --jq '.jobs[].steps[] | select(.name=="Independent visual audit on native matched frames") | .conclusion' | grep -Fx skipped
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-native-comparison-delivery
+          path: ${{ runner.temp }}/native
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-artist-delivery
+          run-id: 46028941144
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/concepts
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-reference-refined-assets
+          run-id: 46032398265
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/refined
+      - name: Prepare existing independent audit
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/studio"
+          cd "$RUNNER_TEMP/studio"
+          for f in studio.py economics.py rates-20261125.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$f?ref=9fbdb203269b951a252de58d7a0357d71a841480" > "$f"
+          done
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/audit-native-proof.py?ref=3a62d21394ec62536c4150e4b27527fc70f3e7db" > audit.py
+          python3 -m pip install --quiet pillow
+          python3 -m py_compile audit.py
+      - name: Audit actual native renders within existing reservation
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          cd "$RUNNER_TEMP/studio"
+          python3 -u audit.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-native-independent-audit
+          path: ${{ runner.temp }}/audit
+          if-no-files-found: warn
+          retention-days: 14
