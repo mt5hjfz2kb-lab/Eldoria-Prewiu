@@ -14,7 +14,7 @@ env:
   BASE_SHA: 91b8de9874aed87219d733efa6e8e0aa56207f1e
 jobs:
   fit:
-    if: github.run_attempt == 1 && github.event.head_commit.message == 'Launch actual Unity Issue200 B C proof with isolated native lease'
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Recover Issue200 native proof after binary download failure before lease'
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
@@ -28,7 +28,8 @@ jobs:
           mkdir -p "$RUNNER_TEMP/original" "$RUNNER_TEMP/scripts"
           p=Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D
           for n in bastion_i_hd.png sawmill_i_hd.png bastion_i_hd.png.meta sawmill_i_hd.png.meta; do
-            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/$p/$n?ref=$BASE_SHA" > "$RUNNER_TEMP/original/$n"
+            curl --fail --silent --show-error --location -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/$REPO/contents/$p/$n?ref=$BASE_SHA" -o "$RUNNER_TEMP/original/$n"
+            test -s "$RUNNER_TEMP/original/$n"
           done
           gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/fit-production-assets.py?ref=2546b29495dc217b5e37e6f4c0a71763e77e7fc3" > "$RUNNER_TEMP/scripts/fit.py"
           python3 -m pip install --quiet pillow numpy
