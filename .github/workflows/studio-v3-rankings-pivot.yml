@@ -1,0 +1,69 @@
+name: Studio V3 PR198 creative pivot
+on:
+  push:
+    branches: [pilot/eldoria-studio-v3-autonomous-execution-20261126]
+    paths:
+      - 'tools/studio-v3/rankings-premium/pivot/**'
+      - '.github/workflows/studio-v3-rankings-pivot.yml'
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+concurrency:
+  group: studio-v3-pr198-creative-pivot
+  cancel-in-progress: false
+jobs:
+  pivot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/studio-v3/rankings-premium
+            tools/openai-development-studio
+          fetch-depth: 2
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Recover exact PR projection and original failed candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          tool=tools/studio-v3/rankings-premium
+          python3 "$tool/materialize.py" "$RUNNER_TEMP/pr198-source"
+          cp "$tool/Projection.cs" "$tool/Projection.csproj" "$RUNNER_TEMP/pr198-source/domain/"
+          dotnet build "$RUNNER_TEMP/pr198-source/domain/Projection.csproj" --configuration Release --nologo
+          dotnet "$RUNNER_TEMP/pr198-source/domain/bin/Release/net8.0/Projection.dll" > "$RUNNER_TEMP/pr198-projection.json"
+          python3 -m pip install --quiet pillow playwright==1.55.0
+          python3 -m playwright install chromium
+          python3 "$tool/pivot/pivot.py" --prepare "$RUNNER_TEMP/first-art"
+      - name: Offline exact projection and unrestricted declarative layout proof
+        if: github.event.head_commit.message != 'Authorize PR198 creative pivot within remaining owner USD 5 ceiling'
+        run: python3 tools/studio-v3/rankings-premium/pivot/pivot.py --fixture "$RUNNER_TEMP/pr198-source" "$RUNNER_TEMP/pr198-projection.json" "$RUNNER_TEMP/first-art" "$RUNNER_TEMP/pr198-pivot"
+      - name: Verify immutable isolated grant
+        if: github.event.head_commit.message == 'Authorize PR198 creative pivot within remaining owner USD 5 ceiling'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/studio-v3/rankings-premium/pivot/pivot.py --gate
+      - name: Actual new art, specialist layouts, rendering and independent review
+        if: github.event.head_commit.message == 'Authorize PR198 creative pivot within remaining owner USD 5 ceiling'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 tools/studio-v3/rankings-premium/pivot/pivot.py --live "$RUNNER_TEMP/pr198-source" "$RUNNER_TEMP/pr198-projection.json" "$RUNNER_TEMP/first-art" "$RUNNER_TEMP/pr198-pivot"
+      - name: Preserve separate new sprites, source and actual captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr198-studio-creative-pivot
+          path: ${{ runner.temp }}/pr198-pivot
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Tracked game files unchanged
+        if: always()
+        run: git diff --exit-code
