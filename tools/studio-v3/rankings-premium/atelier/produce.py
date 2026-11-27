@@ -11,8 +11,8 @@ SOURCE=v.SOURCE;REPO=v.REPO;OWNER=v.OWNER;BRANCH=v.BRANCH
 SECTIONS=["Overview","Rankings","Trophies","Discoveries","Heraldry","Monuments","DiscoveryDetail"]
 ASSETS=["hero-profile","hero-rankings","hero-trophies","hero-discoveries","hero-heraldry","hero-monuments","collection-ashes","collection-fissure","collection-frontier","medal-sheet","insignia-sheet","monument-sheet","frame-sheet"]
 SLOTS={"director":D(".20"),"layout":D(".25"),"asset-review":D(".15"),**{k:D(".20") for k in ASSETS}}
-MESSAGE="Launch PR198 atelier production with distinct premium original art"
-REQ="tools/studio-v3/rankings-premium/atelier/launch.json"
+MESSAGE="Launch PR198 atelier with certified zero-spend recovery and supported director"
+REQ="tools/studio-v3/rankings-premium/atelier/recovery-launch.json"
 def need(x,m):
  if not x:raise ValueError(m)
 def gate():
@@ -30,6 +30,14 @@ def gate():
  need(dt.datetime.now(dt.timezone.utc).date()<dt.date(2026,12,2),"Expired")
  ci=v.gh("repos/"+REPO+"/actions/workflows/studio-v3-rankings-atelier.yml/runs?"+urlencode({"head_sha":before,"status":"success","per_page":20}))["workflow_runs"]
  need(any(r["head_sha"]==before and r["conclusion"]=="success" for r in ci),"No calibration proof")
+ # The first launch failed in make_payload before reservation or network.
+ # Verify immutable artifact and empty ledger before consuming this same grant.
+ import tempfile
+ with tempfile.TemporaryDirectory() as td:
+  path=P(td)/"failed.zip"
+  archive(45970152249,15183979348,"14aba4880014a3a10c4b7f906e8d16d730d3eec2b674081524a5b5f91587c2dc",path)
+  with zipfile.ZipFile(path) as z:
+   need(json.loads(z.read("ledger.json"))["entries"]==[] and not any(n.endswith("-receipt.json") for n in z.namelist()),"Previous API calls or uncertain cost")
  print("ATELIER_GATE_PASS",head,flush=True)
 def archive(run,aid,digest,dest,limit=50):
  a=next(x for x in v.gh("repos/"+REPO+"/actions/runs/"+str(run)+"/artifacts")["artifacts"] if x["id"]==aid)
@@ -109,7 +117,7 @@ def main(source,out,live):
    if c["type"]=="input_image":c["detail"]="high"
   row=l.reserve(slot);print("ATELIER_SLOT",slot,flush=True);raw=v.studio.request_api(pl,key);l.finish(row,raw.get("usage"),raw.get("model") or model,raw.get("service_tier") or "standard")
   rep=v.studio.report("visual" if images else "programming",pl,m,raw);v.dump(out/(slot+"-receipt.json"),rep);res=v.json_result(rep["response"]);v.dump(out/(slot+"-output.json"),res);return res
- d=valid_plan(ask("director","gpt-6.2-astra","You are the senior commercial mobile game art director. The previous native captures are inadequate: weak contrast, generic identical rectangles, tiny numbers, repeated medals, wasted dark hero space. Design an ambitious new Valoria heritage gallery, with rich painterly original artwork, strong hierarchy, readable labels, differentiated sections, tactile warm metals and amethyst used with restraint, not dark purple everywhere. Preserve all domain facts/locks; no fictional rankings, players, rewards or new mechanics. No full-screen image or text in artwork. Provide JSON exactly {concept,palette:{ink,surface,gold,paper,muted,action},pages:{Overview,Rankings,Trophies,Discoveries,Heraldry,Monuments,DiscoveryDetail},briefs:{each of the 13 named assets}}. Palette hex. Each page is a precise composition and each asset a distinct high-quality art brief; each brief 40..1800 chars. Maintain subjects/atlas cell order. Use the rejected actual Unity frames as evidence.",common+"\nExact art slots and required subjects: "+json.dumps(SUBJECTS,ensure_ascii=False),(out/"baseline-1.jpg",out/"baseline-2.jpg"),6500))
+ d=valid_plan(ask("director","gpt-6.2-sol","You are the senior commercial mobile game art director. The previous native captures are inadequate: weak contrast, generic identical rectangles, tiny numbers, repeated medals, wasted dark hero space. Design an ambitious new Valoria heritage gallery, with rich painterly original artwork, strong hierarchy, readable labels, differentiated sections, tactile warm metals and amethyst used with restraint, not dark purple everywhere. Preserve all domain facts/locks; no fictional rankings, players, rewards or new mechanics. No full-screen image or text in artwork. Provide JSON exactly {concept,palette:{ink,surface,gold,paper,muted,action},pages:{Overview,Rankings,Trophies,Discoveries,Heraldry,Monuments,DiscoveryDetail},briefs:{each of the 13 named assets}}. Palette hex. Each page is a precise composition and each asset a distinct high-quality art brief; each brief 40..1800 chars. Maintain subjects/atlas cell order. Use the rejected actual Unity frames as evidence.",common+"\nExact art slots and required subjects: "+json.dumps(SUBJECTS,ensure_ascii=False),(out/"baseline-1.jpg",out/"baseline-2.jpg"),6500))
  for slot in ASSETS:
   # Each call is reserved and durably recorded before sending. No retry on uncertain costs.
   row=l.reserve(slot);print("ATELIER_SLOT",slot,flush=True)
