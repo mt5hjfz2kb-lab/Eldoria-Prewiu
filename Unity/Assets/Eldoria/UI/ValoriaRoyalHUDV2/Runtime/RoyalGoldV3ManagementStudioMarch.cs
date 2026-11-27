@@ -215,7 +215,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // More portrait height; two-column obsidian summary; preserve order controls.
             // Actual R4 direction (run 45907960440): .35 operative
             // height and .46 leader width. Preserve tested control bands.
-            float gap=12f,heroH=bodyH*.35f,troopH=Mathf.Max(410f,bodyH*.30f);
+            // R5: restore the focal hierarchy observed in the approved early
+            // room, with the R4 continuous environment and independent art.
+            float gap=12f,heroH=bodyH*.38f,troopH=Mathf.Max(410f,bodyH*.30f);
             float summaryH=bodyH-heroH-troopH-gap;
             Place(left,x,bodyY,width,heroH+troopH);
             Place(right,x,bodyY+heroH+troopH+gap,width,summaryH);
@@ -227,19 +229,24 @@ namespace Eldoria.UI.RoyalGold.V2
             StudioText(unitTitle,30,StudioBrass,TextAnchor.MiddleLeft,true);
             Place((RectTransform)heroesButton.transform,lw-220,2,210,92);
             StudioButton(heroesButton,StudioInk,28);
-            float cardGap=10f;
-            float cardsW=lw-28f-2f*cardGap,leaderW=cardsW*.46f,wingW=(cardsW-leaderW)*.5f;
+            float cardGap=12f;
+            float cardsW=lw-28f-cardGap,leaderW=cardsW*.55f,wingW=cardsW-leaderW;
+            float wingX=14f+leaderW+cardGap;
+            float leaderBottom=heroH*.94f,wingTop=102f;
+            float wingH=(leaderBottom-wingTop-cardGap)*.5f;
+            // A shared physical dossier rack supports the two secondary
+            // slots; they are not floating or pretending to be scenery.
+            var stand=StudioPlate("secondary dossier rack",left,wingX-5f,wingTop-6f,wingW+10f,leaderBottom-wingTop+12f,new Color32(35,28,25,245));
+            stand.transform.SetSiblingIndex(studioGalleryWindow.GetSiblingIndex()+1);
             for(int i=0;i<3;i++)
             {
                 // Preserve the director's triptych, but correct the visibly
                 // diminished commander's portrait in the authentic R3 frame.
                 float cardW=i==0?leaderW:wingW;
-                float cardX=i==0?14f:14f+leaderW+cardGap+(i-1)*(wingW+cardGap);
-                // Three independent physical dossiers, with the commander
-                // in the foreground and wings slightly farther back.
-                float cardTop=i==0?94f:109f;
-                float baseY=heroH*(i==0?.94f:.925f);
-                float cardH=baseY-cardTop;
+                float cardX=i==0?14f:wingX;
+                float cardTop=i==0?94f:wingTop+(i-1)*(wingH+cardGap);
+                float cardH=i==0?leaderBottom-cardTop:wingH;
+                float baseY=cardTop+cardH;
                 var card=(RectTransform)heroSlotButtons[i].transform;
                 Place(card,cardX,cardTop,cardW,cardH);
                 StudioContact("gallery contact "+i,left,studioGalleryWindow,cardX-4f,baseY-8f,cardW+8f,34f,i==0?.95f:.78f);
@@ -253,7 +260,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 studioRestore.Add(()=>{if(heroButton)heroButton.targetGraphic=oldTarget;if(edge)edge.raycastTarget=false;});
                 var backing=StudioPlate("hero physical backing "+i,card,3,3,cardW-6,cardH-6,new Color32(26,26,30,255));
                 backing.transform.SetSiblingIndex(edge.transform.GetSiblingIndex()+1);
-                float captionH=80f,artW2=cardW-10,artH2=cardH-captionH-8;
+                float captionH=80f;
+                float artW2=i==0?cardW-10:cardW*.47f-8f;
+                float artH2=i==0?cardH-captionH-8:cardH-10;
                 Place(heroPortraitViewports[i],5,5,artW2,artH2);
                 var sprite=approvedHeroes[i].sprite;
                 float ar=sprite?sprite.rect.width/sprite.rect.height:1f;
@@ -263,41 +272,47 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(approvedHeroes[i].rectTransform,(artW2-pw)*.5f,portrait?0:(artH2-ph)*.5f,pw,ph);
                 // No repeated massive violet frames. The thin physical
                 // brass edge and dark plaque provide the visual anchoring.
-                var ribbon=StudioPlate("hero caption "+i,card,4,cardH-captionH,cardW-8,captionH-4,new Color32(28,25,28,255));
+                float labelX=i==0?4f:artW2+9f;
+                float labelY=i==0?cardH-captionH:4f;
+                float labelW=i==0?cardW-8f:cardW-labelX-4f;
+                float labelH=i==0?captionH-4f:cardH-8f;
+                var ribbon=StudioPlate("hero caption "+i,card,labelX,labelY,labelW,labelH,new Color32(28,25,28,255));
                 ribbon.transform.SetAsLastSibling();
-                Place(heroSlotLabels[i].rectTransform,7,cardH-captionH,cardW-14,captionH-5);
+                Place(heroSlotLabels[i].rectTransform,labelX+3f,labelY+3f,labelW-6f,labelH-6f);
                 StudioText(heroSlotLabels[i],27,i==2?CoronaFinish.Muted:CoronaFinish.Ivory,TextAnchor.MiddleCenter);
                 heroSlotLabels[i].transform.SetAsLastSibling();
             }
             float ty=heroH+4f;
             var troopDossier=StudioPlate("troop dossier",left,0,ty,lw,troopH-9,StudioSlate,true,"panel_obsidian");
-            float artWidth=lw*.27f,infoX=artWidth+24f;
-            Place(marchTroopChapter.rectTransform,infoX,ty+7,lw-infoX-20,44);
-            StudioText(marchTroopChapter,30,StudioBrass,TextAnchor.MiddleLeft,true);
-            // Actual transparent T1/T2 archer from the approved Corona
-            // training kit, rather than the old baked rectangular thumbnail.
+            // Larger independent tier-specific archer, with actual boot
+            // contact on the same material plane. Functional controls use
+            // a separate right-hand column, not an illustration of a UI.
+            float artWidth=lw*.29f,infoX=artWidth+26f;
+            float controlW=lw-infoX-16f;
+            Place(marchTroopChapter.rectTransform,infoX,ty+7,controlW,35);
+            StudioText(marchTroopChapter,29,StudioBrass,TextAnchor.MiddleLeft,true);
             var oldTroopSprite=approvedTroopRow.sprite;
             studioRestore.Add(()=>{if(approvedTroopRow)approvedTroopRow.sprite=oldTroopSprite;});
             PutStudioTroopArt();
-            Place(approvedTroopRow.rectTransform,13,ty+9,artWidth,180);
-            StudioContact("troop contact",left,troopDossier.transform,30,ty+173,artWidth-32,24,.90f);
-            Place(unitDetail.rectTransform,infoX,ty+51,lw-infoX-248,132);
+            Place(approvedTroopRow.rectTransform,13,ty+15,artWidth,troopH-32f);
+            StudioContact("troop contact",left,troopDossier.transform,26,ty+troopH-45f,artWidth-24f,28,.90f);
+            Place(unitDetail.rectTransform,infoX,ty+42,controlW,42);
             StudioText(unitDetail,30,CoronaFinish.Ivory,TextAnchor.MiddleLeft);
-            Place((RectTransform)tierButton.transform,lw-240,ty+73,224,92);
+            float smallGap=8f,half=(controlW-smallGap)*.5f,qh=94f;
+            Place((RectTransform)tierButton.transform,infoX,ty+86,half,qh);
             StudioButton(tierButton,StudioInk,27);
-            float qy=ty+197f,qh=94f,qw=lw-32f;
-            float modeW=qw*.33f,quantityW=qw-modeW-12f;
-            Place((RectTransform)percentModeButton.transform,16,qy,modeW,qh);
+            Place((RectTransform)percentModeButton.transform,infoX+half+smallGap,ty+86,half,qh);
             StudioButton(percentModeButton,StudioInk,28);
-            Place(quantityRow,16+modeW+12,qy,quantityW,qh);
+            float qy=ty+188f,quantityW=controlW;
+            Place(quantityRow,infoX,qy,quantityW,qh);
             StudioPlate("quantity inset",quantityRow,0,0,quantityW,qh,StudioInk,true,"secondary_quiet");
             Place((RectTransform)minus.transform,0,0,94,qh);
             Place((RectTransform)plus.transform,quantityW-94,0,94,qh);
             StudioButton(minus,StudioSlate,38);StudioButton(plus,StudioSlate,38);
             Place(selectedText.rectTransform,99,0,quantityW-198,qh);
             StudioText(selectedText,42,CoronaFinish.Ivory,TextAnchor.MiddleCenter);
-            float sliderY=qy+qh+10;
-            Place((RectTransform)slider.transform,24,sliderY,lw-48,92);
+            float sliderY=ty+290f;
+            Place((RectTransform)slider.transform,infoX,sliderY,controlW,94);
             var track=slider.GetComponent<Image>();
             if(track)
             {
@@ -305,7 +320,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 studioRestore.Add(()=>{if(track){track.color=colour;track.raycastTarget=ray;}});
                 track.color=new Color(.025f,.04f,.05f,.06f);
                 track.raycastTarget=true;
-                var rail=StudioPlate("slider rail",(RectTransform)slider.transform,6,30,lw-60,32,StudioInk,true,"wallet_inset");
+                var rail=StudioPlate("slider rail",(RectTransform)slider.transform,6,31,controlW-12,32,StudioInk,true,"wallet_inset");
                 rail.transform.SetAsFirstSibling();
             }
             var fillArea=slider.fillRect?slider.fillRect.parent as RectTransform:null;
@@ -328,11 +343,15 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(summary.rectTransform,18,7,rw-36,51);
             StudioText(summary,30,StudioBrass,TextAnchor.MiddleLeft,true);
             float tileTop=55,tileGap=7,statusH=128;
-            float tileW=(rw-32f-tileGap)/2f,tileH=(rh-tileTop-statusH-18f-2*tileGap)/3f;
+            float tileW=(rw-32f-tileGap)/2f;
+            float troopMetricH=82f;
+            float compactMetricH=(rh-tileTop-statusH-18f-2*tileGap-troopMetricH)*.5f;
             for(int i=0;i<6;i++)
             {
                 var card=marchMetricCards[i];
-                Place(card,16+(i%2)*(tileW+tileGap),tileTop+(i/2)*(tileH+tileGap),tileW,tileH);
+                float tileH=i<2?troopMetricH:compactMetricH;
+                float tileY=i<2?tileTop:tileTop+troopMetricH+tileGap+((i-2)/2)*(compactMetricH+tileGap);
+                Place(card,16+(i%2)*(tileW+tileGap),tileY,tileW,tileH);
                 // One shared summary surface with quiet separators,
                 // not six competing illustrated frames.
                 var tile=StudioPlate("metric tile "+i,card,0,0,tileW,tileH,new Color(.028f,.039f,.049f,i==2?.67f:.35f));
@@ -342,12 +361,24 @@ namespace Eldoria.UI.RoyalGold.V2
                     studioMetricCaptions[i]=Text("Studio / real metric label "+i,card,28,CoronaFinish.Muted);
                 var cap=studioMetricCaptions[i];cap.gameObject.SetActive(true);
                 cap.font=CoronaFinish.ResolveFont(false);cap.fontStyle=FontStyle.Normal;
-                cap.color=CoronaFinish.Muted;cap.alignment=TextAnchor.MiddleCenter;
-                float captionH=Mathf.Max(36f,tileH*.43f);
-                Place(cap.rectTransform,8,2,tileW-16,captionH);
+                cap.color=CoronaFinish.Muted;
                 var value=marchMetricValues[i];
-                Place(value.rectTransform,8,captionH+2f,tileW-16,tileH-captionH-5f);
-                StudioText(value,35,i==2?StudioBrass:(Color)CoronaFinish.Ivory,TextAnchor.MiddleCenter);
+                if(i<2)
+                {
+                    cap.alignment=TextAnchor.MiddleCenter;
+                    float captionH=Mathf.Max(36f,tileH*.43f);
+                    Place(cap.rectTransform,8,2,tileW-16,captionH);
+                    Place(value.rectTransform,8,captionH+2f,tileW-16,tileH-captionH-5f);
+                    StudioText(value,35,CoronaFinish.Ivory,TextAnchor.MiddleCenter);
+                }
+                else
+                {
+                    cap.alignment=TextAnchor.MiddleLeft;
+                    float labelW=tileW*.56f;
+                    Place(cap.rectTransform,12,3,labelW-16f,tileH-6f);
+                    Place(value.rectTransform,labelW,3,tileW-labelW-10f,tileH-6f);
+                    StudioText(value,35,i==2?StudioBrass:(Color)CoronaFinish.Ivory,TextAnchor.MiddleRight);
+                }
             }
             float sy=rh-statusH-4f;
             StudioPlate("readiness strip",right,12,sy,rw-24,statusH-6,StudioSlate,true,"secondary_quiet");
