@@ -1,0 +1,54 @@
+name: Studio V3 PR198 native tool production
+on:
+  push:
+    branches: [pilot/eldoria-studio-v3-autonomous-execution-20261126]
+    paths:
+      - 'tools/studio-v3/rankings-premium/native/**'
+      - '.github/workflows/studio-v3-rankings-native.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: studio-v3-pr198-native
+  cancel-in-progress: false
+jobs:
+  installed-tools:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 8
+    steps:
+      - name: Read-only installed tools and process probe without checkout
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP ("pr198-native-probe-"+$env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Path $out | Out-Null
+          $names=@('Unity','blender','UnityShaderCompiler','UnityPackageManager','UnityCrashHandler64')
+          $processes=@(foreach($n in $names){[pscustomobject]@{name=$n;count=@(Get-Process -Name $n -ErrorAction SilentlyContinue).Count}})
+          $unityEditor=$env:UNITY_EDITOR_PATH
+          $bc=Get-Command blender.exe -ErrorAction SilentlyContinue
+          $paths=@()
+          if($bc){$paths+= $bc.Source}
+          $pf=Join-Path $env:ProgramFiles 'Blender Foundation'
+          if(Test-Path $pf){$paths+=@(Get-ChildItem $pf -Directory | ForEach-Object {Join-Path $_.FullName 'blender.exe'} | Where-Object {Test-Path -LiteralPath $_})}
+          $apps=Join-Path $env:APPDATA 'Blender Foundation\Blender'
+          $addons=@()
+          if(Test-Path $apps){
+            $addons=@(Get-ChildItem $apps -Directory | ForEach-Object {
+              foreach($rel in @('scripts\addons\addon.py','scripts\addons\blender_mcp.py','scripts\addons\blender_mcp\__init__.py','extensions\user_default\blender_mcp\__init__.py','scripts\addons\blender-mcp\addon.py')){
+                $p=Join-Path $_.FullName $rel
+                if(Test-Path -LiteralPath $p -PathType Leaf){[pscustomobject]@{version=$_.Name;relative=$rel;sha256=(Get-FileHash -Algorithm SHA256 -LiteralPath $p).Hash.ToLower()}}
+              }
+            })
+          }
+          $cli=Get-Command unity -ErrorAction SilentlyContinue
+          $python=Get-Command python -ErrorAction SilentlyContinue
+          $report=[ordered]@{schema=1;run_id=$env:GITHUB_RUN_ID;source_sha=$env:GITHUB_SHA;unity_editor_exists=[bool]($unityEditor -and (Test-Path -LiteralPath $unityEditor -PathType Leaf));unity_cli_installed=[bool]$cli;python_installed=[bool]$python;blender_installed=[bool]($paths.Count);blender_install_count=@($paths|Select-Object -Unique).Count;blender_addon_candidates=$addons;processes=$processes;idle=(@($processes|Where-Object {$_.count -gt 0}).Count -eq 0);no_native_launch=$true;no_project_changes=$true}
+          $report | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $out 'probe.json') -Encoding UTF8
+          Write-Host ('PR198_WINDOWS_PROBE '+($report | ConvertTo-Json -Depth 8 -Compress))
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr198-installed-tool-probe
+          path: ${{ runner.temp }}/pr198-native-probe-${{ github.run_id }}/probe.json
+          retention-days: 14
+          if-no-files-found: error

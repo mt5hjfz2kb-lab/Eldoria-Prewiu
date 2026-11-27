@@ -1,0 +1,2 @@
+# Native recovery for PR198
+Owner authorizes PC usage and existing Unity/Blender connections. First run is a short read-only tool/process probe, not a heavy claim. Preserve Corona ownership and running processes. After actual idle evidence, use conflict-safe temporary owner-directed resource rotation; no publication or game changes. Use the installed editor in a separate scratch project, and prove real MCP status or distinguish actual direct editor/Blender execution. Two web candidates rejected; cumulative estimated API $0.52504140; no automatic further spend.
