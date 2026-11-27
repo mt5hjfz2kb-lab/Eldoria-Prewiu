@@ -17,7 +17,7 @@ public class NativeProfile : MonoBehaviour {
  readonly Color Ink=C("#120D1B"),Panel=C("#2C213A"),Gold=C("#C99C54"),Paper=C("#F1E9D4"),Muted=C("#C8B7CE"),Aqua=C("#63D9CF");
  static Color C(string s){ColorUtility.TryParseHtmlString(s,out var c);return c;}
  float S=>Mathf.Min(width/390f,height/680f);
- float W=>width, H=>height;
+ float W=>width; float H=>height;
  float F(float n)=>n*S;
  RectTransform root;
  public static LocalProfile Fixture(int level=5) {
@@ -104,9 +104,9 @@ public class NativeProfile : MonoBehaviour {
     Art(card,"panel_obsidian",F(2),F(2),cw-F(4),rowH-F(4),false,new Color(.55f,.47f,.62f,.80f));Fill(Box(card,"DarkInscription",F(3),F(3),cw-F(6),rowH-F(6)),new Color(.073f,.047f,.102f,.53f));
     var icon=Icon(entry,sec);var tint=entry.State==ProfileEntryState.Locked?new Color(.65f,.58f,.68f,1):Color.white;
     if(gallery&&count>1){
-     float size=Mathf.Min(F(d.iconSize),rowH-F(56));Art(card,icon,(cw-size)/2,F(5),size,size,true,tint);
+     float size=Mathf.Min(F(d.iconSize),rowH-F(82));Art(card,icon,(cw-size)/2,F(5),size,size,true,tint);
      Label(card,"Title",entry.Title,F(6),size+F(5),cw-F(12),F(34),F(14),Paper,true,TextAnchor.MiddleCenter);
-     Label(card,"Detail",entry.Detail,F(6),size+F(38),cw-F(12),F(24),F(12),Muted,false,TextAnchor.MiddleCenter);
+     Label(card,"Detail",entry.Detail,F(6),size+F(36),cw-F(12),F(24),F(12),Muted,false,TextAnchor.MiddleCenter);
      Label(card,"State",State(entry),F(6),rowH-F(19),cw-F(12),F(17),F(11),entry.State==ProfileEntryState.Earned?Gold:Muted,false,TextAnchor.MiddleCenter);
     }else{
      float size=Mathf.Min(F(d.iconSize),rowH-F(18),cw*.30f);Art(card,icon,F(9),(rowH-size)/2,size,size,true,tint);

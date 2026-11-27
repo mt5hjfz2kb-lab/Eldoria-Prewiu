@@ -37,12 +37,6 @@ public static class NativeCapture {
     cam.Render();var old=RenderTexture.active;RenderTexture.active=rt;var image=new Texture2D(w,h,TextureFormat.RGB24,false);image.ReadPixels(new Rect(0,0,w,h),0,0);image.Apply();File.WriteAllBytes(file,image.EncodeToPNG());RenderTexture.active=old;UnityEngine.Object.DestroyImmediate(image);
     result.Add(new Shot{view=dims.Item3,section=view.ActiveView,path=Path.GetFileName(file),sha256=Hash(file),rowCount=rows.Count,textCount=labels.Count});
    }
-   if(dims.Item3=="phone"){
-    view.Show(ProfileSection.Overview);
-    // Preserve a native QA scene, no production scene or prefab mutation.
-    EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Additive);
-    // The authored UGUI tree is delivered as a screenshot proof, not a production prefab.
-   }
    cam.targetTexture=null;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(camObj);UnityEngine.Object.DestroyImmediate(canvasObj);
   }
   var proof=new Proof{unityVersion=Application.unityVersion,sourceSha="230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",compiledRealProjection=true,gameModified=false,publicRankings=false,artApproved=false,shots=result.ToArray()};
