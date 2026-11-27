@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   artists:
-    if: github.run_attempt == 1 && github.event.head_commit.message == 'Authorize issue 200 independent artist mission once USD 5'
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Recover issue 200 artist mission after verified zero-call frame failure'
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
@@ -32,7 +32,7 @@ jobs:
           python3 - <<'PY'
           import os,json,subprocess
           from pathlib import Path
-          for id,run,sha,digest in [(15214145165,46028365068,'7ac915897e88b7497c1c7559e7e293b4862bd506','3931918910b1d39a741a2159acd7d10b0d7067a3c54f9a629893efc551d3fe8e'),(15110775005,45797567514,'348b19f958d5bbd447db59e16fc30e7c554cc72a','b1d04f9e99456349b55f5e697fb06b4b06066f1e096cb1fa277ea6847f444733'),(13373379506,41933936250,'26db55c892572a0e4a9ea68feda028408757d535','cdd846499f8019e9040b8feb026c340b3c2f1b7beda6a6bc5172b9144b4e493e')]:
+          for id,run,sha,digest in [(15214145165,46028365068,'7ac915897e88b7497c1c7559e7e293b4862bd506','3931918910b1d39a741a2159acd7d10b0d7067a3c54f9a629893efc551d3fe8e'),(15108055403,45797567514,'348b19f958d5bbd447db59e16fc30e7c554cc72a','a454310897899a24c86646e0cf85a038dbb9ada93d8b2fc125171e29ac35fd71'),(13373379506,41933936250,'26db55c892572a0e4a9ea68feda028408757d535','cdd846499f8019e9040b8feb026c340b3c2f1b7beda6a6bc5172b9144b4e493e')]:
               m=json.loads(subprocess.check_output(['gh','api',f"repos/{os.environ['REPO']}/actions/artifacts/{id}"]))
               assert not m['expired'] and m['workflow_run']['id']==run and m['workflow_run']['head_sha']==sha and m['digest']=='sha256:'+digest
           Path(os.environ['RUNNER_TEMP'],'result','authorization.json').write_text(json.dumps({'issue':200,'cap_usd':'5.00','separate_from_PR198':True,'max_calls':8,'attempt':1,'native_runner':False,'game_writes':False,'billing_hard_cap':False,'note':'Per-slot reservations and estimates, not provider invoice hard limit. No retries.'},indent=2))
@@ -45,7 +45,7 @@ jobs:
           path: ${{ runner.temp }}/packet
       - uses: actions/download-artifact@v4
         with:
-          name: ciudad-region-recorrido
+          name: ciudad-cinco-bastiones-unity
           run-id: 45797567514
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/experimental
@@ -55,6 +55,18 @@ jobs:
           run-id: 41933936250
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/main-history
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-artist-delivery
+          run-id: 46028758178
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/failed-attempt
+      - name: Verify previous attempt ended before any paid calls
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$REPO/actions/runs/46028758178" --jq .conclusion)" = failure
+          test -f "$RUNNER_TEMP/failed-attempt/authorization.json"
+          test "$(find "$RUNNER_TEMP/failed-attempt" -type f | wc -l)" -eq 1
       - name: Research before independent art proposals, generation and audit
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -85,8 +97,9 @@ jobs:
           def jpeg(src,dst):
               with Image.open(src) as im:
                   im=im.convert('RGB'); im.thumbnail((1100,1350)); im.save(dst,quality=94)
-          frames=list((root/'experimental').rglob('bastion-1-completo.png'))
-          assert len(frames)==1, 'Exact historical experimental frame missing'
+          frames=list((root/'experimental').rglob('stage-1-fixture-390x844.png'))
+          dump(out/'experimental-inventory.json',[str(p.relative_to(root/'experimental')) for p in sorted((root/'experimental').rglob('*.png'))])
+          assert len(frames)==1, 'Exact stage-1 native fixture missing or ambiguous'
           exp=out/'experimental-20261126.jpg'; jpeg(frames[0],exp)
           files=sorted((root/'main-history').rglob('*.png'))
           dump(out/'main-inventory.json',[str(p.relative_to(root/'main-history')) for p in files])
@@ -108,7 +121,7 @@ jobs:
               relevant=[x.strip() for x in lines if any(k in x.lower() for k in ('pivot','sortingorder','footorder','orthographic','shadow','mesh','spline','texture','anchor','sprite','camera'))]
               snippets.append(f.name+': '+('\n'.join(relevant))[:1800])
           facts='Current source snapshot 91b8de9; experimental capture is 348b19f (26 Nov); main historical capture set 26db55c (5 Nov). Never assert a current matched A/B.\n'+guide+'\n'+ground+'\n'+'\n'.join(snippets)
-          refs='Unity documentation leads to verify: 2D Sorting https://docs.unity.cn/6000.0/Documentation/Manual/2DSorting.html ; isometric Tilemap Renderer modes https://docs.unity.cn/Documentation/Manual/tilemaps/work-with-tilemaps/isometric-tilemaps/renderer/tilemap-renderer-isometric-modes.html ; Sprite Atlas https://docs.unity.cn/Documentation/Manual/tilemaps/work-with-tilemaps/isometric-tilemaps/renderer/sort-isometric-sprites-sprite-atlas.html . No claim of browsing. No matched commercial reference images supplied; discuss benchmarks as qualitative aims, not comparative grades.'
+          refs='Verified Unity documentation: SpriteRenderer sort point may use pivot instead of center https://docs.unity3d.com/es/current/Manual/class-SpriteRenderer.html ; TilemapRenderer individual mode allows interleaving with other renderers whereas chunk mode batches for performance https://docs.unity3d.com/es/current/Manual/class-TilemapRenderer.html ; SpriteAtlas groups sprites into packed textures https://docs.unity3d.com/kr/current/ScriptReference/U2D.SpriteAtlas.html . No claim of browsing. No matched commercial reference images supplied; discuss benchmarks as qualitative aims, not comparative grades.'
           def ask(slot,instructions,txt,images=()):
               row=begin(slot,'0.25')
               content=[{'type':'input_text','text':txt[:47000]}]
