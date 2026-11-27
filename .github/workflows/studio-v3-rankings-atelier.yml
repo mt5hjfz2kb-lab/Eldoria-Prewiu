@@ -14,6 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   produce:
+    if: github.event.head_commit.message != 'Prepare PR198 native atelier input and read-only Windows probe' && github.event.head_commit.message != 'Render PR198 atelier native from verified original assets'
     runs-on: ubuntu-24.04
     timeout-minutes: 22
     steps:
@@ -52,3 +53,39 @@ jobs:
           path: ${{ runner.temp }}/pr198-atelier
           if-no-files-found: warn
           retention-days: 14
+
+  native-input:
+    if: github.event.head_commit.message == 'Prepare PR198 native atelier input and read-only Windows probe'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/studio-v3/rankings-premium
+            tools/openai-development-studio
+      - name: Verify actual role receipts and correct specific asset defects
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 -m pip install --quiet pillow
+          python3 tools/studio-v3/rankings-premium/atelier/native_input.py "$RUNNER_TEMP/atelier-native-input"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: atelier-native-input
+          path: ${{ runner.temp }}/atelier-native-input
+          if-no-files-found: error
+          retention-days: 7
+  pc-probe:
+    if: github.event.head_commit.message == 'Prepare PR198 native atelier input and read-only Windows probe'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 5
+    steps:
+      - name: Read-only installed PC process probe
+        shell: powershell
+        run: |
+          $names=@('Unity','blender','UnityShaderCompiler','UnityPackageManager','UnityCrashHandler64')
+          $rows=@(foreach($n in $names){[pscustomobject]@{name=$n;count=@(Get-Process -Name $n -ErrorAction SilentlyContinue).Count}})
+          $report=[ordered]@{idle=(@($rows|Where-Object {$_.count -gt 0}).Count -eq 0);editor_exists=[bool]($env:UNITY_EDITOR_PATH -and (Test-Path $env:UNITY_EDITOR_PATH));processes=$rows;read_only=$true}
+          Write-Host ('ATELIER_PC_PROBE '+($report|ConvertTo-Json -Depth 6 -Compress))
