@@ -1,0 +1,46 @@
+name: Studio V3 PR198 profile C independent visual audit
+on:
+  push:
+    branches: [pilot/eldoria-studio-v3-autonomous-execution-20261126]
+    paths: ['.github/workflows/studio-v3-profile-c-audit-20261127.yml']
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+concurrency:
+  group: studio-v3-profile-c-audit-once
+  cancel-in-progress: false
+jobs:
+  audit:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Authorize single independent audit of existing PR198 profile C'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          sparse-checkout: |
+            tools/studio-v3/rankings-premium
+            tools/openai-development-studio
+            .github/workflows/studio-v3-profile-c-audit-20261127.yml
+      - name: Retrieve and verify actual screenshots before any spend
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python3 -m pip install --quiet pillow
+          python3 tools/studio-v3/rankings-premium/profile-c-audit-20261127.py prepare "$RUNNER_TEMP/profile-c-audit"
+      - name: Independent art audit with weighted scores and existing budget
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 tools/studio-v3/rankings-premium/profile-c-audit-20261127.py audit "$RUNNER_TEMP/profile-c-audit"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: profile-c-audit-evidence
+          path: ${{ runner.temp }}/profile-c-audit
+          if-no-files-found: warn
+          retention-days: 14
