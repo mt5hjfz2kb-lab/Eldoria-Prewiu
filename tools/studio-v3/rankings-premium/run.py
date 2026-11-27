@@ -92,7 +92,7 @@ def main(source,data_path,out,live):
     key=os.environ.get("OPENAI_API_KEY");need(bool(key),"Missing API key")
     l=Ledger(out)
     def ask(slot,model,instructions,content,images=()):
-        p=out/(slot+"-input.txt");p.write_text(content[:22000],encoding="utf-8")
+        p=out/(slot+"-input.txt");p.write_text(content.encode("utf-8")[:22000].decode("utf-8",errors="ignore"),encoding="utf-8")
         payload,manifest=studio.make_payload("visual" if images else "programming",model,p,images)
         payload["instructions"]=instructions+" Devuelve un solo objeto JSON válido, sin Markdown ni texto fuera del objeto."
         payload["max_output_tokens"]=2600
