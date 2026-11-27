@@ -1,0 +1,60 @@
+name: Bastion I issue 200 - direct B C reference fidelity
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/bastion-i-studio-200-reference-refinement.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: bastion-i-research-200
+  cancel-in-progress: false
+jobs:
+  art:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Launch reference fidelity correction within issue200 budget'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Verify previous receipts and load studio
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/studio" "$RUNNER_TEMP/refined"
+          cd "$RUNNER_TEMP/studio"
+          for f in studio.py economics.py rates-20261125.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$f?ref=9fbdb203269b951a252de58d7a0357d71a841480" > "$f"
+          done
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/refine-with-visual-reference.py?ref=0871362405276d9cda97ef80123f34017c2f3a7e" > mission.py
+          python3 -m pip install --quiet pillow numpy openai
+          python3 -m py_compile mission.py
+          test "$(gh api "repos/$REPO/actions/runs/46032019896" --jq .conclusion)" = success
+          test "$(gh api "repos/$REPO/actions/artifacts/15213839318" --jq .digest)" = sha256:f6eaa7f7d32888f3fa6d96600e3578da42fa88392f8c2992687a7cfca3534615
+          test "$(gh api "repos/$REPO/actions/artifacts/15212529521" --jq .digest)" = sha256:c170f4d7c01546dd40adf4dedee4dd1957d67f299974fdbe3b24ef2cc1ec93da
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-artist-delivery
+          run-id: 46028941144
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/concepts
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-modular-production-completed
+          run-id: 46032019896
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/previous
+      - name: Reauthor using actual B C references, preserve native alpha
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/studio"
+          python3 -u mission.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-reference-refined-assets
+          path: ${{ runner.temp }}/refined
+          if-no-files-found: warn
+          retention-days: 14
