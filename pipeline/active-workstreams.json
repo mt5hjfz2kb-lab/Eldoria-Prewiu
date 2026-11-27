@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-27T08:55:00Z",
+  "updated_at": "2026-11-27T16:21:55.625830+00:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3166,7 +3166,7 @@
         "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
         "rig_joint_count": 12,
         "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
-        "skin_weights_sum_max_error": 1.1920929e-7,
+        "skin_weights_sum_max_error": 1.1920929e-07,
         "static_retained": true,
         "art_approved": false,
         "isolated_unity_import_tested": false,
@@ -6693,7 +6693,7 @@
             "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
             "rig_joint_count": 12,
             "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
-            "skin_weights_sum_max_error": 1.1920929e-7,
+            "skin_weights_sum_max_error": 1.1920929e-07,
             "static_retained": true,
             "art_approved": false,
             "isolated_unity_import_tested": false,
@@ -10350,7 +10350,7 @@
       "title": "Eldoria Development Studio V3 — isolated autonomous execution benchmark",
       "owner": "chatgpt-studio-v3-rankings-premium-20261127",
       "ownership_state": "claimed",
-      "ownership_revision": 14,
+      "ownership_revision": 15,
       "write_scope_released": false,
       "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
       "status": "active",
@@ -10714,6 +10714,51 @@
           "native_input_artifact": 15185855596,
           "pc_probe_job": 140412650090,
           "lease_revision": 14
+        }
+      },
+      "issue200_native_proof": {
+        "issue": 200,
+        "run_id": 46032921829,
+        "source_sha": "91b8de9874aed87219d733efa6e8e0aa56207f1e",
+        "scope": "scratch only B castle and C sawmill; no writes to game/PR198/experimental",
+        "owner_authorization": "27 Nov: owner selected B+C and explicitly instructed execution using available connections; same Studio holder, no cancellation",
+        "asset_run": 46032398265,
+        "state": "native_reserved",
+        "reserved_at": "2026-11-27T16:21:55.625830+00:00",
+        "prior_rotation": {
+          "resource": "windows-runner-heavy",
+          "mode": "exclusive_one_workstream_at_a_time",
+          "authorized_by": "Owner-directed continued PR198 improvement; PC probe 45971461555 idle; temporary rotation",
+          "current_workstream": "eldoria-studio-v3-autonomous-execution-20261126",
+          "current_run_id": null,
+          "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+          "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+          "status": "pr198_atelier_native",
+          "previous_rotation": {
+            "resource": "windows-runner-heavy",
+            "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
+            "authorized_at": "2026-11-26T09:50:00Z",
+            "mode": "exclusive_one_workstream_at_a_time",
+            "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+            "current_run_id": null,
+            "next_workstream": null,
+            "return_to": null,
+            "status": "corona_native_reserved",
+            "previous_completed_run": 45969181310,
+            "rules": [
+              "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
+              "Preserve Senda work; no cancellation or automatic return."
+            ],
+            "pr198_native_rotation_closed": {
+              "run": 45969181310,
+              "at": "2026-11-27T08:55:00Z",
+              "resource_only": true
+            }
+          },
+          "rules": [
+            "Check live claim and native processes before launch; no production project changes.",
+            "Return to Corona after isolated render."
+          ]
         }
       }
     }
@@ -12696,7 +12741,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -12707,7 +12752,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
@@ -22609,36 +22654,50 @@
   "resource_rotation": {
     "resource": "windows-runner-heavy",
     "mode": "exclusive_one_workstream_at_a_time",
-    "authorized_by": "Owner-directed continued PR198 improvement; PC probe 45971461555 idle; temporary rotation",
     "current_workstream": "eldoria-studio-v3-autonomous-execution-20261126",
-    "current_run_id": null,
-    "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+    "current_run_id": 46032921829,
     "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
-    "status": "pr198_atelier_native",
+    "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+    "status": "issue200_bastion_i_native_proof",
+    "authorized_by": "Owner-directed Issue200 real Unity proof using same studio temporary PC reservation; no scope transfer",
     "previous_rotation": {
       "resource": "windows-runner-heavy",
-      "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
-      "authorized_at": "2026-11-26T09:50:00Z",
       "mode": "exclusive_one_workstream_at_a_time",
-      "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+      "authorized_by": "Owner-directed continued PR198 improvement; PC probe 45971461555 idle; temporary rotation",
+      "current_workstream": "eldoria-studio-v3-autonomous-execution-20261126",
       "current_run_id": null,
-      "next_workstream": null,
-      "return_to": null,
-      "status": "corona_native_reserved",
-      "previous_completed_run": 45969181310,
+      "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+      "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+      "status": "pr198_atelier_native",
+      "previous_rotation": {
+        "resource": "windows-runner-heavy",
+        "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
+        "authorized_at": "2026-11-26T09:50:00Z",
+        "mode": "exclusive_one_workstream_at_a_time",
+        "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+        "current_run_id": null,
+        "next_workstream": null,
+        "return_to": null,
+        "status": "corona_native_reserved",
+        "previous_completed_run": 45969181310,
+        "rules": [
+          "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
+          "Preserve Senda work; no cancellation or automatic return."
+        ],
+        "pr198_native_rotation_closed": {
+          "run": 45969181310,
+          "at": "2026-11-27T08:55:00Z",
+          "resource_only": true
+        }
+      },
       "rules": [
-        "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
-        "Preserve Senda work; no cancellation or automatic return."
-      ],
-      "pr198_native_rotation_closed": {
-        "run": 45969181310,
-        "at": "2026-11-27T08:55:00Z",
-        "resource_only": true
-      }
+        "Check live claim and native processes before launch; no production project changes.",
+        "Return to Corona after isolated render."
+      ]
     },
     "rules": [
-      "Check live claim and native processes before launch; no production project changes.",
-      "Return to Corona after isolated render."
+      "Check actual PC processes before Unity; scratch only",
+      "Return resource to canonical Bastion/Corona after terminal native job, no other write scope changes"
     ]
   }
 }
