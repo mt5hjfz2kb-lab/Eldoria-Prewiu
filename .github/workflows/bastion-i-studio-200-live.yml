@@ -1,0 +1,145 @@
+name: Bastion I issue 200 - funded independent artists
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/bastion-i-studio-200-live.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: bastion-i-research-200
+  cancel-in-progress: false
+jobs:
+  artists:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Authorize issue 200 independent artist mission once USD 5'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      STUDIO_SHA: 9fbdb203269b951a252de58d7a0357d71a841480
+    steps:
+      - name: Verify studio code and frozen evidence
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/studio" "$RUNNER_TEMP/result"
+          cd "$RUNNER_TEMP/studio"
+          for f in studio.py economics.py generate_candidate.py rates-20261125.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$f?ref=$STUDIO_SHA" > "$f"
+          done
+          python3 studio.py --self-test
+          python3 generate_candidate.py --self-test
+          python3 - <<'PY'
+          import os,json,subprocess
+          from pathlib import Path
+          for id,run,sha,digest in [(15214145165,46028365068,'7ac915897e88b7497c1c7559e7e293b4862bd506','3931918910b1d39a741a2159acd7d10b0d7067a3c54f9a629893efc551d3fe8e'),(15110775005,45797567514,'348b19f958d5bbd447db59e16fc30e7c554cc72a','b1d04f9e99456349b55f5e697fb06b4b06066f1e096cb1fa277ea6847f444733'),(13373379506,41933936250,'26db55c892572a0e4a9ea68feda028408757d535','cdd846499f8019e9040b8feb026c340b3c2f1b7beda6a6bc5172b9144b4e493e')]:
+              m=json.loads(subprocess.check_output(['gh','api',f"repos/{os.environ['REPO']}/actions/artifacts/{id}"]))
+              assert not m['expired'] and m['workflow_run']['id']==run and m['workflow_run']['head_sha']==sha and m['digest']=='sha256:'+digest
+          Path(os.environ['RUNNER_TEMP'],'result','authorization.json').write_text(json.dumps({'issue':200,'cap_usd':'5.00','separate_from_PR198':True,'max_calls':8,'attempt':1,'native_runner':False,'game_writes':False,'billing_hard_cap':False,'note':'Per-slot reservations and estimates, not provider invoice hard limit. No retries.'},indent=2))
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-bastion-i-research-packet
+          run-id: 46028365068
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/packet
+      - uses: actions/download-artifact@v4
+        with:
+          name: ciudad-region-recorrido
+          run-id: 45797567514
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/experimental
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-valoria-captures-26db55c892572a0e4a9ea68feda028408757d535
+          run-id: 41933936250
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/main-history
+      - name: Research before independent art proposals, generation and audit
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/studio"
+          python3 -m pip install --quiet pillow
+          cat > mission.py <<'PY'
+          import os,json,base64,hashlib
+          from pathlib import Path
+          from decimal import Decimal as D
+          from PIL import Image,ImageDraw
+          import studio,generate_candidate as gen,economics
+          root=Path(os.environ['RUNNER_TEMP']); out=root/'result'; key=os.environ['OPENAI_API_KEY']
+          assert key
+          ledger=[]
+          def dump(p,x): p.write_text(json.dumps(x,indent=2,ensure_ascii=False))
+          def save(): dump(out/'ledger.json',ledger)
+          def begin(slot,reserve):
+              assert len(ledger)<8 and all(x['status']=='complete' for x in ledger)
+              assert sum(D(x['reserved_usd']) for x in ledger)+D(reserve)<=D('5')
+              row={'slot':slot,'reserved_usd':reserve,'status':'in_flight','estimated_usd':None}; ledger.append(row); save()
+              print('ARTIST_CALL '+slot,flush=True); return row
+          def finish(row,model,raw):
+              cost=economics.estimate(model,raw['usage'],raw.get('service_tier') or 'standard')
+              row.update(status='complete',estimated_usd=str(cost),model=model,usage=raw['usage']);save()
+              assert cost<=D(row['reserved_usd']), 'Slot estimate exceeded; no more calls'
+          def jpeg(src,dst):
+              with Image.open(src) as im:
+                  im=im.convert('RGB'); im.thumbnail((1100,1350)); im.save(dst,quality=94)
+          frames=list((root/'experimental').rglob('bastion-1-completo.png'))
+          assert len(frames)==1, 'Exact historical experimental frame missing'
+          exp=out/'experimental-20261126.jpg'; jpeg(frames[0],exp)
+          files=sorted((root/'main-history').rglob('*.png'))
+          dump(out/'main-inventory.json',[str(p.relative_to(root/'main-history')) for p in files])
+          candidates=[p for p in files if any(s in str(p.relative_to(root/'main-history')).lower() for s in ('bastion','bastión','city','valoria','ciudad'))]
+          main_sheet=None
+          if candidates:
+              candidates=candidates[:16]; sheet=Image.new('RGB',(1200,((len(candidates)+3)//4)*275),'#202020'); draw=ImageDraw.Draw(sheet)
+              for n,p in enumerate(candidates):
+                  with Image.open(p) as im:
+                      im=im.convert('RGB'); im.thumbnail((296,244)); x=n%4*300;y=n//4*275; sheet.paste(im,(x,y)); draw.text((x+3,y+245),str(n)+': '+p.name[:34],fill='white')
+              main_sheet=out/'historical-main-contact.jpg';sheet.save(main_sheet,quality=90)
+              dump(out/'main-contact-index.json',[str(p.relative_to(root/'main-history')) for p in candidates])
+          source=root/'packet'/'source'
+          guide=(source/'PRODUCTION_GUIDE_BASTION_I_20261120.md').read_text()[:12000]
+          ground=(source/'ART_GROUNDING_RULES.md').read_text()[:6000]
+          snippets=[]
+          for f in sorted(source.glob('*.cs')):
+              lines=f.read_text().splitlines()
+              relevant=[x.strip() for x in lines if any(k in x.lower() for k in ('pivot','sortingorder','footorder','orthographic','shadow','mesh','spline','texture','anchor','sprite','camera'))]
+              snippets.append(f.name+': '+('\n'.join(relevant))[:1800])
+          facts='Current source snapshot 91b8de9; experimental capture is 348b19f (26 Nov); main historical capture set 26db55c (5 Nov). Never assert a current matched A/B.\n'+guide+'\n'+ground+'\n'+'\n'.join(snippets)
+          refs='Unity documentation leads to verify: 2D Sorting https://docs.unity.cn/6000.0/Documentation/Manual/2DSorting.html ; isometric Tilemap Renderer modes https://docs.unity.cn/Documentation/Manual/tilemaps/work-with-tilemaps/isometric-tilemaps/renderer/tilemap-renderer-isometric-modes.html ; Sprite Atlas https://docs.unity.cn/Documentation/Manual/tilemaps/work-with-tilemaps/isometric-tilemaps/renderer/sort-isometric-sprites-sprite-atlas.html . No claim of browsing. No matched commercial reference images supplied; discuss benchmarks as qualitative aims, not comparative grades.'
+          def ask(slot,instructions,txt,images=()):
+              row=begin(slot,'0.25')
+              content=[{'type':'input_text','text':txt[:47000]}]
+              for p in images:
+                  content.append({'type':'input_image','image_url':'data:image/jpeg;base64,'+base64.b64encode(p.read_bytes()).decode(),'detail':'high'})
+              payload={'model':'gpt-6.2-sol','instructions':instructions,'input':[{'role':'user','content':content}],'reasoning':{'effort':'low'},'max_output_tokens':3400,'store':False}
+              raw=studio.request_api(payload,key);finish(row,raw.get('model') or payload['model'],raw)
+              assert raw.get('status')=='completed'
+              s='\n'.join(p['text'] for i in raw.get('output',[]) if i.get('type')=='message' for p in i.get('content',[]) if p.get('type')=='output_text')
+              assert s.strip(); (out/(slot+'.md')).write_text(s); return s
+          research=ask('technical-research','Senior technical environment artist. Investigate BEFORE concept art. Critically compare actual Valoria 2.5D source and Unity documentation leads. Spanish evidence-based analysis: construction, projection, terrain, contact shadows, sprite layers, PPU, lighting, scalability, mobile, alternatives, what to preserve and exact tests. Audit the real screenshot; describe exact visible layout for independent artists. Separate facts and hypotheses. Never claim external browsing or tests. Historical main sheet if supplied is not matched current evidence.',facts+'\n'+refs,tuple(x for x in (exp,main_sheet) if x))
+          artists=[]
+          for name,role in [('A','senior environment art director'),('B','senior isometric world illustrator'),('C','senior technical environment artist and level composition specialist')]:
+              s=ask('artist-'+name,'You are an independent '+role+'. Propose your own high impact artistic direction, no copying other artists or games. Study the real screenshot, preserve actual buildings, progression, geography, camera and identity. Spanish diagnosis, concrete modular 2.5D production breakdown (ground, props, building sprites, shadows, pivots, occlusions, movement and mobile), risks, prior and proposed scores clearly subjective. End with a precise English image-generation brief (no UI text) describing entire Bastion I scene and exact location of structures in the source, no invented building or expanded progression. Mark generated image as concept, not Unity evidence.',research[:14000]+'\n'+facts[:16000]+'\n'+refs,(exp,))
+              artists.append((name,s))
+          for name,s in artists:
+              row=begin('concept-'+name,'1.15')
+              prompt='Original Valoria Bastion I mobile strategy game 2.5D concept, NOT a rendered game screenshot. Retain actual layout and identity as described, no invented functionality, no UI, no text, no logos. Professional polished environment illustration using modular composable elements. Artist direction: '+s[-6000:]
+              p=gen.make_payload(prompt);p['quality']='high'
+              raw=gen.generate(p,key);finish(row,gen.MODEL,raw);bits,meta=gen.unpack(raw)
+              path=out/('concept-'+name+'.png');path.write_bytes(bits)
+              with Image.open(path) as im: im.verify()
+              jpeg(path,out/('concept-'+name+'.jpg'));dump(out/('concept-'+name+'-receipt.json'),meta)
+          audit=ask('independent-auditor','Independent commercial mobile art critic. Evaluate actual experimental historical baseline and three distinct generated visual concepts A B C in Spanish. Score composition, asset quality, spatial integration, coherence, lighting/materials, mobile readability and polish. Exact differences, rejected elements, recommend best or none. Scores are concept evaluations not achieved game quality. No claim of current matched main or commercial benchmark. Include modular feasibility and next Unity A/B test.','Four images in order: historical experimental baseline, concept A, B, C. No earlier grades supplied.',tuple([exp]+[out/('concept-'+n+'.jpg') for n,_ in artists]))
+          dump(out/'summary.json',{'calls':len(ledger),'estimated_usd':str(sum(D(x['estimated_usd']) for x in ledger)),'reserved_usd':str(sum(D(x['reserved_usd']) for x in ledger)),'concepts':3,'native_proof':False,'billing_verified':False,'art_approved':False})
+          PY
+          python3 mission.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-artist-delivery
+          path: ${{ runner.temp }}/result
+          retention-days: 14
+          if-no-files-found: error
