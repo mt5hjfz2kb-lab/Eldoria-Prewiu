@@ -1,0 +1,55 @@
+name: Bastion I issue 200 - modular production assets B plus C
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/bastion-i-studio-200-production.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: bastion-i-research-200
+  cancel-in-progress: false
+jobs:
+  production:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Launch issue 200 modular asset production within existing five dollar authorization'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Verify immutable inputs and load existing studio
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/studio" "$RUNNER_TEMP/production"
+          cd "$RUNNER_TEMP/studio"
+          for f in studio.py economics.py generate_candidate.py rates-20261125.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$f?ref=9fbdb203269b951a252de58d7a0357d71a841480" > "$f"
+          done
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/produce-modular-assets.py?ref=9544b715f3c7d852ad4038e8f4904ed2876d078b" > mission.py
+          python3 studio.py --self-test
+          python3 generate_candidate.py --self-test
+          python3 -m pip install --quiet pillow numpy
+          python3 -m py_compile mission.py
+          test "$(gh api "repos/$REPO/actions/runs/46028941144" --jq .conclusion)" = success
+          test "$(gh api "repos/$REPO/actions/artifacts/15212529521" --jq .digest)" = sha256:c170f4d7c01546dd40adf4dedee4dd1957d67f299974fdbe3b24ef2cc1ec93da
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-artist-delivery
+          run-id: 46028941144
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/concepts
+      - name: Produce original independent sprites and ground and audit assets
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/studio"
+          python3 -u mission.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-modular-production-assets
+          path: ${{ runner.temp }}/production
+          if-no-files-found: warn
+          retention-days: 14
