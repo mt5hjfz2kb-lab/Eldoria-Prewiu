@@ -10356,7 +10356,7 @@
       "write_scope_released": false,
       "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
       "status": "active",
-      "phase": "PR198_NATIVE_TOOL_ROUTE_VERIFIED_ART_NOT_APPROVED",
+      "phase": "PR198_ATELIER_HIGH_IMPACT_ART",
       "claimed_at": "2026-11-26T19:46:00Z",
       "base_main_sha": "58ec6108b9fdb23d2ee2505ab17c8c19662ba37a",
       "base_studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
@@ -10365,7 +10365,8 @@
         "tools/studio-v3/rankings-premium/**",
         ".github/workflows/studio-v3-rankings-premium.yml",
         ".github/workflows/studio-v3-rankings-pivot.yml",
-        ".github/workflows/studio-v3-rankings-native.yml"
+        ".github/workflows/studio-v3-rankings-native.yml",
+        ".github/workflows/studio-v3-rankings-atelier.yml"
       ],
       "resources": [],
       "delivery_definition": {
@@ -10695,6 +10696,17 @@
             "Reuse immutable paid input and completed Blender output with digest checks; never repay for transport recovery.",
             "Technical proof is not artistic approval; visual review rejects flat repetition, dark banners and weak hierarchy."
           ]
+        },
+        "atelier": {
+          "owner_instruction": "Continue and improve; studio must produce really good premium Valoria art. Same PR198, existing USD 5 mission.",
+          "prior_estimated_usd": "0.61061740",
+          "production_reservation_usd": "3.20",
+          "audit_reservation_usd": "0.35",
+          "total_mission_bound_usd": "4.16061740",
+          "source_sha": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+          "native_baseline_run": 45968651560,
+          "method": "Original hand-painted layered art; independent director, image production and visual designer; distinct native arrangements, side-by-side evidence. No gameplay or source PR edits until quality accepted.",
+          "native_lease": "request after hosted assets and exact native safety check; no interrupt"
         }
       }
     }
