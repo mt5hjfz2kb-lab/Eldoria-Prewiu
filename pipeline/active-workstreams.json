@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-26T23:04:09Z",
+  "updated_at": "2026-11-27T08:55:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10027,7 +10027,7 @@
       },
       "owner": "chatgpt-corona-brecha-commercial-20261126",
       "ownership_state": "claimed",
-      "ownership_revision": 17,
+      "ownership_revision": 18,
       "write_scope_released": false,
       "branch": "experiment/valoria-ciudad-region-unificada-20261121",
       "status": "active",
@@ -10042,7 +10042,9 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_approved": false,
       "device_qa": "PENDING physical Safari iPhone",
       "delivery_definition": {
@@ -10158,7 +10160,10 @@
         "reason": "Owner on 2026-11-27 explicitly asks ranking agents to claim PC if required; actual installed-tool idle probe 45966455876 and no active Corona run. Temporary resource-only transfer; no cancellation or scope ownership change.",
         "temporary_to": "eldoria-studio-v3-autonomous-execution-20261126",
         "probe_run": 45966455876,
-        "previous_revision": 16
+        "previous_revision": 16,
+        "returned_to": "eldoria-valoria-modular25d-bastion1-20261119",
+        "completed_run": 45969181310,
+        "returned_at": "2026-11-27T08:55:00Z"
       }
     },
     {
@@ -10347,11 +10352,11 @@
       "title": "Eldoria Development Studio V3 — isolated autonomous execution benchmark",
       "owner": "chatgpt-studio-v3-rankings-premium-20261127",
       "ownership_state": "claimed",
-      "ownership_revision": 12,
+      "ownership_revision": 13,
       "write_scope_released": false,
       "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
       "status": "active",
-      "phase": "PR198_TEMPORARY_NATIVE_PC_LEASE",
+      "phase": "PR198_NATIVE_TOOL_ROUTE_VERIFIED_ART_NOT_APPROVED",
       "claimed_at": "2026-11-26T19:46:00Z",
       "base_main_sha": "58ec6108b9fdb23d2ee2505ab17c8c19662ba37a",
       "base_studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
@@ -10362,9 +10367,7 @@
         ".github/workflows/studio-v3-rankings-pivot.yml",
         ".github/workflows/studio-v3-rankings-native.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "delivery_definition": {
         "deliverable": "Isolated executable V3 core with bounded declarative edits, verified evidence, rejection/retry/pivot, reproducible local tests and baseline-vs-studio benchmark contract.",
         "evidence": "Actual source changes in scratch and tests; no live model autonomy or artistic gain claims without controlled live experiment. GitHub-hosted read-only offline Node CI using pinned actual V2 input; no API secret, paid model or Windows runner.",
@@ -10372,7 +10375,7 @@
       },
       "art_approved": false,
       "previous_owner": "chatgpt-studio-v3-relicario-premium-20261126",
-      "delivery_head": "95e5d431bc89995ec22019017627637b1ea9e852",
+      "delivery_head": "bb8965f0534b13f78845b4472fb1be52c3128221",
       "evidence": {
         "final_run": 45887946346,
         "final_job": 140143228373,
@@ -10398,8 +10401,8 @@
         "art_approved": false,
         "windows_runner": false
       },
-      "remaining": "Real premium art mission not complete; fresh separate $2 proposed budget not authorized, actual MCP sessions not exposed here and Windows remains reserved for Corona. No production art approval. Use actual independent specialists and visually compare against PR189 reference.",
-      "next": "Reclaim same ID for real specialist creation of Corona de Valoria, with fresh explicit budget; use permitted existing tools only with verified isolated connections and valid native lease. Reject fixed geometry calibration as artistic target.",
+      "remaining": "Native connections and real capture verified. Premium art goal remains unfulfilled; no source or gameplay integration or approval.",
+      "next": "Reuse verified Blender MCP and Unity CLI/MCP scratch route; iterate only on artistic quality within separate PR198 budget and obtain exclusive native lease before rendering.",
       "pilot": {
         "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
         "source_path": "tools/senda-brecha/src/rules.js",
@@ -10554,7 +10557,7 @@
         "source_owner": "chatgpt-eldoria-collections-rankings-20261124",
         "cap_usd": "5.00",
         "target": "all existing ProfilePresentation sections and discovery detail",
-        "native_runner": "occupied by Corona; no native claims",
+        "native_runner": "temporary Windows lease finished; reservation restored to Corona",
         "artifact_only": true,
         "first_run": {
           "run": 45959632425,
@@ -10587,7 +10590,7 @@
         },
         "native_request": {
           "owner_instruction": "2026-11-27: investigate existing Unity and Blender connections, claim PC if required",
-          "phase": "temporary exclusive native resource",
+          "phase": "completed resource rotation",
           "no_interrupt": true,
           "return_resource_to": "eldoria-valoria-modular25d-bastion1-20261119",
           "probe_run": 45966455876,
@@ -10652,7 +10655,46 @@
               "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
               "Preserve Senda work; no cancellation or automatic return."
             ]
-          }
+          },
+          "completed_run": 45969181310
+        },
+        "native_result": {
+          "source_sha": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+          "studio_sha": "bb8965f0534b13f78845b4472fb1be52c3128221",
+          "actual_blender": "5.2.2 LTS",
+          "blender_mcp_actions": 2,
+          "blender_mesh_objects": 33,
+          "blender_artifact": 15183386978,
+          "blender_addon_sha256": "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5",
+          "unity_editor": "6000.3.23f1",
+          "native_run": 45968651560,
+          "native_artifact": 15183288699,
+          "native_artifact_sha256": "0b00ca40004f2f8e2a61f14e2b0f1b4bc46658c0a56393e83e754986936637bc",
+          "native_captures_verified": 21,
+          "unity_capture_transport": "Unity CLI live editor script eval",
+          "unity_mcp_run": 45969181310,
+          "unity_mcp_job": 140405116962,
+          "unity_mcp_artifact": 15182944897,
+          "unity_mcp_artifact_sha256": "1dd4688b80cfc74ec903d0138b88dbe9d2612461651086a8bd67e9c09127e499",
+          "unity_mcp_protocol": "2025-03-26",
+          "unity_mcp_tool_entries": 184,
+          "unity_mcp_list_instances_success": true,
+          "unity_mcp_editor_project_verified": true,
+          "python_actual": "Blender bundled Python 3.13.13 (not Windows Store alias)",
+          "api_calls_total": 21,
+          "estimated_usd": "0.61061740",
+          "billing_verified": false,
+          "recovery_new_paid_calls": 0,
+          "art_approved": false,
+          "production_promoted": false,
+          "pr198_changed": false,
+          "lessons": [
+            "Verify executable, not Get-Command alias. Blender bundled Python works.",
+            "Discover installed Unity CLI mcp --help; this version rejects --cli-tools. Duplicate bare status tools are ambiguous; choose unique read-only list_instances.",
+            "MCP transport probe independent of actual native rendering; proven unity command script eval with pinned scratch C# produces 21 frames.",
+            "Reuse immutable paid input and completed Blender output with digest checks; never repay for transport recovery.",
+            "Technical proof is not artistic approval; visual review rejects flat repetition, dark banners and weak hierarchy."
+          ]
         }
       }
     }
@@ -22547,34 +22589,23 @@
   },
   "resource_rotation": {
     "resource": "windows-runner-heavy",
+    "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
+    "authorized_at": "2026-11-26T09:50:00Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "authorized_by": "Owner instruction 2026-11-27: claim the PC for ranking production if needed; actual idle Windows probe",
-    "current_workstream": "eldoria-studio-v3-autonomous-execution-20261126",
+    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
     "current_run_id": null,
-    "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-    "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
-    "status": "pr198_native_temporary",
+    "next_workstream": null,
+    "return_to": null,
+    "status": "corona_native_reserved",
+    "previous_completed_run": 45969181310,
     "rules": [
-      "Check live ownership/revision and native processes immediately before native launch.",
-      "Use isolated scratch project only; do not cancel Corona or other existing processes.",
-      "Restore Corona reservation once native runs finish; no merge or publication."
+      "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
+      "Preserve Senda work; no cancellation or automatic return."
     ],
-    "previous_rotation": {
-      "resource": "windows-runner-heavy",
-      "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
-      "authorized_at": "2026-11-26T09:50:00Z",
-      "mode": "exclusive_one_workstream_at_a_time",
-      "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-      "current_run_id": null,
-      "next_workstream": null,
-      "return_to": null,
-      "status": "corona_native_reserved",
-      "previous_completed_run": 45777504885,
-      "rules": [
-        "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
-        "Preserve Senda work; no cancellation or automatic return."
-      ]
-    },
-    "previous_completed_run": 45966455876
+    "pr198_native_rotation_closed": {
+      "run": 45969181310,
+      "at": "2026-11-27T08:55:00Z",
+      "resource_only": true
+    }
   }
 }
