@@ -14,7 +14,7 @@ env:
   BASE_SHA: f27f4774e32efc5ad046478a07747eead4256c3e
 jobs:
   produce:
-    if: github.run_attempt == 1 && github.event.head_commit.message == 'Recover Issue200 I-V exact source without new production spend'
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Recover Issue200 exact file bytes using verified Git blob hash'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
@@ -65,7 +65,7 @@ jobs:
               before=git("rev-parse","HEAD:"+name).decode().strip()
               after=git("rev-parse",":"+name).decode().strip()
               content=git("cat-file","blob",after)
-              assert hashlib.sha1(b"blob "+str(len(content)).encode()+b"\\0"+content).hexdigest()==after
+              assert hashlib.sha1(b"blob "+str(len(content)).encode()+bytes(1)+content).hexdigest()==after
               dest="replacement-"+str(i)+".bin"
               Path(dest).write_bytes(content)
               rows.append(dict(path=name,file=dest,old_blob=before,new_blob=after,sha256=hashlib.sha256(content).hexdigest()))
