@@ -10027,7 +10027,7 @@
       },
       "owner": "chatgpt-corona-brecha-commercial-20261126",
       "ownership_state": "claimed",
-      "ownership_revision": 18,
+      "ownership_revision": 19,
       "write_scope_released": false,
       "branch": "experiment/valoria-ciudad-region-unificada-20261121",
       "status": "active",
@@ -10042,9 +10042,7 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_approved": false,
       "device_qa": "PENDING physical Safari iPhone",
       "delivery_definition": {
@@ -10352,11 +10350,11 @@
       "title": "Eldoria Development Studio V3 — isolated autonomous execution benchmark",
       "owner": "chatgpt-studio-v3-rankings-premium-20261127",
       "ownership_state": "claimed",
-      "ownership_revision": 13,
+      "ownership_revision": 14,
       "write_scope_released": false,
       "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
       "status": "active",
-      "phase": "PR198_ATELIER_HIGH_IMPACT_ART",
+      "phase": "PR198_ATELIER_NATIVE_CAPTURE",
       "claimed_at": "2026-11-26T19:46:00Z",
       "base_main_sha": "58ec6108b9fdb23d2ee2505ab17c8c19662ba37a",
       "base_studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
@@ -10368,7 +10366,9 @@
         ".github/workflows/studio-v3-rankings-native.yml",
         ".github/workflows/studio-v3-rankings-atelier.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "delivery_definition": {
         "deliverable": "Isolated executable V3 core with bounded declarative edits, verified evidence, rejection/retry/pivot, reproducible local tests and baseline-vs-studio benchmark contract.",
         "evidence": "Actual source changes in scratch and tests; no live model autonomy or artistic gain claims without controlled live experiment. GitHub-hosted read-only offline Node CI using pinned actual V2 input; no API secret, paid model or Windows runner.",
@@ -10706,7 +10706,14 @@
           "source_sha": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
           "native_baseline_run": 45968651560,
           "method": "Original hand-painted layered art; independent director, image production and visual designer; distinct native arrangements, side-by-side evidence. No gameplay or source PR edits until quality accepted.",
-          "native_lease": "request after hosted assets and exact native safety check; no interrupt"
+          "native_lease": "request after hosted assets and exact native safety check; no interrupt",
+          "production_run": 45970517186,
+          "artifact": 15184847422,
+          "actual_cumulative_estimated_usd": "1.38516015",
+          "native_input_run": 45971461555,
+          "native_input_artifact": 15185855596,
+          "pc_probe_job": 140412650090,
+          "lease_revision": 14
         }
       }
     }
@@ -22601,23 +22608,37 @@
   },
   "resource_rotation": {
     "resource": "windows-runner-heavy",
-    "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
-    "authorized_at": "2026-11-26T09:50:00Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+    "authorized_by": "Owner-directed continued PR198 improvement; PC probe 45971461555 idle; temporary rotation",
+    "current_workstream": "eldoria-studio-v3-autonomous-execution-20261126",
     "current_run_id": null,
-    "next_workstream": null,
-    "return_to": null,
-    "status": "corona_native_reserved",
-    "previous_completed_run": 45969181310,
+    "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+    "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+    "status": "pr198_atelier_native",
+    "previous_rotation": {
+      "resource": "windows-runner-heavy",
+      "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
+      "authorized_at": "2026-11-26T09:50:00Z",
+      "mode": "exclusive_one_workstream_at_a_time",
+      "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+      "current_run_id": null,
+      "next_workstream": null,
+      "return_to": null,
+      "status": "corona_native_reserved",
+      "previous_completed_run": 45969181310,
+      "rules": [
+        "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
+        "Preserve Senda work; no cancellation or automatic return."
+      ],
+      "pr198_native_rotation_closed": {
+        "run": 45969181310,
+        "at": "2026-11-27T08:55:00Z",
+        "resource_only": true
+      }
+    },
     "rules": [
-      "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
-      "Preserve Senda work; no cancellation or automatic return."
-    ],
-    "pr198_native_rotation_closed": {
-      "run": 45969181310,
-      "at": "2026-11-27T08:55:00Z",
-      "resource_only": true
-    }
+      "Check live claim and native processes before launch; no production project changes.",
+      "Return to Corona after isolated render."
+    ]
   }
 }
