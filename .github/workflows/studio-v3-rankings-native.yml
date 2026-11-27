@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   prepare:
-    if: github.event.head_commit.message != 'Discover installed Unity MCP flags and verify real editor connection'
+    if: github.event.head_commit.message != 'Verify Unity MCP through unambiguous read-only editor tool'
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
@@ -94,7 +94,7 @@ jobs:
           retention-days: 14
 
   resume-native:
-    if: github.event.head_commit.message == 'Discover installed Unity MCP flags and verify real editor connection' && github.run_attempt == 1
+    if: github.event.head_commit.message == 'Verify Unity MCP through unambiguous read-only editor tool' && github.run_attempt == 1
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 25
     steps:

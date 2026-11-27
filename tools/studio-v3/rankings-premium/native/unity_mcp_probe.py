@@ -36,12 +36,23 @@ try:
  send({"jsonrpc":"2.0","method":"notifications/initialized"});tools=call(2,"tools/list",{})["tools"];names=[t["name"] for t in tools]
  out.write_text(json.dumps({"protocol":init.get("protocolVersion"),"tool_names":names,"status_invoked":False,"editor_status_success":False},indent=2),encoding="utf-8")
  print("MCP_TOOLS_DISCOVERED",json.dumps(tools)[:18000],flush=True)
- status_tool=next((name for name in ("unity-cli-status","unity-status","unity_status","status","get_editor_state","get-editor-state") if name in names),None)
- if not status_tool:raise RuntimeError("MCP connected; known read-only editor status tool not listed")
- status=call(3,"tools/call",{"name":status_tool,"arguments":{}})
- excerpts=[str(x.get("text",""))[:1200] for x in status.get("content",[])]
- connected=not status.get("isError",False)
- proof={"protocol":init.get("protocolVersion"),"tool_names":names,"status_invoked":True,"status_tool":status_tool,"editor_status_success":connected,"status_excerpt":excerpts,"native_action_transport":"separate trusted Unity CLI script eval","project_isolated":True}
+ # Duplicate bare status names cannot be routed on this version.
+ # Use only unique read-only tools which require no arguments.
+ attempts=[];connected=False;status_tool=None;excerpts=[]
+ for candidate in ("list_instances","get_hierarchy","list_open","list_commands"):
+  matches=[t for t in tools if t["name"]==candidate]
+  if len(matches)!=1 or matches[0].get("inputSchema",{}).get("required"):continue
+  status_tool=candidate
+  try:
+   status=call(3+len(attempts),"tools/call",{"name":candidate,"arguments":{}})
+   excerpts=[str(x.get("text",""))[:2400] for x in status.get("content",[])]
+   connected=not status.get("isError",False) and not any(s.lower().startswith("error:") for s in excerpts)
+   attempts.append({"tool":candidate,"success":connected,"excerpt":excerpts})
+   if connected:break
+  except Exception as exc:
+   attempts.append({"tool":candidate,"success":False,"error":str(exc)})
+ if not attempts:raise RuntimeError("No unambiguous read-only editor tool listed")
+ proof={"protocol":init.get("protocolVersion"),"tool_names":names,"status_invoked":True,"attempts":attempts,"status_tool":status_tool,"editor_status_success":connected,"status_excerpt":excerpts,"native_action_transport":"separate trusted Unity CLI script eval","project_isolated":True}
  out.write_text(json.dumps(proof,indent=2),encoding="utf-8");print("PR198_UNITY_MCP_PROOF",json.dumps(proof),flush=True)
  if not connected:raise RuntimeError("Unity MCP did not confirm an editor")
 except Exception as exc:
