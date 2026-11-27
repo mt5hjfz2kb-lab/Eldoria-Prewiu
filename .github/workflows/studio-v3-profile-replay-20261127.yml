@@ -8,7 +8,7 @@ permissions:
   actions: read
 concurrency:
   group: studio-v3-pr198-profile-replay
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   replay:
     runs-on: ubuntu-24.04
@@ -17,6 +17,9 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
+          sparse-checkout: |
+            tools/studio-v3/rankings-premium
+            tools/openai-development-studio
       - name: Install browser and selector parser
         run: |
           python3 -m pip install --quiet pillow playwright==1.55.0 tinycss2 cssselect2
