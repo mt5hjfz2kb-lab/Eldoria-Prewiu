@@ -1,0 +1,85 @@
+name: Issue200 Studio artists - full Bastion I-V audit
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/bastion-i-studio-200-cycle-audit.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: issue200-cycle-audit-once
+  cancel-in-progress: false
+jobs:
+  audit:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Execute requested Studio cycle I-V audit within remaining issue200 budget'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify actual certified source and remaining authorization
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/studio" "$RUNNER_TEMP/sources" "$RUNNER_TEMP/cycle-audit"
+          test "$(gh api "repos/$REPO/actions/runs/45797567514" --jq .conclusion)" = success
+          test "$(gh api "repos/$REPO/actions/runs/46061176351" --jq .conclusion)" = success
+          test "$(gh api "repos/$REPO/actions/runs/46050064308" --jq .conclusion)" = success
+          test "$(gh api "repos/$REPO/actions/artifacts/15108055403" --jq .digest)" = sha256:a454310897899a24c86646e0cf85a038dbb9ada93d8b2fc125171e29ac35fd71
+          test "$(gh api "repos/$REPO/actions/artifacts/15228519788" --jq .digest)" = sha256:cf7a3e239bc7aec0a61b083c56ac9a8ce338cfcdfc805b4ad82e2c7da4a4ad72
+          test "$(gh api "repos/$REPO/actions/artifacts/15223528491" --jq .digest)" = sha256:4aa168f70eb332b06892808f9fe1260d23c35bbe4503b3d43a9540620927ab8f
+          test "$(gh api "repos/$REPO/git/ref/heads/experiment/valoria-ciudad-region-unificada-20261121" --jq .object.sha)" = f27f4774e32efc5ad046478a07747eead4256c3e
+          gh api "repos/$REPO/compare/348b19f958d5bbd447db59e16fc30e7c554cc72a...f27f4774e32efc5ad046478a07747eead4256c3e" > "$RUNNER_TEMP/sources/source-diff.json"
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/Unity/Assets/Experimentos/ValoriaModular25D/Scripts/ValoriaUrbanPlan.cs?ref=f27f4774e32efc5ad046478a07747eead4256c3e" > "$RUNNER_TEMP/sources/ValoriaUrbanPlan.cs"
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/docs/valoria-modular-25d/PRODUCTION_GUIDE_BASTION_I_20261120.md?ref=f27f4774e32efc5ad046478a07747eead4256c3e" > "$RUNNER_TEMP/sources/PRODUCTION_GUIDE_BASTION_I_20261120.md"
+          cd "$RUNNER_TEMP/studio"
+          for f in studio.py economics.py rates-20261125.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$f?ref=9fbdb203269b951a252de58d7a0357d71a841480" > "$f"
+          done
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/audit-cycle-i-v.py?ref=9eea061d93c9792712b8c44246220c07921445b4" > audit.py
+          python3 -m pip install --quiet pillow
+          python3 -m py_compile audit.py
+          python3 studio.py --self-test
+      - uses: actions/download-artifact@v4
+        with:
+          name: ciudad-cinco-bastiones-unity
+          run-id: 45797567514
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/historical
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-real-unity-native
+          run-id: 46061176351
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/current
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-native-independent-audit
+          run-id: 46050064308
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/prior
+      - name: Validate receipts and native capture hashes before spending
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"prior/summary.json"
+          assert json.loads(p.read_text())["total_estimated_usd"]=="0.6889613"
+          PY
+          cd "$RUNNER_TEMP/studio"
+          python3 -u audit.py prepare
+      - name: Five independent stage artists plus cross-stage art director
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/studio"
+          python3 -u audit.py live
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-artists-cycle-I-V-audit
+          path: ${{ runner.temp }}/cycle-audit
+          if-no-files-found: warn
+          retention-days: 30
