@@ -1,5 +1,5 @@
 # Isolated native PC; only our scratch process can be stopped.
-param([Parameter(Mandatory=$true)][string]$InputRoot,[Parameter(Mandatory=$true)][string]$OutRoot)
+param([Parameter(Mandatory=$true)][string]$InputRoot,[Parameter(Mandatory=$true)][string]$OutRoot,[string]$ExistingBlender='')
 $ErrorActionPreference='Stop'
 $root=$OutRoot
 New-Item -ItemType Directory -Path $root | Out-Null
@@ -18,8 +18,17 @@ function Run-Child([string]$exe,[string[]]$argList,[int]$seconds,[string]$label)
 }
 function Q([string]$v){return ('"'+$v+'"')}
 $blenderOut=Join-Path $root 'blender'
+if($ExistingBlender){
+ $src=Join-Path $ExistingBlender 'blender'
+ $proof=Get-Content -LiteralPath (Join-Path $src 'blender-proof.json') -Raw | ConvertFrom-Json
+ if($proof.actual_blender -ne '5.2.2 LTS' -or $proof.mesh_objects -ne 33 -or @($proof.actions|Where-Object {$_.status -eq 'success'}).Count -ne 2){throw 'Invalid existing Blender proof'}
+ if((Get-FileHash -Algorithm SHA256 (Join-Path $src 'medallion.png')).Hash.ToLower() -ne '3999b214a387cd92cfd53880d08e92631f83a5fb177ea14e7d007b80cb3dec8f' -or (Get-FileHash -Algorithm SHA256 (Join-Path $src 'medallion.blend')).Hash.ToLower() -ne 'f84847c12cdeceb1eda11880b0d05e0025051c2689fae21baa4a43113f41e8ea'){throw 'Existing Blender bytes changed'}
+ Copy-Item -LiteralPath $src -Destination $blenderOut -Recurse
+ Write-Host 'PR198_BLENDER_VERIFIED_REUSED_NO_NEW_SPEND'
+}else{
 Run-Child -exe $blender -argList @('-b','-t','4','--python-exit-code','1','--python',(Q (Join-Path $InputRoot 'blender_author.py')),'--',(Q (Join-Path $InputRoot 'native-design.json')),(Q $blenderOut),(Q $addon)) -seconds 480 -label 'blender'
 if(-not(Test-Path (Join-Path $blenderOut 'blender-proof.json'))){throw 'Blender MCP proof missing'}
+}
 Get-Content (Join-Path $blenderOut 'blender-proof.json')
 # Create a new minimal UGUI project. No game worktree is opened.
 New-Item -ItemType Directory -Path $project | Out-Null
@@ -42,8 +51,10 @@ for i,(sat,b) in enumerate([(1.0,1.0),(.55,.82),(.85,.7),(1.2,1.18)]):
  rgb=ImageEnhance.Brightness(ImageEnhance.Color(im.convert("RGB")).enhance(sat)).enhance(b);rgb.putalpha(im.getchannel("A"));rgb.save(p/("medallion-"+str(i)+".png"))
 '@ | Set-Content -LiteralPath (Join-Path $root 'medal-variants.py') -Encoding utf8
 # Pillow is optional on this PC; if absent, use same authored physical emblem without fabricated distinction.
+$prior=$ErrorActionPreference;$ErrorActionPreference='Continue'
 & python (Join-Path $root 'medal-variants.py') $assets
-if($LASTEXITCODE -ne 0){foreach($i in 0..3){Copy-Item (Join-Path $assets 'medallion.png') (Join-Path $assets ("medallion-"+$i+".png"))}}
+$variantExit=$LASTEXITCODE;$ErrorActionPreference=$prior
+if($variantExit -ne 0){foreach($i in 0..3){Copy-Item (Join-Path $assets 'medallion.png') (Join-Path $assets ("medallion-"+$i+".png"))}}
 [IO.File]::WriteAllText((Join-Path $project 'Packages\manifest.json'),'{"dependencies":{"com.unity.ugui":"2.0.0","com.unity.modules.imageconversion":"1.0.0","com.unity.modules.ui":"1.0.0","com.unity.modules.uielements":"1.0.0"}}')
 [IO.File]::WriteAllText((Join-Path $project 'ProjectSettings\ProjectVersion.txt'),"m_EditorVersion: 6000.3.23f1"+[Environment]::NewLine)
 $env:PR198_NATIVE_OUT=$root

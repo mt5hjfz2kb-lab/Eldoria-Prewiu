@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   prepare:
-    if: github.event.head_commit.message != 'Resume PR198 native tools using existing paid artifact'
+    if: github.event.head_commit.message != 'Resume PR198 Unity using verified Blender MCP result'
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
@@ -94,7 +94,7 @@ jobs:
           retention-days: 14
 
   resume-native:
-    if: github.event.head_commit.message == 'Resume PR198 native tools using existing paid artifact' && github.run_attempt == 1
+    if: github.event.head_commit.message == 'Resume PR198 Unity using verified Blender MCP result' && github.run_attempt == 1
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 25
     steps:
@@ -128,7 +128,22 @@ jobs:
           github-token: ${{ github.token }}
           run-id: 45967270833
           path: ${{ runner.temp }}/pr198-native-input-${{ github.run_id }}
-      - name: Correct PowerShell argument binding and execute existing agent output
+      - name: Verify actual completed Blender output
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $a=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/15183386978' -Headers $h
+          if($a.expired -or $a.digest -ne 'sha256:4dcc1e936fc08b637bf0a7ded7eda2a1ab401d5d93d7ed7c9df6c4157615165b' -or $a.workflow_run.id -ne 45967591248){throw 'Blender proof artifact changed'}
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr198-native-result
+          github-token: ${{ github.token }}
+          run-id: 45967591248
+          path: ${{ runner.temp }}/pr198-verified-blender-${{ github.run_id }}
+      - name: Reuse actual Blender result and open isolated Unity Editor
         shell: powershell
         env:
           GH_TOKEN: ${{ github.token }}
@@ -145,7 +160,7 @@ jobs:
           if($hash -ne $meta.sha){throw 'Native launcher Git blob hash mismatch'}
           [IO.File]::WriteAllBytes((Join-Path $p 'native.ps1'),$raw)
           Remove-Item Env:GH_TOKEN -ErrorAction SilentlyContinue
-          & (Join-Path $p 'native.ps1') -InputRoot $p -OutRoot $o
+          & (Join-Path $p 'native.ps1') -InputRoot $p -OutRoot $o -ExistingBlender (Join-Path $env:RUNNER_TEMP ("pr198-verified-blender-"+$env:GITHUB_RUN_ID))
       - uses: actions/upload-artifact@v4
         if: always()
         with:
