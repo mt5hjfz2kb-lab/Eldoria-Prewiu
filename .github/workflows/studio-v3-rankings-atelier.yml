@@ -89,3 +89,53 @@ jobs:
           $rows=@(foreach($n in $names){[pscustomobject]@{name=$n;count=@(Get-Process -Name $n -ErrorAction SilentlyContinue).Count}})
           $report=[ordered]@{idle=(@($rows|Where-Object {$_.count -gt 0}).Count -eq 0);editor_exists=[bool]($env:UNITY_EDITOR_PATH -and (Test-Path $env:UNITY_EDITOR_PATH));processes=$rows;read_only=$true}
           Write-Host ('ATELIER_PC_PROBE '+($report|ConvertTo-Json -Depth 6 -Compress))
+
+  atelier-render:
+    if: github.event.head_commit.message == 'Render PR198 atelier native from verified original assets' && github.run_attempt == 1
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Verify live lease, exact paid input and PC idle
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $meta=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main' -Headers $h
+          $blob=Invoke-RestMethod -Uri ('https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/'+$meta.sha) -Headers $h
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s','')))|ConvertFrom-Json
+          $holder=@($reg.active|Where-Object {@($_.resources) -contains 'windows-runner-heavy'})
+          if($holder.Count -ne 1 -or $holder[0].id -ne 'eldoria-studio-v3-autonomous-execution-20261126' -or $holder[0].owner -ne 'chatgpt-studio-v3-rankings-premium-20261127' -or $holder[0].ownership_revision -ne 14){throw 'Lease changed'}
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager,UnityCrashHandler64 -ErrorAction SilentlyContinue).Count){throw 'Existing native process; no interruption'}
+          $a=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/15185855596' -Headers $h
+          if($a.expired -or $a.digest -ne 'sha256:5840c24ba589a9fda12c75ccf2fb2a07048892aeacc13438a2bb7bd1968c5987' -or $a.workflow_run.id -ne 45971461555){throw 'Native input changed'}
+          $b=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/15183386978' -Headers $h
+          if($b.expired -or $b.digest -ne 'sha256:4dcc1e936fc08b637bf0a7ded7eda2a1ab401d5d93d7ed7c9df6c4157615165b' -or $b.workflow_run.id -ne 45967591248){throw 'Blender proof changed'}
+          Write-Host 'ATELIER_NATIVE_LEASE_AND_ASSET_PASS'
+      - uses: actions/download-artifact@v4
+        with:
+          name: atelier-native-input
+          github-token: ${{ github.token }}
+          run-id: 45971461555
+          path: ${{ runner.temp }}/atelier-input-${{ github.run_id }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr198-native-result
+          github-token: ${{ github.token }}
+          run-id: 45967591248
+          path: ${{ runner.temp }}/atelier-blender-${{ github.run_id }}
+      - name: Render revised native screens, real Unity Editor and MCP
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $p=Join-Path $env:RUNNER_TEMP ("atelier-input-"+$env:GITHUB_RUN_ID)
+          $o=Join-Path $env:RUNNER_TEMP ("atelier-result-"+$env:GITHUB_RUN_ID)
+          & (Join-Path $p 'native.ps1') -InputRoot $p -OutRoot $o -ExistingBlender (Join-Path $env:RUNNER_TEMP ("atelier-blender-"+$env:GITHUB_RUN_ID))
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: atelier-native-result
+          path: ${{ runner.temp }}/atelier-result-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 14
