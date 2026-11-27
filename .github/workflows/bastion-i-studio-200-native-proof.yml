@@ -1,0 +1,224 @@
+name: Bastion I issue200 - actual Unity modular proof B plus C
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/bastion-i-studio-200-native-proof.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: issue200-native-proof-one-shot
+  cancel-in-progress: false
+env:
+  REPO: ${{ github.repository }}
+  BASE_SHA: 91b8de9874aed87219d733efa6e8e0aa56207f1e
+jobs:
+  fit:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Launch actual Unity Issue200 B C proof with isolated native lease'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Verify exact production assets and original source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$REPO/actions/runs/46032398265" --jq .conclusion)" = success
+          test "$(gh api "repos/$REPO/actions/artifacts/15215281066" --jq .digest)" = sha256:a540970fbc7d852a61654197b32d2e36c39ec5dcec2693a8920e9aab3e993336
+          mkdir -p "$RUNNER_TEMP/original" "$RUNNER_TEMP/scripts"
+          p=Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D
+          for n in bastion_i_hd.png sawmill_i_hd.png bastion_i_hd.png.meta sawmill_i_hd.png.meta; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/$p/$n?ref=$BASE_SHA" > "$RUNNER_TEMP/original/$n"
+          done
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/fit-production-assets.py?ref=2546b29495dc217b5e37e6f4c0a71763e77e7fc3" > "$RUNNER_TEMP/scripts/fit.py"
+          python3 -m pip install --quiet pillow numpy
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-reference-refined-assets
+          run-id: 46032398265
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/refined
+      - name: Fit sprites preserving original pixel canvas, pivots and units
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          s=json.loads((Path(os.environ["RUNNER_TEMP"])/"refined/summary.json").read_text())
+          assert s["asset_gate_for_native_ab"] is True
+          PY
+          python3 "$RUNNER_TEMP/scripts/fit.py" "$RUNNER_TEMP/refined" "$RUNNER_TEMP/original" "$RUNNER_TEMP/fit"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: issue200-fitted-independent-assets
+          path: ${{ runner.temp }}/fit
+          if-no-files-found: error
+          retention-days: 14
+  reserve:
+    needs: fit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Narrow resource-only reservation under the existing Studio holder
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/coordinate-native-resource.py?ref=0a3373341db4cdbae07e89969bbef7afd4aa8733" > "$RUNNER_TEMP/coordinate.py"
+          python3 "$RUNNER_TEMP/coordinate.py" reserve
+  native-proof:
+    needs: reserve
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    concurrency:
+      group: eldoria-modular25d-exclusive-unity-native
+      cancel-in-progress: false
+    steps:
+      - name: Check live resource ownership, installed Unity and actual idle processes
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $api="https://api.github.com/repos/$env:REPO/"
+          $m=Invoke-RestMethod -Headers $h -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main')
+          $b=Invoke-RestMethod -Headers $h -Uri ($api+'git/blobs/'+$m.sha)
+          if($b.sha -ne $m.sha){throw 'Registry mismatch'}
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($b.content -replace '\s',''))) | ConvertFrom-Json
+          $held=@($reg.active|Where-Object{@($_.resources) -contains 'windows-runner-heavy'})
+          if($held.Count -ne 1 -or $held[0].id -ne 'eldoria-studio-v3-autonomous-execution-20261126' -or $held[0].owner -ne 'chatgpt-studio-v3-rankings-premium-20261127' -or $held[0].ownership_revision -ne 15 -or $held[0].issue200_native_proof.run_id -ne [long]$env:GITHUB_RUN_ID -or $reg.resource_rotation.current_run_id -ne [long]$env:GITHUB_RUN_ID -or $reg.resource_rotation.status -ne 'issue200_bastion_i_native_proof'){throw 'Native reservation not ours'}
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){throw 'Existing native process; no interruption allowed'}
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity missing'}
+          if((Get-Item $env:RUNNER_TEMP).PSDrive.Free -lt 12GB){throw 'Insufficient scratch disk; no other cache cleanup'}
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $dir=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd'} | Where-Object {Test-Path (Join-Path $_ 'git.exe')} | Select-Object -First 1
+            if(-not $dir){throw 'Installed Git missing'}
+            $env:PATH="$dir;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+          }
+          Write-Host 'ISSUE200_EXCLUSIVE_PC_IDLE_PASS'
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-fitted-independent-assets
+          path: ${{ runner.temp }}/issue200-assets-${{ github.run_id }}
+      - name: Materialize exact game sources only in unique scratch project
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:RUNNER_TEMP ("issue200-native-"+$env:GITHUB_RUN_ID)
+          if(Test-Path $root){throw 'Scratch already exists'}
+          git init -q $root
+          git -C $root remote add origin "https://github.com/$env:REPO.git"
+          $paths=@('/Unity/Assets/Experimentos/ValoriaModular25D/','/Unity/Assets/Experimentos/ValoriaModular25D.meta','/Unity/Assets/Experimentos.meta','/Unity/Assets/Eldoria/','/Unity/Assets/Eldoria.meta','/Unity/Assets/EmaceArt/Slavic World Free/Meshes/','/Unity/Assets/EmaceArt/Slavic World Free/Materials/','/Unity/Assets/EmaceArt/Slavic World Free/Texture/','/Unity/Assets/EmaceArt/Slavic World Free/URP_Support/','/Unity/Assets/EmaceArt/Slavic World Free/Prefabs/Village/Building/Shed/','/Unity/Assets/Holotna/','/Unity/Assets/Holotna.meta','/Unity/Assets/StreamingAssets/','/Unity/Assets/StreamingAssets.meta','/Unity/Assets/Plugins/','/Unity/Assets/Plugins.meta','/Unity/Assets/DefaultVolumeProfile.asset','/Unity/Assets/UniversalRenderPipelineGlobalSettings.asset','/Unity/Packages/','/Unity/ProjectSettings/')
+          git -C $root sparse-checkout set --no-cone @paths
+          if($LASTEXITCODE){throw 'Sparse checkout setup failed'}
+          git -C $root config http.version HTTP/1.1
+          git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:BASE_SHA
+          if($LASTEXITCODE){throw 'Source fetch failed'}
+          $ok=$false
+          for($i=1;$i -le 3;$i++){git -C $root checkout -q --detach $env:BASE_SHA; if($LASTEXITCODE -eq 0){$ok=$true;break}; Start-Sleep -Seconds (4*$i)}
+          if(-not $ok -or (git -C $root rev-parse HEAD).Trim() -ne $env:BASE_SHA){throw 'Exact source checkout failed'}
+          $project=Join-Path $root 'Unity'
+          $target=Join-Path $project 'Assets/Experimentos/ValoriaModular25D/Editor/Issue200NativeProof.cs'
+          if(Test-Path $target){throw 'Scratch editor path already present'}
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github.raw+json'}
+          $uri="https://api.github.com/repos/$env:REPO/contents/tools/bastion-i-studio-200/Issue200NativeProof.cs?ref=28cc11000e27caf8ac35808cd03db41318359083"
+          Invoke-WebRequest -UseBasicParsing -Headers $h -Uri $uri -OutFile $target
+          "ISSUE200_PROJECT=$project"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "ISSUE200_PROOF_OUT=$(Join-Path $env:RUNNER_TEMP ('issue200-proof-'+$env:GITHUB_RUN_ID))"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "ISSUE200_PROOF_ASSETS=$(Join-Path $env:RUNNER_TEMP ('issue200-assets-'+$env:GITHUB_RUN_ID))"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "ISSUE200_BASE_SHA=$env:BASE_SHA"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Render matched real Unity baseline and candidate with moving actors and camera
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){throw 'Native process appeared; no interruption'}
+          New-Item -ItemType Directory -Force $env:ISSUE200_PROOF_OUT|Out-Null
+          Copy-Item (Join-Path $env:ISSUE200_PROOF_ASSETS 'fit-manifest.json') $env:ISSUE200_PROOF_OUT
+          $log=Join-Path $env:ISSUE200_PROOF_OUT 'unity.log'
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$env:ISSUE200_PROJECT,'-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.Issue200NativeProof.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(3000000)){Stop-Process -Id $p.Id -Force;throw 'Own Unity scratch capture timed out'}
+          if($p.ExitCode){Get-Content $log -Tail 120;throw ('Unity capture failed '+$p.ExitCode)}
+          foreach($v in @('baseline','candidate')){
+            $manifest=Join-Path $env:ISSUE200_PROOF_OUT "$v/evidence.json"
+            if(-not(Test-Path $manifest)){throw 'Missing genuine capture manifest'}
+            $e=Get-Content $manifest -Raw|ConvertFrom-Json
+            if($e.engine -ne 'Unity' -or $e.engineVersion -ne '6000.3.23f1' -or $e.sourceSha -ne $env:BASE_SHA -or $e.sourceFrames -ne 96 -or -not $e.gatewayBuild -or -not $e.savedAndReloaded){throw 'Native proof incomplete'}
+            foreach($f in $e.frames){
+              $p=Join-Path $env:ISSUE200_PROOF_OUT "$v/$($f.file)"
+              if(-not(Test-Path $p) -or (Get-FileHash -Algorithm SHA256 $p).Hash.ToLowerInvariant() -ne $f.sha256){throw 'Native frame hash mismatch'}
+            }
+          }
+          Write-Host 'ISSUE200_REAL_MATCHED_CAMERA_RENDER_PASS'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-real-unity-native
+          path: ${{ runner.temp }}/issue200-proof-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 14
+  return-resource:
+    needs: [reserve,native-proof]
+    if: always() && needs.reserve.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Return only own completed temporary native resource to canonical Bastion
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/coordinate-native-resource.py?ref=0a3373341db4cdbae07e89969bbef7afd4aa8733" > "$RUNNER_TEMP/coordinate.py"
+          python3 "$RUNNER_TEMP/coordinate.py" return
+  evidence:
+    needs: native-proof
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-real-unity-native
+          path: ${{ runner.temp }}/native
+      - name: Verify matched camera, produce side by side native evidence and actual video
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet pillow
+          mkdir -p "$RUNNER_TEMP/delivery"
+          python3 - <<'PY'
+          import json,os,hashlib
+          from pathlib import Path
+          from PIL import Image,ImageDraw
+          root=Path(os.environ["RUNNER_TEMP"]);src=root/"native";out=root/"delivery"
+          a=json.loads((src/"baseline/evidence.json").read_text());b=json.loads((src/"candidate/evidence.json").read_text())
+          assert len(a["frames"])==len(b["frames"])==96
+          for x,y in zip(a["frames"],b["frames"]):
+              assert all(x[k]==y[k] for k in ("name","width","height","orthographicSize","cameraX","cameraY"))
+              for folder,row in [("baseline",x),("candidate",y)]:
+                  p=src/folder/row["file"];assert hashlib.sha256(p.read_bytes()).hexdigest()==row["sha256"]
+          for name in ["home","registered-entry","retina","wide","keep-close","mill-close"]:
+              ims=[Image.open(src/d/(name+".png")).convert("RGB") for d in ("baseline","candidate")]
+              w,h=ims[0].size
+              im=Image.new("RGB",(w*2,h+38),"#171717");d=ImageDraw.Draw(im)
+              for i,part in enumerate(ims):im.paste(part,(w*i,38));d.text((w*i+10,10),["BASELINE UNITY","CANDIDATE B+C UNITY"][i],fill="white")
+              im.save(out/(name+"-comparison.png"))
+          assert a["frames"][0]["sha256"]!=b["frames"][0]["sha256"]
+          (out/"evidence-summary.json").write_text(json.dumps({"source_sha":a["sourceSha"],"native_unity":True,"matched_frames":96,"art_approved":False,"playmode":False,"note":"Actual Unity Editor scene; same cameras and canonical built fixture, not a WebGL or device test."},indent=2))
+          PY
+          ffmpeg -loglevel error -framerate 15 -i "$RUNNER_TEMP/native/baseline/motion-%03d.png" -framerate 15 -i "$RUNNER_TEMP/native/candidate/motion-%03d.png" -filter_complex hstack=inputs=2 -c:v libx264 -pix_fmt yuv420p -movflags +faststart "$RUNNER_TEMP/delivery/native-pan-zoom-comparison.mp4"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: issue200-native-comparison-delivery
+          path: ${{ runner.temp }}/delivery
+          if-no-files-found: error
+          retention-days: 14
