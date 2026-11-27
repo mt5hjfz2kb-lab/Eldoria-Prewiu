@@ -10027,7 +10027,7 @@
       },
       "owner": "chatgpt-corona-brecha-commercial-20261126",
       "ownership_state": "claimed",
-      "ownership_revision": 16,
+      "ownership_revision": 17,
       "write_scope_released": false,
       "branch": "experiment/valoria-ciudad-region-unificada-20261121",
       "status": "active",
@@ -10042,9 +10042,7 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_approved": false,
       "device_qa": "PENDING physical Safari iPhone",
       "delivery_definition": {
@@ -10155,7 +10153,13 @@
       },
       "previous_owner": "chatgpt-valoria-umbrales-20261124",
       "next": "HUD first; native matched A/B on exact branch, shared presentation controls; preserve mechanics and best screens.",
-      "resource_handoff_note": "Owner explicitly confirmed no other work and reassigned only PC resources to Eldoria Development Studio. Source ownership unchanged."
+      "resource_handoff_note": "Owner explicitly confirmed no other work and reassigned only PC resources to Eldoria Development Studio. Source ownership unchanged.",
+      "native_resource_handoff": {
+        "reason": "Owner on 2026-11-27 explicitly asks ranking agents to claim PC if required; actual installed-tool idle probe 45966455876 and no active Corona run. Temporary resource-only transfer; no cancellation or scope ownership change.",
+        "temporary_to": "eldoria-studio-v3-autonomous-execution-20261126",
+        "probe_run": 45966455876,
+        "previous_revision": 16
+      }
     },
     {
       "id": "eldoria-collections-rankings-prestige-20261124",
@@ -10343,11 +10347,11 @@
       "title": "Eldoria Development Studio V3 — isolated autonomous execution benchmark",
       "owner": "chatgpt-studio-v3-rankings-premium-20261127",
       "ownership_state": "claimed",
-      "ownership_revision": 11,
+      "ownership_revision": 12,
       "write_scope_released": false,
       "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
       "status": "active",
-      "phase": "PR198_NATIVE_TOOL_RECOVERY_AND_ART_PRODUCTION",
+      "phase": "PR198_TEMPORARY_NATIVE_PC_LEASE",
       "claimed_at": "2026-11-26T19:46:00Z",
       "base_main_sha": "58ec6108b9fdb23d2ee2505ab17c8c19662ba37a",
       "base_studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
@@ -10358,7 +10362,9 @@
         ".github/workflows/studio-v3-rankings-pivot.yml",
         ".github/workflows/studio-v3-rankings-native.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "delivery_definition": {
         "deliverable": "Isolated executable V3 core with bounded declarative edits, verified evidence, rejection/retry/pivot, reproducible local tests and baseline-vs-studio benchmark contract.",
         "evidence": "Actual source changes in scratch and tests; no live model autonomy or artistic gain claims without controlled live experiment. GitHub-hosted read-only offline Node CI using pinned actual V2 input; no API secret, paid model or Windows runner.",
@@ -10581,9 +10587,72 @@
         },
         "native_request": {
           "owner_instruction": "2026-11-27: investigate existing Unity and Blender connections, claim PC if required",
-          "phase": "read-only installed-tool probe before exclusive resource transfer",
+          "phase": "temporary exclusive native resource",
           "no_interrupt": true,
-          "return_resource_to": "eldoria-valoria-modular25d-bastion1-20261119"
+          "return_resource_to": "eldoria-valoria-modular25d-bastion1-20261119",
+          "probe_run": 45966455876,
+          "probe_job": 140396168332,
+          "probe": {
+            "schema": 1,
+            "run_id": "45966455876",
+            "source_sha": "99b852857fa933d7df19adf49ce87972f0e48146",
+            "unity_editor_exists": true,
+            "unity_cli_installed": true,
+            "python_installed": true,
+            "blender_installed": true,
+            "blender_install_count": 1,
+            "blender_addon_candidates": [
+              {
+                "version": "5.2",
+                "relative": "scripts\\addons\\blender_mcp.py",
+                "sha256": "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5"
+              }
+            ],
+            "processes": [
+              {
+                "name": "Unity",
+                "count": 0
+              },
+              {
+                "name": "blender",
+                "count": 0
+              },
+              {
+                "name": "UnityShaderCompiler",
+                "count": 0
+              },
+              {
+                "name": "UnityPackageManager",
+                "count": 0
+              },
+              {
+                "name": "UnityCrashHandler64",
+                "count": 0
+              }
+            ],
+            "idle": true,
+            "no_native_launch": true,
+            "no_project_changes": true
+          },
+          "prior_holder": "eldoria-valoria-modular25d-bastion1-20261119",
+          "prior_holder_owner": "chatgpt-corona-brecha-commercial-20261126",
+          "prior_holder_revision": 17,
+          "previous_rotation": {
+            "resource": "windows-runner-heavy",
+            "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
+            "authorized_at": "2026-11-26T09:50:00Z",
+            "mode": "exclusive_one_workstream_at_a_time",
+            "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+            "current_run_id": null,
+            "next_workstream": null,
+            "return_to": null,
+            "status": "corona_native_reserved",
+            "previous_completed_run": 45777504885,
+            "rules": [
+              "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
+              "Preserve Senda work; no cancellation or automatic return."
+            ]
+          }
         }
       }
     }
@@ -22478,18 +22547,34 @@
   },
   "resource_rotation": {
     "resource": "windows-runner-heavy",
-    "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
-    "authorized_at": "2026-11-26T09:50:00Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+    "authorized_by": "Owner instruction 2026-11-27: claim the PC for ranking production if needed; actual idle Windows probe",
+    "current_workstream": "eldoria-studio-v3-autonomous-execution-20261126",
     "current_run_id": null,
-    "next_workstream": null,
-    "return_to": null,
-    "status": "corona_native_reserved",
-    "previous_completed_run": 45777504885,
+    "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+    "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+    "status": "pr198_native_temporary",
     "rules": [
-      "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
-      "Preserve Senda work; no cancellation or automatic return."
-    ]
+      "Check live ownership/revision and native processes immediately before native launch.",
+      "Use isolated scratch project only; do not cancel Corona or other existing processes.",
+      "Restore Corona reservation once native runs finish; no merge or publication."
+    ],
+    "previous_rotation": {
+      "resource": "windows-runner-heavy",
+      "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
+      "authorized_at": "2026-11-26T09:50:00Z",
+      "mode": "exclusive_one_workstream_at_a_time",
+      "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+      "current_run_id": null,
+      "next_workstream": null,
+      "return_to": null,
+      "status": "corona_native_reserved",
+      "previous_completed_run": 45777504885,
+      "rules": [
+        "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
+        "Preserve Senda work; no cancellation or automatic return."
+      ]
+    },
+    "previous_completed_run": 45966455876
   }
 }
