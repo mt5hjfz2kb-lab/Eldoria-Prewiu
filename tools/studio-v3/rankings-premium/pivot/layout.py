@@ -42,8 +42,8 @@ def validate_pages(p):
     return p
 def validate_css(c):
     need(type(c) is str and 500<len(c)<=30000,"CSS length")
-    need(not re.search(r"url\s*\(|@import|@font-face|expression\s*\(|javascript:|<|>|\\\\|/\*|@keyframes",c,re.I),"Unsafe CSS content")
-    need(not re.search(r"content\s*:\s*(?![\"']{2}|none|normal)[^;}]+",c,re.I),"No synthetic UI labels")
+    need(not re.search(r"url\s*\(|@import|@font-face|expression\s*\(|javascript:|<|\\\\|/\*|@keyframes",c,re.I),"Unsafe CSS content")
+    need(all(m.group(1).strip() in ('""',"''","none","normal") for m in re.finditer(r"(?:^|[;{])\s*content\s*:\s*([^;}]+)",c,re.I)),"No synthetic UI labels")
     return c
 def crop_sheets(art,out):
     for n,keys in enumerate(ATLAS):
@@ -58,7 +58,7 @@ def compose(data,source,art,pages,css,out):
     crop_sheets(art,assets)
     for k in ["hall","relic"]:
         with Image.open(P(art)/(k+".png")) as im:im.convert("RGB").save(assets/(k+".jpg"),quality=94)
-    js="""
+    js=r"""
     const data=DATA,pages=PAGES;let profile=data.profiles.at(-1),section="Overview",detail=null;
     const esc=s=>String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
     const replace=(template,values)=>template.replace(/\{\{([a-z]+)\}\}/g,(_,k)=>values[k]??"");
@@ -90,7 +90,7 @@ def compose(data,source,art,pages,css,out):
     }
     document.querySelector("#level").onchange=e=>{profile=data.profiles.find(x=>x.bastion===Number(e.target.value));section="Overview";detail=null;render()};window.qa={get:()=>({profile,section,detail}),render};render();
     """.replace("DATA",json.dumps(data,ensure_ascii=False).replace("<","\\u003c"),1).replace("PAGES",json.dumps(pages,ensure_ascii=False).replace("<","\\u003c"),1)
-    safety="*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden}#app{height:100%;display:flex;flex-direction:column;overflow:hidden}header,#nav,footer{flex:none}main{flex:1;min-height:0;overflow:auto}img{max-width:100%;object-fit:contain}button{font:inherit;cursor:pointer}.row{min-width:0}.title,.detail{overflow-wrap:anywhere}"
+    safety="*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden}#app{height:100%;display:flex;flex-direction:column;overflow:hidden}header,#nav,footer{flex:none}main{flex:1;min-height:0;overflow:auto}img{max-width:100%;object-fit:contain}button{font:inherit;cursor:pointer}header>*{min-width:0}#nav button{min-width:0;overflow-wrap:anywhere}.row{min-width:0;max-width:100%}.title,.detail{overflow-wrap:anywhere}"
     page='<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Eldoria · Legado</title><style>'+safety+css+'</style><body><div id="app"><header class="global-header"><img class="brand" src="assets/identity_crest.png" alt=""><strong>ELDORIA</strong><span id="badge">PRUEBA QA</span><select id="level" aria-label="Bastión de prueba">'+''.join(f'<option value="{n}" {"selected" if n==5 else ""}>Bastión {n}</option>' for n in range(1,6))+'</select></header><nav id="nav"></nav><main></main><footer>Prototipo visual · datos de prueba del dominio PR #198</footer></div><script>'+js+'</script></body></html>'
     (out/"index.html").write_text(page,encoding="utf-8");(out/"theme.json").write_text(json.dumps({"pages":pages,"css":css},ensure_ascii=False,indent=2))
     rows=capture(out)

@@ -111,7 +111,7 @@ def capture(out):
                 page.locator('[data-section="'+k+'"]').click()
                 page.wait_for_timeout(70)
                 q=page.evaluate("""() => {const s=qa.get(), rows=s.profile.sections.find(x=>x.id===s.section).rows, dom=Array.from(document.querySelectorAll('.row'));return {exact:rows.length===dom.length&&rows.every((x,i)=>dom[i].dataset.key===x.key&&dom[i].querySelector('.title').textContent===x.title&&dom[i].querySelector('.detail').textContent===x.detail), horizontal:document.querySelector('#app').scrollWidth<=innerWidth+1,clipped:dom.filter(e=>e.scrollWidth>e.clientWidth+1).length,buttons:Array.from(document.querySelectorAll('#nav button')).every(e=>e.getBoundingClientRect().width>=44),publicRankings:s.profile.publicRankings}}""")
-                need(q["exact"] and q["horizontal"] and q["clipped"]==0 and q["buttons"] and not q["publicRankings"],"Actual projection/layout failed "+name+"/"+k)
+                need(q["exact"] and q["horizontal"] and q["clipped"]==0 and q["buttons"] and not q["publicRankings"],"Actual projection/layout failed "+name+"/"+k+" "+json.dumps(q))
                 dest=shots/(name+"-"+k+".png");page.screenshot(path=str(dest))
                 rows.append({"view":name,"section":k,"sha256":hashlib.sha256(dest.read_bytes()).hexdigest(),**q})
             page.locator('[data-section="Discoveries"]').click()
