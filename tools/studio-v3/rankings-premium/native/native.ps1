@@ -9,6 +9,11 @@ if(-not $editor -or -not(Test-Path -LiteralPath $editor -PathType Leaf)){throw '
 if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager,UnityCrashHandler64 -ErrorAction SilentlyContinue).Count){throw 'Native process active; do not interrupt'}
 $bc=Get-Command blender.exe -ErrorAction SilentlyContinue
 if($bc){$blender=$bc.Source}else{$blender=Get-ChildItem (Join-Path $env:ProgramFiles 'Blender Foundation') -Directory | ForEach-Object {Join-Path $_.FullName 'blender.exe'} | Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1}
+# Windows Store aliases are not interpreters. Prefer Blender's installed Python.
+$br=Split-Path -Parent $blender
+$py=Get-ChildItem -LiteralPath $br -Directory | ForEach-Object {Join-Path $_.FullName 'python\bin\python.exe'} | Where-Object {Test-Path -LiteralPath $_ -PathType Leaf} | Select-Object -First 1
+if($py){$pv=(& $py -c 'import sys; print(sys.version)' 2>&1|Out-String);if($LASTEXITCODE -ne 0){$py=$null}else{Write-Host ('BUNDLED_BLENDER_PYTHON '+$pv.Trim())}}
+if(-not $py){Write-Warning 'No callable bundled Python; native editor route remains independent'}
 $addon=Join-Path $env:APPDATA 'Blender Foundation\Blender\5.2\scripts\addons\blender_mcp.py'
 if(-not(Test-Path -LiteralPath $addon) -or (Get-FileHash -Algorithm SHA256 -LiteralPath $addon).Hash.ToLower() -ne 'eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5'){throw 'Installed Blender MCP hash changed'}
 function Run-Child([string]$exe,[string[]]$argList,[int]$seconds,[string]$label){
@@ -52,8 +57,9 @@ for i,(sat,b) in enumerate([(1.0,1.0),(.55,.82),(.85,.7),(1.2,1.18)]):
 '@ | Set-Content -LiteralPath (Join-Path $root 'medal-variants.py') -Encoding utf8
 # Pillow is optional on this PC; if absent, use same authored physical emblem without fabricated distinction.
 $prior=$ErrorActionPreference;$ErrorActionPreference='Continue'
-& python (Join-Path $root 'medal-variants.py') $assets
-$variantExit=$LASTEXITCODE;$ErrorActionPreference=$prior
+$variantExit=1
+if($py){& $py (Join-Path $root 'medal-variants.py') $assets;$variantExit=$LASTEXITCODE}
+$ErrorActionPreference=$prior
 if($variantExit -ne 0){foreach($i in 0..3){Copy-Item (Join-Path $assets 'medallion.png') (Join-Path $assets ("medallion-"+$i+".png"))}}
 [IO.File]::WriteAllText((Join-Path $project 'Packages\manifest.json'),'{"dependencies":{"com.unity.ugui":"2.0.0","com.unity.modules.imageconversion":"1.0.0","com.unity.modules.ui":"1.0.0","com.unity.modules.uielements":"1.0.0"}}')
 [IO.File]::WriteAllText((Join-Path $project 'ProjectSettings\ProjectVersion.txt'),"m_EditorVersion: 6000.3.23f1"+[Environment]::NewLine)
@@ -76,12 +82,29 @@ try{
   if($detected -match 'script eval|eval_file|editor\.playmode'){[IO.File]::WriteAllText((Join-Path $root 'editor-commands.txt'),$detected);$ready=$true;break}
  }
  if(-not $ready){throw 'Scratch editor Pipeline did not become ready'}
- & python (Join-Path $InputRoot 'unity_mcp_probe.py') (Join-Path $root 'unity-mcp-proof.json') $project
- if($LASTEXITCODE -ne 0){throw 'Unity MCP status probe failed; no claim of MCP success'}
+ # Probe transport independently; a failed probe must not discard native rendering.
+ if($py){
+  $prior=$ErrorActionPreference;$ErrorActionPreference='Continue'
+  try{$probeText=(& $py (Join-Path $InputRoot 'unity_mcp_probe.py') (Join-Path $root 'unity-mcp-proof.json') $project 2>&1|Out-String);$probeExit=$LASTEXITCODE}finally{$ErrorActionPreference=$prior}
+  [IO.File]::WriteAllText((Join-Path $root 'unity-mcp-probe-log.txt'),$probeText)
+  Write-Host $probeText
+  if($probeExit -ne 0){Write-Warning 'Unity MCP not confirmed; proceed with actual native editor CLI'}
+ }else{Write-Warning 'Python unavailable; Unity MCP not tested in this run'}
+
  $prior=$ErrorActionPreference;$ErrorActionPreference='Continue'
  try{$result=(& unity command script eval 'return NativeCapture.Run();' --project-path $project 2>&1|Out-String);$code=$LASTEXITCODE}finally{$ErrorActionPreference=$prior}
  [IO.File]::WriteAllText((Join-Path $root 'unity-native-command.txt'),$result)
- if($code -ne 0 -or -not(Test-Path (Join-Path $root 'unity-proof.json'))){Write-Host $result;throw 'Native capture did not complete'}
+ if($code -ne 0 -or -not(Test-Path (Join-Path $root 'unity-proof.json'))){
+  Write-Host $result
+  Write-Warning 'CLI eval did not finish capture; retry with the same native editor and trusted batch method'
+  if($resident -and -not $resident.HasExited){Stop-Process -Id $resident.Id -ErrorAction Stop;[void]$resident.WaitForExit(30000)}
+  $resident=$null
+  $resident=Start-Process -FilePath $editor -ArgumentList @('-batchmode','-force-d3d11','-projectPath',(Q $project),'-executeMethod','NativeCapture.Batch','-quit','-logFile',(Q (Join-Path $root 'unity-batch.log'))) -PassThru
+  if(-not $resident.WaitForExit(420000)){throw 'Owned native batch capture timed out'}
+  if(-not(Test-Path (Join-Path $root 'unity-proof.json'))){Get-Content (Join-Path $root 'unity-batch.log') -Tail 50;throw 'Native batch capture did not produce proof'}
+  [IO.File]::WriteAllText((Join-Path $root 'capture-transport.txt'),'Unity Editor batch executeMethod')
+ }else{[IO.File]::WriteAllText((Join-Path $root 'capture-transport.txt'),'Unity CLI live editor script eval')}
+
  Get-Content (Join-Path $root 'unity-proof.json')
 }finally{
  if($resident -and -not $resident.HasExited){Stop-Process -Id $resident.Id -ErrorAction SilentlyContinue}

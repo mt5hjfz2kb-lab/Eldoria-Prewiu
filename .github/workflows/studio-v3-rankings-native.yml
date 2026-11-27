@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   prepare:
-    if: github.event.head_commit.message != 'Compile PR198 native Unity candidate with verified source correction'
+    if: github.event.head_commit.message != 'Recover installed Blender Python and capture PR198 Unity'
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
@@ -94,7 +94,7 @@ jobs:
           retention-days: 14
 
   resume-native:
-    if: github.event.head_commit.message == 'Compile PR198 native Unity candidate with verified source correction' && github.run_attempt == 1
+    if: github.event.head_commit.message == 'Recover installed Blender Python and capture PR198 Unity' && github.run_attempt == 1
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 25
     steps:
@@ -152,7 +152,7 @@ jobs:
           $p=Join-Path $env:RUNNER_TEMP ("pr198-native-input-"+$env:GITHUB_RUN_ID)
           $o=Join-Path $env:RUNNER_TEMP ("pr198-native-result-"+$env:GITHUB_RUN_ID)
           $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
-          foreach($name in @('native.ps1','NativeProfile.cs','NativeCapture.cs')){
+          foreach($name in @('native.ps1','NativeProfile.cs','NativeCapture.cs','unity_mcp_probe.py')){
             $u='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/tools/studio-v3/rankings-premium/native/'+$name+'?ref='+$env:GITHUB_SHA
             $meta=Invoke-RestMethod -Uri $u -Headers $h
             $raw=[Convert]::FromBase64String(($meta.content -replace '\s',''))
