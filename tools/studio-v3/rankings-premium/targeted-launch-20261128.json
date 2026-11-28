@@ -1,0 +1,13 @@
+{
+  "id": "pr198-targeted-material-and-scale-20261128",
+  "source_sha": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+  "source_artifact": 15279980769,
+  "prior_worst_case_bound_usd": "4.76061740",
+  "new_reservation_usd": "0.15",
+  "maximum_aggregate_usd": "4.91061740",
+  "expiry": "2026-12-02",
+  "roles": {
+    "audit": "0.15"
+  },
+  "reason": "Change approach after rejection: preserve earlier successful per-view composition and original art; implement explicit material, contrast, scale and readability corrections, independently compare actual rendered screens. One audit only, no additional image generation, no repeat, no new budget."
+}
