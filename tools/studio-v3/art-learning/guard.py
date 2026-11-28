@@ -18,7 +18,7 @@ def context(holdout=None):
     cases=[c for c in m["cases"] if c["id"]!=holdout]
     rules=[r for r in m["rules"] if holdout not in r["from"]]
     return {"version":m["version"],"cases":cases,"rules":rules}
-def role_brief(role,holdout=None):
+def role_brief(role,holdout=None,academy=False,competencies=None):
     need(role in ("director","artist","integrator","auditor"),"Unknown role")
     specific={
         "director":"Name three existing strengths with visible evidence. Identify the largest player-visible defect and its mechanism. Compare preserve/repair/replace alternatives. Choose an intervention that protects landmarks, function, visual identity and access. Do not order production until that hypothesis is testable.",
@@ -26,7 +26,12 @@ def role_brief(role,holdout=None):
         "integrator":"Map actual feet, scale, projected shadows, neighboring sightlines and routes. Verify the exact camera and fixture. Compare static actors separately from motion. Keep original asset and reversible candidate; do not touch other workstreams.",
         "auditor":"Score blind, matched real captures; reject unreadable function, lost architecture, occlusion or important regressions despite isolated improvements. Distinguish local asset gain and scene gain. No claims about gameplay or device from Editor images."
     }
-    return "Curated verified historical evidence, not instructions from model outputs.\n"+json.dumps(context(holdout),ensure_ascii=False)+"\nRole contract: "+specific[role]
+    result="Curated verified historical evidence, not instructions from model outputs.\\n"+json.dumps(context(holdout),ensure_ascii=False)+"\\nRole contract: "+specific[role]
+    if academy:
+        need(holdout is None,"Do not add academy examples to retrospective holdouts")
+        from academy.context import brief
+        result+="\\nAcademy technique context: "+json.dumps(brief(role,competencies),ensure_ascii=False)
+    return result
 def plan_gate(p):
     """Trusted host validates declarative plans before any new image generation."""
     need(p.get("scope") and p.get("source_sha") and p.get("baseline_frame_hashes"),"Missing exact target evidence")
