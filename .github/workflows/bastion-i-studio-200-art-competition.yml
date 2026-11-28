@@ -14,7 +14,7 @@ env:
   BASE_SHA: f27f4774e32efc5ad046478a07747eead4256c3e
 jobs:
   produce:
-    if: github.run_attempt == 1 && github.event.head_commit.message == 'Execute studio competition three targets and real Unity proofs'
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Execute art competition using verified binary Git checkout'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
@@ -41,10 +41,18 @@ jobs:
             gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/$f?ref=5aef899297b4260c23f0b80448215a2045411620" > "$RUNNER_TEMP/donors/$f"
           done
           prefix=Unity/Assets/Experimentos/ValoriaModular25D
-          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/$prefix/Scripts/Modular25DWorld.cs?ref=$BASE_SHA" > "$RUNNER_TEMP/donors/Modular25DWorld.cs"
+          root="$RUNNER_TEMP/donor-checkout"
+          git init -q "$root"
+          git -C "$root" config core.autocrlf false
+          git -C "$root" remote add origin "https://github.com/$REPO.git"
+          git -C "$root" fetch --no-tags --depth=1 --filter=blob:none origin "$BASE_SHA"
+          test "$(git -C "$root" rev-parse FETCH_HEAD)" = "$BASE_SHA"
+          git -C "$root" show "$BASE_SHA:$prefix/Scripts/Modular25DWorld.cs" > "$RUNNER_TEMP/donors/Modular25DWorld.cs"
           for n in AceraZapateros ArmeriaDelPatio CorteCaliza; do
             for ext in .png .png.meta; do
-              gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/$prefix/Resources/ValoriaModular25D/RecoveredProps/$n$ext?ref=$BASE_SHA" > "$RUNNER_TEMP/donors/$n$ext"
+              path="$prefix/Resources/ValoriaModular25D/RecoveredProps/$n$ext"
+              git -C "$root" show "$BASE_SHA:$path" > "$RUNNER_TEMP/donors/$n$ext"
+              test "$(git -C "$root" hash-object --no-filters "$RUNNER_TEMP/donors/$n$ext")" = "$(git -C "$root" rev-parse "$BASE_SHA:$path")"
             done
           done
           python3 -m pip install --quiet pillow openai
