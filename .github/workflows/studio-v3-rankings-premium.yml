@@ -185,3 +185,41 @@ jobs:
       - name: Preserve production source
         if: always()
         run: git diff --exit-code
+
+  ranking-detail-art:
+    if: github.event.head_commit.message == 'Launch owner requested PR198 six detail views and bounded art refinement' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          sparse-checkout: |
+            tools/studio-v3/rankings-premium
+            tools/openai-development-studio
+      - name: Build six separate rankings from selected art and test all 18 routes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet pillow playwright==1.55.0
+          python3 -m playwright install chromium
+          python3 tools/studio-v3/rankings-premium/detail-art-20261128.py --prepare "$RUNNER_TEMP/pr198-details"
+      - name: Bounded studio artist and independent audit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 tools/studio-v3/rankings-premium/detail-art-20261128.py --art "$RUNNER_TEMP/pr198-details"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr198-ranking-detail-art
+          path: ${{ runner.temp }}/pr198-details
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Preserve production
+        if: always()
+        run: git diff --exit-code
