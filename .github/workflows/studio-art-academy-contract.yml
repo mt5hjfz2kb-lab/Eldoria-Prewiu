@@ -20,6 +20,6 @@ jobs:
           mkdir -p "$root/academy"
           cd "$root"
           for f in cases.json guard.py decision_gate.py test_guard.py test_decision_gate.py test_academy.py academy/context.py academy/curriculum.json academy/techniques.json; do
-            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/$f?ref=b9d922a598dba50a0635b439768383904d492a12" > "$f"
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/$f?ref=a4fd12c985d4f17f9ce76f3e73b1f379bb26254f" > "$f"
           done
           python3 -m unittest discover -v
