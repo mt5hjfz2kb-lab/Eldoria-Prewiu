@@ -97,7 +97,7 @@ namespace Eldoria.LegacyProgression
             else result.Add(Entry("own-position","Tu posición","Todavía sin clasificación"));
             return result;
         }
-        public static IReadOnlyList<ProfileEntry> Rows(LocalProfile p,ProfileSection section,DateTime? localUtc=null)
+        public static IReadOnlyList<ProfileEntry> Rows(LocalProfile p,ProfileSection section,DateTime? localUtc=null,bool rankingReaderConfigured=false)
         {
             if(!Sections(p).Contains(section))
                 return new[]{Entry("locked","Todavía no disponible","Avanza en Valoria para desbloquearlo.",ProfileEntryState.Locked)};
@@ -123,7 +123,7 @@ namespace Eldoria.LegacyProgression
                     return rows;
                 case ProfileSection.Rankings:
                     var rankingRows=new List<ProfileEntry>{
-                        Entry("offline","Clasificaciones del reino","Servicio competitivo todavía no conectado. Se muestran únicamente tus estadísticas.",ProfileEntryState.Unavailable)};
+                        rankingReaderConfigured?Entry("offline","Clasificaciones del reino","Selecciona una categoría para consultar sus resultados. Las marcas de esta pantalla son personales."):Entry("offline","Clasificaciones del reino","Servicio competitivo todavía no conectado. Se muestran únicamente tus estadísticas.",ProfileEntryState.Unavailable)};
                     foreach(RankingKind k in Enum.GetValues(typeof(RankingKind)))
                     {
                         var value=LegacyProgressionRules.PersonalMetric(f,k);

@@ -26,6 +26,17 @@ namespace Eldoria.LegacyProgression.UI
         Func<RankingKind,RankingDetailSnapshot> rankingReader;
         Func<RankingKind,int,RankingDetailSnapshot> rankingPageReader;
         int rankOffset;
+        string boundPlayer,boundWorld;
+        void CaptureReaderIdentity()
+        {
+            var state=gateway?.Snapshot();boundPlayer=state?.PlayerId;boundWorld=state?.WorldId;
+        }
+        bool ReaderMatchesSession()
+        {
+            if(rankingReader==null&&rankingPageReader==null||gateway==null)return false;
+            var state=gateway.Snapshot();return state!=null&&!string.IsNullOrWhiteSpace(boundPlayer)&&
+                !string.IsNullOrWhiteSpace(boundWorld)&&state.PlayerId==boundPlayer&&state.WorldId==boundWorld;
+        }
         float hubScroll=1f;
         ScrollRect RankingScroll => rowsRoot ? rowsRoot.GetComponentInParent<ScrollRect>() : null;
         float ScrollPosition => RankingScroll ? RankingScroll.verticalNormalizedPosition : 1f;
@@ -36,16 +47,19 @@ namespace Eldoria.LegacyProgression.UI
             scroll.StopMovement();scroll.verticalNormalizedPosition=Mathf.Clamp01(value);
         }
         public void BindRankingPages(Func<RankingKind,int,RankingDetailSnapshot> reader)
-        {rankingPageReader=reader;rankOffset=0;if(IsOpen&&rankingKind.HasValue){Render();ScrollTo(1f);}}
+        {rankingPageReader=reader;rankingReader=null;CaptureReaderIdentity();rankOffset=0;if(IsOpen){Render();ScrollTo(1f);}}
         // Inject only the authenticated server cache/read adapter; no provider means unavailable.
         // Host calls Refresh on completed fetch; never perform network IO inside a row click.
         public void BindRankings(Func<RankingKind,RankingDetailSnapshot> reader)
-        {rankingReader=reader;rankingPageReader=null;rankOffset=0;if(IsOpen&&rankingKind.HasValue){Render();ScrollTo(1f);}}
+        {rankingReader=reader;rankingPageReader=null;CaptureReaderIdentity();rankOffset=0;if(IsOpen){Render();ScrollTo(1f);}}
 
         public bool IsOpen => panelRoot!=null&&panelRoot.activeSelf;
         public void Bind(ICommandGateway source)
         {
-            gateway=source??throw new ArgumentNullException(nameof(source));
+            if(source==null)throw new ArgumentNullException(nameof(source));
+            if(!ReferenceEquals(gateway,source))
+            {rankingReader=null;rankingPageReader=null;boundPlayer=null;boundWorld=null;}
+            gateway=source;
             if(!tabsRoot||!rowsRoot||!tabTemplate||!rowTemplate||!heading||!panelRoot||!closeButton)
                 throw new InvalidOperationException("Bind the approved UI templates before opening");
             if(tabTemplate.gameObject.activeSelf||rowTemplate.gameObject.activeSelf)
@@ -113,8 +127,11 @@ namespace Eldoria.LegacyProgression.UI
                 RankingDetailSnapshot data=null;
                 try
                 {
-                    if(rankingPageReader!=null)data=rankingPageReader(kind,rankOffset);
-                    else if(rankingReader!=null&&rankOffset==0)data=rankingReader(kind);
+                    if(ReaderMatchesSession())
+                    {
+                        if(rankingPageReader!=null)data=rankingPageReader(kind,rankOffset);
+                        else if(rankingReader!=null&&rankOffset==0)data=rankingReader(kind);
+                    }
                     // A stale response must never be displayed for a different category/page/account.
                     if(data!=null&&(data.Kind!=kind||data.Offset!=rankOffset||
                         (data.OwnRow!=null&&data.OwnRow.PlayerId!=gateway.Snapshot().PlayerId)))
@@ -122,9 +139,9 @@ namespace Eldoria.LegacyProgression.UI
                 }
                 catch(Exception e) { Debug.LogWarning("Ranking read unavailable: "+e.GetType().Name);data=new RankingDetailSnapshot(kind,RankingDetailStatus.Error,offset:rankOffset); }
                 foreach(var row in ProfilePresentation.RankingDetailRows(profile,kind,data))AddRow(row,null);
-                if(rankingPageReader!=null&&rankOffset>0)
+                if(ReaderMatchesSession()&&rankingPageReader!=null&&rankOffset>0)
                     AddRow(new ProfileEntry("page-prev","Página anterior","",ProfileEntryState.Information),()=>{rankOffset-=RankingDetailSnapshot.PageSize;Render();ScrollTo(1f);});
-                if(rankingPageReader!=null&&data!=null&&data.Status==RankingDetailStatus.Ready&&data.HasMore)
+                if(ReaderMatchesSession()&&rankingPageReader!=null&&data!=null&&data.Status==RankingDetailStatus.Ready&&data.HasMore)
                     AddRow(new ProfileEntry("page-next","Siguiente página","",ProfileEntryState.Information),()=>{rankOffset+=RankingDetailSnapshot.PageSize;Render();ScrollTo(1f);});
                 return;
             }
@@ -135,7 +152,7 @@ namespace Eldoria.LegacyProgression.UI
                 foreach(var row in ProfilePresentation.DiscoveryEntries(profile,collectionId))AddRow(row,null);
                 return;
             }
-            foreach(var row in ProfilePresentation.Rows(profile,section,DateTime.UtcNow))
+            foreach(var row in ProfilePresentation.Rows(profile,section,DateTime.UtcNow,section==ProfileSection.Rankings&&ReaderMatchesSession()))
             {
                 string id=row.Key;
                 Action action=null;

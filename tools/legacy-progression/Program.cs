@@ -92,6 +92,8 @@ static class Program
         Check(ProfilePresentation.Sections(snapshot).Contains(ProfileSection.Discoveries)&&!ProfilePresentation.Sections(snapshot).Contains(ProfileSection.Heraldry),"B3 navigation");
         var rankView=ProfilePresentation.Rows(snapshot,ProfileSection.Rankings);
         Check(rankView.Count==7&&rankView.First().State==ProfileEntryState.Unavailable,"no fake leaderboard or positions");
+        var configuredHub=ProfilePresentation.Rows(snapshot,ProfileSection.Rankings,rankingReaderConfigured:true);
+        Check(configuredHub.First().State==ProfileEntryState.Information&&configuredHub.Skip(1).Select(x=>x.Detail).SequenceEqual(rankView.Skip(1).Select(x=>x.Detail)),"configured reader does not claim live ranks or change personal metrics");
         Check(rankView.Single(x=>x.Key=="ranking:Hunters").State==ProfileEntryState.Unavailable,"no fabricated hunter metric");
         var kinds=Enum.GetValues(typeof(RankingKind)).Cast<RankingKind>().ToArray();
         Check(rankView.Count(x=>ProfilePresentation.TryRankingKind(x.Key,out _))==6,"six exact detail links");
