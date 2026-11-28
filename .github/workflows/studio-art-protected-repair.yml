@@ -1,0 +1,57 @@
+name: Studio art learning - protected local repair
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/studio-art-protected-repair.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: issue200-art-protected-repair
+  cancel-in-progress: false
+jobs:
+  repair:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Test protected local art repair without regenerating'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify evidence, recover donor and test reusable repair
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$REPO/actions/runs/46129312263" --jq .conclusion)" = success
+          test "$(gh api "repos/$REPO/actions/artifacts/15257127458" --jq .digest)" = sha256:856c7c0bc76d50c10df880b72568821d299fe6d949f1d846d7b32099fb7a4643
+          mkdir -p "$RUNNER_TEMP/studio" "$RUNNER_TEMP/local-repair"
+          cd "$RUNNER_TEMP/studio"
+          for n in studio.py economics.py rates-20261125.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$n?ref=9fbdb203269b951a252de58d7a0357d71a841480" > "$n"
+          done
+          for n in protected_region.py validate_protected_repair.py; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/$n?ref=1f0830f162524b46c59a55d6c3ccd9918cad91e9" > "$n"
+          done
+          p=Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/ToneleriaDelPostigo.png
+          curl --fail --silent --show-error --location -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/$REPO/contents/$p?ref=f27f4774e32efc5ad046478a07747eead4256c3e" -o "$RUNNER_TEMP/donor.png"
+          python3 -m pip install --quiet pillow
+          python3 protected_region.py
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-art-production-learning
+          run-id: 46129312263
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/previous
+      - name: Construct pixel-preserving local repair and blind audit
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/studio"
+          python3 -u validate_protected_repair.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-art-protected-local-repair
+          path: ${{ runner.temp }}/local-repair
+          if-no-files-found: warn
+          retention-days: 30
