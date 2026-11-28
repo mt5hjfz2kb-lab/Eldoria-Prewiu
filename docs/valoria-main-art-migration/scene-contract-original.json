@@ -1,0 +1,1044 @@
+[
+  {
+    "fileID": "13782404",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "cf28237cc8ccd3c57bf0efa0fb649824dff6d943056b40c92425d3f2314fe09b",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "13782403",
+        "name": "Gate_LowerGate_Arch",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0.9520825, y: 0.6729997, z: 11.000824}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "72768275",
+    "type": "BoxCollider",
+    "id": null,
+    "serializedSha256": "1088bd8defbcdac1bc1870962cf78abb37504eea19f5598daf2cb1de2f7307c3",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "72768274",
+        "name": "Zone1 target valoria-map-city",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: 18, y: 6.2494693, z: 30.000002}",
+        "localRotation": "{x: -0, y: -0, z: -0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "72768276",
+    "type": "WorldHotspot",
+    "id": "valoria-map-city",
+    "serializedSha256": "20c88639cf86a9ad90a348859867de06a9070993d50acc016023780d8309c2a9",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "72768274",
+        "name": "Zone1 target valoria-map-city",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: 18, y: 6.2494693, z: 30.000002}",
+        "localRotation": "{x: -0, y: -0, z: -0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "147192636",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "48fb0f908b4eb0695c099a3cc8d0378c7191e4e321f464a2944adeef8c3fdee1",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "147192635",
+        "name": "Bridge_ArchSpandrel",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 8.642603, y: -3.675, z: 21.617126}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "182297138",
+    "type": "BoxCollider",
+    "id": null,
+    "serializedSha256": "331b701600d7c3919e3fc60dc632f7255e5ebb342aad263cd5287992efd8556b",
+    "hierarchy": [
+      {
+        "fileID": "182297139",
+        "name": "Parcela 1",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: -23, y: 0.65, z: 28}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "182297140",
+    "type": "WorldHotspot",
+    "id": "sawmill",
+    "serializedSha256": "ef4abeeb69ba698fca7fa69b32305ba8ff95d83a97e486ea62cef7151243ee93",
+    "hierarchy": [
+      {
+        "fileID": "182297139",
+        "name": "Parcela 1",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: -23, y: 0.65, z: 28}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "214983927",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "7b80a483f5793ea355fc4bb26d0b2ea0e941c2b776fd7182aa23c091489c997b",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "214983926",
+        "name": "Bridge_ArchSpandrel.001",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0.6473664, y: -3.675, z: 23.610561}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "287302395",
+    "type": "Camera",
+    "id": null,
+    "serializedSha256": "8582f3a6fd682b6b8aa8de45bce74e27f4c0da463556d96dfa6e860af9a4b188",
+    "hierarchy": [
+      {
+        "fileID": "287302397",
+        "name": "PlayerCamera",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 43.563324, y: 77, z: -97.22485}",
+        "localRotation": "{x: 0.27516937, y: -0.16492975, z: 0.047977924, w: 0.94592714}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "498371177",
+    "type": "BoxCollider",
+    "id": null,
+    "serializedSha256": "fa6f38ce8dc9c762516f1ee9ade5891ba7e3310ed339915ce42dc4523d1c981a",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "498371176",
+        "name": "Zone1 target forest-valoria",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: 65, y: -1.0832441, z: 41.99999}",
+        "localRotation": "{x: -0, y: -0, z: -0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "498371178",
+    "type": "WorldHotspot",
+    "id": "forest-valoria",
+    "serializedSha256": "c5fea430e1f0735f3371254672e32756c33c1c2c495c95194d21826bfcf7f699",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "498371176",
+        "name": "Zone1 target forest-valoria",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: 65, y: -1.0832441, z: 41.99999}",
+        "localRotation": "{x: -0, y: -0, z: -0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "647839820",
+    "type": "BoxCollider",
+    "id": null,
+    "serializedSha256": "0ef9d87eb167a9a23d367cb6d05415cfcd0ad4257946f8f658f563778bf2391e",
+    "hierarchy": [
+      {
+        "fileID": "647839821",
+        "name": "Parcela 4",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: 28, y: 0.65, z: 12}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "694252424",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "2593bb7f6b47a816470936bce04017bb1ff0e95345df68eca6264c733eb99c6e",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "694252423",
+        "name": "Gate_LowerGate_WestWing",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 10.213333, y: 0.6159997, z: 8.589923}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "718051766",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "58d4a9ff5c9aea6c397081336337435ddd9d48f6877dde9284c5b8c9149df86c",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "718051765",
+        "name": "Outer_Road",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 12.260687, y: 0.34204277, z: 53.158756}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "921070326",
+    "type": "BoxCollider",
+    "id": null,
+    "serializedSha256": "67764cf36fb78d5a923a466dadb87427dfb35994ce0a279550529bfcf7cd126c",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "921070325",
+        "name": "Zone1 target corrupt-scout",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: -67, y: 16.293098, z: -22.99998}",
+        "localRotation": "{x: -0, y: -0, z: -0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "921070327",
+    "type": "WorldHotspot",
+    "id": "corrupt-scout",
+    "serializedSha256": "72da63319566a3e44dd0fefcbe0fa3a65c5d7a5a436bfbc7ff53b2864dbd86b4",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "921070325",
+        "name": "Zone1 target corrupt-scout",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: -67, y: 16.293098, z: -22.99998}",
+        "localRotation": "{x: -0, y: -0, z: -0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "989094379",
+    "type": "BoxCollider",
+    "id": null,
+    "serializedSha256": "0cec0114e4db2dffdf894c2c4cc4396c6044bf81a05d13069ce4b5a219af8b85",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "989094378",
+        "name": "Zone1 target engendro-valoria",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: -73.99994, y: 7.3144217, z: -27.000034}",
+        "localRotation": "{x: -0, y: -0, z: -0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "989094380",
+    "type": "WorldHotspot",
+    "id": "engendro-valoria",
+    "serializedSha256": "eca1ce9c16a0571f0bb5fcaecece8144425d24f934718934130b8f6813298e2f",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "989094378",
+        "name": "Zone1 target engendro-valoria",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: -73.99994, y: 7.3144217, z: -27.000034}",
+        "localRotation": "{x: -0, y: -0, z: -0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1031605234",
+    "type": "BoxCollider",
+    "id": null,
+    "serializedSha256": "a60ae5ca18fcac5f41f880aa169c87e89fd6e55ceb8cca1942a8001b8cf9f302",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1031605233",
+        "name": "Zone1 target old-watch-ruin",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: -3, y: 8.0472765, z: -33.999996}",
+        "localRotation": "{x: -0, y: -0, z: -0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1031605235",
+    "type": "WorldHotspot",
+    "id": "old-watch-ruin",
+    "serializedSha256": "4542e3aadd2dc19297d8d9b1d88c92c610aaaeebf761d90b566c80df019ecaa0",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1031605233",
+        "name": "Zone1 target old-watch-ruin",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: -3, y: 8.0472765, z: -33.999996}",
+        "localRotation": "{x: -0, y: -0, z: -0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1168957428",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "f7fc8be6531c1bf13badedd81d2a34f7565f62aada20cbdc5bf226785a201779",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1168957427",
+        "name": "Gate_LowerGate_EastTower",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: -3.0495863, y: 0.6729997, z: 11.058409}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1175335994",
+    "type": "BoxCollider",
+    "id": null,
+    "serializedSha256": "81a3568768ba476c8f0e0ab6364b6f322687fa18c6f5ac16c87f07ed897d3911",
+    "hierarchy": [
+      {
+        "fileID": "1175335995",
+        "name": "\"Basti\\xF3n I\"",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 5, z: 36.5}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1175335996",
+    "type": "WorldHotspot",
+    "id": "bastion",
+    "serializedSha256": "65c8ad80c1b9316f3d74f44facb7883db04fc7531fd8b38647f14c3e36633933",
+    "hierarchy": [
+      {
+        "fileID": "1175335995",
+        "name": "\"Basti\\xF3n I\"",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 5, z: 36.5}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1220749830",
+    "type": "BoxCollider",
+    "id": null,
+    "serializedSha256": "341a35c5bc3301cb6a6b94f49d43a01840414d4abd5f59395c8784bf03aa5d46",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1220749829",
+        "name": "Zone1 target quarry-valoria",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: 64.49988, y: 3.3064294, z: -32.891003}",
+        "localRotation": "{x: -0, y: -0, z: -0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1220749831",
+    "type": "WorldHotspot",
+    "id": "quarry-valoria",
+    "serializedSha256": "61347945211335994873ec29c5202194956b5ad515ede7b98e69c290985342e5",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1220749829",
+        "name": "Zone1 target quarry-valoria",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: 64.49988, y: 3.3064294, z: -32.891003}",
+        "localRotation": "{x: -0, y: -0, z: -0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1257670052",
+    "type": "Camera",
+    "id": null,
+    "serializedSha256": "799d48c7b156d409efb13bc324e671f26febf737a94e14cf42b56c3247a9ce52",
+    "hierarchy": [
+      {
+        "fileID": "1816922690",
+        "name": "Zone 1 / retained authored world",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 1000, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1257670050",
+        "name": "Zone 1 player camera",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 18, y: 114.681305, z: -50.300697}",
+        "localRotation": "{x: 0.46174863, y: -0, z: -0, w: 0.8870109}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1279767839",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "308b4a72e5cc7412cb7a09b68d2a42369a9397482e94e3547cd02eda0382e0af",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1279767838",
+        "name": "Bridge_Paving",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 4.6292596, y: 0.4320027, z: 22.550776}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1344828336",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "80fafcabea5dac068568f74354553b28278aa50219ad651433a7910812cd70a1",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1344828335",
+        "name": "Gate_LowerGate_EastWing",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: -7.4956264, y: 0.6159997, z: 8.821915}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1449212627",
+    "type": "BoxCollider",
+    "id": null,
+    "serializedSha256": "96733f291c9c66817a4214f4a59d2bf60882d63e5bf13bfc69b7f411abf29fdb",
+    "hierarchy": [
+      {
+        "fileID": "1449212628",
+        "name": "Parcela 2",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: -19, y: 0.65, z: 9}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1592479564",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "09afd006ae68ff8efd21ea004778b0190efa6dcd405582763dfe671467a8fb76",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1592479563",
+        "name": "Bridge_Masonry",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 4.6449842, y: -3.72038, z: 22.613844}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1623036210",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "e0ca6de409a29dd9d99c4cc332ac9618b33041cf6d6cf43f997fb3290e5133be",
+    "hierarchy": [
+      {
+        "fileID": "1590401696",
+        "name": "Bastion II / authored evolution",
+        "layer": "0",
+        "activeSelf": "0",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1623036209",
+        "name": "Bastion_II",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: -0, y: 0, z: -5.5}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1735616900",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "2c4e3dd51b6b6ea0541c162226d273553b0342b7d8d713c848df04489a1c901a",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1735616899",
+        "name": "Gate_LowerGate_Base",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0.761132, y: 0.35, z: 11.12816}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1794292451",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "d5df0791093b86d21e6292c90aff6a121636a5407dc54c9ff2815b795c4f18f4",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1794292450",
+        "name": "Bridge_ArchSpandrel_DressedCourses.001",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0.64930177, y: -3.659, z: 23.618324}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1924088101",
+    "type": "BoxCollider",
+    "id": null,
+    "serializedSha256": "56769018c8cf841166a4786b191b86d3c039db5853b695b98a9aea37b410147e",
+    "hierarchy": [
+      {
+        "fileID": "1924088102",
+        "name": "Parcela 3",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: 29, y: 0.65, z: 32}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1924088103",
+    "type": "WorldHotspot",
+    "id": "barracks",
+    "serializedSha256": "c429c221e2199fce426a4a9e807dae084a69b1c36716f75dbdd9fed8369e27ca",
+    "hierarchy": [
+      {
+        "fileID": "1924088102",
+        "name": "Parcela 3",
+        "layer": "8",
+        "activeSelf": "1",
+        "localPosition": "{x: 29, y: 0.65, z: 32}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1949462146",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "57d1d33a74b39cf75c3c8157802a9019d38efd0044624c55082386c56c719af0",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1949462145",
+        "name": "Gate_LowerGate_WestTower",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 4.7618084, y: 0.6729997, z: 11.340288}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "1998548339",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "9270a68625bed7313976f81cbb76dae6846afe94248692e0aeeb952325244655",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1998548338",
+        "name": "Bastion_I",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: -0, y: 0.38, z: -34.28905}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "2081606697",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "1a7332cfe2105dabbcc41e1c2aa67447f8c2bd2445325edc54fd2130e1371c9b",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "2081606696",
+        "name": "Axial_Paving",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0.8690542, y: 0.34213728, z: -7.455}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  },
+  {
+    "fileID": "2110707982",
+    "type": "MeshCollider",
+    "id": null,
+    "serializedSha256": "d1d1c8df91d44c384d6cc203928f2030f0caf9b7840f9d726b9cba946b087ff9",
+    "hierarchy": [
+      {
+        "fileID": "426983589",
+        "name": "Valoria authored architecture and environment",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 1, z: 0, w: -0.00000004371139}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "1944774813",
+        "name": "Scene",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 0, y: 0, z: 0}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      },
+      {
+        "fileID": "2110707981",
+        "name": "Bridge_ArchSpandrel_DressedCourses",
+        "layer": "0",
+        "activeSelf": "1",
+        "localPosition": "{x: 8.644539, y: -3.659, z: 21.624887}",
+        "localRotation": "{x: 0, y: 0, z: 0, w: 1}",
+        "localScale": "{x: 1, y: 1, z: 1}"
+      }
+    ]
+  }
+]
