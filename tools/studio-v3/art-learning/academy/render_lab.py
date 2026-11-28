@@ -6,8 +6,8 @@ from pathlib import Path
 args=sys.argv[sys.argv.index("--")+1:];root=Path(args[0])
 def reset():
     bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
-    sc=bpy.context.scene;sc.render.engine="CYCLES";sc.cycles.samples=20
-    sc.cycles.use_denoising=True;sc.cycles.seed=37;sc.cycles.device="CPU"
+    sc=bpy.context.scene;sc.render.engine="CYCLES";sc.cycles.samples=64
+    sc.cycles.use_denoising=False;sc.cycles.seed=37;sc.cycles.device="CPU"
     sc.render.resolution_x=660;sc.render.resolution_y=660;sc.render.resolution_percentage=100
     sc.render.image_settings.file_format="PNG";sc.render.film_transparent=False
     sc.view_settings.view_transform="AgX" if "AgX" in [x.identifier for x in sc.view_settings.bl_rna.properties["view_transform"].enum_items] else "Standard"
@@ -35,7 +35,7 @@ def cube(name,pos,dim,m,bev=.035):
     bpy.ops.mesh.primitive_cube_add(size=1,location=pos);o=bpy.context.object;o.name=name;o.dimensions=dim
     bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);apply(o,m)
     if bev:
-        b=o.modifiers.new("beveled edges","BEVEL");b.width=bev;b.segments=3;o.modifiers.new("weighted normals","WEIGHTED_NORMAL")
+        b=o.modifiers.new("beveled edges","BEVEL");b.width=bev;b.segments=3;o.modifiers.new("weighted normals","WEIGHTED_NORMAL") if hasattr(o.data,"use_auto_smooth") and o.data.use_auto_smooth else None
     return o
 def cyl(name,pos,r,depth,m,verts=32,rot=(0,0,0)):
     bpy.ops.mesh.primitive_cylinder_add(vertices=verts,radius=r,depth=depth,location=pos,rotation=rot)
