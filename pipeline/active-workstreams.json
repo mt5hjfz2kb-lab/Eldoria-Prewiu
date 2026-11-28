@@ -22,6 +22,28 @@
   },
   "active": [
     {
+      "id": "valoria-main-art-substitution-20261128",
+      "title": "Sustitución artística integral de Main con arte compatible de Valoria",
+      "owner": "codex-valoria-main-art-20261128",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "status": "active",
+      "branch": "integration/valoria-main-art-20261128",
+      "base_main_sha": "d74f1a29d5472e9037d8534142768d4c13667ddd",
+      "claimed_at": "2026-11-28T17:22:00.956677+00:00",
+      "phase": "BASELINE_INVENTORY",
+      "scope": [
+        "docs/valoria-main-art-migration/**"
+      ],
+      "resources": [],
+      "delivery_definition": {
+        "deliverable": "Sustitución visual en una PR dedicada con paridad jugable de Main.",
+        "evidence": "Inventario, capturas reales comparables, recorrido I–V, paridad de controles, perfilado y dispositivos de aceptación.",
+        "handoff": "PR única con excepciones, evidencias y recuperación."
+      }
+    },
+    {
       "id": "eldoria-runner-storage-recovery-20261114",
       "title": "Eldoria runner storage lifecycle — reproducible disk recovery and future cache hygiene",
       "owner": "chatgpt-eldoria-runner-storage-20261114",
