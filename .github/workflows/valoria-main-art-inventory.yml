@@ -1,0 +1,204 @@
+name: Valoria native art inventory
+on:
+  push:
+    branches: [integration/valoria-main-art-20261128]
+    paths: [docs/valoria-main-art-migration/qa/native-request.json]
+permissions:
+  contents: read
+concurrency:
+  group: valoria-main-art-native-inventory
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      source: ${{ steps.guard.outputs.source }}
+      target: ${{ steps.guard.outputs.target }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: |
+            docs/valoria-main-art-migration/qa
+      - id: guard
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const qa = './docs/valoria-main-art-migration/qa/';
+            await require(qa+'guard-native.cjs')({github,context,core},qa+'native-request.json');
+      - name: Package pinned measurement tools
+        shell: bash
+        env:
+          TARGET: ${{ steps.guard.outputs.target }}
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/kit"
+          qa=docs/valoria-main-art-migration/qa
+          cp "$qa/guard-native.cjs" "$qa/native-request.json" "$RUNNER_TEMP/kit/"
+          if [[ "$TARGET" != donor ]]; then
+            cp "$qa/ValoriaLiveInventory.cs" "$qa/native/"{run.py,ValoriaMigrationCapture.cs,EldoriaCityBaselineSnapshot.cs} "$RUNNER_TEMP/kit/"
+          fi
+          (cd "$RUNNER_TEMP/kit" && sha256sum * > "$RUNNER_TEMP/kit.sha256")
+          cp "$RUNNER_TEMP/kit.sha256" "$RUNNER_TEMP/kit/"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-kit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/kit/
+          retention-days: 3
+          if-no-files-found: error
+  capture:
+    needs: verify
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 240
+    env:
+      SOURCE: ${{ needs.verify.outputs.source }}
+      TARGET: ${{ needs.verify.outputs.target }}
+    steps:
+      - name: Reserve fresh private directories and inspect processes
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if (@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender,bee_backend -ErrorAction SilentlyContinue).Count) {
+            throw 'Native process already active; leaving it alone'
+          }
+          if (-not (Test-Path -LiteralPath $env:UNITY_EDITOR_PATH -PathType Leaf)) { throw 'Missing Unity editor' }
+          $root=Join-Path $env:RUNNER_TEMP ('vm-art-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          # A complete Unity import also creates Library and render evidence.
+          if ((Get-Item -LiteralPath $env:RUNNER_TEMP).PSDrive.Free -lt 12GB) { throw 'Less than 12 GiB free for isolated checkout and import' }
+          New-Item -Type Directory -Path $root -ErrorAction Stop | Out-Null
+          [IO.File]::WriteAllText((Join-Path $root 'owned-by-run'), "$env:GITHUB_RUN_ID/$env:GITHUB_RUN_ATTEMPT")
+          "VM_ROOT=$root" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop/app-*/resources/app/git/cmd/git.exe" | Sort-Object FullName -Descending | Select-Object -First 1
+            if (-not $git) { throw 'Git unavailable' }
+            $git.DirectoryName | Out-File $env:GITHUB_PATH -Append -Encoding utf8
+          }
+      - uses: actions/download-artifact@v4
+        with:
+          name: native-kit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.VM_ROOT }}/kit
+      - name: Recheck live authorization before checkout
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const path = require('node:path');
+            const kit = path.join(process.env.VM_ROOT, 'kit');
+            await require(path.join(kit,'guard-native.cjs'))({github,context,core},path.join(kit,'native-request.json'));
+      - name: Materialize the entire Unity project from the exact source SHA
+        shell: powershell
+        env:
+          READ_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $tree=Join-Path $env:VM_ROOT 'source'
+          $env:GIT_CONFIG_COUNT='1'
+          $env:GIT_CONFIG_KEY_0='http.https://github.com/.extraheader'
+          $env:GIT_CONFIG_VALUE_0='AUTHORIZATION: basic '+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("x-access-token:$env:READ_TOKEN"))
+          git init -q $tree
+          if ($LASTEXITCODE) { throw 'git init failed' }
+          git -C $tree remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          if ($LASTEXITCODE) { throw 'remote setup failed' }
+          # Non-cone patterns avoid including thousands of unrelated root files.
+          git -C $tree config core.longpaths true
+          if ($LASTEXITCODE) { throw 'long-path setup failed' }
+          git -C $tree config core.autocrlf false
+          if ($LASTEXITCODE) { throw 'line-ending setup failed' }
+          git -C $tree sparse-checkout set --no-cone '/Unity/'
+          if ($LASTEXITCODE) { throw 'sparse checkout setup failed' }
+          git -C $tree config http.version HTTP/1.1
+          if ($LASTEXITCODE) { throw 'HTTP setup failed' }
+          git -C $tree fetch --filter=blob:none --no-tags --depth=1 origin $env:SOURCE
+          if ($LASTEXITCODE) { throw 'source fetch failed' }
+          $restored=$false
+          for ($attempt=1; $attempt -le 3; $attempt++) {
+            git -C $tree checkout -q --detach $env:SOURCE
+            if ($LASTEXITCODE -eq 0) { $restored=$true;break }
+            if ($attempt -lt 3) { Start-Sleep -Seconds (3*$attempt) }
+          }
+          if (-not $restored -or (git -C $tree rev-parse HEAD) -ne $env:SOURCE) { throw 'source checkout did not match' }
+          if (git -C $tree ls-files -t -- Unity | Select-String '^S ') { throw 'Some Unity inputs were omitted' }
+          if ($LASTEXITCODE) { throw 'Unable to verify full Unity index' }
+          if ((Get-Item -LiteralPath $tree).PSDrive.Free -lt 7GB) { throw 'Less than 7 GiB left for Unity import and captures' }
+          if ((git -C $tree status --porcelain) -or $LASTEXITCODE) { throw 'source did not materialize cleanly' }
+          if ((Get-Content "$tree/Unity/ProjectSettings/ProjectVersion.txt" -Raw) -notmatch 'm_EditorVersion: 6000\.3\.23f1\s') {
+            throw 'Source does not match the Unity editor version'
+          }
+      - if: env.TARGET != 'donor'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Recheck lease and immutable branch tip at execution time
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const path = require('node:path');
+            const kit = path.join(process.env.VM_ROOT, 'kit');
+            await require(path.join(kit,'guard-native.cjs'))({github,context,core},path.join(kit,'native-request.json'));
+      - name: Capture the native source
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if (@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender,bee_backend -ErrorAction SilentlyContinue).Count) {
+            throw 'Occupied Windows machine; no editor started'
+          }
+          $tree=Join-Path $env:VM_ROOT 'source'
+          $kit=Join-Path $env:VM_ROOT 'kit'
+          $out=Join-Path $env:VM_ROOT 'evidence'
+          foreach ($line in Get-Content "$kit/kit.sha256") {
+            if ($line -notmatch '^([0-9a-f]{64})  ([A-Za-z0-9._-]+)$') { throw 'Invalid kit manifest' }
+            if ((Get-FileHash (Join-Path $kit $Matches[2])).Hash -ne $Matches[1]) { throw 'Measurement kit mismatch' }
+          }
+          if ($env:TARGET -ne 'donor') {
+            $env:ISSUE186_VIGILIA_SOURCE=$env:SOURCE
+            python "$kit/run.py" --checkout "$tree" --unity "$env:UNITY_EDITOR_PATH" --output "$out" --probe "$kit/ValoriaLiveInventory.cs"
+            if ($LASTEXITCODE) { throw 'Main-side capture driver failed' }
+            $report=Get-Content "$out/manifest.json" -Raw | ConvertFrom-Json
+            if ($report.status -ne 'CAPTURED') { throw 'Native inventory incomplete' }
+          } else {
+            New-Item -Type Directory -Path $out | Out-Null
+            $project=Join-Path $tree 'Unity'
+            $native=Join-Path $project 'Artifacts/ValoriaModular25D/Native'
+            if (Test-Path $native) { throw 'Historical donor evidence found in destination; refuse reuse' }
+            $env:GITHUB_SHA=$env:SOURCE
+            $env:GITHUB_REF_NAME='experiment/valoria-ciudad-region-unificada-20261121'
+            $log=Join-Path $out 'unity.log'
+            $args=@('-batchmode','-quit','-force-d3d11','-projectPath',('"{0}"' -f $project),'-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.Modular25DNativeCapture.Capture','-logFile',('"{0}"' -f $log))
+            $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru -Wait
+            if ($p.ExitCode -ne 0) { throw "Donor Unity exited $($p.ExitCode)" }
+            $report=Get-Content "$native/evidence.json" -Raw | ConvertFrom-Json
+            if ($report.engineVersion -ne '6000.3.23f1' -or $report.sourceSha -ne $env:SOURCE -or -not $report.nativeWorldRender -or @($report.frames).Count -lt 42) {
+              throw 'Donor manifest did not match source or required frames'
+            }
+            foreach ($frame in $report.frames) {
+              $file=Join-Path $native $frame.file
+              if ((Get-Item $file).Length -lt 5000 -or (Get-FileHash $file).Hash -ne $frame.sha256) { throw 'Missing or changed donor frame' }
+            }
+            Copy-Item -Recurse -LiteralPath $native -Destination (Join-Path $out 'donor')
+          }
+          @{ source=$env:SOURCE; requestCommit='${{ github.sha }}'; target=$env:TARGET; run=$env:GITHUB_RUN_ID; attempt=$env:GITHUB_RUN_ATTEMPT } |
+            ConvertTo-Json | Set-Content (Join-Path $out 'capture-source.json') -Encoding UTF8
+      - if: always() && env.VM_ROOT != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-inventory-${{ env.TARGET }}-${{ env.SOURCE }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.VM_ROOT }}/evidence/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Release only this attempt's private scratch directory
+        if: always() && env.VM_ROOT != ''
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $expected=Join-Path $env:RUNNER_TEMP ('vm-art-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          $resolved=(Resolve-Path -LiteralPath $env:VM_ROOT).Path
+          if ($resolved -ne [IO.Path]::GetFullPath($expected) -or
+              [IO.File]::ReadAllText((Join-Path $resolved 'owned-by-run')) -ne "$env:GITHUB_RUN_ID/$env:GITHUB_RUN_ATTEMPT") {
+            throw 'Unowned cleanup path; preserving it'
+          }
+          if (@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender,bee_backend -ErrorAction SilentlyContinue).Count) {
+            throw 'Native process active; preserving scratch'
+          }
+          Remove-Item -LiteralPath $resolved -Recurse -Force
