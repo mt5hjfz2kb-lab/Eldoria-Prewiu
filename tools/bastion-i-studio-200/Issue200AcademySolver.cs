@@ -15,6 +15,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             public SpriteRenderer r; public Vector2[] hull; public Vector2 offset;
             public Vector2 Foot => (Vector2)r.transform.position+offset;
         }
+        [Serializable] public sealed class Settings { public float wellLimit,marketCartLimit,quarryCartLimit,targetMobilePx; }
         [Serializable] public sealed class Metric {
             public string target, obstacle, result;
             public float beforeWorld, afterWorld, beforeMobilePx, afterMobilePx, dx,dy, routeBefore,routeAfter;
@@ -91,6 +92,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
         }
         static bool Named(Shape q,string n)=>q.r.sprite.name==n;
         public static Issue200AcademyPlacement.Layout Solve(Modular25DWorld world,string path){
+            var settings=JsonUtility.FromJson<Settings>(File.ReadAllText(Path.Combine(path,"academy-settings.json")));
+            if(settings==null||settings.wellLimit<.25f||settings.wellLimit>.80f||settings.marketCartLimit<.30f||settings.marketCartLimit>1f||settings.quarryCartLimit<.25f||settings.quarryCartLimit>.85f||settings.targetMobilePx<3f||settings.targetMobilePx>6f)throw new Exception("Invalid director limits");
             var cam=world.ViewCamera;var plan=ValoriaUrbanPlan.City;
             if(!cam.orthographic||Quaternion.Angle(cam.transform.rotation,Quaternion.identity)>.01f)throw new Exception("Unexpected projection");
             float px=844f/(2*Modular25DCameraInput.HomeSizeForAspect(390f/844f));
@@ -107,12 +110,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             var marketCart=shapes.Single(q=>Named(q,"CarroMadera")&&Vector2.Distance(q.Foot,plan.Granary.Foot+new Vector2(1.86f,-.71f))<.01f);
             var quarryCart=shapes.Single(q=>Named(q,"CarroMadera")&&Vector2.Distance(q.Foot,plan.Quarry.Foot+new Vector2(-1.7f,-.82f))<.01f);
             // Fixed historic architecture, paths and approved mill. Only move small props.
-            foreach(var pair in new[]{(target:well,obstacle:peso,limit:.65f),(target:marketCart,obstacle:granary,limit:.85f),(target:quarryCart,obstacle:quarry,limit:.70f)}){
+            foreach(var pair in new[]{(target:well,obstacle:peso,limit:settings.wellLimit),(target:marketCart,obstacle:granary,limit:settings.marketCartLimit),(target:quarryCart,obstacle:quarry,limit:settings.quarryCartLimit)}){
                 var a=pair.target;var b=pair.obstacle;
                 float before=Gap(a,Vector2.zero,b);float route=RouteGap(a.Foot,routes);
                 var neighbors=shapes.Where(q=>q!=a&&q!=b&&Vector2.Distance(q.Foot,a.Foot)<6).ToArray();
                 var oldGaps=neighbors.Select(q=>Gap(a,Vector2.zero,q)).ToArray();
-                float required=4f/px;Vector2 best=Vector2.zero;float bestGap=before;float bestDist=0;
+                float required=settings.targetMobilePx/px;Vector2 best=Vector2.zero;float bestGap=before;float bestDist=0;
                 if(before<required){
                     int steps=Mathf.FloorToInt(pair.limit/.05f);
                     for(int ix=-steps;ix<=steps;ix++)for(int iy=-steps;iy<=steps;iy++){
