@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -71,7 +72,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             Issue200AcademyPlacement.ProofMode=true;
             try{
                 foreach(bool candidate in new[]{false,true}){
-                    Issue200AcademyPlacement.ProofLayout=candidate?measured:null;
+                    Issue200AcademyPlacement.ProofMode=!candidate;
+                    Issue200AcademyPlacement.ProofLayout=null;
                     var folder=Path.Combine(root,candidate?"candidate":"baseline");Directory.CreateDirectory(folder);
                     var scene=EditorSceneManager.OpenScene(Modular25DEditorTasks.ScenePath,OpenSceneMode.Single);
                     Modular25DWorld world=null;
@@ -134,6 +136,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     world.Apply(Fixture(4));ValidateLayout(world,measured,candidate,4);
                     e.progressionStagesCaptured=5;e.sourceFrames=e.frames.Count;e.movingCharactersAreUnityTransforms=true;
                     File.WriteAllText(Path.Combine(folder,"evidence.json"),JsonUtility.ToJson(e,true));
+                    if(!candidate){
+                        const string assetPath="Assets/Experimentos/ValoriaModular25D/Resources/Issue200AcademyLayout.json";
+                        if(File.Exists(assetPath))throw new Exception("Scratch resource already exists");
+                        File.Copy(Path.Combine(root,"Issue200AcademyLayout.json"),assetPath);
+                        AssetDatabase.ImportAsset(assetPath,ImportAssetOptions.ForceSynchronousImport);
+                        var actual=Resources.Load<TextAsset>("Issue200AcademyLayout");
+                        if(!actual||actual.text!=File.ReadAllText(Path.Combine(root,"Issue200AcademyLayout.json")))throw new Exception("Runtime layout resource failed import");
+                    }
                 }
             }finally{Issue200AcademyPlacement.ProofMode=false;Issue200AcademyPlacement.ProofLayout=null;SliceContentProfiles.SetRuntimeProfileOverride(null);}
         }
