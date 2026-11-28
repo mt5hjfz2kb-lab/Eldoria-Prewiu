@@ -21,6 +21,10 @@ class AcademyTests(unittest.TestCase):
  def test_brief_opt_in(self):
     self.assertNotIn("Academy technique context",role_brief("artist"))
     self.assertIn("Academy technique context",role_brief("artist",academy=True,competencies=["material"]))
+ def test_verified_practice_scope(self):
+    self.assertEqual(brief("director",["composition"])["verified_lab_practices"][0]["id"],"C03")
+    self.assertEqual(brief("artist",["material"])["verified_lab_practices"],[])
+    self.assertEqual(brief("auditor")["verified_lab_practices"][0]["evidence"]["status"],"adaptive_lab_only_not_unity")
  def test_holdout_not_contaminated(self):
     with self.assertRaises(ValueError):role_brief("auditor",holdout="market-pilot",academy=True)
 if __name__=="__main__":unittest.main()
