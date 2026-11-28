@@ -68,17 +68,17 @@ def layout(width, height):
 
 
 
-def choose_hand(width, height, claim):
+def choose_hand(width, height, claim, size=None):
     """Exact local-rect bounds for the Unity Image hand at 90/72px.
 
-    The ORIGINAL 386x245 PNG points left; opaque fingertip x62, y72..77.
+    The owner-approved 192x192 RGBA gauntlet has contact pixel (44,46).
     RenderTexture/mobile safe rectangle includes a six-pixel inset.
     Try original right, then horizontal mirror, with center/bottom/top
     fingertip contact to avoid clipping header/notch.
     """
-    size=72.0 if width <= 480 else 90.0
-    hand_height=size*245.0/386.0
-    px,py=.16,.696
+    size=(72.0 if width <= 480 else 90.0) if size is None else size
+    hand_height=size
+    px,py=44/192,1-46/192
     safe=Box(-width*.5+6, -height*.5+6,
              width*.5-6,height*.5-6)
     inset_y=min(4.0,(claim.top-claim.bottom)*.12)
@@ -87,7 +87,8 @@ def choose_hand(width, height, claim):
     attempted=[]
     for vertical, y in enumerate(contacts):
         for mirrored in (False,True):
-            tip_x=claim.left-3 if mirrored else claim.right+3
+            inset_x=max(4.0,min(8.0,(claim.right-claim.left)*.05))
+            tip_x=claim.left+inset_x if mirrored else claim.right-inset_x
             if mirrored:
                 left,right=tip_x-(1-px)*size,tip_x+px*size
             else:
@@ -117,8 +118,17 @@ def verify_hand_geometry(width,height,data):
     center_width=(claim.right-claim.left)*.6
     core_left=(claim.left+claim.right)*.5-center_width*.5
     core_right=(claim.left+claim.right)*.5+center_width*.5
-    assert hand.right<=core_left or hand.left>=core_right, (
-        width,height,"pointer blocks central button label")
+    # Source-backed alpha>=128 ink extent, not the transparent image padding.
+    size=hand.right-hand.left
+    ink_left=hand.left+(192-185 if mirrored else 17)/192*size
+    ink_right=hand.left+(192-17 if mirrored else 185)/192*size
+    assert ink_right<=core_left or ink_left>=core_right, (
+        width,height,"pointer opaque art blocks central button label")
+    # Also exercise the live bag/coach preferred 92-unit width.
+    _,m,live,_=choose_hand(width,height,claim,92.0)
+    live_left=live.left+(192-185 if m else 17)/192*92
+    live_right=live.left+(192-17 if m else 185)/192*92
+    assert live_right<=core_left or live_left>=core_right, (width,height,"92-unit guide blocks central button label")
     assert hand.left>=-width*.5+6 and hand.right<=width*.5-6
     assert hand.bottom>=-height*.5+6 and hand.top<=height*.5-6
     print(f"ISSUE186_POINTER_MODEL_PASS {width}x{height} "
@@ -173,6 +183,13 @@ def verify():
     # result is produced by this disposable art-only callback. Its guide must
     # remain pending until a REAL gateway command succeeds. Do not let source
     # gates contradict that contract or certify fake completion.
+    # Independently verify the exact source contact and visible-ink bounds.
+    from check_art_readability import png_pixels
+    w,h,bpp,rgba=png_pixels("tutorial_pointing_hand.png")
+    assert (w,h,bpp)==(192,192,4)
+    assert rgba[46][44*bpp+3]>=200, "Painted contact must be opaque"
+    opaque_x=[x for row in rgba for x in range(w) if row[x*bpp+3]>=128]
+    assert min(opaque_x)==17 and max(opaque_x)+1==185, "Update geometry only from actual sprite alpha"
     root=Path(__file__).resolve().parents[2]
     editor=(root/"Unity/Assets/Eldoria/Issue186Art/Editor/Issue186NativeEvidence.cs").read_text(encoding="utf-8")
     workflow=(root/".github/workflows/issue186-native.yml").read_text(encoding="utf-8")

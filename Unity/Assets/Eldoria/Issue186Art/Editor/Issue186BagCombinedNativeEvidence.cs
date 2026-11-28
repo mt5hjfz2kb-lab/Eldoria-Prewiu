@@ -341,7 +341,7 @@ namespace Eldoria.Issue186Art.Editor
                 "; CTA="+ActualScreenRect(camera,rect));
         }
         // Art QA: a hand painted near CONSTRUIR is not enough. Its actual
-        // authored fingertip sits at the RectTransform pivot (.16,.696).
+        // authored fingertip sits at the shared measured TutorialFingertip pivot.
         // On every viewport, this pixel must lie inside the real button and
         // resolve to the SAME foremost click handler, without tapping it.
         static void RequirePaintedFingertipHit(Button action,Image hand,

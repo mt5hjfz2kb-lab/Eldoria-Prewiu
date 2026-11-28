@@ -527,22 +527,24 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         bool PlaceWorldHand(Vector2 target)
         {
-            if(!hand || !halo || !hand.sprite || !halo.sprite || !surface)return false;
+            if(!hand || !halo || !hand.sprite || !surface)return false;
             var cam=canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera;
             var rect=hand.rectTransform;
             rect.anchorMin=rect.anchorMax=new Vector2(.5f,.5f);
-            rect.pivot=new Vector2(.16f,.696f);
+            rect.pivot=Issue186ArtKit.TutorialFingertip;
             rect.sizeDelta=new Vector2(GuideHandWidth,GuideHandWidth*hand.sprite.rect.height/
                 Mathf.Max(1f,hand.sprite.rect.width));
             rect.localRotation=Quaternion.identity;
             var safe=ViewSafeArea();
             safe.xMin+=6;safe.xMax-=6;safe.yMin+=6;safe.yMax-=6;
             bool fit=false;
+            foreach(var vertical in new[]{1f,-1f})
+            {
             foreach(var sign in new[]{1f,-1f})
             {
                 if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(surface,
                     target,cam,out var local))continue;
-                rect.localScale=new Vector3(sign,1f,1f);
+                rect.localScale=new Vector3(sign,vertical,1f);
                 rect.anchoredPosition=local;
                 var corners=new Vector3[4];
                 rect.GetWorldCorners(corners);
@@ -552,17 +554,12 @@ namespace Eldoria.UI.RoyalGold.V2
                         {safeCorners=false;break;}
                 if(safeCorners){fit=true;break;}
             }
+            if(fit)break;
+            }
             if(!fit)return false;
             hand.gameObject.SetActive(true);
-            var haloRect=halo.rectTransform;
-            haloRect.anchorMin=haloRect.anchorMax=new Vector2(.5f,.5f);
-            haloRect.pivot=new Vector2(.5f,.5f);
-            if(RectTransformUtility.ScreenPointToLocalPointInRectangle(surface,
-                target,cam,out var centered))
-            {
-                haloRect.anchoredPosition=centered;
-                halo.gameObject.SetActive(true);
-            }
+            // New gauntlet includes the contact ring in its own sprite.
+            halo.gameObject.SetActive(false);
             surface.SetAsLastSibling();
             return true;
         }
