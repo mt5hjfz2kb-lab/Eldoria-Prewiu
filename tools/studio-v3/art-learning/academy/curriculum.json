@@ -1,0 +1,166 @@
+{
+  "version": "2026-11-28-academy-v1",
+  "scope": "Training only. No Valoria code/assets, no Windows reservation, no model weight changes. Read public documentation; course overview is not course completion. Video-only modules are references, not claimed watched.",
+  "sources": [
+    {
+      "id": "U-LIGHT",
+      "kind": "course",
+      "url": "https://learn.unity.com/course/creative-core-lighting?version=6.0",
+      "focus": [
+        "Directional Light",
+        "shadows",
+        "ambient",
+        "Reflection Probes"
+      ],
+      "note": "The course teaches directional/environment light, shadows, baked lighting and probes. For sprite production, translate light direction, ambient fill and shadows into controlled image tests rather than add URP lights blindly."
+    },
+    {
+      "id": "U-MAT",
+      "kind": "course",
+      "url": "https://learn.unity.com/project/creative-core-shaders-and-materials",
+      "focus": [
+        "roughness",
+        "materials",
+        "still life",
+        "texture"
+      ],
+      "note": "Material and shader properties control apparent surface behavior. The course uses a still-life exercise. Separate color, reflectivity and texture scale; prove distinguishable stone, wood and iron in identical lighting."
+    },
+    {
+      "id": "U-CAM",
+      "kind": "course",
+      "url": "https://learn.unity.com/course/creative-core-cameras",
+      "focus": [
+        "projection",
+        "camera",
+        "scene"
+      ],
+      "note": "Choose a camera setup for the experience and test framing. Fix camera and resolution in A/B tests; avoid changing zoom as a confound."
+    },
+    {
+      "id": "B-CAM",
+      "kind": "manual",
+      "url": "https://docs.blender.org/manual/en/4.5/render/cameras.html",
+      "focus": [
+        "Orthographic",
+        "Orthographic Scale",
+        "Composition Guides"
+      ],
+      "note": "Orthographic projection preserves apparent object size with distance and parallel edges. Orthographic Scale sets framing. Guides help assess the composition; no arbitrary perspective mismatch."
+    },
+    {
+      "id": "B-MAT",
+      "kind": "manual",
+      "url": "https://docs.blender.org/manual/en/4.5/render/shader_nodes/shader/principled.html",
+      "focus": [
+        "Roughness",
+        "Metallic",
+        "Base Color",
+        "Normal"
+      ],
+      "note": "Principled BSDF separates base color, microfacet roughness and metallic behavior. Wood and stone are dielectrics; iron is metallic where exposed. Roughness modifies highlight spread; bump is small relief, not random color noise."
+    },
+    {
+      "id": "B-LIGHT",
+      "kind": "manual",
+      "url": "https://docs.blender.org/manual/en/4.5/render/lights/light_object.html",
+      "focus": [
+        "Area Light",
+        "Size",
+        "shadows",
+        "Power"
+      ],
+      "note": "Area emitters create softer shadow boundaries as their apparent size grows. Distinguish key direction, fill intensity and light size. Preserve contact and coherent cast shadows."
+    },
+    {
+      "id": "U-SPRITE",
+      "kind": "manual",
+      "url": "https://docs.unity3d.com/6000.3/Documentation/Manual/texture-type-sprite.html",
+      "focus": [
+        "Pixels Per Unit",
+        "Pivot",
+        "Mesh Type",
+        "Alpha"
+      ],
+      "note": "PPU converts texture pixels to world units; custom pivot defines the local origin. Preserve canvas and alpha with a stable foot anchor when reauthoring. Check texture settings on target build."
+    },
+    {
+      "id": "U-SORT",
+      "kind": "manual",
+      "url": "https://docs.unity3d.com/6000.3/Documentation/Manual/2d-renderer-sorting.html",
+      "focus": [
+        "Custom Axis",
+        "Sorting Layer",
+        "Transparency Sort Mode"
+      ],
+      "note": "Unity can sort 2D rendering by a custom axis and layer/order. Use the real project foot-based sort system and check crossing in motion; don't assume this manual replaces existing implementation."
+    },
+    {
+      "id": "P-FORM",
+      "kind": "tutorial_page",
+      "url": "https://www.ctrlpaint.com/videos/form-value-and-light",
+      "focus": [
+        "Form",
+        "Value",
+        "Light"
+      ],
+      "note": "The lesson identifies form, value and light as painting foundations. Study the public description; the embedded video is not assumed viewed. Practice form in grayscale before texture."
+    },
+    {
+      "id": "P-LIB",
+      "kind": "tutorial_index",
+      "url": "https://www.ctrlpaint.com/library/",
+      "focus": [
+        "Hard and Soft Shadow Edges",
+        "Grayscale",
+        "Material Spheres",
+        "Edge Control"
+      ],
+      "note": "Use the indexed exercises on value, edges, shadow properties and material spheres as a syllabus. Do not claim to have watched videos from the list."
+    }
+  ],
+  "competencies": [
+    {
+      "id": "light",
+      "sources": [
+        "U-LIGHT",
+        "B-LIGHT",
+        "P-FORM",
+        "P-LIB"
+      ],
+      "task": "render matched still-life, intentional key/fill and shadow edges"
+    },
+    {
+      "id": "material",
+      "sources": [
+        "U-MAT",
+        "B-MAT",
+        "P-LIB"
+      ],
+      "task": "render stone, wood, iron without modifying geometry"
+    },
+    {
+      "id": "projection",
+      "sources": [
+        "U-CAM",
+        "B-CAM",
+        "U-SPRITE"
+      ],
+      "task": "fixed orthographic projection, check PPU and pivot calculations"
+    },
+    {
+      "id": "composition",
+      "sources": [
+        "U-CAM",
+        "B-CAM",
+        "U-SORT"
+      ],
+      "task": "three-dimensional workshop layout with protected entrance, distinct hierarchy, mobile thumbnail and foot sorting"
+    }
+  ],
+  "policy": {
+    "source_notes": "Paraphrased guidance verified by orchestrator; agents receive selected text of successfully retrieved pages, provenance and source notes. No hidden course access or certificates.",
+    "reusable": "Store reviewed technique cards, source links, applicability, failures, exercise evidence; no automatic promotion. Apply gate before game work.",
+    "pass": "Render compared against fresh control. Score within each exercise only. Report negative results; repeat on new holdouts before broad claims."
+  }
+}
