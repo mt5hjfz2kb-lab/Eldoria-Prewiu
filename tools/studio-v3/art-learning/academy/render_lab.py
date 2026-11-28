@@ -117,11 +117,22 @@ def courtyard(v):
     cube("stall canopy",(sx,sy,1.28),(1.04,.85,.08),trim)
     for x in (-.22,.12):cyl("stall vessel",(sx+x,sy,.82),.12,.26,iron,verts=16)
     camera(sc,(8,-11,10),(0,.1,.75),8.0);lighting(sc,v,(0,.2,.6),1.6);return sc
-for arm in ("control","learned"):
-    data=json.loads((root/(arm+".json")).read_text());v=data["settings"]
-    for name,fn in (("materials",still),("courtyard",courtyard)):
-        sc=fn(v);sc.render.filepath=str(root/(arm+"-"+name+".png"))
-        bpy.ops.render.render(write_still=True)
-        assert Path(sc.render.filepath).is_file()
-        print("ACADEMY_BLENDER_RENDER",arm,name,flush=True)
-print("ACADEMY_BLENDER_COMPLETE",bpy.app.version_string,flush=True)
+if len(args)>1 and args[1]=="clearance":
+    sys.path.insert(0,str(Path(__file__).parent))
+    from placement_solver import solve
+    v=json.loads((root/"control.json").read_text())["settings"]
+    sc=courtyard(v)
+    solve(sc,v,root/"clearance-metrics.json")
+    sc.render.filepath=str(root/"corrected-courtyard.png")
+    bpy.ops.render.render(write_still=True)
+    assert Path(sc.render.filepath).is_file()
+    print("ACADEMY_CLEARANCE_RENDER_COMPLETE",bpy.app.version_string,flush=True)
+else:
+    for arm in ("control","learned"):
+        data=json.loads((root/(arm+".json")).read_text());v=data["settings"]
+        for name,fn in (("materials",still),("courtyard",courtyard)):
+            sc=fn(v);sc.render.filepath=str(root/(arm+"-"+name+".png"))
+            bpy.ops.render.render(write_still=True)
+            assert Path(sc.render.filepath).is_file()
+            print("ACADEMY_BLENDER_RENDER",arm,name,flush=True)
+    print("ACADEMY_BLENDER_COMPLETE",bpy.app.version_string,flush=True)
