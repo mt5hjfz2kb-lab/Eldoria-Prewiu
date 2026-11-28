@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-28T15:46:44.074341+00:00",
+  "updated_at": "2026-11-28T17:36:59.745689+00:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -26,7 +26,7 @@
       "title": "Sustitución artística integral de Main con arte compatible de Valoria",
       "owner": "codex-valoria-main-art-20261128",
       "ownership_state": "claimed",
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "write_scope_released": false,
       "status": "active",
       "branch": "integration/valoria-main-art-20261128",
@@ -37,7 +37,9 @@
         "docs/valoria-main-art-migration/**",
         ".github/workflows/valoria-main-art-inventory.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "delivery_definition": {
         "deliverable": "Sustitución visual en una PR dedicada con paridad jugable de Main.",
         "evidence": "Inventario, capturas reales comparables, recorrido I–V, paridad de controles, perfilado y dispositivos de aceptación.",
@@ -10050,7 +10052,7 @@
       },
       "owner": "chatgpt-corona-brecha-commercial-20261126",
       "ownership_state": "claimed",
-      "ownership_revision": 40,
+      "ownership_revision": 41,
       "write_scope_released": false,
       "branch": "experiment/valoria-ciudad-region-unificada-20261121",
       "status": "active",
@@ -10065,9 +10067,7 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_approved": false,
       "device_qa": "PENDING physical Safari iPhone",
       "delivery_definition": {
@@ -24500,12 +24500,12 @@
   "resource_rotation": {
     "resource": "windows-runner-heavy",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+    "current_workstream": "valoria-main-art-substitution-20261128",
     "current_run_id": null,
     "next_workstream": null,
-    "return_to": null,
-    "status": "corona_native_reserved",
-    "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
+    "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+    "status": "main_art_inventory_reserved",
+    "authorized_by": "Owner-directed temporary rotation for PR 201; return to Corona after inventory",
     "previous_rotation": {
       "resource": "windows-runner-heavy",
       "mode": "exclusive_one_workstream_at_a_time",
