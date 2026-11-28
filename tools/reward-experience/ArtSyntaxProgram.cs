@@ -65,6 +65,12 @@ if(!File.Exists(coachFile+".meta") ||
    !coachSource.Contains("nickname-input") ||
    !coachSource.Contains("nickname-confirm") ||
    !coachSource.Contains("TryGuideGenuineCityLabel(target,key)") ||
+   !coachSource.Contains("if(inWorld)ShowButton(Nav(0),key,") ||
+   !coachSource.Contains("ShowButton(Nav(worldTarget?3:0),key,worldTarget") ||
+   !coachSource.Contains("if(TryGuideGenuineCityLabel(target,key))") ||
+   !coachSource.Contains("if(Visible && TargetId==target)return true;") ||
+   !coachSource.Contains("management.VisibleAction,objective") ||
+   !coachSource.Contains("void OnDisable(){Hide(\"coach-disabled\");}") ||
    !coachSource.Contains("ConcealSelectedCityLabel(target)") ||
    !coachSource.Contains("RestoreSelectedCityLabel()") ||
    !firstEntryFixture.Contains("RequireSelectedCityLabelUnpainted(canvas,\"sawmill\",viewport)") ||

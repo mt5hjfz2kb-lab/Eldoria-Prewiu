@@ -173,7 +173,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if(halo)halo.gameObject.SetActive(false);
             if(noteBack)noteBack.gameObject.SetActive(false);
         }
-        void OnDisable(){RestoreSelectedCityLabel();}
+        // The overlay lives under the production Canvas, not this component.
+        // Disabling the coach must therefore hide its detached presentation too.
+        void OnDisable(){Hide("coach-disabled");}
         void OnDestroy()
         {
             RestoreSelectedCityLabel();
@@ -232,7 +234,29 @@ namespace Eldoria.UI.RoyalGold.V2
                 {Hide("mailbox-open");return;}
             if(Property(vigilia,"RealDestinations") is object dst &&
                 Property(dst,"IsShowing") is bool dstOpen && dstOpen)
-                {Hide("management-screen-open");return;}
+                {
+                    // Only the first actual training / march confirmation is taught.
+                    // Never synthesize a control, quantity, click or game command.
+                    var management=hud.GetComponent<RoyalGoldV3ManagementScreens>();
+                    var objective=SliceRules.CurrentObjectiveKey(state);
+                    if(management && management.IsOpen && management.VisibleRoot &&
+                        management.VisibleRoot.gameObject.activeInHierarchy)
+                    {
+                        if(objective=="b2.train-archers" && state.RecruitmentCompletesUtcTicks<=0 &&
+                            management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.Training)
+                        {
+                            ShowButton(management.VisibleAction,objective,
+                                "Elige tus tropas y confirma el entrenamiento.","training-confirm");return;
+                        }
+                        if((objective=="b2.prepare-march" || objective=="b2.raise-expedition-power") &&
+                            management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.March)
+                        {
+                            ShowButton(management.VisibleAction,objective,
+                                "Elige tus tropas y confirma la marcha.","march-confirm");return;
+                        }
+                    }
+                    Hide("management-screen-open");return;
+                }
             if(Property(vigilia,"RealHeroes") is object heroes &&
                 Property(heroes,"IsShowing") is bool heroesOpen && heroesOpen)
                 {Hide("hero-screen-open");return;}
@@ -292,12 +316,14 @@ namespace Eldoria.UI.RoyalGold.V2
 
             if(target=="march-main")
             {
+                // Reino is the real city return; Explorar is idempotent and does not return.
+                if(inWorld){ShowButton(Nav(0),key,"Regresa a Valoria para preparar tu marcha.","city-return");return;}
                 ShowButton(Nav(2),key,"Toca el ejército para preparar tu primera marcha.",
                     "march-navigation");return;
             }
             if(key=="b1.return")
             {
-                if(inWorld)ShowButton(Nav(3),key,
+                if(inWorld)ShowButton(Nav(0),key,
                     "Regresa a la ciudad para continuar.", "city-return");
                 else Hide("already-in-city");
                 return;
@@ -306,7 +332,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 target=="corrupt-scout" || target=="engendro-valoria";
             if(worldTarget!=inWorld)
             {
-                ShowButton(Nav(3),key,worldTarget
+                ShowButton(Nav(worldTarget?3:0),key,worldTarget
                     ?"Abre el mundo para continuar tu misión."
                     :"Regresa a Valoria para construir.","world-toggle");
                 return;
@@ -326,8 +352,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(!EnsureVigiliaBuildingSelection(selected))return;
                 ConcealSelectedCityLabel(target);
                 if(key=="b2.train-archers" && target=="barracks")
-                    ShowButton(Property(vigilia,"ActualBarracksTrainingEntry") as Button,
-                        key,"Abre el entrenamiento del Cuartel.","barracks-training");
+                {
+                    // Main may open Training directly on selection. A separate entry is
+                    // optional; never substitute an unrelated Upgrade action for it.
+                    var trainingEntry=Property(vigilia,"ActualBarracksTrainingEntry") as Button;
+                    if(trainingEntry)ShowButton(trainingEntry,key,"Abre el entrenamiento del Cuartel.","barracks-training");
+                    else Hide("await-real-training-destination");
+                }
                 else
                     ShowButton(Property(vigilia,"BuildingAction") as Button,key,
                         worldTarget?"Pulsa la acción para completar el objetivo.":
@@ -341,9 +372,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // requiring a bare collider hit previously hid the approved hand.
             // Reuse the existing selection listener; do not create a fake
             // button, invoke an action or change a save.
-            if(!inWorld && (target=="sawmill"||target=="barracks"||
-                            target=="granary"||target=="stoneworks") &&
-                TryGuideGenuineCityLabel(target,key))
+            // The same genuine Guidance labels also exist over forest/quarry/enemy
+            // hotspots. Try their actual frontmost handlers before the physical picker.
+            if(TryGuideGenuineCityLabel(target,key))
                 return;
             ShowWorldTarget(target,key,
                 worldTarget?"Toca el objetivo señalado en el mundo.":
@@ -389,7 +420,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 // acceptable substitute for a real touch.
                 ShowSelectable(label.Select,key,
                     "Toca la señal del edificio para abrir sus acciones.",target);
-                return true;
+                if(Visible && TargetId==target)return true;
             }
             return false;
         }
