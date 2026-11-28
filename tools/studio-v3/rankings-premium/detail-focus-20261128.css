@@ -1,0 +1,27 @@
+/* Dedicated detail, same hub and QA data. Position is visible before the standings. */
+#app:has(main .rank-detail) #nav{display:none}
+.rank-detail{gap:8px;padding:10px 12px 12px}
+.rank-detail .rank-back{order:0;background:linear-gradient(110deg,#2e2a33,#202733);border-color:#a78756;color:#f0dfbc;min-height:44px}
+.rank-detail .rank-banner{order:1;border:3px double var(--metal);min-height:110px;background:var(--field);box-shadow:inset 0 0 0 2px #151924,0 4px 12px #080c14}
+.rank-detail .rank-banner:before{background:linear-gradient(90deg,#15192250,#151922ba 55%,#151922e0),var(--rank-image) center 43%/cover no-repeat}
+.rank-detail .rank-banner h1{color:#f3dbab;letter-spacing:.01em}
+.rank-detail .rank-qa{order:2}
+.rank-detail .rank-own{order:3;border:3px double #b69a66;background:linear-gradient(110deg,#3b3e33,#202b35);box-shadow:0 3px 9px #151921c9;min-height:48px}
+.rank-detail .rank-podium{order:4;gap:7px;padding-top:4px}
+.rank-detail .rank-champion{isolation:isolate;overflow:hidden;border:3px double var(--medal);border-radius:14px 14px 3px 3px;background:radial-gradient(ellipse at 50% 27%,color-mix(in srgb,var(--medal) 24%,#252b35),#202630 72%);box-shadow:inset 0 -5px 0 #151921,0 3px 7px #0e1119;min-height:114px}
+.rank-detail .rank-champion[data-place="1"]{min-height:138px;background:radial-gradient(ellipse at 50% 30%,#795d356f,#302c30 76%);border-color:#eac27b}
+.rank-detail .rank-medal{background:radial-gradient(circle at 35% 25%,#404957,#20242d 72%);box-shadow:0 0 0 2px #22252d,0 0 0 3px var(--medal),0 3px 9px #13151f}
+.rank-detail .rank-champion b{font-size:13px;color:#f6e8d2}.rank-detail .rank-champion strong{font-size:16px}
+.rank-detail .rank-ledger{order:5;border:3px double #9d8055}.rank-detail .rank-colhead{background:linear-gradient(90deg,#4a3929,#2c3037);color:#f1d5a1}
+.rank-detail .rank-player:nth-child(even){background:linear-gradient(105deg,#283541,#202630)}
+.rank-detail .rank-offline{order:4}.rank-detail .rank-foot{order:6;padding:2px 0 4px}
+.page-Heraldry .x-blazon-stage{border:3px double #af8953;background:linear-gradient(110deg,#352f3c,#202833);box-shadow:inset 0 0 0 3px #181b24}
+.page-Heraldry .x-armorial-entry{border-inline-start:3px solid #9d8055;background:linear-gradient(110deg,#36323c,#202833);box-shadow:inset 0 0 0 1px #171c26}
+.page-Heraldry .row[data-state="Locked"] .x-armorial-entry{border-inline-start-color:#63596b;background:linear-gradient(110deg,#2c2934,#202630)}
+.page-Heraldry .x-armorial-device{border-radius:50%;background:radial-gradient(ellipse,#96744842,transparent 72%)}
+.page-Monuments .x-gallery-forecourt{border:3px double #af8953}
+.page-Monuments .x-monument-bay{border:3px double #8c714f;box-shadow:0 3px 8px #0c1018,inset 0 0 0 1px #181c24;background:linear-gradient(160deg,#41424b,#202832 65%)}
+.page-Monuments .x-monument-study{background:radial-gradient(ellipse at 50% 60%,#a38a5f60,#323742 56%,#222932 75%)}
+.page-Monuments .x-monument-plinth{background:linear-gradient(110deg,#3d382f,#242d36);border-top:3px double #b18d5e}
+@media(orientation:landscape){.rank-detail .rank-own{grid-column:1}.rank-detail .rank-banner{min-height:84px}.rank-detail .rank-champion{min-height:92px}.rank-detail .rank-champion[data-place="1"]{min-height:108px}}
+@media(max-width:340px){.rank-detail{padding:8px}.rank-detail .rank-champion b{font-size:12px}.rank-detail .rank-champion strong{font-size:14px}}

@@ -223,3 +223,31 @@ jobs:
       - name: Preserve production
         if: always()
         run: git diff --exit-code
+
+  detail-focus:
+    if: github.event.head_commit.message == 'Polish separate ranking detail and validate own position without spend'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/studio-v3/rankings-premium
+            tools/openai-development-studio
+      - name: Render focused detail and verify all routes and phone safe layout
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet pillow playwright==1.55.0
+          python3 -m playwright install chromium
+          python3 tools/studio-v3/rankings-premium/detail-focus-20261128.py "$RUNNER_TEMP/pr198-focus"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr198-detail-focus
+          path: ${{ runner.temp }}/pr198-focus
+          if-no-files-found: warn
+          retention-days: 14
