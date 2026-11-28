@@ -1,0 +1,61 @@
+name: Issue200 adopt verified Bastion V art to experimental
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/bastion-i-studio-200-adopt-context-art-api.yml']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: issue200-experimental-art-adoption
+  cancel-in-progress: false
+jobs:
+  adopt:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Complete verified art adoption via Git data API'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+      BASE_SHA: f27f4774e32efc5ad046478a07747eead4256c3e
+      TARGET_BRANCH: experiment/valoria-ciudad-region-unificada-20261121
+    steps:
+      - name: Verify successful native run and exact artifact identities
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$REPO/actions/runs/46160199450" --jq .conclusion)" = success
+          test "$(gh api "repos/$REPO/actions/artifacts/15269420973" --jq .digest)" = sha256:11ba84989ddc24a365bafab762ff5227634b5ce74378bd0c6aee9b10bae02a93
+          test "$(gh api "repos/$REPO/actions/artifacts/15270340577" --jq .digest)" = sha256:b53e7612c6ff59bc26daad3e68af3add8d2b87617ec9a5101b37c3da7f69be3a
+          test "$(gh api "repos/$REPO/actions/artifacts/15269982140" --jq .digest)" = sha256:ec7ed56256ce8427e547913bd9896bd6df0c9b67dde1cf3a8ff7a32a16397b62
+          mkdir -p "$RUNNER_TEMP/adoption-receipt"
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/adopt-context-art-api.py?ref=41498ffb7bef858a60314812bd0ebe84c8515b1d" > "$RUNNER_TEMP/adopt.py"
+          python3 -m py_compile "$RUNNER_TEMP/adopt.py"
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-competition-context-source
+          run-id: 46160199450
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/approved-source
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-competition-context-native
+          run-id: 46160199450
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/approved-native
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-competition-context-audit
+          run-id: 46160199450
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/approved-audit
+      - name: Verify exact native-tested bytes and atomically adopt visual-only scope
+        run: |
+          set -euo pipefail
+          python3 -u "$RUNNER_TEMP/adopt.py"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-experimental-art-adoption-receipt
+          path: ${{ runner.temp }}/adoption-receipt
+          if-no-files-found: warn
+          retention-days: 90
