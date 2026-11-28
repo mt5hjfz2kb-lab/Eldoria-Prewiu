@@ -1,0 +1,68 @@
+
+.page{--legacy-gold:#d4b47b;--legacy-rim:#786044;--legacy-ivory:#f9edda;color:var(--legacy-ivory)}
+.page .section-heading h1{font-size:clamp(28px,6vw,44px);color:var(--legacy-ivory);letter-spacing:.015em}
+.page .chapter{color:#d9b980}.page .detail{color:#d8d3cf}.page .state{color:#e8cb92;letter-spacing:.015em}
+.page .row[data-state=Locked] .state,.page .row[data-state=Unavailable] .state{color:#c7b8cf}
+.page .row[data-state=Locked] .icon{filter:saturate(.55) brightness(.83) drop-shadow(0 2px 3px #0a0c11)}
+.page-Overview .x-court-stage{border:1px solid #b3915b;box-shadow:inset 0 0 0 3px #211c22,0 5px 22px #090a0f90;background:#161d27}
+.page-Overview .x-court-scene{height:clamp(255px,77cqi,450px)}
+.page-Overview .x-court-scene::after{background:linear-gradient(180deg,transparent 37%,#151b2655 61%,#161d27e8 84%,#161d27)}
+.page-Overview .x-court-register{padding-block-start:clamp(132px,43cqi,220px)}
+.page-Overview .x-court-register .row[data-key=name]{padding:7px 12px 3px;background:linear-gradient(90deg,#161d2700,#161d27e8 22%,#161d27e8 78%,#161d2700);border-block-start:1px solid #a07b5360}
+.page-Overview .x-court-register .row[data-key=name] .x-court-mark{inline-size:23px;block-size:23px}
+.page-Overview .x-court-register .row[data-key=power]{padding:6px 10px 12px;background:linear-gradient(90deg,#161d2700,#161d27 25%,#161d27 75%,#161d2700)}
+.page-Overview .x-court-register .row[data-key=power] .detail{color:#f6d997;font-weight:600;font-size:clamp(38px,11cqi,58px)}
+.page-Overview .x-court-register .row:is([data-key=kingdom],[data-key=army]){background:linear-gradient(135deg,#303c46,#1d252e);border-block-start:3px double #ad8a58;grid-template-columns:32px minmax(0,1fr);align-items:center}
+.page-Overview .x-court-register .row:is([data-key=kingdom],[data-key=army]) .x-court-mark{width:32px;height:32px}
+.page-Overview .x-court-register .row:is([data-key=trophies],[data-key=discoveries]){background:#222c37;padding-block:9px;align-items:center;grid-template-columns:26px minmax(0,1fr)}
+.page-Overview .x-court-register .row:is([data-key=trophies],[data-key=discoveries]) .x-court-mark{width:26px;height:26px}
+.page-Overview .x-court-register .row:is([data-key=title],[data-key=prestige],[data-key=next-title]){background:linear-gradient(135deg,#35312e,#1b232e);border-color:#93784f}
+.page-Overview .x-court-register .row[data-key=next-title]{padding-block:11px;border-block-start:1px solid #987c54}
+.page-Rankings .x-register-masthead{border:1px solid #af8d5c;min-block-size:124px;border-radius:4px;box-shadow:inset 0 0 0 2px #1f232b}
+.page-Rankings .x-register-masthead::before{background:linear-gradient(90deg,#151a24 0%,#151a2480 52%,#151a2420)}
+.page-Rankings .x-notice-band{padding:12px;grid-template-columns:42px minmax(0,1fr);border:1px solid #8c6e58;background:linear-gradient(115deg,#373331,#202832);box-shadow:inset 3px 0 #d0aa72}
+.page-Rankings .x-notice-mark{width:42px;height:45px}
+.page-Rankings .x-personal-register{border:1px solid #8a704f;box-shadow:inset 0 0 0 2px #171d27;background:#1a222b}
+.page-Rankings .x-register-line{grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-block-size:62px;padding:9px 12px;background:linear-gradient(110deg,#29333d,#1b222c);border-bottom:1px solid #675844}
+.page-Rankings .x-register-label{grid-template-columns:36px minmax(0,1fr);gap:9px}
+.page-Rankings .x-register-label .icon{width:36px;height:38px}
+.page-Rankings .x-register-reading .detail{font-size:13px;color:#f1dbb4;font-variant-numeric:tabular-nums}
+.page-Rankings .row[data-key='ranking:TotalPower'] .x-register-line{background:linear-gradient(115deg,#493c2c,#26303a);min-block-size:70px;box-shadow:inset 0 -2px #9a794e}
+.page-Trophies .x-vitrine-canopy{border:1px solid #ac8958;border-radius:5px;min-block-size:112px;box-shadow:inset 0 0 0 3px #28222a}
+.page-Trophies .x-vitrine-inventory{background:linear-gradient(110deg,#433b31,#222c36);border:3px double #ad8a58}
+.page-Trophies .x-vitrine-shelves{gap:10px}
+.page-Trophies .x-trophy-piece{border:1px solid #796143;border-radius:5px;padding:10px 7px;background:linear-gradient(160deg,#343c43,#202630 58%,#332b29);box-shadow:inset 0 0 0 2px #151a22}
+.page-Trophies .x-trophy-mount{width:min(100%,116px);border:2px solid #b9975e;background:radial-gradient(ellipse,#7d6748,#38414a 51%,#171d27 75%);box-shadow:inset 0 0 0 3px #20262e,inset 0 0 0 5px #826745,0 4px 10px #0b0d12}
+.page-Trophies .x-vitrine-shelves>.row:nth-child(even) .x-trophy-mount{background:radial-gradient(ellipse,#6f6050,#38414a 55%,#202632);border-radius:50%}
+.page-Trophies .x-trophy-mount .icon{width:92%;height:92%}
+.page-Trophies .x-trophy-caption .title{font-size:17px;color:#f3e6d2}
+.page-Trophies .row[data-state=Locked] .x-trophy-piece{background:linear-gradient(145deg,#252832,#171c26);border-color:#5b5556}
+.page-Trophies .row[data-state=Locked] .x-trophy-mount{border-color:#6a615a;background:radial-gradient(ellipse,#45404b,#252a34 65%)}
+.page-Discoveries .x-archive-front{border:1px solid #a48153;border-radius:4px;background:linear-gradient(125deg,#433c36,#202832);padding:12px}
+.page-Discoveries .x-index-entry{grid-template-columns:88px minmax(0,1fr);background:linear-gradient(115deg,#38444b,#28323c);border:1px solid #c2a375;min-block-size:122px;padding:9px}
+.page-Discoveries .x-index-stamp{width:88px;height:96px}
+.page-Discoveries .x-index-copy .title{font-size:21px}
+.page-Discoveries .x-archive-folio{grid-template-columns:clamp(88px,29vw,125px) minmax(0,1fr);min-block-size:126px;border:1px solid #8c714f;border-inline-start:3px solid #be9a64;background:linear-gradient(115deg,#3b4348,#1e2933 70%);padding:10px;box-shadow:inset 0 0 0 2px #1a2028,0 4px 9px #0b0f17}
+.page-Discoveries .x-folio-title .title{font-size:19px;line-height:1.13}
+.page-Discoveries .x-folio-illustration{background:radial-gradient(ellipse,#ad946655,transparent 70%)}
+.page-Heraldry .x-blazon-stage{border:1px solid #b18e5d;border-radius:5px;padding:13px;background:#27313b;box-shadow:inset 0 0 0 3px #1d242e}
+.page-Heraldry .x-blazon-stage::before{background:linear-gradient(95deg,#2027339c,#202733ba)}
+.page-Heraldry .x-blazon-emblem{min-block-size:122px;background:radial-gradient(ellipse,#b2915866,transparent 70%)}
+.page-Heraldry .x-blazon-emblem .icon{height:clamp(112px,31vw,148px)}
+.page-Heraldry .x-blazon-name .title{color:#f6d69a}
+.page-Heraldry .x-armorial-entry{grid-template-columns:53px minmax(0,1fr);padding:10px;border:1px solid #6d614f;border-radius:3px;background:linear-gradient(120deg,#333e46,#222b34);gap:3px 10px}
+.page-Heraldry .x-armorial-device{width:53px;height:58px;background:radial-gradient(ellipse,#9c875a55,transparent 75%)}
+.page-Heraldry .row[data-key^='banner-'] .x-armorial-entry{background:linear-gradient(125deg,#3c342d,#242e36);border-color:#91794f}
+.page-Heraldry .row[data-state=Locked] .x-armorial-entry{background:linear-gradient(120deg,#282c36,#1c242e);border-color:#5e5860}
+.page-Monuments .x-gallery-forecourt{border:1px solid #ba9763;border-radius:4px;min-block-size:142px;padding:12px;background:#232c36}
+.page-Monuments .x-gallery-forecourt::before{background:linear-gradient(90deg,#1d252edc,#20283280 75%,#20283220)}
+.page-Monuments .x-gallery-tablet{grid-template-columns:95px minmax(0,1fr);gap:5px 10px}
+.page-Monuments .x-tablet-mark{width:95px;height:112px}
+.page-Monuments .x-tablet-inscription .title{font-size:22px}
+.page-Monuments .x-monument-bay{border:1px solid #ae8d60;border-radius:32px 32px 4px 4px;background:linear-gradient(125deg,#424950,#222c35 63%,#35322c);box-shadow:inset 0 0 0 3px #1c242c}
+.page-Monuments .x-monument-study{min-block-size:129px;background:radial-gradient(ellipse,#a68a5c55,transparent 71%)}
+.page-Monuments .x-monument-study .icon{width:min(100%,132px);height:117px}
+.page-Monuments .x-monument-plinth{background:linear-gradient(135deg,#3d3b35,#232c36);border-top:3px double #ba9763;padding:10px}
+.page-Monuments .row[data-state=Locked] .x-monument-bay{border-color:#6d6361;background:linear-gradient(#343540,#222630)}
+.page-DiscoveryDetail .x-dossier-cover{border:1px solid #aa895c;background:#28323c;box-shadow:inset 0 0 0 2px #1b222c}
+.page-DiscoveryDetail .x-field-record{background:linear-gradient(115deg,#343e45,#202932);border:1px solid #776449;border-inline-start:3px solid #b79260;padding:10px}

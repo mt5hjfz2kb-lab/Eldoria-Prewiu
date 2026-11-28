@@ -115,3 +115,42 @@ jobs:
       - name: No production files modified
         if: always()
         run: git diff --exit-code
+
+  targeted-refinement:
+    if: github.event.head_commit.message == 'Launch targeted PR198 material and scale audit 20261128' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          sparse-checkout: |
+            tools/studio-v3/rankings-premium
+            tools/openai-development-studio
+      - name: No-spend exact baseline and targeted composition-preserving browser comparison
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet pillow playwright==1.55.0
+          python3 -m playwright install chromium
+          python3 -m py_compile tools/studio-v3/rankings-premium/targeted-refinement-20261128.py
+          python3 tools/studio-v3/rankings-premium/targeted-refinement-20261128.py --prepare "$RUNNER_TEMP/pr198-targeted"
+      - name: Independent comparison audit only within existing reservation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 tools/studio-v3/rankings-premium/targeted-refinement-20261128.py --audit "$RUNNER_TEMP/pr198-targeted"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr198-targeted-refinement
+          path: ${{ runner.temp }}/pr198-targeted
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Preserve production source
+        if: always()
+        run: git diff --exit-code
