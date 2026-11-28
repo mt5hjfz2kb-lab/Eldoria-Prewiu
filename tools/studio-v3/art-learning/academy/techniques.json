@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "version": "academy-2026-11-28-v1",
+  "provenance": {
+    "run": 46135161367,
+    "artifact": 15259466547,
+    "digest": "sha256:d469bf3f2e9852eba3d5fc3b4a341afb0fe4db12bb50dbda55d48e68a3768194",
+    "direct_text": [
+      "U-LIGHT",
+      "U-MAT",
+      "U-CAM",
+      "U-SPRITE",
+      "U-SORT",
+      "P-FORM"
+    ],
+    "curated_only": [
+      "B-CAM",
+      "B-MAT",
+      "B-LIGHT",
+      "P-LIB"
+    ],
+    "status": "host_reviewed_fundamentals_not_validated_general_artistic_gain",
+    "course_completion": false
+  },
+  "cards": [
+    {
+      "id": "L01",
+      "competency": "light",
+      "sources": [
+        "U-LIGHT",
+        "P-FORM"
+      ],
+      "principle": "Establecer dirección de luz y tres masas de valor antes del detalle.",
+      "procedure": "Hacer primero una pasada gris con cara iluminada, cara en sombra y sombra proyectada; comprobar el conjunto y ajustar relleno sin eliminar volumen.",
+      "check": "Misma cámara y misma dirección de sombras para todos los objetos; comparar miniatura sin textura.",
+      "risk": "Textura oculta direcciones de luz incompatibles."
+    },
+    {
+      "id": "L02",
+      "competency": "light",
+      "sources": [
+        "U-LIGHT",
+        "B-LIGHT"
+      ],
+      "principle": "Separar dirección, relleno, tamaño de emisor y contacto.",
+      "procedure": "Mantener geometría y cámara; variar tamaño de fuente en dos muestras, conservando contacto firme.",
+      "check": "La penumbra varía sin desplazar el pie ni invertir sombras.",
+      "risk": "Desenfoque uniforme que hace flotar el objeto."
+    },
+    {
+      "id": "M01",
+      "competency": "material",
+      "sources": [
+        "U-MAT",
+        "B-MAT"
+      ],
+      "principle": "Color, rugosidad, metalicidad y relieve describen fenómenos distintos.",
+      "procedure": "Comparar muestras de piedra, madera e hierro expuesto bajo idéntica luz. Ajustar brillo y textura a cada material; no usar metalicidad en piedra/madera.",
+      "check": "Materiales diferenciados en escala de grises y a tamaño objetivo.",
+      "risk": "Mismo brillo en todo, aspecto plástico."
+    },
+    {
+      "id": "M02",
+      "competency": "material",
+      "sources": [
+        "U-MAT",
+        "B-MAT"
+      ],
+      "principle": "El relieve fino debe responder a la forma y a la luz, no ser ruido aleatorio.",
+      "procedure": "Comparar superficie lisa y con relieve manteniendo color y rugosidad; respetar dirección de vetas y escala.",
+      "check": "El detalle no oculta las masas de valor a escala móvil.",
+      "risk": "Grano excesivo y falsa rugosidad pintada."
+    },
+    {
+      "id": "P01",
+      "competency": "projection",
+      "sources": [
+        "U-CAM",
+        "B-CAM",
+        "U-SPRITE"
+      ],
+      "principle": "Proyectar la huella y anclar el volumen en un sistema ortográfico común.",
+      "procedure": "Fijar escala, cámara, PPU y pivote; verificar huella antes de sustituir arte.",
+      "check": "Dos copias ortográficas mantienen tamaño; al sustituir sprite su pie no se mueve.",
+      "risk": "Mezcla de ángulos o anclaje en centro de lienzo."
+    },
+    {
+      "id": "P02",
+      "competency": "projection",
+      "sources": [
+        "U-SPRITE",
+        "U-SORT"
+      ],
+      "principle": "La profundidad de la huella determina oclusión, no la altura del dibujo.",
+      "procedure": "Comprobar orden real de Unity, capa, pivote, sistema FootOrder y desempate. Reproducir tránsito por delante y detrás.",
+      "check": "Secuencia de cruce estable, sin cambios prematuros ni parpadeo.",
+      "risk": "Ordenar por centro de sprite alto."
+    },
+    {
+      "id": "C01",
+      "competency": "composition",
+      "sources": [
+        "U-CAM",
+        "P-FORM"
+      ],
+      "principle": "Usar tres masas de valor para comunicar entrada, camino y destino.",
+      "procedure": "Reducir contraste de decoración y comprobar en gris a escala móvil. No bloquear el recorrido.",
+      "check": "Observador puede identificar y trazar recorrido sin flechas.",
+      "risk": "Detalle de alto contraste parece falsa salida."
+    },
+    {
+      "id": "C02",
+      "competency": "composition",
+      "sources": [
+        "U-CAM",
+        "B-CAM",
+        "P-FORM"
+      ],
+      "principle": "Aislar variables compositivas con encuadre fijo.",
+      "procedure": "Cambiar contraste o silueta por separado; comprobar tangencias y jerarquía en color y gris.",
+      "check": "Comparación ciega, misma cámara, objetivo visible y camino legible.",
+      "risk": "Confundir mejora por zoom con mejora artística."
+    }
+  ]
+}
