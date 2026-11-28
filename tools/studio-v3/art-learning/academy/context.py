@@ -16,6 +16,10 @@ def load():
         ids.add(card["id"])
         if card["competency"] not in ROLES["auditor"]:raise ValueError("Invalid competency")
         if not all(isinstance(card[k],str) and card[k].strip() for k in ("principle","procedure","check","risk")):raise ValueError("Incomplete practice")
+    for practice in t.get("verified_lab_practices",[]):
+        if practice["id"] in ids or practice["competency"] not in ROLES["auditor"]:raise ValueError("Invalid lab practice")
+        ids.add(practice["id"])
+        if practice["evidence"]["status"]!="adaptive_lab_only_not_unity" or not practice["evidence"]["run"]:raise ValueError("Missing scoped lab evidence")
     return c,t,known
 def brief(role,competencies=None):
     if role not in ROLES:raise ValueError("Unknown academy role")
@@ -26,4 +30,4 @@ def brief(role,competencies=None):
     sources={s for x in cards for s in x["sources"]}
     return {"version":t["version"],"role":role,"status":t["provenance"]["status"],
       "contract":"Apply relevant practice to an isolated candidate; show evidence and protected strengths, do not claim course completion or scene gain. Use matched native A/B before owner review.",
-      "cards":cards,"sources":[{"id":s,"url":known[s]["url"],"read_status":"direct_text" if s in t["provenance"]["direct_text"] else "curated_only"} for s in sorted(sources)]}
+      "cards":cards,"verified_lab_practices":[x for x in t.get("verified_lab_practices",[]) if x["competency"] in chosen],"sources":[{"id":s,"url":known[s]["url"],"read_status":"direct_text" if s in t["provenance"]["direct_text"] else "curated_only"} for s in sorted(sources)]}
