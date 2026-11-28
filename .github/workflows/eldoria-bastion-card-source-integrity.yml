@@ -1,0 +1,57 @@
+name: Eldoria Bastion UI art source integrity (hosted Ubuntu, no Windows)
+on:
+  push:
+    branches: [feature/eldoria-bastion-card-fidelity-proof-20261115]
+    paths:
+      - 'tools/bastion-card-fidelity-pilot/**'
+      - 'Unity/Assets/Eldoria/BastionCardFidelityPilot/**'
+      - '.github/workflows/eldoria-bastion-card-source-integrity.yml'
+  pull_request:
+    paths:
+      - 'tools/bastion-card-fidelity-pilot/**'
+      - 'Unity/Assets/Eldoria/BastionCardFidelityPilot/**'
+      - '.github/workflows/eldoria-bastion-card-source-integrity.yml'
+permissions:
+  contents: read
+jobs:
+  source-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/bastion-card-fidelity-pilot/**
+            /Unity/Assets/Eldoria/BastionCardFidelityPilot/**
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/panel.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/panel.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/upgrade.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/upgrade.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference/carved_context.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference/carved_context.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/upgrade_button.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/upgrade_button.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/ApprovedContour/owner_gold_border.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/ApprovedContour/owner_gold_border.png.meta
+      - name: Install Pillow for SOURCE-ONLY art contact sheet
+        run: python3 -m pip install --disable-pip-version-check --quiet pillow
+      - name: Check six original art SHA256 hashes and generate source-only material sheet
+        run: python3 tools/bastion-card-fidelity-pilot/verify_sources.py
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Parse Editor-only C-sharp with Roslyn, not a Unity compile
+        run: |
+          dotnet run --project tools/bastion-card-fidelity-pilot/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BastionCardFidelityPilot/Editor/BastionCardFidelityCapture.cs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-bastion-source-sprites-and-integrity
+          path: source-proof/*
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "request_id": "eldoria-bastion-card-fidelity-proof-20261115",
+  "workstream_id": "eldoria-bastion-card-fidelity-proof-20261115",
+  "enabled": true,
+  "status": "ACTIVE_SOURCE_PILOT",
+  "asset_or_sector": "Ficha real del Bastión en interfaz Vigilia; comparación A/B de artes originales de la referencia del propietario",
+  "profile": "ui_surface_fidelity",
+  "visual_gate_state": "UNITY_REAL_AB_PENDING",
+  "ai_authorship_policy": "owner_reference_original_reuse",
+  "diagnosis": "La ficha integrada usa CleanRoom/panel y CleanRoom/upgrade en vez de OwnerReference/carved_context y OwnerControls/upgrade_button. La primera es arte recreado; probar restaurar fuentes originales sin ocultar datos 3D ni modificar sistemas.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_ui_source_modified": false,
+    "temporary_editor_only_swap": true,
+    "unity_camera_ab": true
+  },
+  "validation": {
+    "source_gate": "Assets originales en Resources y .meta con GUID preservados, escena/guardado intactos, solo Editor; verificar URLs y métodos; sin concurrencia Windows",
+    "final_gate": "8 capturas genuinas Unity de una misma escena, Bastión y cámara; evaluación visual contra referencia 864x1536; botones/3D/textos vivos; WebGL+iPhone por separado"
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0
+}
