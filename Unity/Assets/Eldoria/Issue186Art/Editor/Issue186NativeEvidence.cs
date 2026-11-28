@@ -416,7 +416,7 @@ namespace Eldoria.Issue186Art.Editor
                          "issue186.claim","ClaimReward",true,canvas,buttonRect,pointer,halo) &&
                      pointer.gameObject.activeInHierarchy &&
                      !halo.gameObject.activeInHierarchy,
-                    "Runtime tutorial did not recover without double-painting the contact halo");
+                    "Runtime tutorial did not recover when modal obstruction disappeared (or the contact halo was double-painted)");
                 raycastHits++;
                 // Drive the actual Button IPointerClickHandler using the
                 // frontmost real Unity hit, not Button.onClick.Invoke().
