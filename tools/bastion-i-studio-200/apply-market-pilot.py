@@ -57,7 +57,7 @@ def world(s):
                 Vector2 offset=name=="CasasDelPeso"?MarketPilotPesoOffset:MarketPilotStallOffset;
                 visual.transform.localPosition=marketPilotFeet[name]+(enabled?(Vector3)offset:Vector3.zero);
                 visual.sortingOrder=FootOrder(visual.transform.localPosition.y);
-                visual.GetComponent<Modular25DArchitecturalShadow>()?.Refresh();
+                if(visual.gameObject.activeInHierarchy)visual.GetComponent<Modular25DArchitecturalShadow>()?.Refresh();
             }
         }""".replace("PESO",v2("peso_dx","peso_dy")).replace("STALL",v2("stall_dx","stall_dy")))
     s=replace(s,"            RecoveredPropsPlaced++;\n            return visual.transform;","""            if(name=="CasasDelPeso"||name=="PuestoDeAbastos")
@@ -68,7 +68,7 @@ def world(s):
             }
             RecoveredPropsPlaced++;
             return visual.transform;""")
-    s=replace(s,"            grainYard.gameObject.SetActive(GranaryRenderer.gameObject.activeSelf);","""            grainYard.gameObject.SetActive(GranaryRenderer.gameObject.activeSelf);
+    s=replace(s,"            quarryYard.gameObject.SetActive(StoneworksRenderer.gameObject.activeSelf);","""            quarryYard.gameObject.SetActive(StoneworksRenderer.gameObject.activeSelf);
             bool marketPilot=MarketPilotEnabled && DisplayedBastionLevel==5 && GranaryRenderer.gameObject.activeSelf;
             ApplyMarketPilot(marketPilot);
             GetComponentInChildren<Modular25DGround>()?.SetMarketPilot(marketPilot);""")
