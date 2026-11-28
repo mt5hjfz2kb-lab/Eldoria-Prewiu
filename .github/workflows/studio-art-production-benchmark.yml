@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   experiment:
-    if: github.run_attempt == 1 && github.event.head_commit.message == 'Run new cooperage art learning production benchmark'
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Recover cooperage benchmark without duplicate spend'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
@@ -26,6 +26,8 @@ jobs:
           test "$(gh api "repos/$REPO/actions/artifacts/15238537968" --jq .digest)" = sha256:7416cb069684e5c43f9f02fb7768886049899aa21e8e491bb872bda675fc94b8
           test "$(gh api "repos/$REPO/actions/artifacts/15228534990" --jq .digest)" = sha256:d1f4aaee7ebcb63a631a56e94e16cac1297a533fad9a3229353d80ebea6e1dba
           test "$(gh api "repos/$REPO/actions/artifacts/15240390309" --jq .digest)" = sha256:1c9a3f1fdef6abaa9015bcfab0c7ef85023c5c4cc1336af6de99571d72b128a6
+          test "$(gh api "repos/$REPO/actions/runs/46129117635" --jq .conclusion)" = failure
+          test "$(gh api "repos/$REPO/actions/artifacts/15257182056" --jq .digest)" = sha256:bc56563f7e07f3f59b40563a74c747d0c02f9bcab0df3466ff782963d7f1af69
           mkdir -p "$RUNNER_TEMP/studio" "$RUNNER_TEMP/production-learning"
           cd "$RUNNER_TEMP/studio"
           for n in studio.py economics.py rates-20261125.json; do
@@ -34,7 +36,7 @@ jobs:
           for n in guard.py decision_gate.py cases.json test_guard.py test_decision_gate.py; do
             gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/$n?ref=92d9e092c4d250dda9097b06d00b3c3fa94de64b" > "$n"
           done
-          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/production_benchmark.py?ref=c916b7633d54f654a2cab81becc5470628fa3f9e" > production_benchmark.py
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/production_benchmark_recovery.py?ref=568ffc199a94c6e60628a6f254886a8839c04220" > production_benchmark.py
           p=Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/ToneleriaDelPostigo.png
           for ext in "" .meta; do
             curl --fail --silent --show-error --location -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/$REPO/contents/$p$ext?ref=f27f4774e32efc5ad046478a07747eead4256c3e" -o "$RUNNER_TEMP/donor.png$ext"
@@ -66,7 +68,13 @@ jobs:
           run-id: 46086285026
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/negative
-      - name: Same model and source, control versus learned production and blinded review
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-art-production-learning
+          run-id: 46129117635
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/production-learning
+      - name: Reuse both plans and control image; finish learned candidate and blind review
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
