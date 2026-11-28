@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "version": "2.2.0",
+  "scope": "Embedded stat plates and data-rendered N/E/S/O",
+  "tested": "Chromium local",
+  "sizes": [
+    "gallery 1440x1120",
+    "gallery 768x1024",
+    "gallery 390x844",
+    "mobile 390x844",
+    "mobile 320x720",
+    "mobile 430x932",
+    "board 390x844"
+  ],
+  "platesChecked": 136,
+  "horizontalCenterDeltaSvgUnits": "<2",
+  "fourTens": "PASS",
+  "unchanged": [
+    "Card 5:8",
+    "Four rarity frames",
+    "Indestructible overlay",
+    "Real game data",
+    "Beta unchanged"
+  ],
+  "pending": [
+    "Unity",
+    "physical iPhone",
+    "Art approval"
+  ]
+}

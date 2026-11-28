@@ -1,0 +1,37 @@
+{
+  "version": "2.5",
+  "localAuditStatus": "PASS",
+  "source": "Chromium local using reconstructed approved art and matching V2.4 presentation sources",
+  "mobileConfigurations": 24,
+  "viewports": [
+    "390x844",
+    "320x720",
+    "430x932"
+  ],
+  "rarities": [
+    "common",
+    "rare",
+    "epic",
+    "legendary"
+  ],
+  "states": [
+    "normal",
+    "indestructible"
+  ],
+  "cardAspect": "5:8",
+  "textClipping": 0,
+  "horizontalOverflow": 0,
+  "statCenterErrorMaxPx": 0.67,
+  "effectFontAt265px": 12.59,
+  "legendaryLabelSideMarginPx": 8.09,
+  "codeChanges": [
+    "effect font 4.75cqw at >=245px",
+    "LEGENDARIA label 3.65cqw and .005em tracking"
+  ],
+  "replay": "python src/test_mobile_four_rarities_v25.py (repo checkout, not yet executed)",
+  "pending": [
+    "Unity rendering",
+    "Physical iPhone Safari",
+    "Owner art approval"
+  ]
+}
