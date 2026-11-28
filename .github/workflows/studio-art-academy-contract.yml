@@ -19,7 +19,7 @@ jobs:
           root="$RUNNER_TEMP/academy"
           mkdir -p "$root/academy"
           cd "$root"
-          for f in cases.json guard.py decision_gate.py test_guard.py test_decision_gate.py test_academy.py academy/context.py academy/curriculum.json academy/techniques.json; do
-            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/$f?ref=a4fd12c985d4f17f9ce76f3e73b1f379bb26254f" > "$f"
+          for f in cases.json guard.py decision_gate.py test_guard.py test_decision_gate.py test_academy.py competition_gate.py test_competition_gate.py academy/context.py academy/curriculum.json academy/techniques.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/$f?ref=a26839061f5b83b7872878dfd962133fe5ba52c1" > "$f"
           done
           python3 -m unittest discover -v
