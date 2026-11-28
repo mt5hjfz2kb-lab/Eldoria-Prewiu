@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-28T14:55:02.946494+00:00",
+  "updated_at": "2026-11-28T15:10:49.348619+00:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10027,7 +10027,7 @@
       },
       "owner": "chatgpt-corona-brecha-commercial-20261126",
       "ownership_state": "claimed",
-      "ownership_revision": 37,
+      "ownership_revision": 38,
       "write_scope_released": false,
       "branch": "experiment/valoria-ciudad-region-unificada-20261121",
       "status": "active",
@@ -11434,7 +11434,7 @@
         "run_id": 46155958989,
         "source_sha": "f27f4774e32efc5ad046478a07747eead4256c3e",
         "scope": "Owner authorized competition local repair isolated scratch; no experimental source writes",
-        "state": "native_reserved",
+        "state": "resource_returned",
         "reserved_at": "2026-11-28T14:55:02.946494+00:00",
         "prior_rotation": {
           "resource": "windows-runner-heavy",
@@ -11690,7 +11690,10 @@
             "No game changes or artistic approval from resource return",
             "Recheck live owner and actual native processes"
           ]
-        }
+        },
+        "terminal_native_job": 141016099404,
+        "native_conclusion": "success",
+        "returned_at": "2026-11-28T15:10:49.348619+00:00"
       }
     },
     {
@@ -24185,265 +24188,279 @@
     "resource": "windows-runner-heavy",
     "mode": "exclusive_one_workstream_at_a_time",
     "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-    "current_run_id": 46155958989,
-    "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+    "current_run_id": null,
     "next_workstream": null,
-    "status": "issue200_art_competition_repair",
-    "authorized_by": "Owner authorized art competition native context proof; existing Bastion resource holder",
+    "return_to": null,
+    "status": "corona_native_reserved",
+    "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
     "previous_rotation": {
       "resource": "windows-runner-heavy",
       "mode": "exclusive_one_workstream_at_a_time",
       "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-      "current_run_id": null,
+      "current_run_id": 46155958989,
+      "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
       "next_workstream": null,
-      "return_to": null,
-      "status": "corona_native_reserved",
-      "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
+      "status": "issue200_art_competition_repair",
+      "authorized_by": "Owner authorized art competition native context proof; existing Bastion resource holder",
       "previous_rotation": {
         "resource": "windows-runner-heavy",
         "mode": "exclusive_one_workstream_at_a_time",
         "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-        "current_run_id": 46155305736,
-        "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+        "current_run_id": null,
         "next_workstream": null,
-        "status": "issue200_art_competition",
-        "authorized_by": "Owner authorized art competition native context proof; existing Bastion resource holder",
+        "return_to": null,
+        "status": "corona_native_reserved",
+        "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
         "previous_rotation": {
           "resource": "windows-runner-heavy",
           "mode": "exclusive_one_workstream_at_a_time",
           "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-          "current_run_id": null,
+          "current_run_id": 46155305736,
+          "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
           "next_workstream": null,
-          "return_to": null,
-          "status": "corona_native_reserved",
-          "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
+          "status": "issue200_art_competition",
+          "authorized_by": "Owner authorized art competition native context proof; existing Bastion resource holder",
           "previous_rotation": {
             "resource": "windows-runner-heavy",
             "mode": "exclusive_one_workstream_at_a_time",
             "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-            "current_run_id": 46151321457,
-            "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+            "current_run_id": null,
             "next_workstream": null,
-            "status": "issue200_academy_bastion_v",
-            "authorized_by": "Owner authorized Bastion V academy transfer proof; existing Bastion resource holder",
+            "return_to": null,
+            "status": "corona_native_reserved",
+            "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
             "previous_rotation": {
               "resource": "windows-runner-heavy",
               "mode": "exclusive_one_workstream_at_a_time",
               "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-              "current_run_id": null,
+              "current_run_id": 46151321457,
+              "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
               "next_workstream": null,
-              "return_to": null,
-              "status": "corona_native_reserved",
-              "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
+              "status": "issue200_academy_bastion_v",
+              "authorized_by": "Owner authorized Bastion V academy transfer proof; existing Bastion resource holder",
               "previous_rotation": {
                 "resource": "windows-runner-heavy",
                 "mode": "exclusive_one_workstream_at_a_time",
                 "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                "current_run_id": 46086285026,
-                "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+                "current_run_id": null,
                 "next_workstream": null,
-                "status": "issue200_market_pilot",
-                "authorized_by": "Owner authorized Bastion V district pilot; existing Bastion resource holder",
+                "return_to": null,
+                "status": "corona_native_reserved",
+                "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
                 "previous_rotation": {
                   "resource": "windows-runner-heavy",
                   "mode": "exclusive_one_workstream_at_a_time",
                   "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                  "current_run_id": null,
+                  "current_run_id": 46086285026,
+                  "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
                   "next_workstream": null,
-                  "return_to": null,
-                  "status": "corona_native_reserved",
-                  "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
+                  "status": "issue200_market_pilot",
+                  "authorized_by": "Owner authorized Bastion V district pilot; existing Bastion resource holder",
                   "previous_rotation": {
                     "resource": "windows-runner-heavy",
                     "mode": "exclusive_one_workstream_at_a_time",
                     "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                    "current_run_id": 46083090248,
-                    "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+                    "current_run_id": null,
                     "next_workstream": null,
-                    "status": "issue200_cycle_spatial",
-                    "authorized_by": "Owner authorized I-V cycle production; existing Bastion resource holder",
+                    "return_to": null,
+                    "status": "corona_native_reserved",
+                    "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
                     "previous_rotation": {
                       "resource": "windows-runner-heavy",
                       "mode": "exclusive_one_workstream_at_a_time",
                       "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                      "current_run_id": null,
+                      "current_run_id": 46083090248,
+                      "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
                       "next_workstream": null,
-                      "return_to": null,
-                      "status": "corona_native_reserved",
-                      "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
+                      "status": "issue200_cycle_spatial",
+                      "authorized_by": "Owner authorized I-V cycle production; existing Bastion resource holder",
                       "previous_rotation": {
                         "resource": "windows-runner-heavy",
                         "mode": "exclusive_one_workstream_at_a_time",
                         "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                        "current_run_id": 46080267768,
-                        "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+                        "current_run_id": null,
                         "next_workstream": null,
-                        "status": "issue200_cycle_recovery",
-                        "authorized_by": "Owner authorized I-V cycle production; existing Bastion resource holder",
+                        "return_to": null,
+                        "status": "corona_native_reserved",
+                        "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
                         "previous_rotation": {
                           "resource": "windows-runner-heavy",
                           "mode": "exclusive_one_workstream_at_a_time",
                           "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                          "current_run_id": null,
+                          "current_run_id": 46080267768,
+                          "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
                           "next_workstream": null,
-                          "return_to": null,
-                          "status": "corona_native_reserved",
-                          "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
+                          "status": "issue200_cycle_recovery",
+                          "authorized_by": "Owner authorized I-V cycle production; existing Bastion resource holder",
                           "previous_rotation": {
                             "resource": "windows-runner-heavy",
                             "mode": "exclusive_one_workstream_at_a_time",
                             "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                            "current_run_id": 46075215962,
-                            "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+                            "current_run_id": null,
                             "next_workstream": null,
-                            "status": "issue200_cycle_production",
-                            "authorized_by": "Owner authorized I-V cycle production; existing Bastion resource holder",
+                            "return_to": null,
+                            "status": "corona_native_reserved",
+                            "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
                             "previous_rotation": {
                               "resource": "windows-runner-heavy",
                               "mode": "exclusive_one_workstream_at_a_time",
                               "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                              "current_run_id": null,
+                              "current_run_id": 46075215962,
+                              "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
                               "next_workstream": null,
-                              "return_to": null,
-                              "status": "corona_native_reserved",
-                              "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
+                              "status": "issue200_cycle_production",
+                              "authorized_by": "Owner authorized I-V cycle production; existing Bastion resource holder",
                               "previous_rotation": {
                                 "resource": "windows-runner-heavy",
                                 "mode": "exclusive_one_workstream_at_a_time",
                                 "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                                "current_run_id": 46061176351,
-                                "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+                                "current_run_id": null,
                                 "next_workstream": null,
-                                "status": "issue200_sawmill_adoption",
-                                "authorized_by": "Owner explicitly approved adoption of only sawmill C in experimental; existing Bastion holder",
+                                "return_to": null,
+                                "status": "corona_native_reserved",
+                                "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
                                 "previous_rotation": {
                                   "resource": "windows-runner-heavy",
                                   "mode": "exclusive_one_workstream_at_a_time",
                                   "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                                  "current_run_id": null,
+                                  "current_run_id": 46061176351,
+                                  "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
                                   "next_workstream": null,
-                                  "return_to": null,
-                                  "status": "corona_native_reserved",
-                                  "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
+                                  "status": "issue200_sawmill_adoption",
+                                  "authorized_by": "Owner explicitly approved adoption of only sawmill C in experimental; existing Bastion holder",
                                   "previous_rotation": {
                                     "resource": "windows-runner-heavy",
                                     "mode": "exclusive_one_workstream_at_a_time",
                                     "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                                    "current_run_id": 46050456084,
-                                    "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+                                    "current_run_id": null,
                                     "next_workstream": null,
-                                    "status": "issue200_bastion_i_native_v2",
-                                    "authorized_by": "Owner explicitly continues Issue200 B+C proof; existing Bastion resource holder, no write scope transfer",
+                                    "return_to": null,
+                                    "status": "corona_native_reserved",
+                                    "authorized_by": "Restore prior holder after terminal isolated Issue200 proof",
                                     "previous_rotation": {
                                       "resource": "windows-runner-heavy",
                                       "mode": "exclusive_one_workstream_at_a_time",
                                       "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                                      "current_run_id": null,
+                                      "current_run_id": 46050456084,
+                                      "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
                                       "next_workstream": null,
-                                      "return_to": null,
-                                      "status": "corona_native_reserved",
-                                      "authorized_by": "Existing designated return after Issue200 studio native proof terminal",
+                                      "status": "issue200_bastion_i_native_v2",
+                                      "authorized_by": "Owner explicitly continues Issue200 B+C proof; existing Bastion resource holder, no write scope transfer",
                                       "previous_rotation": {
                                         "resource": "windows-runner-heavy",
                                         "mode": "exclusive_one_workstream_at_a_time",
-                                        "current_workstream": "eldoria-studio-v3-autonomous-execution-20261126",
-                                        "current_run_id": 46032921829,
-                                        "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
-                                        "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
-                                        "status": "issue200_bastion_i_native_proof",
-                                        "authorized_by": "Owner-directed Issue200 real Unity proof using same studio temporary PC reservation; no scope transfer",
+                                        "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+                                        "current_run_id": null,
+                                        "next_workstream": null,
+                                        "return_to": null,
+                                        "status": "corona_native_reserved",
+                                        "authorized_by": "Existing designated return after Issue200 studio native proof terminal",
                                         "previous_rotation": {
                                           "resource": "windows-runner-heavy",
                                           "mode": "exclusive_one_workstream_at_a_time",
-                                          "authorized_by": "Owner-directed continued PR198 improvement; PC probe 45971461555 idle; temporary rotation",
                                           "current_workstream": "eldoria-studio-v3-autonomous-execution-20261126",
-                                          "current_run_id": null,
-                                          "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+                                          "current_run_id": 46032921829,
                                           "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
-                                          "status": "pr198_atelier_native",
+                                          "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+                                          "status": "issue200_bastion_i_native_proof",
+                                          "authorized_by": "Owner-directed Issue200 real Unity proof using same studio temporary PC reservation; no scope transfer",
                                           "previous_rotation": {
                                             "resource": "windows-runner-heavy",
-                                            "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
-                                            "authorized_at": "2026-11-26T09:50:00Z",
                                             "mode": "exclusive_one_workstream_at_a_time",
-                                            "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+                                            "authorized_by": "Owner-directed continued PR198 improvement; PC probe 45971461555 idle; temporary rotation",
+                                            "current_workstream": "eldoria-studio-v3-autonomous-execution-20261126",
                                             "current_run_id": null,
-                                            "next_workstream": null,
-                                            "return_to": null,
-                                            "status": "corona_native_reserved",
-                                            "previous_completed_run": 45969181310,
+                                            "next_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+                                            "return_to": "eldoria-valoria-modular25d-bastion1-20261119",
+                                            "status": "pr198_atelier_native",
+                                            "previous_rotation": {
+                                              "resource": "windows-runner-heavy",
+                                              "authorized_by": "Owner expressly transfers resources from Senda PR195 to Corona",
+                                              "authorized_at": "2026-11-26T09:50:00Z",
+                                              "mode": "exclusive_one_workstream_at_a_time",
+                                              "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+                                              "current_run_id": null,
+                                              "next_workstream": null,
+                                              "return_to": null,
+                                              "status": "corona_native_reserved",
+                                              "previous_completed_run": 45969181310,
+                                              "rules": [
+                                                "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
+                                                "Preserve Senda work; no cancellation or automatic return."
+                                              ],
+                                              "pr198_native_rotation_closed": {
+                                                "run": 45969181310,
+                                                "at": "2026-11-27T08:55:00Z",
+                                                "resource_only": true
+                                              }
+                                            },
                                             "rules": [
-                                              "Only isolated experimental Corona branch; no main gameplay or public beta; check live processes before Unity.",
-                                              "Preserve Senda work; no cancellation or automatic return."
-                                            ],
-                                            "pr198_native_rotation_closed": {
-                                              "run": 45969181310,
-                                              "at": "2026-11-27T08:55:00Z",
-                                              "resource_only": true
-                                            }
+                                              "Check live claim and native processes before launch; no production project changes.",
+                                              "Return to Corona after isolated render."
+                                            ]
                                           },
                                           "rules": [
-                                            "Check live claim and native processes before launch; no production project changes.",
-                                            "Return to Corona after isolated render."
+                                            "Check actual PC processes before Unity; scratch only",
+                                            "Return resource to canonical Bastion/Corona after terminal native job, no other write scope changes"
                                           ]
                                         },
                                         "rules": [
-                                          "Check actual PC processes before Unity; scratch only",
-                                          "Return resource to canonical Bastion/Corona after terminal native job, no other write scope changes"
+                                          "No game changes or art approval from resource return",
+                                          "Recheck actual owner and native processes"
                                         ]
-                                      },
-                                      "rules": [
-                                        "No game changes or art approval from resource return",
-                                        "Recheck actual owner and native processes"
-                                      ]
-                                    }
-                                  },
-                                  "rules": [
-                                    "No game changes or artistic approval from resource return",
-                                    "Recheck live owner and actual native processes"
-                                  ]
-                                }
-                              },
-                              "rules": [
-                                "No game changes or artistic approval from resource return",
-                                "Recheck live owner and actual native processes"
-                              ]
-                            }
-                          },
-                          "rules": [
-                            "No game changes or artistic approval from resource return",
-                            "Recheck live owner and actual native processes"
-                          ]
-                        }
-                      },
-                      "rules": [
-                        "No game changes or artistic approval from resource return",
-                        "Recheck live owner and actual native processes"
-                      ]
-                    }
-                  },
-                  "rules": [
-                    "No game changes or artistic approval from resource return",
-                    "Recheck live owner and actual native processes"
-                  ]
-                }
-              },
-              "rules": [
-                "No game changes or artistic approval from resource return",
-                "Recheck live owner and actual native processes"
-              ]
-            }
-          },
-          "rules": [
-            "No game changes or artistic approval from resource return",
-            "Recheck live owner and actual native processes"
-          ]
-        }
-      },
-      "rules": [
-        "No game changes or artistic approval from resource return",
-        "Recheck live owner and actual native processes"
-      ]
-    }
+                                      }
+                                    },
+                                    "rules": [
+                                      "No game changes or artistic approval from resource return",
+                                      "Recheck live owner and actual native processes"
+                                    ]
+                                  }
+                                },
+                                "rules": [
+                                  "No game changes or artistic approval from resource return",
+                                  "Recheck live owner and actual native processes"
+                                ]
+                              }
+                            },
+                            "rules": [
+                              "No game changes or artistic approval from resource return",
+                              "Recheck live owner and actual native processes"
+                            ]
+                          }
+                        },
+                        "rules": [
+                          "No game changes or artistic approval from resource return",
+                          "Recheck live owner and actual native processes"
+                        ]
+                      }
+                    },
+                    "rules": [
+                      "No game changes or artistic approval from resource return",
+                      "Recheck live owner and actual native processes"
+                    ]
+                  }
+                },
+                "rules": [
+                  "No game changes or artistic approval from resource return",
+                  "Recheck live owner and actual native processes"
+                ]
+              }
+            },
+            "rules": [
+              "No game changes or artistic approval from resource return",
+              "Recheck live owner and actual native processes"
+            ]
+          }
+        },
+        "rules": [
+          "No game changes or artistic approval from resource return",
+          "Recheck live owner and actual native processes"
+        ]
+      }
+    },
+    "rules": [
+      "No game changes or artistic approval from resource return",
+      "Recheck live owner and actual native processes"
+    ]
   }
 }
