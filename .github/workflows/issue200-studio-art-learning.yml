@@ -1,0 +1,71 @@
+name: Studio art learning - retrospective calibration
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/issue200-studio-art-learning.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: issue200-studio-art-learning
+  cancel-in-progress: false
+jobs:
+  calibrate:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Calibrate Studio art learning with archived native cases'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify historical evidence and load curated learning module
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$REPO/actions/artifacts/15228534990" --jq .digest)" = sha256:d1f4aaee7ebcb63a631a56e94e16cac1297a533fad9a3229353d80ebea6e1dba
+          test "$(gh api "repos/$REPO/actions/artifacts/15238712971" --jq .digest)" = sha256:f6e5395e26eb36966ddff9af1c0ff4331b5900400d6252970679671b409d449a
+          test "$(gh api "repos/$REPO/actions/artifacts/15240390309" --jq .digest)" = sha256:1c9a3f1fdef6abaa9015bcfab0c7ef85023c5c4cc1336af6de99571d72b128a6
+          test "$(gh api "repos/$REPO/actions/runs/46086285026" --jq .conclusion)" = success
+          mkdir -p "$RUNNER_TEMP/learning" "$RUNNER_TEMP/learning-results"
+          cd "$RUNNER_TEMP/learning"
+          for f in studio.py economics.py rates-20261125.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$f?ref=9fbdb203269b951a252de58d7a0357d71a841480" > "$f"
+          done
+          for f in cases.json guard.py test_guard.py calibrate.py; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/$f?ref=64cab24138dcb6e8160ca280601ac87f0e5a2cf7" > "$f"
+          done
+          python3 -m pip install --quiet pillow
+          python3 -m py_compile guard.py test_guard.py calibrate.py
+          python3 -m unittest -v test_guard 2>&1 | tee "$RUNNER_TEMP/learning-results/offline-tests.txt"
+          cp cases.json "$RUNNER_TEMP/learning-results/cases.json"
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-native-comparison-delivery
+          run-id: 46061176351
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/sawmill
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-cycle-spatial-audit
+          run-id: 46083090248
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/spatial
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-market-final-audit
+          run-id: 46086285026
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/market
+      - name: Six bounded actual model calls comparing old and memory-conditioned review
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/learning"
+          python3 -u calibrate.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-studio-art-learning-results
+          path: ${{ runner.temp }}/learning-results
+          if-no-files-found: error
+          retention-days: 30
