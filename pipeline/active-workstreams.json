@@ -12201,13 +12201,13 @@
     {
       "id": "eldoria-studio-v3-autonomous-execution-20261126",
       "title": "Eldoria Development Studio V3 — isolated autonomous execution benchmark",
-      "owner": "chatgpt-studio-v3-rankings-premium-20261127",
+      "owner": "chatgpt-eldoria-rankings-art-continuation-20261128",
       "ownership_state": "claimed",
-      "ownership_revision": 16,
+      "ownership_revision": 17,
       "write_scope_released": false,
       "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
       "status": "active",
-      "phase": "PR198_ATELIER_NATIVE_CAPTURE",
+      "phase": "PR198_HOSTED_ART_CONTINUATION",
       "claimed_at": "2026-11-26T19:46:00Z",
       "base_main_sha": "58ec6108b9fdb23d2ee2505ab17c8c19662ba37a",
       "base_studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
@@ -12226,7 +12226,7 @@
         "handoff": "Preserve V2/Corona owner and budgets; no main game modifications; release only own scope after validation."
       },
       "art_approved": false,
-      "previous_owner": "chatgpt-studio-v3-relicario-premium-20261126",
+      "previous_owner": "chatgpt-studio-v3-rankings-premium-20261127",
       "delivery_head": "bb8965f0534b13f78845b4472fb1be52c3128221",
       "evidence": {
         "final_run": 45887946346,
@@ -12254,7 +12254,7 @@
         "windows_runner": false
       },
       "remaining": "Native connections and real capture verified. Premium art goal remains unfulfilled; no source or gameplay integration or approval.",
-      "next": "Reuse verified Blender MCP and Unity CLI/MCP scratch route; iterate only on artistic quality within separate PR198 budget and obtain exclusive native lease before rendering.",
+      "next": "Prepare and dispatch one bounded hosted role mission on exact PR198, reuse C art, independent audit and retained artifacts. Never promote to production before native validation after #201/#190.",
       "pilot": {
         "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
         "source_path": "tools/senda-brecha/src/rules.js",
@@ -12565,6 +12565,20 @@
           "native_input_artifact": 15185855596,
           "pc_probe_job": 140412650090,
           "lease_revision": 14
+        },
+        "continuation_20261128": {
+          "id": "pr198-six-view-refinement-20261128",
+          "source_sha": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+          "prior_worst_case_bound_usd": "4.16061740",
+          "new_reservation_usd": "0.60",
+          "maximum_aggregate_usd": "4.76061740",
+          "expiry": "2026-12-02",
+          "roles": {
+            "director": "0.15",
+            "integrator": "0.30",
+            "audit": "0.15"
+          },
+          "reason": "Owner requests the artists continue the same existing USD5 ranking mission. Reserve only previously unallocated portion under conservative previous bound; no renewed or independent budget, no image generation charges or retries. Reuse existing original art and compare actual browser captures; preserve exact PR198 and Windows lease."
         }
       },
       "issue200_native_proof": {
@@ -12614,7 +12628,17 @@
         "terminal_native_job": 140621228968,
         "native_conclusion": "success",
         "returned_at": "2026-11-27T16:40:47.564913+00:00"
-      }
+      },
+      "ownership_history": [
+        {
+          "from": "chatgpt-studio-v3-rankings-premium-20261127",
+          "to": "chatgpt-eldoria-rankings-art-continuation-20261128",
+          "previous_revision": 16,
+          "revision": 17,
+          "transferred_at": "2026-11-28",
+          "reason": "Owner expressly requests continued studio art work for PR198 while #201 and tutorial are separate. Hosted only; no Windows, no change to PR198 source."
+        }
+      ]
     }
   ],
   "history": [
