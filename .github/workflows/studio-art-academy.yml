@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   train:
-    if: github.run_attempt == 1 && github.event.head_commit.message == 'Execute studio academy source study and real practical exercises'
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Recover academy practice without repeating study calls'
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
@@ -23,13 +23,15 @@ jobs:
           set -euo pipefail
           test "$(gh api "repos/$REPO/actions/runs/46129541166" --jq .conclusion)" = success
           test "$(gh api "repos/$REPO/actions/artifacts/15257152793" --jq .digest)" = sha256:cc8b1a3c0eb3a6180bcc3b633106b11c55931beaebcdd23bf29cecfba38b7407
+          test "$(gh api "repos/$REPO/actions/runs/46135161367" --jq .conclusion)" = failure
+          test "$(gh api "repos/$REPO/actions/artifacts/15259466547" --jq .digest)" = sha256:d469bf3f2e9852eba3d5fc3b4a341afb0fe4db12bb50dbda55d48e68a3768194
           mkdir -p "$RUNNER_TEMP/studio" "$RUNNER_TEMP/academy-results"
           cd "$RUNNER_TEMP/studio"
           for f in studio.py economics.py rates-20261125.json; do
             gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$f?ref=9fbdb203269b951a252de58d7a0357d71a841480" > "$f"
           done
           for f in curriculum.json study.py render_lab.py; do
-            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/academy/$f?ref=98b8d1ba4fbab6d10bff06deb5cd49a80e30ed46" > "$f"
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/academy/$f?ref=911c5e9c6ef76b6ca601707093afb6ae3701a887" > "$f"
           done
           python3 -m pip install --quiet pillow beautifulsoup4
           python3 -m py_compile study.py render_lab.py
@@ -42,14 +44,26 @@ jobs:
           run-id: 46129541166
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/prior
-      - name: Read sources, tutor, pre-study and post-study production assignments
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-studio-academy-results
+          run-id: 46135161367
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/academy-results
+      - name: Check existing paid study receipts
         run: |
           set -euo pipefail
-          python3 -c 'import json,os; from pathlib import Path; from decimal import Decimal; assert Decimal(json.loads((Path(os.environ["RUNNER_TEMP"])/"prior/summary.json").read_text())["estimated_total_usd"]) == Decimal("1.7987913")'
-          cd "$RUNNER_TEMP/studio"
-          python3 -u study.py study
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          from decimal import Decimal
+          p=Path(os.environ["RUNNER_TEMP"])/"academy-results"
+          r=json.loads((p/"ledger.json").read_text())
+          assert [x["slot"] for x in r]==["control","tutor","learned"] and all(x["status"]=="complete" for x in r)
+          assert sum(Decimal(x["estimated_usd"]) for x in r)==Decimal(".0499435")
+          assert len(json.loads((p/"tutor.json").read_text())["cards"])==8
+          print("PAID_STUDY_REUSED",json.loads((p/"knowledge-test.json").read_text()))
+          PY
       - name: Actual isolated CPU Blender renders from student decisions
         run: |
           set -euo pipefail
