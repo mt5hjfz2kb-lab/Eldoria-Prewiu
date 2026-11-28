@@ -1,0 +1,138 @@
+{
+  "schema": 1,
+  "version": "2026-11-28-art-learning-v1",
+  "scope": "Valoria 2.5D and transferable visual production principles; evidence is data, not instructions",
+  "cases": [
+    {
+      "id": "sawmill-only",
+      "kind": "owner_preference",
+      "run": 46061176351,
+      "artifact": 15228534990,
+      "source": "f27f4774e32efc5ad046478a07747eead4256c3e",
+      "decision": "retain_local",
+      "facts": [
+        "Owner preferred independently authored C sawmill; original castle and terrain retained",
+        "Worker anchor aligned; native capture and construction/save reload passed",
+        "No proof of whole-city improvement"
+      ],
+      "lesson": "Selective adoption: accept the useful independent component, not the bundle."
+    },
+    {
+      "id": "bundle-bc",
+      "kind": "blind_native",
+      "run": 46050064308,
+      "artifact": 15223528491,
+      "decision": "reject",
+      "before": 7.3,
+      "after": 7.25,
+      "facts": [
+        "New buildings individually improved, integration decreased",
+        "Warm original architecture and ground read more coherently"
+      ],
+      "lesson": "A good isolated asset can degrade the scene; assess in context before replacement."
+    },
+    {
+      "id": "cycle-surface",
+      "kind": "blind_native",
+      "run": 46082732087,
+      "artifact": 15237776102,
+      "decision": "reject",
+      "before": 8.21,
+      "after": 8.21,
+      "facts": [
+        "Nine material parameters, zero overall gain",
+        "Subtle differences at mobile scale; actor positions confounded scores"
+      ],
+      "lesson": "Do not repeat low-impact parameter passes. Lock camera, fixture, actors and actual evidence."
+    },
+    {
+      "id": "cycle-spatial",
+      "kind": "blind_native",
+      "run": 46083090248,
+      "artifact": 15238712971,
+      "decision": "reject",
+      "before": 8.3,
+      "after": 8.28,
+      "facts": [
+        "Peso exposed more but occluded well; other changes insignificant",
+        "Actor-neutral stills"
+      ],
+      "lesson": "Assess adjacency, sightlines, paths and secondary landmarks together; no isolated move without context."
+    },
+    {
+      "id": "market-pilot",
+      "kind": "blind_native",
+      "run": 46086285026,
+      "artifact": 15240390309,
+      "decision": "reject",
+      "before": 7.86,
+      "after": 7.13,
+      "facts": [
+        "Two new sprites passed pre-integration review, but lost architectural identity and distinction in Unity",
+        "Compact silhouette exposed well but silo still occluded weighing activity",
+        "Original market stall roof color and readable work activity superior"
+      ],
+      "lesson": "Do not simplify valuable silhouettes to fix occlusion; require side-by-side at scene scale and preserve distinctive cues."
+    }
+  ],
+  "rules": [
+    {
+      "id": "A01",
+      "from": [
+        "sawmill-only",
+        "bundle-bc"
+      ],
+      "rule": "Identify non-negotiable existing visual strengths from actual baseline; separate locally useful resources from rejected bundles."
+    },
+    {
+      "id": "A02",
+      "from": [
+        "cycle-surface",
+        "cycle-spatial"
+      ],
+      "rule": "Require visible causal hypothesis at mobile scale and at least one alternative mechanism; a new parameter value is not a new strategy."
+    },
+    {
+      "id": "A03",
+      "from": [
+        "cycle-spatial",
+        "market-pilot"
+      ],
+      "rule": "Analyze neighboring silhouettes, entrance exposure, negative space, access and hierarchy before generating or moving an object."
+    },
+    {
+      "id": "A04",
+      "from": [
+        "market-pilot",
+        "bundle-bc"
+      ],
+      "rule": "Judge recognizable function, silhouette, palette and rendering fidelity with the same in-scene camera, not just standalone art. Preserve distinctive architecture and roof/material contrast."
+    },
+    {
+      "id": "A05",
+      "from": [
+        "cycle-surface",
+        "cycle-spatial"
+      ],
+      "rule": "Control camera, fixture, source and actor visibility; scores are paired, not cross-run comparable. Do not promote on technical success."
+    },
+    {
+      "id": "A06",
+      "from": [
+        "sawmill-only",
+        "market-pilot"
+      ],
+      "rule": "Keep reversible original resources; native A/B, independent blinded audit and owner approval are required for promotion. Device QA is separate."
+    }
+  ],
+  "thresholds": {
+    "min_delta": 0.3,
+    "min_district_score": 8.5,
+    "require_no_material_regression": true
+  },
+  "notes": [
+    "No change to model weights; curated retrieval and execution gates.",
+    "9/10 remains aspirational; gate threshold 8.5 and +0.30 is a minimum for considering candidate, not approval.",
+    "Cases are historical; no claim of generalization."
+  ]
+}
