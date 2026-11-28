@@ -1,0 +1,9 @@
+{
+  "name": "Eldoria.LegacyProgression",
+  "rootNamespace": "Eldoria.LegacyProgression",
+  "references": [
+    "Eldoria.Domain",
+    "Eldoria.Application"
+  ],
+  "autoReferenced": true
+}

@@ -1,0 +1,196 @@
+using System;
+using System.Collections.Generic;
+using Eldoria.Application;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Eldoria.LegacyProgression.UI
+{
+    // Reusable binding for the approved UI kit, not a competing runtime HUD.
+    // Explicitly bind actual themed controls and the SAME gateway as the city.
+    // No automatic bootstrap, new global canvas, save or network access.
+    public sealed class LegacyProfilePanel : MonoBehaviour
+    {
+        [SerializeField] RectTransform tabsRoot, rowsRoot;
+        [SerializeField] Button tabTemplate, closeButton;
+        [SerializeField] LegacyProfileRow rowTemplate;
+        // Optional dedicated prefabs from the approved visual kit. The generic
+        // themed row is a fallback, not a second HUD or Canvas.
+        [SerializeField] LegacyProfileRow rankingBackTemplate,rankingOwnTemplate,rankingPodiumTemplate,rankingPlayerTemplate;
+        [SerializeField] Text heading, feedback;
+        [SerializeField] GameObject panelRoot;
+        readonly List<GameObject> generatedTabs=new List<GameObject>();
+        readonly List<GameObject> generatedRows=new List<GameObject>();
+        ICommandGateway gateway;
+        LocalProfile profile;
+        ProfileSection section;
+        string collectionId;
+        RankingKind? rankingKind;
+        Func<RankingKind,RankingDetailSnapshot> rankingReader;
+        Func<RankingKind,int,RankingDetailSnapshot> rankingPageReader;
+        int rankOffset;
+        string boundPlayer,boundWorld;
+        void CaptureReaderIdentity()
+        {
+            var state=gateway?.Snapshot();boundPlayer=state?.PlayerId;boundWorld=state?.WorldId;
+        }
+        bool ReaderMatchesSession()
+        {
+            if(rankingReader==null&&rankingPageReader==null||gateway==null)return false;
+            var state=gateway.Snapshot();return state!=null&&!string.IsNullOrWhiteSpace(boundPlayer)&&
+                !string.IsNullOrWhiteSpace(boundWorld)&&state.PlayerId==boundPlayer&&state.WorldId==boundWorld;
+        }
+        float hubScroll=1f;
+        ScrollRect RankingScroll => rowsRoot ? rowsRoot.GetComponentInParent<ScrollRect>() : null;
+        float ScrollPosition => RankingScroll ? RankingScroll.verticalNormalizedPosition : 1f;
+        void ScrollTo(float value)
+        {
+            var scroll=RankingScroll;if(!scroll)return;
+            Canvas.ForceUpdateCanvases();LayoutRebuilder.ForceRebuildLayoutImmediate(rowsRoot);
+            scroll.StopMovement();scroll.verticalNormalizedPosition=Mathf.Clamp01(value);
+        }
+        public void BindRankingPages(Func<RankingKind,int,RankingDetailSnapshot> reader)
+        {rankingPageReader=reader;rankingReader=null;CaptureReaderIdentity();rankOffset=0;if(IsOpen){Render();ScrollTo(1f);}}
+        // Inject only the authenticated server cache/read adapter; no provider means unavailable.
+        // Host calls Refresh on completed fetch; never perform network IO inside a row click.
+        public void BindRankings(Func<RankingKind,RankingDetailSnapshot> reader)
+        {rankingReader=reader;rankingPageReader=null;CaptureReaderIdentity();rankOffset=0;if(IsOpen){Render();ScrollTo(1f);}}
+
+        public bool IsOpen => panelRoot!=null&&panelRoot.activeSelf;
+        public void Bind(ICommandGateway source)
+        {
+            if(source==null)throw new ArgumentNullException(nameof(source));
+            if(!ReferenceEquals(gateway,source))
+            {rankingReader=null;rankingPageReader=null;boundPlayer=null;boundWorld=null;}
+            gateway=source;
+            if(!tabsRoot||!rowsRoot||!tabTemplate||!rowTemplate||!heading||!panelRoot||!closeButton)
+                throw new InvalidOperationException("Bind the approved UI templates before opening");
+            if(tabTemplate.gameObject.activeSelf||rowTemplate.gameObject.activeSelf)
+                throw new InvalidOperationException("Templates must be inactive");
+            foreach(var template in new[]{rankingBackTemplate,rankingOwnTemplate,rankingPodiumTemplate,rankingPlayerTemplate})
+                if(template&&template.gameObject.activeSelf)throw new InvalidOperationException("Ranking templates must be inactive");
+            if(rowsRoot.IsChildOf(tabsRoot)||tabsRoot==rowsRoot||heading.transform.IsChildOf(tabsRoot)||closeButton.transform.IsChildOf(tabsRoot))
+                throw new InvalidOperationException("Tab root must be separate from detail content and close button");
+            closeButton.onClick.RemoveListener(Close);
+            closeButton.onClick.AddListener(Close);
+            panelRoot.SetActive(false);
+        }
+        public void Open()
+        {
+            if(gateway==null)throw new InvalidOperationException("Profile has no canonical gateway");
+            profile=LegacyPlayerAdapter.Read(gateway);
+            if(feedback)feedback.text="";
+            section=ProfileSection.Overview;collectionId=null;rankingKind=null;
+            panelRoot.SetActive(true);
+            rankOffset=0;hubScroll=1f;RebuildTabs();Render();ScrollTo(1f);
+        }
+        public void Refresh()
+        {
+            if(!IsOpen||gateway==null)return;
+            float scrollPosition=ScrollPosition;
+            profile=LegacyPlayerAdapter.Read(gateway);
+            if(!new List<ProfileSection>(ProfilePresentation.Sections(profile)).Contains(section))
+            {section=ProfileSection.Overview;collectionId=null;rankingKind=null;rankOffset=0;scrollPosition=1f;}
+            RebuildTabs();Render();ScrollTo(scrollPosition);
+        }
+        public void Close()
+        {
+            if(panelRoot!=null)panelRoot.SetActive(false);
+            Clear(generatedTabs);Clear(generatedRows);
+            profile=null;collectionId=null;rankingKind=null;rankOffset=0;hubScroll=1f;
+        }
+        void OnDestroy()
+        {
+            if(closeButton)closeButton.onClick.RemoveListener(Close);
+        }
+        static void Clear(List<GameObject> objects)
+        {
+            foreach(var go in objects)if(go){go.SetActive(false);Destroy(go);}
+            objects.Clear();
+        }
+        void RebuildTabs()
+        {
+            Clear(generatedTabs);
+            foreach(var s in ProfilePresentation.Sections(profile))
+            {
+                var tab=Instantiate(tabTemplate,tabsRoot,false);
+                tab.onClick.RemoveAllListeners();
+                var label=tab.GetComponentInChildren<Text>(true);
+                if(!label){Destroy(tab.gameObject);throw new InvalidOperationException("Tab template needs a text label");}
+                label.supportRichText=false;label.text=ProfilePresentation.Label(s);
+                tab.onClick.AddListener(()=>{section=s;collectionId=null;rankingKind=null;rankOffset=0;Render();ScrollTo(1f);});
+                generatedTabs.Add(tab.gameObject);tab.gameObject.SetActive(true);
+            }
+        }
+        void Render()
+        {
+            Clear(generatedRows);
+            tabsRoot.gameObject.SetActive(!rankingKind.HasValue);
+            heading.supportRichText=false;heading.text=ProfilePresentation.Label(section);
+            if(rankingKind.HasValue)
+            {
+                var kind=rankingKind.Value;
+                heading.text="Ranking de "+ProfilePresentation.RankingLabel(kind);
+                AddRow(new ProfileEntry("back-ranking","Volver a clasificaciones","",ProfileEntryState.Information),()=>{rankingKind=null;rankOffset=0;Render();ScrollTo(hubScroll);});
+                RankingDetailSnapshot data=null;
+                try
+                {
+                    if(ReaderMatchesSession())
+                    {
+                        if(rankingPageReader!=null)data=rankingPageReader(kind,rankOffset);
+                        else if(rankingReader!=null&&rankOffset==0)data=rankingReader(kind);
+                    }
+                    // A stale response must never be displayed for a different category/page/account.
+                    if(data!=null&&(data.Kind!=kind||data.Offset!=rankOffset||
+                        (data.OwnRow!=null&&data.OwnRow.PlayerId!=gateway.Snapshot().PlayerId)))
+                        data=new RankingDetailSnapshot(kind,RankingDetailStatus.Error,offset:rankOffset);
+                }
+                catch(Exception e) { Debug.LogWarning("Ranking read unavailable: "+e.GetType().Name);data=new RankingDetailSnapshot(kind,RankingDetailStatus.Error,offset:rankOffset); }
+                foreach(var row in ProfilePresentation.RankingDetailRows(profile,kind,data))AddRow(row,null);
+                if(ReaderMatchesSession()&&rankingPageReader!=null&&rankOffset>0)
+                    AddRow(new ProfileEntry("page-prev","Página anterior","",ProfileEntryState.Information),()=>{rankOffset-=RankingDetailSnapshot.PageSize;Render();ScrollTo(1f);});
+                if(ReaderMatchesSession()&&rankingPageReader!=null&&data!=null&&data.Status==RankingDetailStatus.Ready&&data.HasMore)
+                    AddRow(new ProfileEntry("page-next","Siguiente página","",ProfileEntryState.Information),()=>{rankOffset+=RankingDetailSnapshot.PageSize;Render();ScrollTo(1f);});
+                return;
+            }
+            if(collectionId!=null)
+            {
+                AddRow(new ProfileEntry("back","Volver a hallazgos","",ProfileEntryState.Information),
+                    ()=>{collectionId=null;Render();});
+                foreach(var row in ProfilePresentation.DiscoveryEntries(profile,collectionId))AddRow(row,null);
+                return;
+            }
+            foreach(var row in ProfilePresentation.Rows(profile,section,DateTime.UtcNow,section==ProfileSection.Rankings&&ReaderMatchesSession()))
+            {
+                string id=row.Key;
+                Action action=null;
+                if(section==ProfileSection.Rankings&&ProfilePresentation.TryRankingKind(id,out var kind))action=()=>{hubScroll=ScrollPosition;rankingKind=kind;rankOffset=0;Render();ScrollTo(1f);};
+                else if(section==ProfileSection.Discoveries)action=()=>{collectionId=id;Render();};
+                else if(!string.IsNullOrEmpty(row.CommandKind))action=()=>Select(row);
+                AddRow(row,action);
+            }
+        }
+        void Select(ProfileEntry entry)
+        {
+            var s=gateway.Snapshot();
+            var result=gateway.Execute(new GameCommand("legacy:"+Guid.NewGuid().ToString("N"),
+                s.PlayerId,entry.CommandKind,entry.CommandTarget,s.Revision));
+            if(feedback){feedback.supportRichText=false;feedback.text=result.Message;}
+            Refresh();
+        }
+        void AddRow(ProfileEntry data,Action action)
+        {
+            var template=rowTemplate;
+            if(rankingKind.HasValue)
+            {
+                if(data.Key=="back-ranking"&&rankingBackTemplate)template=rankingBackTemplate;
+                else if(data.Key=="own-position"&&rankingOwnTemplate)template=rankingOwnTemplate;
+                else if(data.RankingPosition>0&&data.RankingPosition<=3&&rankingPodiumTemplate)template=rankingPodiumTemplate;
+                else if(data.RankingPosition>0&&rankingPlayerTemplate)template=rankingPlayerTemplate;
+            }
+            var row=Instantiate(template,rowsRoot,false);
+            row.Bind(data,action);
+            generatedRows.Add(row.gameObject);row.gameObject.SetActive(true);
+        }
+    }
+}

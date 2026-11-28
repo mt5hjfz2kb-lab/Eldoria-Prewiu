@@ -1,0 +1,11 @@
+{
+  "name": "Eldoria.LegacyProgression.UI",
+  "rootNamespace": "Eldoria.LegacyProgression.UI",
+  "references": [
+    "Eldoria.LegacyProgression",
+    "Eldoria.Domain",
+    "Eldoria.Application",
+    "Unity.ugui"
+  ],
+  "autoReferenced": true
+}
