@@ -1,0 +1,25 @@
+name: Studio academy - offline technique contract
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/studio-art-academy-contract.yml']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Test complete existing and new learning contract from exact source
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/academy"
+          mkdir -p "$root/academy"
+          cd "$root"
+          for f in cases.json guard.py decision_gate.py test_guard.py test_decision_gate.py test_academy.py academy/context.py academy/curriculum.json academy/techniques.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/$f?ref=b9d922a598dba50a0635b439768383904d492a12" > "$f"
+          done
+          python3 -m unittest discover -v
