@@ -14,6 +14,9 @@ namespace Eldoria.LegacyProgression.UI
         [SerializeField] RectTransform tabsRoot, rowsRoot;
         [SerializeField] Button tabTemplate, closeButton;
         [SerializeField] LegacyProfileRow rowTemplate;
+        // Optional dedicated prefabs from the approved visual kit. The generic
+        // themed row is a fallback, not a second HUD or Canvas.
+        [SerializeField] LegacyProfileRow rankingBackTemplate,rankingOwnTemplate,rankingPodiumTemplate,rankingPlayerTemplate;
         [SerializeField] Text heading, feedback;
         [SerializeField] GameObject panelRoot;
         readonly List<GameObject> generatedTabs=new List<GameObject>();
@@ -64,6 +67,10 @@ namespace Eldoria.LegacyProgression.UI
                 throw new InvalidOperationException("Bind the approved UI templates before opening");
             if(tabTemplate.gameObject.activeSelf||rowTemplate.gameObject.activeSelf)
                 throw new InvalidOperationException("Templates must be inactive");
+            foreach(var template in new[]{rankingBackTemplate,rankingOwnTemplate,rankingPodiumTemplate,rankingPlayerTemplate})
+                if(template&&template.gameObject.activeSelf)throw new InvalidOperationException("Ranking templates must be inactive");
+            if(rowsRoot.IsChildOf(tabsRoot)||tabsRoot==rowsRoot||heading.transform.IsChildOf(tabsRoot)||closeButton.transform.IsChildOf(tabsRoot))
+                throw new InvalidOperationException("Tab root must be separate from detail content and close button");
             closeButton.onClick.RemoveListener(Close);
             closeButton.onClick.AddListener(Close);
             panelRoot.SetActive(false);
@@ -118,6 +125,7 @@ namespace Eldoria.LegacyProgression.UI
         void Render()
         {
             Clear(generatedRows);
+            tabsRoot.gameObject.SetActive(!rankingKind.HasValue);
             heading.supportRichText=false;heading.text=ProfilePresentation.Label(section);
             if(rankingKind.HasValue)
             {
@@ -172,7 +180,15 @@ namespace Eldoria.LegacyProgression.UI
         }
         void AddRow(ProfileEntry data,Action action)
         {
-            var row=Instantiate(rowTemplate,rowsRoot,false);
+            var template=rowTemplate;
+            if(rankingKind.HasValue)
+            {
+                if(data.Key=="back-ranking"&&rankingBackTemplate)template=rankingBackTemplate;
+                else if(data.Key=="own-position"&&rankingOwnTemplate)template=rankingOwnTemplate;
+                else if(data.RankingPosition>0&&data.RankingPosition<=3&&rankingPodiumTemplate)template=rankingPodiumTemplate;
+                else if(data.RankingPosition>0&&rankingPlayerTemplate)template=rankingPlayerTemplate;
+            }
+            var row=Instantiate(template,rowsRoot,false);
             row.Bind(data,action);
             generatedRows.Add(row.gameObject);row.gameObject.SetActive(true);
         }

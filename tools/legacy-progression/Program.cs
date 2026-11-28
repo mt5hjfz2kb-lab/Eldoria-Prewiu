@@ -109,7 +109,7 @@ static class Program
             var fixture=new RankingDetailSnapshot(kind,RankingDetailStatus.Ready,"Semana QA",rows,rows[2]);
             var detail=ProfilePresentation.RankingDetailRows(snapshot,kind,fixture);
             Check(detail.Where(x=>x.RankingPosition>0).Select(x=>x.RankingPosition).SequenceEqual(new[]{1,2,3,4}),"actual sorted positions and podium marks "+kind);
-            Check(detail.First(x=>x.RankingPosition==1).Title=="1. d"&&detail.Last().Title=="Tu posición","display names and own position "+kind);
+            Check(detail.First(x=>x.RankingPosition==1).Title=="1. d"&&detail[1].Title=="Tu posición","display names and own position "+kind);
             var empty=ProfilePresentation.RankingDetailRows(snapshot,kind,new RankingDetailSnapshot(kind,RankingDetailStatus.Ready,"Semana QA"));
             Check(empty.Any(x=>x.Key=="empty")&&empty.All(x=>x.RankingPosition==0),"real empty distinct from offline "+kind);
         }

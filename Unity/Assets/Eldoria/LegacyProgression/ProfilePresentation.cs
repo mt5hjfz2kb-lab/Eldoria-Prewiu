@@ -91,10 +91,12 @@ namespace Eldoria.LegacyProgression
             if(data.Status==RankingDetailStatus.Error)return new[]{Entry("status","No se pudo cargar","Inténtalo de nuevo más tarde.",ProfileEntryState.Unavailable)};
             var result=new List<ProfileEntry>{Entry("period",data.PeriodLabel,"Posición · Jugador · "+RankingMetricLabel(kind))};
             if(data.Rows.Count==0)result.Add(data.Offset==0?Entry("empty","Aún no hay jugadores clasificados","Las posiciones aparecerán cuando haya resultados válidos."):Entry("empty-page","No hay más resultados","Regresa a la página anterior."));
-            foreach(var row in data.Rows)
-                result.Add(new ProfileEntry("place:"+N(row.Position),N(row.Position)+". "+row.DisplayName,N(row.Score),ProfileEntryState.Information,"","",row.Position));
+            // The player's own rank is visible before the long list, not after
+            // fifty rows. It is not assigned a podium marker.
             if(data.OwnRow!=null)result.Add(Entry("own-position","Tu posición",N(data.OwnRow.Position)+" · "+N(data.OwnRow.Score)));
             else result.Add(Entry("own-position","Tu posición","Todavía sin clasificación"));
+            foreach(var row in data.Rows)
+                result.Add(new ProfileEntry("place:"+N(row.Position),N(row.Position)+". "+row.DisplayName,N(row.Score),ProfileEntryState.Information,"","",row.Position));
             return result;
         }
         public static IReadOnlyList<ProfileEntry> Rows(LocalProfile p,ProfileSection section,DateTime? localUtc=null,bool rankingReaderConfigured=false)
