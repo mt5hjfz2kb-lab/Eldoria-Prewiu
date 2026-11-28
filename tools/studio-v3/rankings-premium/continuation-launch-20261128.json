@@ -1,0 +1,14 @@
+{
+  "id": "pr198-six-view-refinement-20261128",
+  "source_sha": "230bdf286c8b0b2cc0a1fe4aef0af797fcb9d84a",
+  "prior_worst_case_bound_usd": "4.16061740",
+  "new_reservation_usd": "0.60",
+  "maximum_aggregate_usd": "4.76061740",
+  "expiry": "2026-12-02",
+  "roles": {
+    "director": "0.15",
+    "integrator": "0.30",
+    "audit": "0.15"
+  },
+  "reason": "Owner requests the artists continue the same existing USD5 ranking mission. Reserve only previously unallocated portion under conservative previous bound; no renewed or independent budget, no image generation charges or retries. Reuse existing original art and compare actual browser captures; preserve exact PR198 and Windows lease."
+}
