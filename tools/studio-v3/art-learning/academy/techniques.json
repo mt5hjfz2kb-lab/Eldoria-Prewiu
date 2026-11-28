@@ -121,5 +121,32 @@
       "check": "Comparación ciega, misma cámara, objetivo visible y camino legible.",
       "risk": "Confundir mejora por zoom con mejora artística."
     }
+  ],
+  "verified_lab_practices": [
+    {
+      "id": "C03",
+      "competency": "composition",
+      "principle": "Medir las siluetas en la cámara real antes de mover los objetos; la separación en coordenadas del mundo no garantiza separación visual.",
+      "procedure": "Proyectar la geometría o máscaras de sprites desde la cámara fija; medir separación de envolventes convexas, proteger rutas e hitos y resolver el menor desplazamiento dentro de límites. Renderizar y verificar de nuevo; las envolventes son conservadoras y no miden oclusión pixel a pixel.",
+      "check": "Comparativa ciega y cálculo reproducible de distancia proyectada. Umbral depende de resolución y cámara; 12 px solo en este laboratorio 660×660.",
+      "risk": "Maximizar huecos sin comprobar coherencia, acceso, siluetas, animación y escala móvil; no extrapolar resultados a Unity.",
+      "evidence": {
+        "run": 46135662486,
+        "artifact": 15259492182,
+        "digest": "sha256:0367c23584c7138d738f48e55d9e506bf2ee2885042b7660dc7e2f8c8cd99a76",
+        "before": {
+          "well": -7.33,
+          "cart": -9.37
+        },
+        "after": {
+          "well": 14.11,
+          "cart": 12.47
+        },
+        "score_before": 7.8,
+        "score_after": 8.5,
+        "engine": "Blender 4.0.2",
+        "status": "adaptive_lab_only_not_unity"
+      }
+    }
   ]
 }
