@@ -39,8 +39,9 @@ jobs:
           cp "$qa/guard-native.cjs" "$qa/native-request.json" "$RUNNER_TEMP/kit/"
           if [[ "$TARGET" != donor ]]; then
             cp "$qa/ValoriaLiveInventory.cs" "$qa/native/"{run.py,ValoriaMigrationCapture.cs,EldoriaCityBaselineSnapshot.cs} "$RUNNER_TEMP/kit/"
+            cp -r "$qa/native/advanced" "$RUNNER_TEMP/kit/"
           fi
-          (cd "$RUNNER_TEMP/kit" && sha256sum * > "$RUNNER_TEMP/kit.sha256")
+          (cd "$RUNNER_TEMP/kit" && find . -type f -printf '%P\n' | sort | xargs -d '\n' sha256sum > "$RUNNER_TEMP/kit.sha256")
           cp "$RUNNER_TEMP/kit.sha256" "$RUNNER_TEMP/kit/"
       - uses: actions/upload-artifact@v4
         with:
@@ -106,7 +107,11 @@ jobs:
           if ($LASTEXITCODE) { throw 'long-path setup failed' }
           git -C $tree config core.autocrlf false
           if ($LASTEXITCODE) { throw 'line-ending setup failed' }
-          git -C $tree sparse-checkout set --no-cone '/Unity/'
+          $inputs=@('/Unity/')
+          if ($env:TARGET -eq 'donor') {
+            $inputs+='/docs/evidence/valoria-layered-construction-20261016/playable-entry-v3/complete-playerstate-before-reset.json'
+          }
+          git -C $tree sparse-checkout set --no-cone @inputs
           if ($LASTEXITCODE) { throw 'sparse checkout setup failed' }
           git -C $tree config http.version HTTP/1.1
           if ($LASTEXITCODE) { throw 'HTTP setup failed' }
@@ -121,6 +126,10 @@ jobs:
           if (-not $restored -or (git -C $tree rev-parse HEAD) -ne $env:SOURCE) { throw 'source checkout did not match' }
           if (git -C $tree ls-files -t -- Unity | Select-String '^S ') { throw 'Some Unity inputs were omitted' }
           if ($LASTEXITCODE) { throw 'Unable to verify full Unity index' }
+          if ($env:TARGET -eq 'donor') {
+            $fixture=Join-Path $tree 'docs/evidence/valoria-layered-construction-20261016/playable-entry-v3/complete-playerstate-before-reset.json'
+            if ((git -C $tree hash-object $fixture) -ne 'dc314fc65a58d1e8da6ab5aa2c53943266ea93fd') { throw 'Missing exact historical save required by donor Capture' }
+          }
           if ((Get-Item -LiteralPath $tree).PSDrive.Free -lt 7GB) { throw 'Less than 7 GiB left for Unity import and captures' }
           if ((git -C $tree status --porcelain) -or $LASTEXITCODE) { throw 'source did not materialize cleanly' }
           if ((Get-Content "$tree/Unity/ProjectSettings/ProjectVersion.txt" -Raw) -notmatch 'm_EditorVersion: 6000\.3\.23f1\s') {
@@ -148,12 +157,14 @@ jobs:
           $kit=Join-Path $env:VM_ROOT 'kit'
           $out=Join-Path $env:VM_ROOT 'evidence'
           foreach ($line in Get-Content "$kit/kit.sha256") {
-            if ($line -notmatch '^([0-9a-f]{64})  ([A-Za-z0-9._-]+)$') { throw 'Invalid kit manifest' }
+            if ($line -notmatch '^([0-9a-f]{64})  ((?:advanced/)?[A-Za-z0-9._-]+)$') { throw 'Invalid kit manifest' }
             if ((Get-FileHash (Join-Path $kit $Matches[2])).Hash -ne $Matches[1]) { throw 'Measurement kit mismatch' }
           }
           if ($env:TARGET -ne 'donor') {
             $env:ISSUE186_VIGILIA_SOURCE=$env:SOURCE
-            python "$kit/run.py" --checkout "$tree" --unity "$env:UNITY_EDITOR_PATH" --output "$out" --probe "$kit/ValoriaLiveInventory.cs"
+            $request=Get-Content "$kit/native-request.json" -Raw | ConvertFrom-Json
+            $driver=if ($request.suite -eq 'advanced') { "$kit/advanced/run.py" } else { "$kit/run.py" }
+            python "$driver" --checkout "$tree" --unity "$env:UNITY_EDITOR_PATH" --output "$out" --probe "$kit/ValoriaLiveInventory.cs"
             if ($LASTEXITCODE) { throw 'Main-side capture driver failed' }
             $report=Get-Content "$out/manifest.json" -Raw | ConvertFrom-Json
             if ($report.status -ne 'CAPTURED') { throw 'Native inventory incomplete' }

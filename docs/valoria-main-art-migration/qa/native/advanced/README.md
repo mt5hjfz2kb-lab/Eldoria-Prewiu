@@ -1,0 +1,7 @@
+# Inventario avanzado de Main en Vigilia
+
+Desde el checkout del controlador, ejecutar `python docs/valoria-main-art-migration/qa/native/advanced/run.py` con los mismos argumentos `--unity`, `--probe`, `--checkout` y `--output` del capturador nativo. El checkout de juego debe estar limpio, aislado y fijado al SHA que se mide. Usar una salida nueva. En el PC compartido, ejecutar dentro de la reserva y del trabajo existentes.
+
+La fixture abre la escena de Main en Play Mode, espera el arranque real y usa el Canvas de producción. Observa dieciséis pares PNG–inventario en dos orientaciones. Incluye ciudad IV y V con geometría de foco, Bastión IV seleccionado antes de la decisión de desarrollo, placa de objetivo expandida mediante raycast, tres escalas del mundo y tres órdenes de marcha activas verificadas por el gateway. La configuración de las órdenes usa el cuartel I de la fixture de capacidad. La sonda conserva el archivo de guardado desechable que encuentra al entrar al recorrido avanzado y lo restaura al terminar. Los estados IV y V están sembrados.
+
+La muestra del Bastión identifica los controles con nombre de Consejo y los Canvas activos para revisión. Los controles del HUD retirado pueden seguir presentes en la jerarquía. La existencia del Consejo independiente, su acceso por toque, su destino y la paridad del candidato siguen requiriendo verificación específica. Esta ejecución tampoco acredita el recorrido continuo, calidad artística ni iPhone físico. El donante requiere su propio controlador de presentación.
