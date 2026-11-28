@@ -1,0 +1,290 @@
+name: Issue200 studio art competition three original asset targets
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/bastion-i-studio-200-art-competition.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: issue200-art-competition
+  cancel-in-progress: false
+env:
+  REPO: ${{ github.repository }}
+  BASE_SHA: f27f4774e32efc5ad046478a07747eead4256c3e
+jobs:
+  produce:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Execute studio competition three targets and real Unity proofs'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify exact prior evidence and source before spending
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$REPO/actions/runs/46151321457" --jq .conclusion)" = success
+          test "$(gh api "repos/$REPO/actions/artifacts/15267306238" --jq .digest)" = sha256:c40375974ea3a1e7c3796c5c52dc1ae464965f4807adee6a7c2d9737e96a454a
+          test "$(gh api "repos/$REPO/actions/artifacts/15266753037" --jq .digest)" = sha256:f08b6d59c9414becb53c576fb5bff1f15261c1d4fa4af035698ecc52941ac5ca
+          test "$(gh api "repos/$REPO/git/ref/heads/experiment/valoria-ciudad-region-unificada-20261121" --jq .object.sha)" = "$BASE_SHA"
+          mkdir -p "$RUNNER_TEMP/studio/academy" "$RUNNER_TEMP/donors" "$RUNNER_TEMP/competition" "$RUNNER_TEMP/competition-source"
+          cd "$RUNNER_TEMP/studio"
+          for f in studio.py economics.py rates-20261125.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$f?ref=9fbdb203269b951a252de58d7a0357d71a841480" > "$f"
+          done
+          for f in guard.py cases.json academy/context.py academy/curriculum.json academy/techniques.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/$f?ref=a4fd12c985d4f17f9ce76f3e73b1f379bb26254f" > "$f"
+          done
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/art-competition.py?ref=bf7a9ce4b455323a8046708262d54534b0197445" > competition.py
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/export-art-competition.py?ref=c2ae8c7ee6475a612623f459bea516fbf109096a" > export.py
+          for f in Issue200CompetitionArt.cs Issue200CompetitionProof.cs; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/$f?ref=5aef899297b4260c23f0b80448215a2045411620" > "$RUNNER_TEMP/donors/$f"
+          done
+          prefix=Unity/Assets/Experimentos/ValoriaModular25D
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/$prefix/Scripts/Modular25DWorld.cs?ref=$BASE_SHA" > "$RUNNER_TEMP/donors/Modular25DWorld.cs"
+          for n in AceraZapateros ArmeriaDelPatio CorteCaliza; do
+            for ext in .png .png.meta; do
+              gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/$prefix/Resources/ValoriaModular25D/RecoveredProps/$n$ext?ref=$BASE_SHA" > "$RUNNER_TEMP/donors/$n$ext"
+            done
+          done
+          python3 -m pip install --quiet pillow openai
+          python3 -m py_compile competition.py export.py
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-competition-native
+          run-id: 46151321457
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/prior
+      - name: Study references and produce three alternatives per asset, review, correct and re-review
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/studio"
+          python3 -u competition.py
+          python3 -u export.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-competition-art
+          path: ${{ runner.temp }}/competition
+          if-no-files-found: warn
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: issue200-competition-source
+          path: ${{ runner.temp }}/competition-source
+          if-no-files-found: error
+          retention-days: 30
+  reserve:
+    needs: produce
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Narrow resource-only reservation under the existing Studio holder
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/coordinate-art-competition.py?ref=1b1b827618542c83103e1722fc12fd2d2edf4b97" > "$RUNNER_TEMP/coordinate.py"
+          python3 "$RUNNER_TEMP/coordinate.py" reserve
+  native-proof:
+    needs: reserve
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    concurrency:
+      group: eldoria-modular25d-exclusive-unity-native
+      cancel-in-progress: false
+    steps:
+      - name: Check live resource ownership, installed Unity and actual idle processes
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $api="https://api.github.com/repos/$env:REPO/"
+          $m=Invoke-RestMethod -Headers $h -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main')
+          $b=Invoke-RestMethod -Headers $h -Uri ($api+'git/blobs/'+$m.sha)
+          if($b.sha -ne $m.sha){throw 'Registry mismatch'}
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($b.content -replace '\s',''))) | ConvertFrom-Json
+          $held=@($reg.active|Where-Object{@($_.resources) -contains 'windows-runner-heavy'})
+          if($held.Count -ne 1 -or $held[0].id -ne 'eldoria-valoria-modular25d-bastion1-20261119' -or $held[0].owner -ne 'chatgpt-corona-brecha-commercial-20261126' -or $held[0].ownership_revision -ne 35 -or $held[0].issue200_art_competition.run_id -ne [long]$env:GITHUB_RUN_ID -or $reg.resource_rotation.current_run_id -ne [long]$env:GITHUB_RUN_ID -or $reg.resource_rotation.status -ne 'issue200_art_competition'){throw 'Native reservation not ours'}
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){throw 'Existing native process; no interruption allowed'}
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity missing'}
+          if((Get-Item $env:RUNNER_TEMP).PSDrive.Free -lt 12GB){throw 'Insufficient scratch disk; no other cache cleanup'}
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $dir=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd'} | Where-Object {Test-Path (Join-Path $_ 'git.exe')} | Select-Object -First 1
+            if(-not $dir){throw 'Installed Git missing'}
+            $env:PATH="$dir;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+          }
+          Write-Host 'ISSUE200_EXCLUSIVE_PC_IDLE_PASS'
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-competition-source
+          path: ${{ runner.temp }}/issue200-cycle-source-${{ github.run_id }}
+      - name: Materialize exact game sources only in unique scratch project
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:RUNNER_TEMP ("issue200-native-"+$env:GITHUB_RUN_ID)
+          $warm=Join-Path $env:RUNNER_TEMP 'issue200-native-46151321457'
+          $reused=$false
+          if(Test-Path (Join-Path $warm '.git')){
+            $head=(git -C $warm rev-parse HEAD).Trim()
+            $changed=@(git -C $warm diff --name-only)
+            $worldRel='Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DWorld.cs'
+            $owned=@('Scripts/Issue200AcademyPlacement.cs','Editor/Issue200AcademySolver.cs','Editor/Issue200AcademyBastionProof.cs','Resources/Issue200AcademyLayout.json')|ForEach-Object{'Unity/Assets/Experimentos/ValoriaModular25D/'+$_}
+            $owned=@($owned)+@($owned|ForEach-Object{$_+'.meta'})
+            $untracked=@(git -C $warm ls-files --others --exclude-standard)
+            if($head -eq $env:BASE_SHA -and $changed.Count -eq 1 -and $changed[0] -eq $worldRel -and @($untracked|Where-Object{$_ -notin $owned}).Count -eq 0){
+              git -C $warm restore --source HEAD --worktree -- $worldRel
+              if($LASTEXITCODE -or @(git -C $warm diff --name-only).Count){throw 'Verified warm scratch restore failed'}
+              foreach($rel in $owned){$p=Join-Path $warm $rel;if(Test-Path $p){Remove-Item -LiteralPath $p}}
+              $root=$warm;$reused=$true
+              Write-Host 'OWN_PRIOR_SCRATCH_RESTORED_TO_EXACT_HEAD'
+            }
+          }
+          if(-not $reused){
+            $root=Join-Path $env:RUNNER_TEMP ("issue200-native-"+$env:GITHUB_RUN_ID)
+            if(Test-Path $root){throw 'Scratch already exists'}
+            git init -q $root
+            git -C $root remote add origin "https://github.com/$env:REPO.git"
+            $paths=@('/Unity/Assets/Experimentos/ValoriaModular25D/','/Unity/Assets/Experimentos/ValoriaModular25D.meta','/Unity/Assets/Experimentos.meta','/Unity/Assets/Eldoria/','/Unity/Assets/Eldoria.meta','/Unity/Assets/EmaceArt/Slavic World Free/Meshes/','/Unity/Assets/EmaceArt/Slavic World Free/Materials/','/Unity/Assets/EmaceArt/Slavic World Free/Texture/','/Unity/Assets/EmaceArt/Slavic World Free/URP_Support/','/Unity/Assets/EmaceArt/Slavic World Free/Prefabs/Village/Building/Shed/','/Unity/Assets/Holotna/','/Unity/Assets/Holotna.meta','/Unity/Assets/StreamingAssets/','/Unity/Assets/StreamingAssets.meta','/Unity/Assets/Plugins/','/Unity/Assets/Plugins.meta','/Unity/Assets/DefaultVolumeProfile.asset','/Unity/Assets/UniversalRenderPipelineGlobalSettings.asset','/Unity/Packages/','/Unity/ProjectSettings/')
+            git -C $root sparse-checkout set --no-cone @paths
+            if($LASTEXITCODE){throw 'Sparse checkout setup failed'}
+            git -C $root config http.version HTTP/1.1
+            git -C $root config core.autocrlf false
+            git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:BASE_SHA
+            if($LASTEXITCODE){throw 'Source fetch failed'}
+            $ok=$false
+            for($i=1;$i -le 3;$i++){git -C $root checkout -q --detach $env:BASE_SHA; if($LASTEXITCODE -eq 0){$ok=$true;break}; Start-Sleep -Seconds (4*$i)}
+            if(-not $ok -or (git -C $root rev-parse HEAD).Trim() -ne $env:BASE_SHA){throw 'Exact source checkout failed'}
+          }
+          $project=Join-Path $root 'Unity'
+          $inputDir=Join-Path $env:RUNNER_TEMP ("issue200-cycle-source-"+$env:GITHUB_RUN_ID)
+          $manifest=Get-Content (Join-Path $inputDir 'exact-source-manifest.json') -Raw|ConvertFrom-Json
+          if($manifest.base -ne $env:BASE_SHA -or @($manifest.files).Count -ne 10){throw 'Invalid exact source manifest'}
+          $allowed=@('Scripts/Modular25DWorld.cs','Scripts/Issue200CompetitionArt.cs','Editor/Issue200CompetitionProof.cs','Resources/Issue200Competition.meta')
+          foreach($n in @('AceraZapateros','ArmeriaDelPatio','CorteCaliza')){$allowed+=@("Resources/Issue200Competition/$n.png","Resources/Issue200Competition/$n.png.meta")}
+          $allowed=$allowed|ForEach-Object{'Unity/Assets/Experimentos/ValoriaModular25D/'+$_}
+          foreach($f in $manifest.files){
+            if($f.path -notin $allowed){throw 'Unexpected candidate source'}
+            $src=Join-Path $inputDir $f.file;$dst=Join-Path $root $f.path
+            if($f.old_blob){
+              if((git -C $root rev-parse ("HEAD:"+$f.path)).Trim() -ne $f.old_blob){throw 'Original Git blob mismatch'}
+            }elseif(Test-Path $dst){throw 'Candidate path already exists'}
+            if((Get-FileHash -Algorithm SHA256 $src).Hash.ToLowerInvariant() -ne $f.sha256){throw 'Candidate byte mismatch'}
+            New-Item -ItemType Directory -Force (Split-Path $dst)|Out-Null
+            [IO.File]::WriteAllBytes($dst,[IO.File]::ReadAllBytes($src))
+            if((git -C $root hash-object --no-filters $dst).Trim() -ne $f.new_blob){throw 'Candidate Git blob mismatch'}
+          }
+          $changed=@(git -C $root diff --name-only)
+          if($changed.Count -ne 1 -or $changed[0] -ne 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DWorld.cs'){throw 'Unexpected tracked changes'}
+          Write-Host 'COMPETITION_EXACT_SOURCE_VERIFIED'
+          "ISSUE200_PROJECT=$project"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "ISSUE200_PROOF_OUT=$(Join-Path $env:RUNNER_TEMP ('issue200-proof-'+$env:GITHUB_RUN_ID))"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "ISSUE200_PROOF_ASSETS=$inputDir"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "ISSUE200_BASE_SHA=$env:BASE_SHA"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Render matched real Unity baseline and candidate with moving actors and camera
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){throw 'Native process appeared; no interruption'}
+          New-Item -ItemType Directory -Force $env:ISSUE200_PROOF_OUT|Out-Null
+          Copy-Item (Join-Path $env:ISSUE200_PROOF_ASSETS 'parameters.json') $env:ISSUE200_PROOF_OUT
+          Copy-Item (Join-Path $env:ISSUE200_PROOF_ASSETS 'exact-source-manifest.json') $env:ISSUE200_PROOF_OUT
+          $log=Join-Path $env:ISSUE200_PROOF_OUT 'unity.log'
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$env:ISSUE200_PROJECT,'-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.Issue200CompetitionProof.Capture','-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(3000000)){Stop-Process -Id $p.Id -Force;throw 'Own Unity scratch capture timed out'}
+          if($p.ExitCode){Get-Content $log -Tail 120;throw ('Unity capture failed '+$p.ExitCode)}
+          foreach($v in @('baseline','asset-1','asset-2','asset-4','bundle')){
+            $manifest=Join-Path $env:ISSUE200_PROOF_OUT "$v/evidence.json"
+            if(-not(Test-Path $manifest)){throw 'Missing genuine capture manifest'}
+            $e=Get-Content $manifest -Raw|ConvertFrom-Json
+            $expectedFrames=if($v -in @('baseline','bundle')){48}else{12}
+            if($e.engine -ne 'Unity' -or $e.engineVersion -ne '6000.3.23f1' -or $e.sourceSha -ne $env:BASE_SHA -or $e.sourceFrames -ne $expectedFrames -or $e.progressionStagesCaptured -ne 5 -or -not $e.gatewayBuild -or -not $e.savedAndReloaded){throw 'Native proof incomplete'}
+            foreach($f in $e.frames){
+              $p=Join-Path $env:ISSUE200_PROOF_OUT "$v/$($f.file)"
+              if(-not(Test-Path $p) -or (Get-FileHash -Algorithm SHA256 $p).Hash.ToLowerInvariant() -ne $f.sha256){throw 'Native frame hash mismatch'}
+            }
+          }
+          Write-Host 'ISSUE200_REAL_MATCHED_CAMERA_RENDER_PASS'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-competition-native
+          path: ${{ runner.temp }}/issue200-proof-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 14
+  return-resource:
+    needs: [reserve,native-proof]
+    if: always() && needs.reserve.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Return only own completed temporary native resource to canonical Bastion
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/coordinate-art-competition.py?ref=1b1b827618542c83103e1722fc12fd2d2edf4b97" > "$RUNNER_TEMP/coordinate.py"
+          python3 "$RUNNER_TEMP/coordinate.py" return
+  evidence:
+    needs: native-proof
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-competition-native
+          path: ${{ runner.temp }}/native
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-competition-source
+          path: ${{ runner.temp }}/production
+      - name: Load independent visual evaluator
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/studio"
+          cd "$RUNNER_TEMP/studio"
+          for f in studio.py economics.py rates-20261125.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$f?ref=9fbdb203269b951a252de58d7a0357d71a841480" > "$f"
+          done
+          gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/bastion-i-studio-200/evaluate-art-competition.py?ref=8acb1d381fded2abd93ab004c99a86251e6c2bb3" > evaluate.py
+          python3 -m pip install --quiet pillow imageio-ffmpeg
+      - name: Matched Unity render verification and independent per-resource and bundle scoring
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/studio"
+          python3 -u evaluate.py
+      - name: Comparison video
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/competition-delivery"
+          ffmpeg_bin=$(python3 -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())')
+          "$ffmpeg_bin" -loglevel error -framerate 12 -i "$RUNNER_TEMP/native/baseline/motion-%03d.png" -framerate 12 -i "$RUNNER_TEMP/native/bundle/motion-%03d.png" -filter_complex hstack=inputs=2 -c:v libx264 -pix_fmt yuv420p -movflags +faststart "$RUNNER_TEMP/competition-delivery/bastion-v-pan-zoom.mp4"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-competition-audit
+          path: ${{ runner.temp }}/competition-delivery
+          if-no-files-found: warn
+          retention-days: 30
