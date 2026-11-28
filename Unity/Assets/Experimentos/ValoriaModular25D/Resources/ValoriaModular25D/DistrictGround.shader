@@ -11,7 +11,7 @@ CGPROGRAM
 sampler2D _MainTex,_Paving,_Soil,_Slate;
 float4 _CivicAxis,_WorkLane,_Forecourt;
 float4 _UpperBlock,_LowerBlock,_Orchard,_QuarryMeadow;
-float _Boroughs;
+float _Boroughs,_Issue200QuarryIntegration;
 float4 _WestSills,_EastSills;
 float4 _Built, _MilitaryYard, _MarketYard, _StoneFace;
 struct Vertex { float4 vertex:POSITION; float2 uv:TEXCOORD0; };
@@ -184,7 +184,13 @@ half4 frag(Varying i):SV_Target {
  half ledge=(1-smoothstep(.08,.25,abs(frac(across*2.7+.23*sin(along*1.4))-.45)))*outcrop;
  shale*=lerp(.82,1.17,ledge);
  half floorCover=saturate(max(rock*.88,outcrop))*_Built.z;
- ground=lerp(ground,lerp(dirt*.83,shale*half3(.98,.96,.93),.86),floorCover);
+ half3 oldQuarry=lerp(dirt*.83,shale*half3(.98,.96,.93),.86);
+ // Keep the authored outcrop geometry, but break the dark slab into
+ // mineral earth and exposed strata. Leave the meadow outside unchanged.
+ half3 quarryScree=lerp(dirt*half3(1.08,1.04,.96),shale*half3(1.07,1.05,1.0),.30+.38*rock);
+ half3 registeredQuarry=lerp(oldQuarry,quarryScree,_Issue200QuarryIntegration);
+ half featheredCover=lerp(floorCover,smoothstep(.03,.98,floorCover),_Issue200QuarryIntegration*.55);
+ ground=lerp(ground,registeredQuarry,featheredCover);
  return half4(ground,1);
 }
 ENDCG

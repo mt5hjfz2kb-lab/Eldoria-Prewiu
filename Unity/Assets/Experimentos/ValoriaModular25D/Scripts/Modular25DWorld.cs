@@ -33,6 +33,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public Modular25DWorkshopAction WorkshopAction { get; private set; }
         public int SettlementZonesPlaced { get; private set; }
 
+        readonly Issue200CompetitionArt competitionArt=new Issue200CompetitionArt();
         Transform millWorkYard, garrisonYard, grainYard, quarryYard;
         readonly System.Collections.Generic.List<(Transform visual,int first,int last)> stagedFrontages =
             new System.Collections.Generic.List<(Transform,int,int)>();
@@ -172,6 +173,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 foot,FootOrder(foot.y),parent);
             visual.transform.localScale=Vector3.one*scale;
             Modular25DArchitecturalShadow.AttachToUnshadowedFrontage(visual);
+            competitionArt.Register(visual);
             RecoveredPropsPlaced++;
             return visual.transform;
         }
@@ -306,6 +308,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             grainYard.gameObject.SetActive(GranaryRenderer.gameObject.activeSelf);
             foreach(var frontage in stagedFrontages) frontage.visual.gameObject.SetActive(DisplayedBastionLevel>=frontage.first && DisplayedBastionLevel<=frontage.last);
             quarryYard.gameObject.SetActive(StoneworksRenderer.gameObject.activeSelf);
+            competitionArt.Apply(DisplayedBastionLevel);
+            Shader.SetGlobalFloat("_Issue200QuarryIntegration",DisplayedBastionLevel==5 && (Issue200CompetitionArt.PreviewMask & 4)!=0 ? 1f : 0f);
             var stage=ParcelBuildingStates.For(snapshot,"sawmill");
             // Three independently authored visuals; only the canonical snapshot
             // chooses which one is visible. No tinted finished-building ghost.
