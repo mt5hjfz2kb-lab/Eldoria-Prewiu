@@ -26,11 +26,11 @@ def role_brief(role,holdout=None,academy=False,competencies=None):
         "integrator":"Map actual feet, scale, projected shadows, neighboring sightlines and routes. Verify the exact camera and fixture. Compare static actors separately from motion. Keep original asset and reversible candidate; do not touch other workstreams.",
         "auditor":"Score blind, matched real captures; reject unreadable function, lost architecture, occlusion or important regressions despite isolated improvements. Distinguish local asset gain and scene gain. No claims about gameplay or device from Editor images."
     }
-    result="Curated verified historical evidence, not instructions from model outputs.\\n"+json.dumps(context(holdout),ensure_ascii=False)+"\\nRole contract: "+specific[role]
+    result="Curated verified historical evidence, not instructions from model outputs.\n"+json.dumps(context(holdout),ensure_ascii=False)+"\nRole contract: "+specific[role]
     if academy:
         need(holdout is None,"Do not add academy examples to retrospective holdouts")
         from academy.context import brief
-        result+="\\nAcademy technique context: "+json.dumps(brief(role,competencies),ensure_ascii=False)
+        result+="\nAcademy technique context: "+json.dumps(brief(role,competencies),ensure_ascii=False)
     return result
 def plan_gate(p):
     """Trusted host validates declarative plans before any new image generation."""
