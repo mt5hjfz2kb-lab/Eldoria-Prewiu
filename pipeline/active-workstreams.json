@@ -12020,9 +12020,9 @@
     {
       "id": "eldoria-collections-rankings-prestige-20261124",
       "title": "Rankings, coleccionismo y prestigio",
-      "owner": "chatgpt-eldoria-collections-rankings-20261124",
+      "owner": "chatgpt-eldoria-rankings-detail-20261128",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "write_scope_released": false,
       "scope": [
         "Unity/Assets/Eldoria/LegacyProgression/**",
@@ -12040,7 +12040,19 @@
         "deliverable": "Implementación aislada del núcleo de estadísticas, prestigio, colecciones y clasificación; integración real condicionada por titularidad y autoridad de servidor.",
         "evidence": "Pruebas de dominio, persistencia, idempotencia, desbloqueos y pruebas Unity cuando se libere el recurso.",
         "handoff": "PR única draft, SHA, pruebas y pendientes exactos."
-      }
+      },
+      "previous_owner": "chatgpt-eldoria-collections-rankings-20261124",
+      "ownership_history": [
+        {
+          "from": "chatgpt-eldoria-collections-rankings-20261124",
+          "to": "chatgpt-eldoria-rankings-detail-20261128",
+          "previous_revision": 1,
+          "revision": 2,
+          "transferred_at": "2026-11-28",
+          "reason": "Owner expressly requests actual implementation of six ranking details and improved artwork in existing PR198; no Unity lease or changes to other workstreams."
+        }
+      ],
+      "next": "Implement six category detail routes and read-only verified server response presentation, keep no-provider unavailable state. Preserve earlier approved visual hub; native integration after migration/tutorial."
     },
     {
       "id": "eldoria-openai-development-studio-20261125",
