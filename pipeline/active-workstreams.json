@@ -26,7 +26,7 @@
       "title": "Sustitución artística integral de Main con arte compatible de Valoria",
       "owner": "codex-valoria-main-art-20261128",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "write_scope_released": false,
       "status": "active",
       "branch": "integration/valoria-main-art-20261128",
@@ -34,7 +34,8 @@
       "claimed_at": "2026-11-28T17:22:00.956677+00:00",
       "phase": "BASELINE_INVENTORY",
       "scope": [
-        "docs/valoria-main-art-migration/**"
+        "docs/valoria-main-art-migration/**",
+        ".github/workflows/valoria-main-art-inventory.yml"
       ],
       "resources": [],
       "delivery_definition": {
