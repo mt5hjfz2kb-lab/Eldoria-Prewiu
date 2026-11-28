@@ -12,6 +12,11 @@ namespace Eldoria.Issue186Art
     public static class Issue186ArtKit
     {
         const string Prefix = "Issue186ResourceArt/";
+        // Owner-approved ivory/gold gauntlet, rotated for the original left-pointing approach.
+        // Contact pixel (44,46) on the 192px source; its ring is already painted.
+        public static readonly Vector2 TutorialFingertip = new Vector2(44f/192f, 1f-46f/192f);
+        public const float TutorialOpaqueXMin = 17f/192f;
+        public const float TutorialOpaqueXMax = 185f/192f;
         public static Sprite PacketSprite(string kind, int amount)
         {
             var key = ResourceRewardRules.SpriteKey(kind, amount);
@@ -153,7 +158,7 @@ namespace Eldoria.Issue186Art
             }
             // The actual PNG points LEFT (fingertip in its upper-left).
             // Approach from the RIGHT side of a button, not its label center.
-            // The halo independently stays centered on the real target.
+            // The approved gauntlet already contains its own contact ring; do not double-paint a halo.
             var parent = pointer.rectTransform.parent as RectTransform;
             var sprite = Resources.Load<Sprite>(Prefix + "tutorial_pointing_hand");
             if (!parent || !sprite)
@@ -165,17 +170,18 @@ namespace Eldoria.Issue186Art
             }
             var rect = pointer.rectTransform;
             rect.anchorMin = rect.anchorMax = new Vector2(.5f, .5f);
-            // Preserve the ORIGINAL PNG's native aspect, not a square
-            // letterbox. Its actual opaque left fingertip is x62/386,
-            // y72..77/245 from the top (alpha>=200), hence this normalized
-            // lower-left pivot. No authored pixels are cropped or repainted.
+            // Preserve the replacement sprite aspect and the measured painted contact.
+            // A single shared pivot is used in world and UI guidance.
             float pointerWidth=Mathf.Max(1f,rect.sizeDelta.x);
             rect.sizeDelta=new Vector2(pointerWidth,
                 pointerWidth*sprite.rect.height/Mathf.Max(1f,sprite.rect.width));
-            rect.pivot = new Vector2(.16f, .696f);
+            rect.pivot = TutorialFingertip;
+            pointer.raycastTarget = false;
+            if (targetHalo) { targetHalo.raycastTarget = false; targetHalo.gameObject.SetActive(false); }
             rect.localRotation = Quaternion.identity;
             float originalScaleX = Mathf.Abs(rect.localScale.x);
-            if (originalScaleX <= .0001f)
+            float originalScaleY = Mathf.Abs(rect.localScale.y);
+            if (originalScaleX <= .0001f || originalScaleY <= .0001f)
             {
                 LastPointerRejectReason = "pointer-scale-invalid";
                 pointer.gameObject.SetActive(false);
@@ -195,7 +201,7 @@ namespace Eldoria.Issue186Art
             // in 390/844 mobile left only ~30px to the screen edge. A hand
             // extending right would be cut off. Mirror it from the LEFT when
             // the real render geometry does not fit on the right.
-            bool Place(bool mirror, int contact)
+            bool Place(bool mirror, bool above, int contact)
             {
                 // A top-edge header CTA may have space to the left, but
                 // not ABOVE the fingertip. Try its center first, then its
@@ -206,16 +212,29 @@ namespace Eldoria.Issue186Art
                     contactY = actualControl.rect.yMin + insetY;
                 else if (contact == 2)
                     contactY = actualControl.rect.yMax - insetY;
+                // The painted fingertip must touch the clickable interior,
+                // not hover 3 px outside its ornate edge on mobile/landscape.
+                // Keep the painted ring out of the central label: the new
+                // source reaches further around the fingertip than the old hand.
+                float contactInsetX = Mathf.Clamp(
+                    actualControl.rect.width * .05f, 4f, 8f);
                 var tip = actualControl.TransformPoint(new Vector3(
-                    mirror ? actualControl.rect.xMin - 3f :
-                             actualControl.rect.xMax + 3f,
+                    mirror ? actualControl.rect.xMin + contactInsetX :
+                             actualControl.rect.xMax - contactInsetX,
                     contactY, 0f));
                 var target = RectTransformUtility.WorldToScreenPoint(camera,tip);
+                // The fingertip itself, not merely the control center, must hit the actual control.
+                pointerData.position = target;
+                pointerHits.Clear();
+                eventSystem.RaycastAll(pointerData, pointerHits);
+                if (pointerHits.Count == 0 ||
+                    ExecuteEvents.GetEventHandler<IPointerClickHandler>(pointerHits[0].gameObject) != actualControl.gameObject)
+                    return false;
                 if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     parent,target,camera,out var local))return false;
                 rect.localScale = new Vector3(
                     (mirror?-1f:1f)*originalScaleX,
-                    rect.localScale.y,rect.localScale.z);
+                    (above?-1f:1f)*originalScaleY,rect.localScale.z);
                 rect.anchoredPosition = local;
                 var corners = new Vector3[4];
                 rect.GetWorldCorners(corners);
@@ -229,8 +248,12 @@ namespace Eldoria.Issue186Art
             bool fits = false;
             for(int vertical = 0; vertical < 3 && !fits; vertical++)
             {
-                fits = Place(false, vertical) || Place(true, vertical);
+                fits = Place(false, false, vertical) || Place(true, false, vertical);
             }
+            // For a bottom-edge target, turn the entire artwork around the
+            // same contact point rather than clip or invent another target.
+            for(int vertical = 0; vertical < 3 && !fits; vertical++)
+                fits = Place(false, true, vertical) || Place(true, true, vertical);
             if (!fits)
             {
                 LastPointerRejectReason = "hand-outside-safe-area";
@@ -244,27 +267,8 @@ namespace Eldoria.Issue186Art
             pointer.raycastTarget = false;
             pointer.gameObject.SetActive(true);
 
-            if (targetHalo)
-            {
-                var halo = Resources.Load<Sprite>(Prefix + "tutorial_target_halo");
-                var holder = targetHalo.rectTransform.parent as RectTransform;
-                if (halo && holder &&
-                    RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                        holder, screenPoint, camera, out var haloPoint))
-                {
-                    var h = targetHalo.rectTransform;
-                    h.anchorMin = h.anchorMax = new Vector2(.5f, .5f);
-                    h.pivot = new Vector2(.5f, .5f);
-                    h.anchoredPosition = haloPoint;
-                    targetHalo.sprite = halo;
-                    targetHalo.color = new Color(1f, 1f, 1f, .22f);
-                    targetHalo.type = Image.Type.Simple;
-                    targetHalo.preserveAspect = true;
-                    targetHalo.raycastTarget = false;
-                    targetHalo.gameObject.SetActive(true);
-                }
-                else targetHalo.gameObject.SetActive(false);
-            }
+            // Contact glow is authored into tutorial_pointing_hand.png.
+            if (targetHalo) targetHalo.gameObject.SetActive(false);
             return true;
         }
     }

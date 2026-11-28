@@ -1,5 +1,5 @@
 {
-  "version": "issue186-art-import-manifest-reconciled-20261111",
+  "version": "issue186-owner-approved-gauntlet-candidate-20261128",
   "status": "ART_CANDIDATE_EXACT_IMPORTED_BINARIES_PREPARED_FOR_NATIVE_PROOF",
   "reference": "approved Vigilia de la Brecha; Eldoria daily treasures dark gold art",
   "resourceKinds": [
@@ -144,10 +144,10 @@
     {
       "file": "tutorial_pointing_hand.png",
       "key": "Issue186ResourceArt/tutorial_pointing_hand",
-      "sha256": "c6a723af69d57becc2608638d7a78ec4f98894ccf581d1251c8ca04c4b4f467f",
-      "bytes": 178686,
-      "width": 386,
-      "height": 245,
+      "sha256": "86efddc71332c8ecd4d57844a7717c22bef3324497ae420a0a3d83b6d3a7e806",
+      "bytes": 10902,
+      "width": 192,
+      "height": 192,
       "guid": "6965a8ff3b4f7788db07b90c89509584"
     },
     {

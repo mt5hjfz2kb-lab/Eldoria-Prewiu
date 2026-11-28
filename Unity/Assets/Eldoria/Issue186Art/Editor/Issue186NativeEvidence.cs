@@ -351,16 +351,14 @@ namespace Eldoria.Issue186Art.Editor
                 // is valid. Measure genuine transformed geometry rather than
                 // assuming it always approaches from the right; that false
                 // assumption rejected every near-edge mobile CTA.
-                var handCorners=new Vector3[4];
-                pointer.rectTransform.GetWorldCorners(handCorners);
-                float handMinX=float.PositiveInfinity;
-                float handMaxX=float.NegativeInfinity;
-                foreach(var corner in handCorners)
-                {
-                    float x=root.InverseTransformPoint(corner).x;
-                    handMinX=Mathf.Min(handMinX,x);
-                    handMaxX=Mathf.Max(handMaxX,x);
-                }
+                // Measure the visible alpha>=128 horizontal extent of the new sprite,
+                // not the transparent padding in its square image. Source QA checks
+                // these bounds against the actual RGBA file.
+                var handRect=pointer.rectTransform;
+                var inkA=handRect.TransformPoint(new Vector3(Mathf.Lerp(handRect.rect.xMin,handRect.rect.xMax,Issue186ArtKit.TutorialOpaqueXMin),0,0));
+                var inkB=handRect.TransformPoint(new Vector3(Mathf.Lerp(handRect.rect.xMin,handRect.rect.xMax,Issue186ArtKit.TutorialOpaqueXMax),0,0));
+                float handMinX=Mathf.Min(root.InverseTransformPoint(inkA).x,root.InverseTransformPoint(inkB).x);
+                float handMaxX=Mathf.Max(root.InverseTransformPoint(inkA).x,root.InverseTransformPoint(inkB).x);
                 float labelCoreLeft=buttonRect.anchoredPosition.x -
                     buttonRect.rect.width*.30f;
                 float labelCoreRight=buttonRect.anchoredPosition.x +
@@ -417,8 +415,8 @@ namespace Eldoria.Issue186Art.Editor
                 Need(Issue186ArtKit.BindFirstUsePointer(progress,
                          "issue186.claim","ClaimReward",true,canvas,buttonRect,pointer,halo) &&
                      pointer.gameObject.activeInHierarchy &&
-                     halo.gameObject.activeInHierarchy,
-                    "Runtime tutorial did not recover when modal obstruction disappeared");
+                     !halo.gameObject.activeInHierarchy,
+                    "Runtime tutorial did not recover when modal obstruction disappeared (or the contact halo was double-painted)");
                 raycastHits++;
                 // Drive the actual Button IPointerClickHandler using the
                 // frontmost real Unity hit, not Button.onClick.Invoke().
