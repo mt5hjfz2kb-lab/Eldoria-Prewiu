@@ -98,9 +98,9 @@
     {
       "id": "eldoria-issue186-reward-attention-guidance-20261111",
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
-      "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
+      "owner": "chatgpt-eldoria-tutorial-review-20261128",
       "ownership_state": "claimed",
-      "ownership_revision": 67,
+      "ownership_revision": 68,
       "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
       "phase": "FOUR_VIEWPORT_NATIVE_FUNCTIONAL_PASS_VISUAL_DEFECTS_PENDING",
@@ -138,9 +138,9 @@
         "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs",
         ".github/workflows/issue186-exact-source-recovery.yml"
       ],
-      "next": "Independent visual audit of exact 28-PNG Unity run #43620614762 confirms panel/Construir/hand all four viewports but flags 844x390 wedge/cropped city/overlapping Aserradero label and 1600x900 construction description touching border. Do not conflate QA functional success with artistic approval; coordinate visual correction with current Valoria/Vigilia owners without overwriting their scope, then re-claim Windows via live CAS and rerun full 28 PNG/54 hits/saves. Browser gameplay and real iPhone Safari stability still gates; no merge, beta or testers.",
+      "next": "Review Main's actual guidance and correct isolated PR190 pointer target parity and visual size before reconciliation after PR201; no Windows claim while migration owns it; retain prior visual, first-hit and persistence gates.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
-      "previous_owner": "chatgpt-eldoria-first-use-qa-recovery-20261113",
+      "previous_owner": "chatgpt-eldoria-player-ux-recovery-20261113",
       "ownership_history": [
         {
           "from": "chatgpt-issue186-art-20261111",
@@ -275,6 +275,14 @@
           "revision": 58,
           "transferred_at": "2026-11-13T21:28:29.340Z",
           "reason": "Owner explicitly requests professional repair rather than abandon Eldoria on 13 Nov 2026. Continue existing PR190 after Unity native failure 43503266427 at first nickname pointer; preserve published beta19 and all other workstreams. Same Windows lease, all previous evidence and source scope retained."
+        },
+        {
+          "from": "chatgpt-eldoria-player-ux-recovery-20261113",
+          "to": "chatgpt-eldoria-tutorial-review-20261128",
+          "previous_revision": 67,
+          "revision": 68,
+          "transferred_at": "2026-11-28",
+          "reason": "Owner orders review and correction of new-player tutorial during #201; isolated #190 source only, no Windows lease, no merge or gameplay changes."
         }
       ],
       "resource_request": {
