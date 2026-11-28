@@ -27,6 +27,8 @@ namespace Eldoria.UI.RoyalGold.V2
         Image hand, halo, noteBack;
         Text note;
         float nextRefresh;
+        // Candidate: slightly larger pointer, still subject to first-hit and safe-area checks.
+        const float GuideHandWidth = 92f;
         readonly List<RaycastResult> hits = new List<RaycastResult>(16);
         // An instructional label is needed for the first click, but is
         // redundant once the actual action panel is open. Landscape reflow
@@ -86,7 +88,7 @@ namespace Eldoria.UI.RoyalGold.V2
             hand.sprite=Resources.Load<Sprite>("Issue186ResourceArt/tutorial_pointing_hand");
             halo.sprite=Resources.Load<Sprite>("Issue186ResourceArt/tutorial_target_halo");
             hand.preserveAspect=halo.preserveAspect=true;
-            hand.rectTransform.sizeDelta=new Vector2(76f,48f);
+            hand.rectTransform.sizeDelta=new Vector2(GuideHandWidth,48f);
             halo.rectTransform.sizeDelta=new Vector2(54f,54f);
             noteBack=CreateImage("First-use caption plate",surface,
                 new Color(.10f,.055f,.061f,.94f));
@@ -243,6 +245,10 @@ namespace Eldoria.UI.RoyalGold.V2
             var key=SliceRules.CurrentObjectiveKey(state);
             ObjectiveKey=key??"";
             if(string.IsNullOrEmpty(key)){Hide("no-current-objective");return;}
+            // A paid action is already in progress: do not encourage a second tap.
+            if(state.BuildingCompletesUtcTicks>0 || state.RecruitmentCompletesUtcTicks>0 ||
+                state.BastionUpgradeCompletesUtcTicks>0 || state.March.Phase!="idle")
+                {Hide("canonical-action-in-progress");return;}
             bool inWorld=Property(host,"InWorld") is bool b && b;
             string target=null;
             switch(key)
@@ -255,11 +261,26 @@ namespace Eldoria.UI.RoyalGold.V2
                 case "b1.ascend":target="bastion";break;
                 case "b2.build-barracks":target="barracks";break;
                 case "b2.train-archers":target="barracks";break;
-                case "b2.prepare-march":target="march-main";break;
+                case "b2.prepare-march":case "b2.raise-expedition-power":target="march-main";break;
+                case "b2.complete":target="bastion";break;
                 case "b2.defeat-engendro":target="engendro-valoria";break;
                 case "b3.granary":target="granary";break;
                 case "b5.stoneworks":target="stoneworks";break;
                 default:Hide("objective-has-no-first-use-route");return;
+            }
+            // Reuse the real Main objective resolver, which redirects an unaffordable
+            // build/upgrade to the necessary resource. Never point at an obsolete goal.
+            var journey=Property(host,"Guidance");
+            var resolve=journey?.GetType().GetMethod("ObjectiveTarget",Type.EmptyTypes);
+            if(resolve==null){Hide("canonical-objective-resolver-unavailable");return;}
+            string canonicalTarget;
+            try{canonicalTarget=resolve.Invoke(journey,null) as string;}
+            catch(TargetInvocationException){Hide("canonical-objective-resolver-failed");return;}
+            if(canonicalTarget!=target)
+            {
+                if(canonicalTarget=="forest-valoria" || canonicalTarget=="quarry-valoria")
+                    target=canonicalTarget;
+                else {Hide("canonical-objective-target-mismatch");return;}
             }
             var guide=state.ResourceGuidance;
             // Older saves can predate ResourceGuidance entirely. Their real
@@ -269,7 +290,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 guide,"journey:"+key,target,true,true))
                 {Hide("first-use-dismissed-or-completed");return;}
 
-            if(key=="b2.prepare-march")
+            if(target=="march-main")
             {
                 ShowButton(Nav(2),key,"Toca el ejército para preparar tu primera marcha.",
                     "march-navigation");return;
@@ -281,8 +302,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 else Hide("already-in-city");
                 return;
             }
-            bool worldTarget=key=="b1.gather-wood" || key=="b1.gather-stone" ||
-                key=="b1.clear-route" || key=="b2.defeat-engendro";
+            bool worldTarget=target=="forest-valoria" || target=="quarry-valoria" ||
+                target=="corrupt-scout" || target=="engendro-valoria";
             if(worldTarget!=inWorld)
             {
                 ShowButton(Nav(3),key,worldTarget
@@ -304,7 +325,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 // public presentation API; never create gameplay commands.
                 if(!EnsureVigiliaBuildingSelection(selected))return;
                 ConcealSelectedCityLabel(target);
-                if(key=="b2.train-archers")
+                if(key=="b2.train-archers" && target=="barracks")
                     ShowButton(Property(vigilia,"ActualBarracksTrainingEntry") as Button,
                         key,"Abre el entrenamiento del Cuartel.","barracks-training");
                 else
@@ -511,7 +532,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var rect=hand.rectTransform;
             rect.anchorMin=rect.anchorMax=new Vector2(.5f,.5f);
             rect.pivot=new Vector2(.16f,.696f);
-            rect.sizeDelta=new Vector2(76f,76f*hand.sprite.rect.height/
+            rect.sizeDelta=new Vector2(GuideHandWidth,GuideHandWidth*hand.sprite.rect.height/
                 Mathf.Max(1f,hand.sprite.rect.width));
             rect.localRotation=Quaternion.identity;
             var safe=ViewSafeArea();
