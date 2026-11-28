@@ -1,0 +1,63 @@
+name: Studio academy - measurable silhouette clearance practice
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/studio-art-academy-clearance.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: issue200-academy-clearance
+  cancel-in-progress: false
+jobs:
+  practice:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Practice measured screen clearance and compare actual renders'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify actual prior lab and install Blender
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$REPO/actions/runs/46135342847" --jq .conclusion)" = success
+          test "$(gh api "repos/$REPO/actions/artifacts/15259606609" --jq .digest)" = sha256:8a4ce0d90e1dc4c13b565559955b131f94fc8dab07e19724fe8153eed5baa02a
+          mkdir -p "$RUNNER_TEMP/studio" "$RUNNER_TEMP/clearance-results"
+          cd "$RUNNER_TEMP/studio"
+          for f in studio.py economics.py rates-20261125.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$f?ref=9fbdb203269b951a252de58d7a0357d71a841480" > "$f"
+          done
+          for f in render_lab.py placement_solver.py review_clearance.py; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/academy/$f?ref=502ba58075cec0e745625cc2c93922879d622898" > "$f"
+          done
+          python3 -m pip install --quiet pillow
+          python3 -m py_compile render_lab.py placement_solver.py review_clearance.py
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends blender > "$RUNNER_TEMP/clearance-results/blender-install.log" 2>&1
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-studio-academy-results
+          run-id: 46135342847
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/clearance-results
+      - name: Measure projected hulls and render actual corrected placement
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/studio"
+          blender -b -t 4 --python-exit-code 1 --python render_lab.py -- "$RUNNER_TEMP/clearance-results" clearance > "$RUNNER_TEMP/clearance-results/clearance-render.log" 2>&1 || { tail -100 "$RUNNER_TEMP/clearance-results/clearance-render.log"; exit 1; }
+          grep -E 'SCREEN_CLEARANCE_LAB|ACADEMY_CLEARANCE_RENDER_COMPLETE' "$RUNNER_TEMP/clearance-results/clearance-render.log"
+      - name: Blindly compare exact original and measured correction
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/studio"
+          python3 -u review_clearance.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-studio-academy-clearance
+          path: ${{ runner.temp }}/clearance-results
+          if-no-files-found: warn
+          retention-days: 30
