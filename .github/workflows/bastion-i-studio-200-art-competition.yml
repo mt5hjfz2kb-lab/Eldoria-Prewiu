@@ -14,7 +14,7 @@ env:
   BASE_SHA: f27f4774e32efc5ad046478a07747eead4256c3e
 jobs:
   produce:
-    if: github.run_attempt == 1 && github.event.head_commit.message == 'Execute art competition using verified binary Git checkout'
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Execute competition from exact archived Unity evidence'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
@@ -59,7 +59,7 @@ jobs:
           python3 -m py_compile competition.py export.py
       - uses: actions/download-artifact@v4
         with:
-          name: issue200-competition-native
+          name: issue200-academy-bastion-native
           run-id: 46151321457
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/prior
