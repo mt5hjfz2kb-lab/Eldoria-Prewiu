@@ -191,10 +191,29 @@ def stage(project, probe, fixture_hashes):
             raise RuntimeError("Unexpected concurrent change in disposable worktree: " + ", ".join(conflicts))
 
 
+
+def prepare_chapter_three(root, project, unity, blender, output):
+    """Run Main's normal asset-generation steps for upper-Bastion observations."""
+    author = root / "tools/bastion-iii/author-frontier.py"
+    if not blender.is_file() or not author.is_file():
+        raise ValueError("Blender or the source-pinned chapter III recipe is missing")
+    with (output / "frontier.log").open("wb") as log:
+        subprocess.run([str(blender), "--background", "--python-exit-code", "1", "--python", str(author)],
+                       cwd=root, stdout=log, stderr=subprocess.STDOUT, check=True)
+    subprocess.run([str(unity), "-batchmode", "-force-d3d11", "-projectPath", str(project), "-executeMethod",
+                    "Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build", "-logFile", str(output / "chapter-iii.log")],
+                   cwd=root, check=True)
+    generated = project / "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII"
+    products = [generated / "PrivateFissure.glb"] + [generated / "Granary" / (name + ".prefab") for name in
+                ("Granary", "StoneWorkshop", "StockCrate", "StockSack", "StockBarrel")]
+    return {path.relative_to(project).as_posix(): sha256(path.read_bytes()) for path in products}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for arg in ("checkout", "unity", "output", "probe"):
         parser.add_argument("--" + arg, required=True, type=Path)
+    parser.add_argument("--blender", type=Path, help="Prepare canonical chapter III assets for advanced inventory")
     args = parser.parse_args()
     root, unity, output, probe = [getattr(args, key).resolve() for key in ("checkout", "unity", "output", "probe")]
     if root == output or root in output.parents:
@@ -218,6 +237,8 @@ def main():
                 "probeSha256": sha256(probe.read_bytes()), "launcherSha256": sha256(Path(__file__).read_bytes()),
                 "fixtures": {}, "runs": {}, "status": "INCOMPLETE"}
     try:
+        if args.blender is not None:
+            manifest["generatedChapterThree"] = prepare_chapter_three(root, project, unity, args.blender.resolve(), output)
         with stage(project, probe, manifest["fixtures"]):
             for key, suite in SUITES.items():
                 env = dict(os.environ, VALORIA_GAMEPLAY_PROBE="1", ELDORIA_NEW_UI_ONLY="1",

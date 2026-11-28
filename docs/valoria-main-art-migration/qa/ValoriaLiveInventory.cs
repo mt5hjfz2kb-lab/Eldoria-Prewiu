@@ -42,11 +42,35 @@ namespace Eldoria.MigrationQA
             public int runtimeListenerCount;
         }
 
+        [Serializable] class AssetRef
+        {
+            public string name, kind, assetPath;
+            public int instanceId;
+        }
+
+        [Serializable] class MaterialSlot
+        {
+            public int slot;
+            public AssetRef material, shader, mainTexture;
+        }
+
         [Serializable] class Surface : Item
         {
             public bool raycastTarget, culled;
             public string canvas;
             public Vector2[] screenCorners;
+        }
+
+        [Serializable] class GraphicBinding : Item
+        {
+            public string sourceKind, sourceAssetPath;
+            public AssetRef sourceSprite, sourceTexture;
+            public MaterialSlot[] submittedMaterials, submittedPopMaterials;
+        }
+
+        [Serializable] class RendererBinding : Item
+        {
+            public MaterialSlot[] sharedMaterialSlots;
         }
 
         [Serializable] class CameraInfo : Item
@@ -112,6 +136,10 @@ namespace Eldoria.MigrationQA
         {
             public string unity, recordedUtc, sourceCommit, state, scene;
             public int frame, width, height;
+            // Absent in inventories captured before resource bindings were recorded.
+            public int resourceBindingVersion = 1;
+            public List<GraphicBinding> graphicBindings = new List<GraphicBinding>();
+            public List<RendererBinding> rendererBindings = new List<RendererBinding>();
             public List<Hotspot> hotspots = new List<Hotspot>();
             public List<Collision> colliders3D = new List<Collision>();
             public List<ProjectedRoute> projectedMarchRoutes = new List<ProjectedRoute>();
@@ -122,6 +150,53 @@ namespace Eldoria.MigrationQA
             public List<CanvasInfo> canvases = new List<CanvasInfo>();
             public List<Draw> renderers = new List<Draw>();
             public List<Loaded> loadedEditorObjects = new List<Loaded>();
+        }
+
+        static AssetRef Asset(Object value)
+        {
+            if (!value) return null;
+            return new AssetRef { name = value.name, instanceId = value.GetInstanceID(),
+                kind = value.GetType().FullName, assetPath = AssetDatabase.GetAssetPath(value) };
+        }
+
+        static MaterialSlot Slot(int index, Material material)
+        {
+            return new MaterialSlot { slot = index, material = Asset(material),
+                shader = material ? Asset(material.shader) : null,
+                mainTexture = material ? Asset(material.mainTexture) : null };
+        }
+
+        static GraphicBinding CaptureBinding(Graphic graphic)
+        {
+            var renderer = graphic.canvasRenderer;
+            var surface = new GraphicBinding {
+                sourceKind = "submitted-materials-only",
+                submittedMaterials = new MaterialSlot[renderer.materialCount],
+                submittedPopMaterials = new MaterialSlot[renderer.popMaterialCount]
+            };
+            if (graphic is Image image)
+            {
+                var sprite = image.overrideSprite ? image.overrideSprite : image.sprite;
+                surface.sourceKind = "image";
+                surface.sourceSprite = Asset(sprite);
+                if (sprite) surface.sourceTexture = Asset(sprite.texture);
+            }
+            else if (graphic is RawImage raw)
+            {
+                surface.sourceKind = "raw-image";
+                surface.sourceTexture = Asset(raw.texture);
+            }
+            // A runtime-generated sprite may have no asset path even when its texture does.
+            surface.sourceAssetPath = surface.sourceSprite?.assetPath;
+            if (string.IsNullOrEmpty(surface.sourceAssetPath))
+                surface.sourceAssetPath = surface.sourceTexture?.assetPath;
+            // Inspect bindings already submitted; evaluating materialForRendering could allocate
+            // a fresh stencil material, and Graphic.mainTexture can invoke custom generators.
+            for (int i = 0; i < surface.submittedMaterials.Length; ++i)
+                surface.submittedMaterials[i] = Slot(i, renderer.GetMaterial(i));
+            for (int i = 0; i < surface.submittedPopMaterials.Length; ++i)
+                surface.submittedPopMaterials[i] = Slot(i, renderer.GetPopMaterial(i));
+            return Identify(surface, graphic, graphic.enabled);
         }
 
         static string Hierarchy(Transform t)
@@ -330,8 +405,11 @@ namespace Eldoria.MigrationQA
             CaptureSpatial(report);
             foreach (var s in All<Selectable>()) report.controls.Add(CaptureControl(s));
             foreach (var g in All<Graphic>())
+            {
                 report.graphics.Add(Identify(new Surface { raycastTarget = g.raycastTarget, culled = g.canvasRenderer.cull,
                     canvas = Hierarchy(g.canvas == null ? null : g.canvas.transform), screenCorners = ScreenCorners(g.rectTransform, g.canvas) }, g, g.enabled));
+                report.graphicBindings.Add(CaptureBinding(g));
+            }
             foreach (var ray in All<BaseRaycaster>()) report.raycasters.Add(Identify(new Item(), ray, ray.enabled));
             foreach (var c in All<Camera>())
                 report.cameras.Add(Identify(new CameraInfo { orthographic = c.orthographic, depth = c.depth, cullingMask = c.cullingMask,
@@ -342,8 +420,14 @@ namespace Eldoria.MigrationQA
                     camera = Hierarchy(c.worldCamera == null ? null : c.worldCamera.transform),
                     targetDisplay = c.targetDisplay, scaleFactor = c.scaleFactor }, c, c.enabled));
             foreach (var r in All<Renderer>())
-                report.renderers.Add(Identify(new Draw { materials = r.sharedMaterials.Select(m => m == null ? "" : m.name).ToArray(),
+            {
+                var shared = r.sharedMaterials;
+                report.renderers.Add(Identify(new Draw {
+                    materials = shared.Select(m => m == null ? "" : m.name).ToArray(),
                     sortingOrder = r.sortingOrder, forceRenderingOff = r.forceRenderingOff }, r, r.enabled));
+                report.rendererBindings.Add(Identify(new RendererBinding {
+                    sharedMaterialSlots = shared.Select((m, i) => Slot(i, m)).ToArray() }, r, r.enabled));
+            }
             foreach (var obj in Resources.FindObjectsOfTypeAll<Material>().Cast<Object>().Concat(Resources.FindObjectsOfTypeAll<Texture>()))
                 report.loadedEditorObjects.Add(new Loaded { name = obj.name, kind = obj.GetType().FullName,
                     instanceId = obj.GetInstanceID(), assetPath = AssetDatabase.GetAssetPath(obj), runtimeBytes = Profiler.GetRuntimeMemorySizeLong(obj) });

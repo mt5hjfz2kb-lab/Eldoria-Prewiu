@@ -1,0 +1,26 @@
+{
+  "revision": "integrated-mobile19-owner-qa",
+  "source_sha": "a2e956e11bc837a081c3eab1eb05c8ff094f4e05",
+  "native_run": "43428539668",
+  "source_composition": "Exact integrated Git source; no historical source overlays",
+  "stable_shell_sha256": {
+    "index.html": "f839bdaacd41be5ce77377f7a78339f58191c8c3feb6a0357f09e670c2c36ff4",
+    "style.css": "437e657f48e96bc04bfa25c8f10901cd715ba8289361340456196291a45f9a7f",
+    "city.png": "0a9b861a266f87dc8d8d44541f22d8ed5ea8e386a8b7ad4eec8955839b814768",
+    "play.js": "2ddd26db618eaf2cabe227febba1ad9ca156a6950038c61530a8fb0ed3d53be4"
+  },
+  "native_journey_verified": true,
+  "native_destination_captures_verified": true,
+  "candidate_bundle_sha256": "384f029c5dba1aa46b0cd1d324eb77dec73d5b833b83049b7bf0f68fffe9392c",
+  "original_data_sha256": "bd095fb2e63822c94e688fbd57d112afe1af885873c44d67ea0e487a21ef8c02",
+  "delivered_data_sha256": "cc337ac74d1c356619c3697166bb981e427bdc454094859729ad1bedce492ece",
+  "texture_payload_modified": true,
+  "preexisting_mobile6_profile_reused": true,
+  "no_new_texture_compression_decisions": true,
+  "artwork_approved": false,
+  "physical_mobile_tested": false,
+  "runtime_verified": false,
+  "release_for_external_testers": false,
+  "owner_only": true,
+  "published": false
+}

@@ -1,0 +1,9 @@
+# Línea base nativa de Main
+
+Commit d74f1a29d5472e9037d8534142768d4c13667ddd. Unity 6000.3.23f1. [Ejecución 46189973255](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/46189973255). [Artefacto 15282156169](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/46189973255/artifacts/15282156169), 84 068 272 bytes, SHA-256 064983e8c01f5340b2519c8cb0ba0031a265a7b6c25e435ccaec59d01de5c672.
+
+Las cuatro suites terminaron con código 0. El manifiesto registra CAPTURED. Los 89 pares de captura e inventario coinciden en frame, escena, estado y commit. Los 89 PNG coinciden con el SHA-256 registrado en sus muestras. La tabla incluye los hashes de PNG y JSON y las cantidades de componentes por muestra. HUD aporta 15 muestras, destinos 45, retención 9 y mochila 20. Hay 39 muestras a 390×844, 22 a 900×1600, 14 a 1600×900 y 14 a 844×390.
+
+En cada muestra se registraron 2 cámaras, 3 Canvas y 3 raycasters. Solo uno de cada tipo estaba habilitado en la jerarquía activa. Los recuentos de Renderer oscilaron entre 12 136 y 12 146 registrados, con 95 a 118 habilitados y activos. Esta distinción describe participación potencial. La prueba de sobrecarga y residencia requiere medición de renderizado y memoria. La columna de controles bajo el Canvas activo más cercano es un recuento orientativo, sujeto a oclusión, orden gráfico y filtros de raycast.
+
+Los cuatro anexos city-focus del ZIP documentan Bastión I en ciudad y en la ventana de Bastión, Bastión II en navegación avanzada y Bastión III en la ciudad del escenario de mochila. Bastión IV y V quedan pendientes de evidencia específica. Estos estados instrumentados de Main sirven de línea base de presentación. Quedan por comparar los controles y sus acciones con la integración, revisar visualmente el arte, verificar la partida continua y probar el dispositivo iPhone físico.

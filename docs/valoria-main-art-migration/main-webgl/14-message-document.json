@@ -1,0 +1,160 @@
+{
+  "screen": "14-message-document",
+  "frame": {
+    "ready": true,
+    "inWorld": false,
+    "narrative": false,
+    "busy": false,
+    "configured": false,
+    "scout": false,
+    "engendro": false,
+    "width": 390,
+    "height": 844,
+    "wood": 150,
+    "stone": 150,
+    "sawmill": 1,
+    "barracks": 0,
+    "bastion": 1,
+    "trained": 0,
+    "revision": 9,
+    "selected": "",
+    "objective": "b1.gather-wood",
+    "march": "idle",
+    "target": "",
+    "clock": "SystemClock",
+    "utc": "2026-11-28T21:20:57.6850000Z",
+    "timeScale": 1.0,
+    "controls": {
+      "objective": {
+        "x": 299.03558349609375,
+        "y": 692.0800170898438,
+        "enabled": true
+      },
+      "primary": {
+        "x": 195.0,
+        "y": 422.0,
+        "enabled": false
+      },
+      "continue": {
+        "x": 195.0,
+        "y": 73.58043670654297,
+        "enabled": false
+      },
+      "close": {
+        "x": 195.0,
+        "y": 422.0,
+        "enabled": false
+      },
+      "world": {
+        "x": 136.8577880859375,
+        "y": 52.046661376953125,
+        "enabled": true
+      }
+    },
+    "camera": {
+      "x": 47.477420806884766,
+      "y": 77.0,
+      "z": -103.5818099975586,
+      "zoom": 52.28627014160156
+    },
+    "hotspots": [
+      {
+        "id": "gate",
+        "x": -1.0,
+        "y": -1.0,
+        "visible": false
+      },
+      {
+        "id": "sawmill",
+        "x": 19.151107788085938,
+        "y": 541.2421875,
+        "visible": true
+      },
+      {
+        "id": "barracks",
+        "x": 425.0015869140625,
+        "y": 481.3494873046875,
+        "visible": false
+      },
+      {
+        "id": "bastion",
+        "x": 217.0465087890625,
+        "y": 571.8016357421875,
+        "visible": true
+      },
+      {
+        "id": "valoria-map-city",
+        "x": 7930.703125,
+        "y": -937.696533203125,
+        "visible": false
+      },
+      {
+        "id": "forest-valoria",
+        "x": 8320.431640625,
+        "y": -1007.6199951171875,
+        "visible": false
+      },
+      {
+        "id": "quarry-valoria",
+        "x": 8112.07421875,
+        "y": -1282.081298828125,
+        "visible": false
+      },
+      {
+        "id": "corrupt-scout",
+        "x": 7140.38818359375,
+        "y": -960.6593627929688,
+        "visible": false
+      },
+      {
+        "id": "engendro-valoria",
+        "x": 7076.29931640625,
+        "y": -1027.8577880859375,
+        "visible": false
+      }
+    ],
+    "marchVisual": {
+      "id": "idle",
+      "x": 117.3493423461914,
+      "y": 389.04833984375,
+      "visible": false
+    },
+    "framing": {
+      "pass": false,
+      "projected": [],
+      "visible": []
+    },
+    "management": {
+      "destination": "",
+      "quantity": 0,
+      "trainingSeconds": 0,
+      "bounds": []
+    }
+  },
+  "recentInput": [
+    {
+      "click": [
+        196,
+        580
+      ]
+    },
+    {
+      "click": [
+        28,
+        187
+      ]
+    },
+    {
+      "click": [
+        146,
+        132
+      ]
+    },
+    {
+      "click": [
+        182,
+        277
+      ]
+    }
+  ]
+}

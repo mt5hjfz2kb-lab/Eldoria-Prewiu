@@ -37,7 +37,9 @@ jobs:
           mkdir "$RUNNER_TEMP/kit"
           qa=docs/valoria-main-art-migration/qa
           cp "$qa/guard-native.cjs" "$qa/native-request.json" "$RUNNER_TEMP/kit/"
-          if [[ "$TARGET" != donor ]]; then
+          if [[ "$TARGET" == donor && "$(jq -r '.suite // empty' "$qa/native-request.json")" == region ]]; then
+            cp -r "$qa/donor" "$RUNNER_TEMP/kit/"
+          elif [[ "$TARGET" != donor ]]; then
             cp "$qa/ValoriaLiveInventory.cs" "$qa/native/"{run.py,ValoriaMigrationCapture.cs,EldoriaCityBaselineSnapshot.cs} "$RUNNER_TEMP/kit/"
             cp -r "$qa/native/advanced" "$RUNNER_TEMP/kit/"
           fi
@@ -108,7 +110,12 @@ jobs:
           git -C $tree config core.autocrlf false
           if ($LASTEXITCODE) { throw 'line-ending setup failed' }
           $inputs=@('/Unity/')
+          $request=Get-Content (Join-Path $env:VM_ROOT 'kit/native-request.json') -Raw | ConvertFrom-Json
+          if ($request.suite -eq 'advanced') { $inputs+='/tools/bastion-iii/author-frontier.py' }
           if ($env:TARGET -eq 'donor') {
+            if ($request.suite -eq 'region') {
+              $inputs+=@('/tools/valoria-modular25d/','/tools/bastion-iii/author-frontier.py')
+            }
             $inputs+='/docs/evidence/valoria-layered-construction-20261016/playable-entry-v3/complete-playerstate-before-reset.json'
           }
           git -C $tree sparse-checkout set --no-cone @inputs
@@ -135,8 +142,7 @@ jobs:
           if ((Get-Content "$tree/Unity/ProjectSettings/ProjectVersion.txt" -Raw) -notmatch 'm_EditorVersion: 6000\.3\.23f1\s') {
             throw 'Source does not match the Unity editor version'
           }
-      - if: env.TARGET != 'donor'
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Recheck lease and immutable branch tip at execution time
@@ -157,14 +163,23 @@ jobs:
           $kit=Join-Path $env:VM_ROOT 'kit'
           $out=Join-Path $env:VM_ROOT 'evidence'
           foreach ($line in Get-Content "$kit/kit.sha256") {
-            if ($line -notmatch '^([0-9a-f]{64})  ((?:advanced/)?[A-Za-z0-9._-]+)$') { throw 'Invalid kit manifest' }
+            if ($line -notmatch '^([0-9a-f]{64})  ((?:(?:advanced|donor)/)?[A-Za-z0-9._-]+)$') { throw 'Invalid kit manifest' }
             if ((Get-FileHash (Join-Path $kit $Matches[2])).Hash -ne $Matches[1]) { throw 'Measurement kit mismatch' }
           }
-          if ($env:TARGET -ne 'donor') {
+          $request=Get-Content "$kit/native-request.json" -Raw | ConvertFrom-Json
+          if ($env:TARGET -eq 'donor' -and $request.suite -eq 'region') {
+            & "$kit/donor/capture.ps1" -Kit $kit -Tree $tree -Evidence $out
+          } elseif ($env:TARGET -ne 'donor') {
             $env:ISSUE186_VIGILIA_SOURCE=$env:SOURCE
-            $request=Get-Content "$kit/native-request.json" -Raw | ConvertFrom-Json
             $driver=if ($request.suite -eq 'advanced') { "$kit/advanced/run.py" } else { "$kit/run.py" }
-            python "$driver" --checkout "$tree" --unity "$env:UNITY_EDITOR_PATH" --output "$out" --probe "$kit/ValoriaLiveInventory.cs"
+            $extra=@()
+            if ($request.suite -eq 'advanced') {
+              $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+              if (!$blender) { $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName }
+              if (!$blender) { throw 'Blender missing for canonical chapter III source generation' }
+              $extra+=@('--blender',$blender)
+            }
+            python "$driver" --checkout "$tree" --unity "$env:UNITY_EDITOR_PATH" --output "$out" --probe "$kit/ValoriaLiveInventory.cs" @extra
             if ($LASTEXITCODE) { throw 'Main-side capture driver failed' }
             $report=Get-Content "$out/manifest.json" -Raw | ConvertFrom-Json
             if ($report.status -ne 'CAPTURED') { throw 'Native inventory incomplete' }
@@ -195,7 +210,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: valoria-inventory-${{ env.TARGET }}-${{ env.SOURCE }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ env.VM_ROOT }}/evidence/
+          path: |
+            ${{ env.VM_ROOT }}/evidence/
+            !${{ env.VM_ROOT }}/evidence/**/private-player/**
+            !${{ env.VM_ROOT }}/evidence/**/terrain.bytes
           retention-days: 30
           if-no-files-found: warn
       - name: Release only this attempt's private scratch directory
