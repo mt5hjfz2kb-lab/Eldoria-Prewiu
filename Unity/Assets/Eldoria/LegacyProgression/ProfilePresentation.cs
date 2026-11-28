@@ -60,6 +60,19 @@ namespace Eldoria.LegacyProgression
                 default:throw new ArgumentOutOfRangeException(nameof(k));
             }
         }
+        public static string RankingMetricLabel(RankingKind kind)
+        {
+            switch(kind)
+            {
+                case RankingKind.TotalPower:return "Poder total";
+                case RankingKind.Kingdom:return "Poder del reino";
+                case RankingKind.Army:return "Poder militar";
+                case RankingKind.Vigilants:return "Etapa superada";
+                case RankingKind.Hunters:return "Puntos de caza";
+                case RankingKind.Explorers:return "Hallazgos";
+                default:throw new ArgumentOutOfRangeException(nameof(kind));
+            }
+        }
         // Only exact category keys are navigation targets; notices and local weekly summaries are not.
         public static bool TryRankingKind(string key,out RankingKind kind)
         {
@@ -76,8 +89,8 @@ namespace Eldoria.LegacyProgression
                 return new[]{Entry("status","Clasificación no disponible","El servicio competitivo todavía no está conectado o no está disponible.",ProfileEntryState.Unavailable)};
             if(data.Status==RankingDetailStatus.Loading)return new[]{Entry("status","Cargando clasificación","Consultando las posiciones del reino.")};
             if(data.Status==RankingDetailStatus.Error)return new[]{Entry("status","No se pudo cargar","Inténtalo de nuevo más tarde.",ProfileEntryState.Unavailable)};
-            var result=new List<ProfileEntry>{Entry("period",data.PeriodLabel,"Posición · Jugador · Puntuación")};
-            if(data.Rows.Count==0)result.Add(Entry("empty","Aún no hay jugadores clasificados","Las posiciones aparecerán cuando haya resultados válidos."));
+            var result=new List<ProfileEntry>{Entry("period",data.PeriodLabel,"Posición · Jugador · "+RankingMetricLabel(kind))};
+            if(data.Rows.Count==0)result.Add(data.Offset==0?Entry("empty","Aún no hay jugadores clasificados","Las posiciones aparecerán cuando haya resultados válidos."):Entry("empty-page","No hay más resultados","Regresa a la página anterior."));
             foreach(var row in data.Rows)
                 result.Add(new ProfileEntry("place:"+N(row.Position),N(row.Position)+". "+row.DisplayName,N(row.Score),ProfileEntryState.Information,"","",row.Position));
             if(data.OwnRow!=null)result.Add(Entry("own-position","Tu posición",N(data.OwnRow.Position)+" · "+N(data.OwnRow.Score)));

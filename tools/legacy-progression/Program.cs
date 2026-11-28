@@ -116,6 +116,18 @@ static class Program
         Check(invalidDetail,"wrong first page order rejected");
         invalidDetail=false;try{new RankingDetailSnapshot(RankingKind.Hunters,RankingDetailStatus.Unavailable,"",rows);}catch(ArgumentException){invalidDetail=true;}
         Check(invalidDetail,"offline rows rejected");
+        var moreScores=Enumerable.Range(0,55).Select(i=>Score("page-"+i,100-i,start)).ToArray();
+        var allRows=VerifiedRankings.Build(scope,moreScores);
+        var firstPage=new RankingDetailSnapshot(RankingKind.Hunters,RankingDetailStatus.Ready,"QA",allRows.Take(50),allRows[54],0,true);
+        var secondPage=new RankingDetailSnapshot(RankingKind.Hunters,RankingDetailStatus.Ready,"QA",allRows.Skip(50),allRows[0],50,false);
+        Check(firstPage.HasMore&&firstPage.Rows.Count==50&&firstPage.OwnRow.Position==55,"first page own position beyond visible rows");
+        Check(secondPage.Offset==50&&secondPage.Rows.First().Position==51&&secondPage.OwnRow.Position==1,"second page preserves global positions");
+        Check(ProfilePresentation.RankingDetailRows(snapshot,RankingKind.Hunters,secondPage).Any(x=>x.RankingPosition==55),"second page presentation");
+        Check(ProfilePresentation.RankingDetailRows(snapshot,RankingKind.Hunters,firstPage).First().Detail.Contains("Puntos de caza"),"category metric label");
+        invalidDetail=false;try{new RankingDetailSnapshot(RankingKind.Hunters,RankingDetailStatus.Ready,"QA",allRows.Skip(50));}catch(ArgumentException){invalidDetail=true;}
+        Check(invalidDetail,"page cannot masquerade as first page");
+        invalidDetail=false;try{new RankingDetailSnapshot(RankingKind.Hunters,RankingDetailStatus.Ready,"QA",allRows.Skip(50),offset:50,hasMore:true);}catch(ArgumentException){invalidDetail=true;}
+        Check(invalidDetail,"partial page cannot claim continuation");
         Check(ProfilePresentation.DiscoveryEntries(snapshot,"frontier").Count(x=>x.State==ProfileEntryState.Earned)==2,"collection detail from facts");
         Check(ProfilePresentation.DiscoveryEntries(snapshot,"frontier").Count(x=>x.Title=="Hallazgo desconocido")==2,"unseen lore hidden");
         Check(ProfilePresentation.DiscoveryEntries(fresh,"frontier").Count==0,"hidden collection not inspectable");
