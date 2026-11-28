@@ -11,8 +11,9 @@ namespace Eldoria.LegacyProgression
     {
         public readonly string Key, Title, Detail, CommandKind, CommandTarget;
         public readonly ProfileEntryState State;
-        public ProfileEntry(string key,string title,string detail,ProfileEntryState state,string commandKind="",string commandTarget="")
-        { Key=key;Title=title;Detail=detail;State=state;CommandKind=commandKind;CommandTarget=commandTarget; }
+        public readonly int RankingPosition;
+        public ProfileEntry(string key,string title,string detail,ProfileEntryState state,string commandKind="",string commandTarget="",int rankingPosition=0)
+        { Key=key;Title=title;Detail=detail;State=state;CommandKind=commandKind;CommandTarget=commandTarget;RankingPosition=rankingPosition; }
     }
 
     // All display decisions are independent of art and UI layout, and read the existing save.
@@ -58,6 +59,30 @@ namespace Eldoria.LegacyProgression
                 case RankingKind.Explorers:return "Exploradores";
                 default:throw new ArgumentOutOfRangeException(nameof(k));
             }
+        }
+        // Only exact category keys are navigation targets; notices and local weekly summaries are not.
+        public static bool TryRankingKind(string key,out RankingKind kind)
+        {
+            foreach(RankingKind k in Enum.GetValues(typeof(RankingKind)))
+                if(string.Equals(key,"ranking:"+k,StringComparison.Ordinal)){kind=k;return true;}
+            kind=default(RankingKind);return false;
+        }
+        public static IReadOnlyList<ProfileEntry> RankingDetailRows(LocalProfile p,RankingKind kind,RankingDetailSnapshot data)
+        {
+            if(p==null)throw new ArgumentNullException(nameof(p));
+            if(!p.RankingsVisible)return new[]{Entry("locked","Todavía no disponible","Avanza en Valoria para desbloquearlo.",ProfileEntryState.Locked)};
+            RankingLabel(kind); // reject undefined enum values
+            if(data==null||data.Kind!=kind||data.Status==RankingDetailStatus.Unavailable)
+                return new[]{Entry("status","Clasificación no disponible","El servicio competitivo todavía no está conectado o no está disponible.",ProfileEntryState.Unavailable)};
+            if(data.Status==RankingDetailStatus.Loading)return new[]{Entry("status","Cargando clasificación","Consultando las posiciones del reino.")};
+            if(data.Status==RankingDetailStatus.Error)return new[]{Entry("status","No se pudo cargar","Inténtalo de nuevo más tarde.",ProfileEntryState.Unavailable)};
+            var result=new List<ProfileEntry>{Entry("period",data.PeriodLabel,"Posición · Jugador · Puntuación")};
+            if(data.Rows.Count==0)result.Add(Entry("empty","Aún no hay jugadores clasificados","Las posiciones aparecerán cuando haya resultados válidos."));
+            foreach(var row in data.Rows)
+                result.Add(new ProfileEntry("place:"+N(row.Position),N(row.Position)+". "+row.DisplayName,N(row.Score),ProfileEntryState.Information,"","",row.Position));
+            if(data.OwnRow!=null)result.Add(Entry("own-position","Tu posición",N(data.OwnRow.Position)+" · "+N(data.OwnRow.Score)));
+            else result.Add(Entry("own-position","Tu posición","Todavía sin clasificación"));
+            return result;
         }
         public static IReadOnlyList<ProfileEntry> Rows(LocalProfile p,ProfileSection section,DateTime? localUtc=null)
         {

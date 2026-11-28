@@ -93,6 +93,29 @@ static class Program
         var rankView=ProfilePresentation.Rows(snapshot,ProfileSection.Rankings);
         Check(rankView.Count==7&&rankView.First().State==ProfileEntryState.Unavailable,"no fake leaderboard or positions");
         Check(rankView.Single(x=>x.Key=="ranking:Hunters").State==ProfileEntryState.Unavailable,"no fabricated hunter metric");
+        var kinds=Enum.GetValues(typeof(RankingKind)).Cast<RankingKind>().ToArray();
+        Check(rankView.Count(x=>ProfilePresentation.TryRankingKind(x.Key,out _))==6,"six exact detail links");
+        Check(!ProfilePresentation.TryRankingKind("offline",out _)&&!ProfilePresentation.TryRankingKind("ranking:0",out _)&&!ProfilePresentation.TryRankingKind("week:gathered",out _),"no invented category routes");
+        foreach(var kind in kinds)
+        {
+            Check(ProfilePresentation.TryRankingKind("ranking:"+kind,out var actual)&&actual==kind,"category identity "+kind);
+            var unavailable=ProfilePresentation.RankingDetailRows(snapshot,kind,null);
+            Check(unavailable.Count==1&&unavailable[0].State==ProfileEntryState.Unavailable&&unavailable.All(x=>x.RankingPosition==0),"offline no fake ranks "+kind);
+            Check(ProfilePresentation.RankingDetailRows(fresh,kind,null).Single().State==ProfileEntryState.Locked,"B1 detail gated "+kind);
+            Check(ProfilePresentation.RankingDetailRows(snapshot,kind,new RankingDetailSnapshot(kind,RankingDetailStatus.Loading)).Single().Key=="status","loading "+kind);
+            Check(ProfilePresentation.RankingDetailRows(snapshot,kind,new RankingDetailSnapshot(kind,RankingDetailStatus.Error)).Single().State==ProfileEntryState.Unavailable,"error "+kind);
+            var fixture=new RankingDetailSnapshot(kind,RankingDetailStatus.Ready,"Semana QA",rows,rows[2]);
+            var detail=ProfilePresentation.RankingDetailRows(snapshot,kind,fixture);
+            Check(detail.Where(x=>x.RankingPosition>0).Select(x=>x.RankingPosition).SequenceEqual(new[]{1,2,3,4}),"actual sorted positions and podium marks "+kind);
+            Check(detail.First(x=>x.RankingPosition==1).Title=="1. d"&&detail.Last().Title=="Tu posición","display names and own position "+kind);
+            var empty=ProfilePresentation.RankingDetailRows(snapshot,kind,new RankingDetailSnapshot(kind,RankingDetailStatus.Ready,"Semana QA"));
+            Check(empty.Any(x=>x.Key=="empty")&&empty.All(x=>x.RankingPosition==0),"real empty distinct from offline "+kind);
+        }
+        Check(ProfilePresentation.RankingDetailRows(snapshot,RankingKind.Army,new RankingDetailSnapshot(RankingKind.Hunters,RankingDetailStatus.Ready,"QA",rows)).Single().State==ProfileEntryState.Unavailable,"wrong category rejected");
+        bool invalidDetail=false;try{new RankingDetailSnapshot(RankingKind.Hunters,RankingDetailStatus.Ready,"QA",rows.Reverse());}catch(ArgumentException){invalidDetail=true;}
+        Check(invalidDetail,"wrong first page order rejected");
+        invalidDetail=false;try{new RankingDetailSnapshot(RankingKind.Hunters,RankingDetailStatus.Unavailable,"",rows);}catch(ArgumentException){invalidDetail=true;}
+        Check(invalidDetail,"offline rows rejected");
         Check(ProfilePresentation.DiscoveryEntries(snapshot,"frontier").Count(x=>x.State==ProfileEntryState.Earned)==2,"collection detail from facts");
         Check(ProfilePresentation.DiscoveryEntries(snapshot,"frontier").Count(x=>x.Title=="Hallazgo desconocido")==2,"unseen lore hidden");
         Check(ProfilePresentation.DiscoveryEntries(fresh,"frontier").Count==0,"hidden collection not inspectable");
