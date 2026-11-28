@@ -1,0 +1,1824 @@
+{
+  "original_main": "d74f1a29d5472e9037d8534142768d4c13667ddd",
+  "evidence_compiled_sha": "a2e956e11bc837a081c3eab1eb05c8ff094f4e05",
+  "shared_Unity_subtree": "db625919f50f2489d2a7cf3c107789b1392f8e86",
+  "scope": "Historical baseline only. Capture fixtures may inject advanced states. Candidate parity untested. No physical-device or end-to-end unassisted progression proof inferred.",
+  "reports": [
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/BreachWatchAdvancedNavigationEvidence.json",
+      "sha256": "f20b2cde87e20e4dab7b054e3f1050fe5ed4d5d95483985d44754aea180320f2",
+      "fields": [
+        "status",
+        "source",
+        "notes",
+        "probeOnly",
+        "saveUnchanged",
+        "artworkApproved",
+        "screenshotCount",
+        "actualMailboxFirstHitClicks",
+        "screens"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/BreachWatchDestinationEvidence.json",
+      "sha256": "87ffc74b688b97db27993280c49a59021ea6a78c6d33d4237ac133178553a085",
+      "fields": [
+        "status",
+        "source",
+        "notes",
+        "probeOnly",
+        "saveUnchanged",
+        "artworkApproved",
+        "screenshotCount",
+        "actualMailboxFirstHitClicks",
+        "screens"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/BreachWatchHeroProfilesEvidence.json",
+      "sha256": "988f60c7d7fc916116b993ed30f6a4843dfa9b9b97e0918caf688ae0719c94bd",
+      "fields": [
+        "status",
+        "source",
+        "notes",
+        "probeOnly",
+        "saveUnchanged",
+        "artworkApproved",
+        "screenshotCount",
+        "actualMailboxFirstHitClicks",
+        "screens"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/BreachWatchIntegratedTreasureEvidence.json",
+      "sha256": "3e05feb0a934871bfc60d86551a7320ad67aeb1ea72cb1959af4bbe457244ee6",
+      "fields": [
+        "status",
+        "source",
+        "notes",
+        "probeOnly",
+        "saveUnchanged",
+        "artworkApproved",
+        "screenshotCount",
+        "actualMailboxFirstHitClicks",
+        "screens"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/BreachWatchPopulatedMailEvidence.json",
+      "sha256": "23f2ac994df9d660bb334819866feaa09f5a2d5cc6bcc5c47d7a091c1b3ec57d",
+      "fields": [
+        "status",
+        "source",
+        "notes",
+        "probeOnly",
+        "saveUnchanged",
+        "artworkApproved",
+        "screenshotCount",
+        "actualMailboxFirstHitClicks",
+        "screens"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/BreachWatchRetentionEvidence.json",
+      "sha256": "1ddb07b4f04d70718fef000382c954e5bead16c617a892a965f8b8360d4bf15b",
+      "fields": [
+        "status",
+        "source",
+        "notes",
+        "probeOnly",
+        "saveUnchanged",
+        "artworkApproved",
+        "screenshotCount",
+        "actualMailboxFirstHitClicks",
+        "screens"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/march-caption-ink-1600x900.json",
+      "sha256": "4fccdb4a61c6616282a10b516d7e43b66ba6f963167da36945869f01b902321d",
+      "fields": [
+        "scope",
+        "captions"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/march-caption-ink-390x844.json",
+      "sha256": "3aaca7537118f9e10529d4a7cf72c8b686635e68ac4ca75f9d84696daa4ed938",
+      "fields": [
+        "scope",
+        "captions"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/march-caption-ink-844x390.json",
+      "sha256": "21114e9cf34f9428a3b6d8193f3821534ab9f071ccda4c8b81a523306eab197a",
+      "fields": [
+        "scope",
+        "captions"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/march-caption-ink-900x1600.json",
+      "sha256": "b4b1ca6f31e982279c104e6c7446460d4b55412c34d9992e532c22bdda23b72a",
+      "fields": [
+        "scope",
+        "captions"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-hero-aldric-equipamiento-390x844.json",
+      "sha256": "526b321f33fd452b694ada5c022493e74aa8f34cf767afac1580eee6c41b7e42",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-hero-aldric-equipamiento-900x1600.json",
+      "sha256": "db2ef136e4102282d0f2d44f2fe0aa1d202898a4075ce06bb5406514218711a5",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-hero-aldric-habilidades-390x844.json",
+      "sha256": "016f42c1607e5f00861121ede2326b84deed5951f4ebf00aa33683cd7bb28c62",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-hero-aldric-habilidades-900x1600.json",
+      "sha256": "303b8569663069d45765f3afeb71a54824a137bfb346b3903e1ec84152ec0ee9",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-hero-aldric-resumen-390x844.json",
+      "sha256": "0809b2aa513d8b77adc1ad8b54fbb8363545a110aa2606c359d0a615ee3ead78",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-hero-aldric-resumen-900x1600.json",
+      "sha256": "6eae792418770b78c3c5309d683036db58ba5be27d4ad2544277e4ffce2b6a26",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-hero-aldric-talentos-390x844.json",
+      "sha256": "47ae6827b61ebbf3a1918151c12ad23df1521a5539f54c15b8a7e8815af692e3",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-hero-aldric-talentos-900x1600.json",
+      "sha256": "6962b01ef9a0d10ec8487175dd1ecca8dccea2b4bf2cd235fce488e2fb05a5fa",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-hero-lyra-resumen-390x844.json",
+      "sha256": "3a6079513d6618702a0fa13d3f60e738a41a94fa07ae442b22495e768938fb04",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-hero-lyra-resumen-900x1600.json",
+      "sha256": "5fefbaafeb23ed9b8380f9d9cf6e147892be7bf7effd9b7165113be219168e6f",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-heroes-1600x900.json",
+      "sha256": "65dfa5a1b099558f13fd6eeb74e0e6ed7f0b595ba508aa867ba1caf269f9c7e2",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-heroes-390x844.json",
+      "sha256": "bad335cbfa1b4a3616e3ee9c38f39c25573b44e187feaea6b0bdcddee6f4ac7e",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-heroes-844x390.json",
+      "sha256": "975563c1f0c334cb9300bb2cdad402a6b64c06f1c35ef5f393d30733038ae3eb",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-heroes-900x1600.json",
+      "sha256": "8c6bb01319582526ead9aa3f55aaaf9b3ca1e30b18dd7edfd0ba18de767ca111",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-mail-1600x900.json",
+      "sha256": "56c36c39c231225b8f1fcb6e2b7203e6e2b8d8912a1eb708448b6e27cdcf9c96",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-mail-390x844.json",
+      "sha256": "011ed31302b39bd087607512103a559259220ebd07f57a8bf3480c00e4b3e72b",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-mail-844x390.json",
+      "sha256": "55f4905f4672ab0ad6301fdba9271e0c405ce2d536afea283cfb9b26a2889562",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-mail-900x1600.json",
+      "sha256": "74dbf600548fd2fca7471c54b254cfdf5c041ef9f423af4ac069721dd609af37",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-mail-report-document-390x844.json",
+      "sha256": "334ca7bfb854e31ff31c795bad04b99ba4a3ca36ce70e26ca29c15ef91521f96",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-mail-report-document-900x1600.json",
+      "sha256": "44e1aaebf6662f2ac6cd4e7ed0e6a37855b1a384942c92dd4369b39110c0ac23",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-mail-with-report-row-390x844.json",
+      "sha256": "6c2ccc895d6b574fedb7724dcf6756ad4da8ba1c9f6fe23219e50f687c8fece6",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-mail-with-report-row-900x1600.json",
+      "sha256": "0677d006334a94360612b6f477d634f5db5d289adf78e83c58995c26e402de3b",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-march-1600x900.json",
+      "sha256": "48531ec9f35c2edfc64a611f3b2cc575a1ab62d92d62e6f52e38fceb04bc4ab3",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-march-390x844.json",
+      "sha256": "e84c036bca550ca0c9a1ab697434b5e40ae74ddc010a781d42b5fc4bc2742c81",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-march-844x390.json",
+      "sha256": "1826878de1d45373074a55f55e86ef715c5a191471c6194fb500d06442836b3b",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-march-900x1600.json",
+      "sha256": "caea36a65be77435e0ba15e93db02db63107243fd97e14610fd2f8344cbc13a3",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-scouts-1600x900.json",
+      "sha256": "1872006a82185456fb1edd6ca1a3551c3d31208d5449fd822a86dccebf8ab7fb",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-scouts-390x844.json",
+      "sha256": "1442f8856b4ccdc88efd6cee34c1bfd2fa0ad0a57c46ea3073c58a9d63224ef4",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-scouts-844x390.json",
+      "sha256": "7f97b232f183653f69700cd5f9a1155f082edd567130b318bda081106fd17c08",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-scouts-900x1600.json",
+      "sha256": "64d3043d34ed1691155b732d5b2e130dccd2127dd0d506e237eed92e7df31a51",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-training-1600x900.json",
+      "sha256": "8fc4310a32d68feb08d1288cd48600355852efa29d7f635bb887cb0381d8d9e7",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-training-390x844.json",
+      "sha256": "4c1543464c8beaa0b89a993b7c30ace6f9df53c87c8a34e0e6c77400821f215d",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-training-844x390.json",
+      "sha256": "55e93a1da6f5ba415762df5c7a52b3648ec397454b434905b4e777aef719f3e7",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-training-900x1600.json",
+      "sha256": "f5ac5527b2dc474aac5aa882cc1d33bbefc6025a626091ce7a5042acc9b2d87b",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-treasures-1600x900.json",
+      "sha256": "16199b4d913a6d086833d61c0c952f3180b4f006cad840c60e43d4fb0a19ed1c",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-treasures-390x844.json",
+      "sha256": "5755af4fa8fc6bc16e548a4c131953e71efc6819a5848d7420b8041a1132f011",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-treasures-844x390.json",
+      "sha256": "f2f70dd780867c7c201e63261e82fc35896460aef283f9c2aa23e691bb5e2aca",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-treasures-900x1600.json",
+      "sha256": "03fbeb49cdd1917a4ceaae8a7f4d7119c4f091f9441d8aee3a515d47c6161428",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-vigilants-1600x900.json",
+      "sha256": "72d982591ae1b3cf3a87d5779524bd6ca90de69f396e1be35b1448c7c7dd5039",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-vigilants-390x844.json",
+      "sha256": "ea481671e9806a58178b22e0203acb29f2cd89100ebec3765e35b371ab32f549",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-vigilants-844x390.json",
+      "sha256": "622180c200943e08c3bfe0d252639a07dae40de5de2955ed81c3ec4d3e8b1b3c",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchDestinationEvidence/typography-production/real-unity-vigilants-900x1600.json",
+      "sha256": "009029c35b43c7e41630cf03046b7115f3b4dc17cf450338a0e49e47327f1b94",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchNativeEvidence/BreachWatchNativeEvidence.json",
+      "sha256": "2e8e04d73a7aa071c94528f6ba70d5955a1828dafdf9754204e5ca6a132f7923",
+      "fields": [
+        "status",
+        "source",
+        "scene",
+        "note",
+        "canvasDiagnostics",
+        "activeForeignScreenSpaceCanvases",
+        "screenshotCount",
+        "functioningNewNavigationClicks",
+        "oldCanvasVisible",
+        "saveUnchanged",
+        "oldHudGraphicsReused",
+        "artworkApproved",
+        "androidTested",
+        "shots"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchNativeEvidence/typography-production/real-unity-bastion-1600x900.json",
+      "sha256": "bf46b41dd84685d895f9e8ef5d7ddac9b1666ebcd1f5c5a392911842cd9a0bbb",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchNativeEvidence/typography-production/real-unity-bastion-390x844.json",
+      "sha256": "1071461c0f95bba8cf54e18be4795b9bdf56c1cceb9a126ec5ef6c12fbe3b74e",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchNativeEvidence/typography-production/real-unity-bastion-844x390.json",
+      "sha256": "1b94e9f9e683f624524bc87a3703ad6be2baa18f3485bf00b553eb9198cc1584",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchNativeEvidence/typography-production/real-unity-bastion-900x1600.json",
+      "sha256": "17107123eca6113e892a5d1bf9f358e9595e4eaef5a0103dc56c6739e859c923",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchNativeEvidence/typography-production/real-unity-city-1600x900.json",
+      "sha256": "f65e25b8e2fb762aa90458a5902b1922212bbb0670ba3dedc3f103506cf0c153",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchNativeEvidence/typography-production/real-unity-city-390x844.json",
+      "sha256": "acffe0cfe48d91b23edfe1888b34cc6c76993940baf7ea737008683b75b8c665",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchNativeEvidence/typography-production/real-unity-city-844x390.json",
+      "sha256": "adbce4a7073fb230b90fbe75a2e042374ca841ac4ff9510dd4356c35d43b5752",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14042200967,
+      "run": 43433023729,
+      "path": "BreachWatchNativeEvidence/typography-production/real-unity-city-900x1600.json",
+      "sha256": "2b7e5c20510f50603cf73d999503f9730e2705b8d48bed3360396ef932998650",
+      "fields": [
+        "scope",
+        "viewport",
+        "png_sha256",
+        "violations",
+        "audited_text_rows",
+        "elements"
+      ]
+    },
+    {
+      "artifact": 14043052275,
+      "run": 43428539668,
+      "path": "candidate/report.json",
+      "sha256": "437f1e116f8dd071b948a29244866bb3bdea7a56eae6ec70cd3528a5268fc0ca",
+      "fields": [
+        "scope",
+        "identity",
+        "engine",
+        "platform",
+        "arch",
+        "passed",
+        "entry",
+        "earlyEntry",
+        "realWorldEntryVerified",
+        "resizeSequence",
+        "errors",
+        "perDrawTracing",
+        "derived_from_entrySamples",
+        "units"
+      ]
+    },
+    {
+      "artifact": 14043052275,
+      "run": 43428539668,
+      "path": "comparison.json",
+      "sha256": "a7628bb0f81993ee3f882a7c8441c8b88cd6f43ce8c61227380e88cb5b966076",
+      "fields": [
+        "candidate_row_only"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "Eldoria-Prewiu/Eldoria-Prewiu/docs/evidence/valoria-reference-clean/integration-result.json",
+      "sha256": "63815ed773a11f738f9e3ec4739bced5d8f9fbcf22c9088a0ec94eb756f3b12c",
+      "fields": [
+        "source",
+        "status",
+        "error",
+        "scene",
+        "checks",
+        "framing",
+        "management",
+        "artApproved",
+        "physicalDeviceTested",
+        "timeAccelerated"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/cercana-horizontal-source.json",
+      "sha256": "35c7d3fd97d43c78751335c73e72e6470dcf351f897bfe345d5cd0c00e8e9cf4",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/cercana-recurso-madera-horizontal-source.json",
+      "sha256": "b0b780613844be84035479dafd508dc22abe6b32b8c1aead40040e87d59730eb",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/cercana-recurso-madera-vertical-source.json",
+      "sha256": "ac05548b7da451325570905efbe455eb660224d1e58d647f5c82474429292537",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/cercana-recurso-piedra-horizontal-source.json",
+      "sha256": "265d842af19dd6940b45af42ce6a895a86b05817aa23e8c5bd6390d62834d752",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/cercana-recurso-piedra-vertical-source.json",
+      "sha256": "67e857f1b61827e792c459e8d61cf22eba7c6d0988f9c9c49438f011deb9ff90",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/cercana-vertical-source.json",
+      "sha256": "d40bf2b54a3311b03d462bf9e41f798910f6be2771513cd1bc87a0cc2fbd5352",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/panoramica-blockout-horizontal-source.json",
+      "sha256": "4ba17a89646a4ff0f12ca6b1b5f09e051447cd815060358257fd7093047a8fc5",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/panoramica-blockout-vertical-source.json",
+      "sha256": "b4a4c4d000fd7f3df48f087056b9d67abc448fa8b8d29bddc41e699ab637165e",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/panoramica-control-horizontal-source.json",
+      "sha256": "1b39000a498408702b171b44e47784252c13090ce63ec79849c41cdfb0bffc5d",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/panoramica-control-vertical-source.json",
+      "sha256": "f53a39e7cf64e8cdf5d8edf10c9c79c33113d3b0ba0f22aec5ada2fb4d54f8b8",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/panoramica-horizontal-source.json",
+      "sha256": "0697893dd3bf3f7d18d98c2da999cf511ac6b67bb4800a864a8ff86ebe461f4f",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/panoramica-vertical-source.json",
+      "sha256": "4aeee10e3a3376f3cb8be157b3452fdd703cbae91da8feca24f2bbacb1cf62c2",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/regional-blockout-horizontal-source.json",
+      "sha256": "b8c6a05df91351041dfd415cdaa843b7eaa74b3ffa5b5736f95733a214621177",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/regional-blockout-vertical-source.json",
+      "sha256": "b519e5852b766ef39cbd9dfc372313c82b4f50f049a7f774792681f01a722d23",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/regional-horizontal-source.json",
+      "sha256": "75530568fcca265357d77cc1ca659adb709d379890d958a56e4d99aca5eef381",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/regional-vertical-source.json",
+      "sha256": "53b07b515362bd3425bd58e5583245774c83be6ae977922fd7815596dc1f3c14",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/breach-details/close-landscape.json",
+      "sha256": "f7f21c828c214be1016e5fe14966be7c20803276b81f1b5721c34885a496127d",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/breach-details/close-portrait.json",
+      "sha256": "4a39852198ddfec7d9fc1b386b2189258ce9c15852773b53f70528419fb2be80",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/breach-details/regional-landscape.json",
+      "sha256": "494b2b76e1135727ff9b0b33d1cdd8d499d0ac32f06735a5d5a35cf1d8c91d3a",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/breach-details/regional-portrait.json",
+      "sha256": "37305bfb586f3475650cff40ded0bb3ecd509284361ca75a04d32238ec0dfbe7",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/continental-details/stone-landscape.json",
+      "sha256": "09d09d0765c091bbb19a1c8bc8e40227c4bfbf37708b04f8b72557ffe32fbcb5",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/continental-details/stone-portrait.json",
+      "sha256": "60b26e8f19bb0b4930bccb178a290d67f82776638e88545c9158a9f6601da1ad",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/continental-details/wood-landscape.json",
+      "sha256": "eda9ce1a89bb241cdef804b72adcacff676ed47aaa30b0f1bc00b4f4316b6e1c",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/continental-details/wood-portrait.json",
+      "sha256": "ef3372ffe0178373c992bde28105ca39f382feca129fe00bb96059dda77d5783",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/creature-details/boar-landscape.json",
+      "sha256": "bfef69bbd766fb1225ee8165058b0b863e99ab03e50bf686a39cae0159568153",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/creature-details/boar-portrait.json",
+      "sha256": "30709ad6188a6f7c84a098aa149274b3c49e84aaae7dcb9f640dde5777f82dd7",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/creature-details/spawnling-landscape.json",
+      "sha256": "e0e42767eae54982f8377c4add3118d3176e510f0853b5abc0d4a46454b7e8dd",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/creature-details/spawnling-portrait.json",
+      "sha256": "0992ed3df3b219daede71a5ba1644f85156cecbe9687af02bdd66dbf5f09de61",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/landscape-close.json",
+      "sha256": "a661541695f32725d63bc08ce26c5338b262d5ba95844b9f654bf59acdea05f5",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/landscape-panorama.json",
+      "sha256": "0965e0e18a521545f76f67b6c82df81636f752fb2ac8ba39214e859702b3a5e2",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/landscape-regional.json",
+      "sha256": "db3a3df16697d4722e2ec8055b424adc193e2898465b2450ce37edb268baddc9",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/portrait-close.json",
+      "sha256": "45aed718b2cd48708cd406b7e2c98573fbec620d2f1970248b1598915009cf42",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/portrait-panorama.json",
+      "sha256": "490f5ae85f13a1c69b9d12177528decc9e8d1f966c2618740938b1a42d27a104",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/retained-sector/portrait-regional.json",
+      "sha256": "8d387b3196000f2a09e1beee58d5fdf865898624a9bb95d034326a54cdc7297c",
+      "fields": [
+        "sourceScene",
+        "version",
+        "label",
+        "sha256",
+        "context",
+        "targetId",
+        "actualUnityCamera",
+        "playMode",
+        "physicalIphone",
+        "width",
+        "height",
+        "zoom",
+        "aspect",
+        "cameraPosition",
+        "worldTarget",
+        "cameraRotation"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/eldoria-ui-region1-captures-43433023729-1/terrain-source.json",
+      "sha256": "48d0fcc759d66bd3eda7b51ef1cb21017fb9a714b686c4ff2827e50d86cb7bdf",
+      "fields": [
+        "origin",
+        "context",
+        "arrays",
+        "digest_format"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/Eldoria-UIProgression-EditMode.xml",
+      "sha256": "686f4bd005f3d30c846f8db506c40814858f3bc323c31c0e94ed85ede06a0daa",
+      "fields": [
+        "type",
+        "suite_attributes",
+        "tests"
+      ]
+    },
+    {
+      "artifact": 14042379101,
+      "run": 43433023729,
+      "path": "_temp/Eldoria-UIProgression-PlayMode.xml",
+      "sha256": "dfb227c3946be5415d482c6d3fdb9083462319e41ecea0a1f38f0df5ff7f4064",
+      "fields": [
+        "type",
+        "suite_attributes",
+        "tests"
+      ]
+    },
+    {
+      "artifact": 14039804707,
+      "run": 43428539668,
+      "path": "Eldoria-Prewiu/Eldoria-Prewiu/forja-thin-native-source-42408083695/Unity/DailyTreasureNativeEvidence/report.json",
+      "sha256": "03cc4e944d2409fad618bba523b8dd1e9a26cb2f9b6a83bcd9d91f5ec10b8cd5",
+      "fields": [
+        "status",
+        "source",
+        "note",
+        "images",
+        "realGatewayClaims",
+        "graphicalPointerHits",
+        "quietGatewayClaims",
+        "quietPointerHits",
+        "quietImages",
+        "quietShots",
+        "visualOnlyMilestoneCaptures",
+        "artApproved",
+        "fullSceneVerified",
+        "iosVerified",
+        "authoredSpritesImported",
+        "shots"
+      ]
+    },
+    {
+      "artifact": 14039804707,
+      "run": 43428539668,
+      "path": "Eldoria-Prewiu/Eldoria-Prewiu/forja-thin-native-source-42408083695/Unity/Issue186BagCombinedNativeEvidence/report.json",
+      "sha256": "6efa087b1b79b45d6d24ca196024e1259443b57ce50876b37a68ecaa8168e9ee",
+      "fields": [
+        "status",
+        "resourceSource",
+        "uiSource",
+        "error",
+        "limitation",
+        "nativeRun",
+        "nativeAttempt",
+        "temporaryProbeOnly",
+        "actualBagOnVigilia",
+        "seenDoesNotUse",
+        "skipDoesNotComplete",
+        "useCreditsOnce",
+        "jsonReloadVerified",
+        "mailReadDoesNotClaim",
+        "mailClaimDoesNotCredit",
+        "artApproved",
+        "physicalIphoneVerified",
+        "fullMailboxUiFlowVerified",
+        "realFirstHitClicks",
+        "actualIntegratedCityFrames",
+        "images"
+      ]
+    }
+  ]
+}
