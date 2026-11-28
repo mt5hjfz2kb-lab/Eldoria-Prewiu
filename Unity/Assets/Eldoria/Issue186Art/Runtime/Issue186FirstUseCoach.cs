@@ -462,6 +462,10 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!control || !control.isActiveAndEnabled ||
                 !control.gameObject.activeInHierarchy || !control.interactable)
                 {Hide("real-button-not-available:"+id);return;}
+            // Real destination roots are reparented as last siblings when opened.
+            // Bring the non-interactive guide above them before the first-hit probe;
+            // every guide graphic remains raycastTarget=false.
+            if(surface)surface.SetAsLastSibling();
             if(!Issue186ArtKit.BindFirstUsePointer(
                 gateway.Snapshot().ResourceGuidance??new GuidedTutorialProgress(),
                 "journey:"+key,id,
@@ -479,7 +483,7 @@ namespace Eldoria.UI.RoyalGold.V2
             bool hasActualCaption=id.StartsWith("nickname-",StringComparison.Ordinal) ||
                 id=="narrative-continue" || id=="building-action" ||
                 id=="sawmill" || id=="barracks" || id=="granary" ||
-                id=="stoneworks";
+                id=="stoneworks" || id=="training-confirm" || id=="march-confirm";
             if(hasActualCaption)
             {
                 if(noteBack)noteBack.gameObject.SetActive(false);
