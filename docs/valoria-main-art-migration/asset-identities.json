@@ -1,0 +1,1418 @@
+[
+  {
+    "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilant-corrupt-patrol.png",
+    "guid": "ae98f3a1a6c14d90b5f7502a8b191950",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/HallPainterly.shader",
+    "guid": "89d55e1795dc4e48955bc0c5137d29ac",
+    "validGuid": true,
+    "mainPathsWithGuid": [
+      "Unity/Assets/Eldoria/Resources/EldoriaV41/HallPainterly.shader"
+    ],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": [
+      "Unity/Assets/Eldoria/Resources/EldoriaV41/HallPainterly.shader"
+    ]
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/CoronaFaultPigment.png",
+    "guid": "ecc7d0063cd04e06a3de7b48a9710350",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/RockBoarPaint0.png",
+    "guid": "9078f725a9c3441eb7ed976f47ed6ed3",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/RockBoarPaint1.png",
+    "guid": "c0c0ff9980b5482cb8c354a3008565cc",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/SpawnlingPaint0.png",
+    "guid": "28f19323d66846b58d53c38c97b7d06b",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/SpawnlingPaint1.png",
+    "guid": "4ef75c133a70450794214a7a83b49392",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/AshStalker.png",
+    "guid": "5896da935bc65dd39c20f1f8e3088c9e",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/BankPositions.bytes",
+    "guid": "6b0bd20941bf43f0ae276053b232400d",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Boar.png",
+    "guid": "9e994ab32cea58cd81ce568e6a6f6666",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Bridge.png",
+    "guid": "a85c8a5227f459d9ac7d764d8a90d33a",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Camp.png",
+    "guid": "4c9034a5e3b85b98afc49fc8a95e5dc8",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Crag.png",
+    "guid": "63fe36ca9979528da19ee8e46f7533ea",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Earth.jpg",
+    "guid": "fd23b26c1857526bab3dc5e6df96f553",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Fault.png",
+    "guid": "a1104d6a7c0a5abc872bb5049b38ff73",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/FaultPigment.png",
+    "guid": "80ed2cd54fe64f7c9f183f334d31fb23",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Fir.png",
+    "guid": "eddb05aaa4ec5ab8957b0e8b8a4e091a",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/ForestPositions.bytes",
+    "guid": "c326c7a9d6fe5f3abc4b72aa19107429",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Grass.jpg",
+    "guid": "3a1fddf177d15a908cf87c4aec0f4371",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Grove.png",
+    "guid": "0f5bd6e05498522ca7a9b78b35bea3f8",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/HunterCache.png",
+    "guid": "6eefb7d3ccbf548a962adb3a81d708f7",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Keep1.png",
+    "guid": "3e674e008c12517b99f5a792f439b56d",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Keep2.png",
+    "guid": "d0c9fb04b9aa5e3b89863763703693e5",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Keep3.png",
+    "guid": "a27cc9232c335ddf9fc430c5fbb6016c",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Keep4.png",
+    "guid": "801413624ff554c1b1e34176f1cc7c78",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Keep5.png",
+    "guid": "8dd68d8167ef5939858462de8a9ccd1e",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/MarginAtlas.png",
+    "guid": "15ceb04404354ef6bdecac0240c52bc6",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/NearFeatures.png",
+    "guid": "64d41d99664c5ee78e0ce876e33ae9c2",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Oak.png",
+    "guid": "b9f701dbbd4752319d8f1220fd057850",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Quarry.png",
+    "guid": "360c6902347b5140a488ec23e5abb9ef",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/RegionColour.jpg",
+    "guid": "8b2f4be7d18956baa165ef077c62a56e",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/RegionPaint.shader",
+    "guid": "f151a60a17c65926b0e026b095d8996a",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Ridge.png",
+    "guid": "adf2caff88c05514b1a5015ed481c8ba",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Ruin.png",
+    "guid": "98886722007c5bbda6df9f49b838ad93",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/SealedFault.png",
+    "guid": "7b6f00f4df315a2b8cdc6a13caec92a6",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Slate.jpg",
+    "guid": "5869fbeccd4053f191081da5929a4354",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Spawn.png",
+    "guid": "a56aae95cd9f51118e6e4aa2794bd61d",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/SurfaceWeights.png",
+    "guid": "f7c846d7817457d0be9cee945a18e6f5",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Timber.png",
+    "guid": "cdc817f27a0157d992aa9ef37f8d7b57",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Water.jpg",
+    "guid": "4acf0a853bcc5e89ab01a66c8e64bfcf",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Wolf.png",
+    "guid": "673bba468e235e6ca0fecad601818454",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Illustrated/Workyard.shader",
+    "guid": "6011379d0f6c59a0a94e7edddfe1e70d",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/RegionOneAuthoredSurface.shader",
+    "guid": "d0efba140f2c47a78f85adc726a8c19c",
+    "validGuid": true,
+    "mainPathsWithGuid": [
+      "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/RegionOneAuthoredSurface.shader"
+    ],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": [
+      "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/RegionOneAuthoredSurface.shader"
+    ]
+  },
+  {
+    "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/RegionOneLocalCanopy.shader",
+    "guid": "49aebb73a42e4e628be2dd559e0fe2c6",
+    "validGuid": true,
+    "mainPathsWithGuid": [
+      "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/RegionOneLocalCanopy.shader"
+    ],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": [
+      "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/RegionOneLocalCanopy.shader"
+    ]
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/Issue200Competition/AceraZapateros.png",
+    "guid": "a0594156ec375d30a056f6027882c4f6",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/Issue200Competition/ArmeriaDelPatio.png",
+    "guid": "366fa5e3c8275d7db8642ff9d1fad357",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/Issue200Competition/CorteCaliza.png",
+    "guid": "38b77ecae185507eb1076851ad78c471",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/Actors/ActorAtlas.png",
+    "guid": "eaa43503407e453caad281fb99e94d32",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/Actors/IdleAtlas.png",
+    "guid": "847d7bf9052a4377b980e732ccab166d",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/ArchitecturalShadow.shader",
+    "guid": "b65298308ad64b7f980eab5481ae267c",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/BastionMeadow.jpg",
+    "guid": "a02ba53366a244ceabb6c5a905837b5c",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/DistrictGround.shader",
+    "guid": "d6b36556804a4537b0fa3e21af999b8d",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/DistrictPaving.jpg",
+    "guid": "832bd194e94d4799a8559b0695e7961c",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/DistrictStreets.png",
+    "guid": "0afc5d45a1ca447c89a3392aa3243671",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/HaulersEarth.jpg",
+    "guid": "b226650166c149e18575251914c3a680",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicCobbleRoad.png",
+    "guid": "1a70b59fc9a14c689016de9e1c536a29",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicMeadowTile.png",
+    "guid": "1ec9b3a5e7b74b1ca2180929c2de475e",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/Progression/DistrictCartLane.png",
+    "guid": "c910eaa13ff24e7faa43332934bb9444",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/Progression/barracks.png",
+    "guid": "8f2e79292ad95d12830bab4ee11d6ffc",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/Progression/bastion_2.png",
+    "guid": "fb5d580eeac057f0b39d157241c13055",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/Progression/bastion_3.png",
+    "guid": "66c54e6513c359628a9345991f3f5ae0",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/Progression/bastion_4.png",
+    "guid": "16654e42b8b459bdacf9b93ecb6de754",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/Progression/bastion_5.png",
+    "guid": "3a9c96160aac5a6fa1b6f9609922e590",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/Progression/granary.png",
+    "guid": "3bdc4e1b23dd58759196386b8ef628d2",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/Progression/stoneworks.png",
+    "guid": "fe93c12e8276561ebf96ea0d03830d44",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/AceraZapateros.png",
+    "guid": "33d37a8a36b34f7093e980e27e8fff47",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/ArbolAntiguo.png",
+    "guid": "41f7de0fc5b263856eae7a2841b4dc33",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/ArboledaAntigua.png",
+    "guid": "bc63753e84955523504d57ae82edef55",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/ArmeriaDelPatio.png",
+    "guid": "2d7ebf965bbc4f73a45a962dc14a3f75",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/CalleDelPostigo.png",
+    "guid": "56998ba99af845d99e05380d80dfae7c",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/CarroMadera.png",
+    "guid": "6e95c516327d99347933cea8bbef6791",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/CasaDelGremio.png",
+    "guid": "80010df37f6b4102a8015d20f87d8e98",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/CasasDeOficio.png",
+    "guid": "b831ff17391c41978943e705af184872",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/CasasDelCamino.png",
+    "guid": "7adc0db318154e299f624e06927c3df6",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/CasasDelPeso.png",
+    "guid": "b0879d4e5e594345a21821ac2d6e61bd",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/CorteCaliza.png",
+    "guid": "f991437436954db086ceaa33f06a1118",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/FrenteTejedores.png",
+    "guid": "38be98e2d67a41ae846be2981aa3c70a",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/HuertosValoria.png",
+    "guid": "d3c5811e257bea039fa5043765966fe9",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/LindeDelVergel.png",
+    "guid": "29c1abd692a44aa6a9ecc3b1570b669c",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/LonjaGrano.png",
+    "guid": "ea5e681c7ea640dc89b6a54be78b0e3a",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/ManzanaDelAdarve.png",
+    "guid": "a0e17310b689442181cbda2d3432b3d9",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/MatojosFlores.png",
+    "guid": "fe5733a6ad1f0243d24adcb603c3ad9f",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/MuroDerruido.png",
+    "guid": "6eb518dee3d8b032cb07e48d0a7414e7",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/PortalesDeOficios.png",
+    "guid": "2e7e0e34e2954fe8b32e878d6e439c85",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/PozoPiedra.png",
+    "guid": "f1841b7b21fd45667cf8dfd198775252",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/PuestoDeAbastos.png",
+    "guid": "1b42ebcdf18c414bb596c8ff54e5e458",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/ToneleriaDelPostigo.png",
+    "guid": "5043be80281e4ef49941885ddf018465",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/VallaLenador.png",
+    "guid": "a462e21457ed31d2c2c7f24a5f7d9325",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/ViviendaDelPostigo.png",
+    "guid": "dbfd9ecd708347798723f717474137f4",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/StreetElevation.shader",
+    "guid": "370d261afed6414790dcc699e416749c",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/TrainingPigment.shader",
+    "guid": "d636a047754b4af2989d2bc9e90fb527",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/action_arcane.png",
+    "guid": "890219f666fc398d5ff2d36dc1a428dc",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/activity_panel_wide.png",
+    "guid": "bf2f9c046452f5870e34d5a19d7c9fbc",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/activity_standard.png",
+    "guid": "e6c9280127ca4664bb9e802542d65c7d",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/aldric_guardian.jpg",
+    "guid": "a47cb71c4e2340d0a79720de9bcd5bf4",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/arquera.png",
+    "guid": "575240b6bf3b4c00840c96ccae5d6a84",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/arquera_veterana.png",
+    "guid": "ae83a73f81404bac837a136235dfac98",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/guante_guia.png",
+    "guid": "b21a789e2699457ea90b20ab4e530c54",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/icon_city.png",
+    "guid": "a321517c6f055f3f3e7fe40caa8377c7",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/icon_food.png",
+    "guid": "fb783bcca5f493ddd7257a25e9d9fdb8",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/icon_hammer.png",
+    "guid": "2f37119d8dcb7251575528e24f392f74",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/icon_scroll.png",
+    "guid": "b40d19d4c59e52025b9bd26725236bcc",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/icon_stone.png",
+    "guid": "15b8587eb45c3de65f89e92bc8d5205f",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/icon_supplies.png",
+    "guid": "870bbb2a1ab4424d9de3910f173a4a8f",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/icon_task.png",
+    "guid": "82133ad3e3ff7b2a7cbcb9fabdec4325",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/icon_wood.png",
+    "guid": "59ed1d72c5163851bcecd090864a8b04",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/icon_world.png",
+    "guid": "85f95357126d42a99fb0a4483e971ccb",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/identity_crest.png",
+    "guid": "118f0183666919b7a9a56a3905daded4",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/informes_encuentros.png",
+    "guid": "15c0597c4a6249cf91bb10a620e6c634",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/nav_medallion.png",
+    "guid": "01ee3f769f443f4b90582142c506e8eb",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/objective_rune.png",
+    "guid": "e3c5b1ff16f89d74eeb921d739ee8901",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/panel_obsidian.png",
+    "guid": "2526b4df24834b9220827b955fb43a81",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/patio_de_instruccion.jpg",
+    "guid": "6c11005de5f94d1bad236929afd6186f",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/portrait_ring.png",
+    "guid": "25db349f722ddcc3527a63519cefe562",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/resource_siglet.png",
+    "guid": "8eef237bab62e926bd6164b257ac31d9",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/top_velvet_ribbon.png",
+    "guid": "76bc0b73d0724f17924e85483987fb26",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/wallet_inset.png",
+    "guid": "a7f0080d067642a793d75aa922fe532a",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/world_rune.png",
+    "guid": "cab43e3c6c3be4a4ff3968716f1afaea",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/action_arcane.png",
+    "guid": "0954825278250e5b22d1a1ce0ec01cb4",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/icon_city.png",
+    "guid": "7889cf89c7aef40fd278bd7cffe1e2d6",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/icon_food.png",
+    "guid": "e2a0cfeeaefc79b4a4b39820a19ca4aa",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/icon_hammer.png",
+    "guid": "13632317d8f70c095ab7b62adb19e1f8",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/icon_scroll.png",
+    "guid": "d0e028a1844b994328df8da19e7d07d5",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/icon_stone.png",
+    "guid": "3a9d2a43ee9390a89439ba4a36da6924",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/icon_task.png",
+    "guid": "7a9754f9c69f08a6bce67a897805d0de",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/icon_wood.png",
+    "guid": "cb3c059de0768ccc7e17827b6b9fde2f",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/identity_crest.png",
+    "guid": "c0d699341e1032265b717c461640ca3f",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/nav_medallion.png",
+    "guid": "b2c716d50ac1ddeacc7084fb5fe46bc6",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/objective_rune.png",
+    "guid": "860e4e7edcd95b59709e9edbd36238c8",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/panel_obsidian.png",
+    "guid": "425c80018446702a234babbc3b60bd09",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/portrait_ring.png",
+    "guid": "9b6dbbf3e2b52abcaae6cacfcce1e892",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/resource_siglet.png",
+    "guid": "cfd1f3d1dc718073b9c9c98d121982c4",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/world_rune.png",
+    "guid": "e4f6cc1ba1cdec0d9f1376f01c338d38",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/Fonts/CormorantGaramond-SemiBold.ttf",
+    "guid": "0a4b5ce471bc4ca0bfa39775d864e991",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [
+      "Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/Fonts/CormorantGaramond-SemiBold.ttf"
+    ],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/Fonts/SourceSans3-Semibold.ttf",
+    "guid": "d399ac650a214eea93c9b8ce4571024d",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [
+      "Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/Fonts/SourceSans3-Semibold.ttf"
+    ],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/aldric_avatar.png",
+    "guid": "50d5b0b7d2702508761fa9c07906c111",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/burgundy_objective.png",
+    "guid": "e1817b21ab5438efde0d91bc5e45cdf8",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/dock_medallion.png",
+    "guid": "669f57495f8b4f473e57d34381c3022f",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/green_action.png",
+    "guid": "bad05488e0f7b456561bc1bac4650509",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/parchment_frame.png",
+    "guid": "361e7e7b8e3aac8983c8ac100258558d",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/resource_capsule.png",
+    "guid": "eb0a5167dc243f06e85cf29d8e434610",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/umbral_gameplay_icons_png.bytes",
+    "guid": "4f35aedc17edb4f5de1f1945049c76df",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/brass_portrait.png",
+    "guid": "14af8cae6b8549dc99f5ccab30b8673c",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [
+      "Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/brass_portrait.png"
+    ],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/burgundy_action.png",
+    "guid": "365a092b4cef4c1db80e5a23f4a93271",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [
+      "Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png"
+    ],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/profile_plate.png",
+    "guid": "a0cdb2d4fe1c4b0fa8952794417367f6",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [
+      "Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/profile_plate.png"
+    ],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/slate_resource.png",
+    "guid": "9c47b9282fb74a1ead8db7f5c3f60142",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [
+      "Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/slate_resource.png"
+    ],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UrbanRoad.shader",
+    "guid": "1b2a9360dba44d78ac7a6a32cee855ce",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i.png",
+    "guid": "a6dc439ea4523c61a8c247a78d065309",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i_hd.png",
+    "guid": "c2aecccf5ac14725980519996db9f024",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bush_0.png",
+    "guid": "ac9f3fe6c522dfa555bd2a757c43f94b",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bush_1.png",
+    "guid": "499894d29d2db44ff20e243c748c211f",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bush_2.png",
+    "guid": "71ac99a70bb3b0271dbd1cc2ac5c9233",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/oak_0.png",
+    "guid": "0b4320c3844d28c1c95af6eb26120dea",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/oak_1.png",
+    "guid": "68d7ddf47dfd1f18e8e3137781bf6049",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/pine_0.png",
+    "guid": "abc3be56bda9364854d308f2ef25f4b0",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/pine_1.png",
+    "guid": "5f31c579140f9522befb9f89c105b6ab",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/pine_2.png",
+    "guid": "860b8abc04ca0a8de635b1e84017d785",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/ruin_arch_0.png",
+    "guid": "3bd93718e3e719466fff9066f57a112d",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/ruin_arch_1.png",
+    "guid": "b3e9f71afe92498864af6703160e4576",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_available.png",
+    "guid": "3aefefcf0fbde3ef7a292d0ad60a0fd7",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_available_hd.png",
+    "guid": "d3e9be24e4b95cb5aa8cecb76684d474",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i.png",
+    "guid": "32e992102184957a0e6dd9448e41d9eb",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i_hd.png",
+    "guid": "bc89d1eb94084e7890897cfa1e2bfc30",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_under_construction.png",
+    "guid": "d41eba79520dc7f29527d453b1bb767b",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/stone.png",
+    "guid": "6f2e99bed8557eb7880f1cd1a9fda6aa",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/tuft_0.png",
+    "guid": "ca01124036942dd5ace8d8150ff1df1e",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/tuft_1.png",
+    "guid": "d72cc38e2fde48c476c6b556895a816b",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/villager_walk_0.png",
+    "guid": "0bec76e00fefcb406323d6093111d4d1",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/villager_walk_1.png",
+    "guid": "2254396f52b6cfe3b47b31598d026256",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_0.png",
+    "guid": "4fd2ed00f51002de8e0418597697f2fe",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_0_png.bytes",
+    "guid": "b034554cb92be046bf7565a0fe4389a6",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_1.png",
+    "guid": "133701506f01f482162fce0266a826c",
+    "validGuid": false,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_1_png.bytes",
+    "guid": "2fa7e3baf1e94dd9d203bfd93ca05cc1",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  },
+  {
+    "path": "Unity/Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity",
+    "guid": "79d49c9c98df436da1686d4a94b3e199",
+    "validGuid": true,
+    "mainPathsWithGuid": [],
+    "mainIdenticalBytes": [],
+    "mainResourcesWithKey": []
+  }
+]
