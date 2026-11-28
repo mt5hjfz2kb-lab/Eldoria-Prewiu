@@ -58,7 +58,8 @@ namespace Eldoria.UI.RoyalGold.V2
         bool FindLiveSurface()
         {
             if(canvas && canvas.isActiveAndEnabled && vigilia && surface)return true;
-            if(surface)Destroy(surface.gameObject);
+            RestoreSelectedCityLabel();
+            if(surface){surface.gameObject.SetActive(false);Destroy(surface.gameObject);}
             surface=null;canvas=null;vigilia=null;hand=null;halo=null;note=null;noteBack=null;
             // GameObject.Find interprets slash as a hierarchy separator, but
             // the actual independent Vigilia GameObject name contains a slash.
@@ -176,6 +177,7 @@ namespace Eldoria.UI.RoyalGold.V2
         // The overlay lives under the production Canvas, not this component.
         // Disabling the coach must therefore hide its detached presentation too.
         void OnDisable(){Hide("coach-disabled");}
+        void OnEnable(){nextRefresh=0f;}
         void OnDestroy()
         {
             RestoreSelectedCityLabel();
@@ -205,7 +207,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // teaching from a stale, disconnected probe state.
             var activeGateway=Property(Property(host,"City"),"Gateway") as ICommandGateway;
             if(activeGateway==null){Hide("canonical-gateway-not-ready");return;}
-            if(!ReferenceEquals(gateway,activeGateway))gateway=activeGateway;
+            if(!ReferenceEquals(gateway,activeGateway))
+            {
+                Hide("canonical-session-changed");ObjectiveKey="";
+                gateway=activeGateway;
+            }
             var state=gateway.Snapshot();
             if(state==null){Hide("canonical-save-not-ready");return;}
             if(string.IsNullOrWhiteSpace(state.PlayerName))
@@ -488,7 +494,7 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 if(noteBack)noteBack.gameObject.SetActive(false);
             }
-            else SetCaption(screen,caption);
+            else SetCaption(screen,caption,ScreenBounds((RectTransform)control.transform,camera));
             TargetId=id;Rejection="";
         }
         Rect ViewSafeArea()
@@ -598,26 +604,60 @@ namespace Eldoria.UI.RoyalGold.V2
             surface.SetAsLastSibling();
             return true;
         }
-        void SetCaption(Vector2 target,string caption)
+        static Rect ScreenBounds(RectTransform r,Camera camera)
+        {
+            var corners=new Vector3[4];r.GetWorldCorners(corners);
+            var lo=new Vector2(float.PositiveInfinity,float.PositiveInfinity);
+            var hi=new Vector2(float.NegativeInfinity,float.NegativeInfinity);
+            foreach(var corner in corners)
+            {
+                var q=RectTransformUtility.WorldToScreenPoint(camera,corner);
+                lo=Vector2.Min(lo,q);hi=Vector2.Max(hi,q);
+            }
+            return Rect.MinMaxRect(lo.x,lo.y,hi.x,hi.y);
+        }
+        void SetCaption(Vector2 target,string caption,Rect? actualControl=null)
         {
             if(!noteBack || !note || !surface)return;
+            // Fail closed: a caption is optional; the correctly anchored
+            // gauntlet is not. Never cover the target or the gauntlet to fit it.
+            noteBack.gameObject.SetActive(false);
+            if(string.IsNullOrEmpty(caption))return;
             var camera=canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera;
             var safe=ViewSafeArea();
-            float width=Mathf.Min(240f,Mathf.Max(140f,safe.width-24f));
-            float y=target.y+86f;
-            if(y+30f>safe.yMax-8f)y=target.y-86f;
-            var point=new Vector2(
-                Mathf.Clamp(target.x,safe.xMin+width*.5f+5f,
-                    safe.xMax-width*.5f-5f),
-                Mathf.Clamp(y,safe.yMin+35f,safe.yMax-35f));
+            safe.xMin+=8;safe.xMax-=8;safe.yMin+=8;safe.yMax-=8;
+            if(safe.width<=0||safe.height<=0)return;
             var r=noteBack.rectTransform;
             r.anchorMin=r.anchorMax=new Vector2(.5f,.5f);
             r.pivot=new Vector2(.5f,.5f);
-            r.sizeDelta=new Vector2(width,50f);
-            if(RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                surface,point,camera,out var local))r.anchoredPosition=local;
-            note.text=caption;noteBack.gameObject.SetActive(true);
-            surface.SetAsLastSibling();
+            r.sizeDelta=new Vector2(240f,50f);
+            note.text=caption;
+            // Measure actual projected bounds, not a mix of device pixels
+            // and CanvasScaler units. This also works with capture textures.
+            var size=ScreenBounds(r,camera).size;
+            if(size.x>safe.width||size.y>safe.height||size.x<=0||size.y<=0)return;
+            var avoid=actualControl??new Rect(target.x-18,target.y-18,36,36);
+            var ink=ScreenBounds(hand.rectTransform,camera);
+            avoid.xMin-=5;avoid.xMax+=5;avoid.yMin-=5;avoid.yMax+=5;
+            ink.xMin-=5;ink.xMax+=5;ink.yMin-=5;ink.yMax+=5;
+            float hw=size.x*.5f,hh=size.y*.5f;
+            var candidates=new[]{
+                new Vector2(target.x,Mathf.Max(avoid.yMax,ink.yMax)+hh+8),
+                new Vector2(target.x,Mathf.Min(avoid.yMin,ink.yMin)-hh-8),
+                new Vector2(Mathf.Max(avoid.xMax,ink.xMax)+hw+8,target.y),
+                new Vector2(Mathf.Min(avoid.xMin,ink.xMin)-hw-8,target.y)};
+            foreach(var candidate in candidates)
+            {
+                var point=new Vector2(Mathf.Clamp(candidate.x,safe.xMin+hw,safe.xMax-hw),
+                    Mathf.Clamp(candidate.y,safe.yMin+hh,safe.yMax-hh));
+                if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(surface,point,camera,out var local))continue;
+                r.anchoredPosition=local;
+                var placed=ScreenBounds(r,camera);
+                if(placed.xMin<safe.xMin-.5f||placed.xMax>safe.xMax+.5f||
+                    placed.yMin<safe.yMin-.5f||placed.yMax>safe.yMax+.5f||
+                    placed.Overlaps(avoid)||placed.Overlaps(ink))continue;
+                noteBack.gameObject.SetActive(true);surface.SetAsLastSibling();return;
+            }
         }
     }
 }

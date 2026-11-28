@@ -71,6 +71,9 @@ if(!File.Exists(coachFile+".meta") ||
    !coachSource.Contains("if(Visible && TargetId==target)return true;") ||
    !coachSource.Contains("management.VisibleAction,objective") ||
    !coachSource.Contains("void OnDisable(){Hide(\"coach-disabled\");}") ||
+   !coachSource.Contains("Hide(\"canonical-session-changed\")") ||
+   !coachSource.Contains("placed.Overlaps(avoid)||placed.Overlaps(ink)") ||
+   !coachSource.Contains("ScreenBounds((RectTransform)control.transform,camera)") ||
    !coachSource.Contains("ConcealSelectedCityLabel(target)") ||
    !coachSource.Contains("RestoreSelectedCityLabel()") ||
    !firstEntryFixture.Contains("RequireSelectedCityLabelUnpainted(canvas,\"sawmill\",viewport)") ||
