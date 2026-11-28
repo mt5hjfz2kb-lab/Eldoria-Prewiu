@@ -1,0 +1,54 @@
+name: Studio art learning - protected feature veto
+on:
+  push:
+    branches: [research/bastion-i-25d-studio-200]
+    paths: ['.github/workflows/issue200-studio-art-veto.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: issue200-studio-art-veto
+  cancel-in-progress: false
+jobs:
+  calibrate:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'Validate Studio protected-feature decision arbitration'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify prior calibration and run regression tests
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$REPO/actions/runs/46128313606" --jq .conclusion)" = success
+          test "$(gh api "repos/$REPO/actions/artifacts/15257065817" --jq .digest)" = sha256:ad46609e2a6097490a1094b91f972f4f0c207f5f1dcde7fc4b18323d875ae7b9
+          mkdir -p "$RUNNER_TEMP/learning" "$RUNNER_TEMP/learning-veto"
+          cd "$RUNNER_TEMP/learning"
+          for f in studio.py economics.py rates-20261125.json; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/openai-development-studio/$f?ref=9fbdb203269b951a252de58d7a0357d71a841480" > "$f"
+          done
+          for f in cases.json guard.py test_guard.py decision_gate.py test_decision_gate.py calibrate_veto.py; do
+            gh api -H 'Accept: application/vnd.github.raw+json' "repos/$REPO/contents/tools/studio-v3/art-learning/$f?ref=fc77f32baa1d2391d624f497d50518dc730ca34e" > "$f"
+          done
+          python3 -m unittest -v test_guard test_decision_gate 2>&1 | tee "$RUNNER_TEMP/learning-veto/tests.txt"
+      - uses: actions/download-artifact@v4
+        with:
+          name: issue200-studio-art-learning-results
+          run-id: 46128313606
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/prior
+      - name: Verify identical historical images and run structured feature audit
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/learning"
+          python3 -u calibrate_veto.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue200-studio-art-veto-results
+          path: ${{ runner.temp }}/learning-veto
+          if-no-files-found: error
+          retention-days: 30
