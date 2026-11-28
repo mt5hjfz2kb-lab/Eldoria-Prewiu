@@ -12219,7 +12219,7 @@
       "write_scope_released": false,
       "branch": "pilot/eldoria-studio-v3-autonomous-execution-20261126",
       "status": "active",
-      "phase": "PR198_HOSTED_ART_CONTINUATION",
+      "phase": "PR198_CATEGORY_DETAILS_HOSTED_ART",
       "claimed_at": "2026-11-26T19:46:00Z",
       "base_main_sha": "58ec6108b9fdb23d2ee2505ab17c8c19662ba37a",
       "base_studio_sha": "1657b2caa6b1a955319538ce3a8b2906398599b3",
@@ -12266,7 +12266,7 @@
         "windows_runner": false
       },
       "remaining": "Native connections and real capture verified. Premium art goal remains unfulfilled; no source or gameplay integration or approval.",
-      "next": "Retain C baseline; render isolated targeted candidate from pinned offline replay and compare using independent audit. No native lease; no production integration until visual and native gates.",
+      "next": "Build six category detail views on verified selected art, validate offline and labeled QA routes at 3 sizes, apply bounded artist refinement and audit. Keep approved hub and compare existing views. Native and production service remain later after #201/#190.",
       "pilot": {
         "source_sha": "e1d3b9892e1a75a9e7bfbafd0db225de7aacba74",
         "source_path": "tools/senda-brecha/src/rules.js",
@@ -12629,6 +12629,42 @@
             "audit": "0.15"
           },
           "reason": "Change approach after rejection: preserve earlier successful per-view composition and original art; implement explicit material, contrast, scale and readability corrections, independently compare actual rendered screens. One audit only, no additional image generation, no repeat, no new budget."
+        },
+        "targeted_result_20261128": {
+          "run": 46186570615,
+          "artifact": 15279333841,
+          "estimated_usd": "0.008248",
+          "scores": [
+            8,
+            7.8,
+            8,
+            8,
+            7.7,
+            7.3
+          ],
+          "decision": "retain first four; revert two regressions"
+        },
+        "selected_result_20261128": {
+          "run": 46187304641,
+          "artifact": 15279774063,
+          "sha256": "3e66b4e4fcd1ea3fad8396034ebe81ffd6251943c0ef6ac83d937ab68b5943ad",
+          "frames": 21,
+          "api_calls": 0,
+          "all_screens_8": false
+        },
+        "detail_art_20261128": {
+          "id": "pr198-detail-art-20261128",
+          "source_sha": "519c9c2d2a713c64841d77057bd32b7dd2ac8252",
+          "source_artifact": 15279774063,
+          "prior_worst_case_bound_usd": "4.91061740",
+          "new_reservation_usd": "0.07",
+          "maximum_aggregate_usd": "4.98061740",
+          "roles": {
+            "artist": "0.04",
+            "audit": "0.03"
+          },
+          "expiry": "2026-12-02",
+          "reason": "Owner explicitly asks the artists to produce six detail views and improve existing views in the same PR198. Reuse approved original art, no new image charges. Single bounded artist refinement and independent audit of actual screenshots. Do not renew or exceed the original USD5 cap."
         }
       },
       "issue200_native_proof": {
