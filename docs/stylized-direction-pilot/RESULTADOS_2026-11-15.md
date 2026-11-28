@@ -1,0 +1,93 @@
+# Eldoria — conclusión del ensayo visual de 15/11/2026
+
+## Ensayo v4 — campo visual completo, texturas reales y comparación con ciudad (15/11/2026)
+
+**Implementado/renderizado:** [Blender run 43731045777](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43731045777), SHA `f07baeeb8937345689a8a6ba3ea89673625c9fb6`, SUCCESS; artefacto `14168855695` (~87 MB ZIP). La ejecución contiene capturas de 1400×850 y 760×1240, un .blend editable y un .glb 3D válido. Incluye las fuentes reales del Bastión II, Aserradero, Cuartel AP2 y piezas de arquitectura secundaria. Ningún archivo de la beta o de la escena de producción se reescribió.
+
+**Mejoras que sí se observan frente al ensayo v3:**
+- desaparecen los triángulos grises de fondo por los bordes del terreno;
+- puente con pavimento de piedra reconocible, ribera continua y árboles en franjas coherentes;
+- el elemento patrimonial blanco se hace menos dominante y la fluorescencia de la Brecha se modera;
+- mayor legibilidad del conjunto a escala estratégica.
+
+**Evaluación artística independiente del PASS técnico:** al comparar junto a la captura real de Unity, la ciudad actual mantiene **mejor iluminación, más naturalidad, lectura del puente y ribera, y calidad integrada de materiales**. El nuevo entorno Blender conserva árboles geométricos, demasiado vacío entre edificios y poca vida, y parte de la Brecha en el margen. Por tanto, **NO superar aún el estándar visual del producto**; no fusionar ni presentar v4 como sustitución del juego. Se mantiene `ART_APPROVED=false`.
+
+**Decisión acumulativa:** descartar el cambio global a low-poly/maqueta. Conservar los modelos reales y la cámara legible de Unity, estudiar una estilización selectiva de terreno/vegetación/atmosfera mediante pruebas nativas, no mediante ilustraciones ni simple corrección cromática. Próxima puerta obligatoria: composición integrada con objetos y terreno del juego real, prueba A/B de la **misma** escena/cámara en Unity y verificación WebGL/iPhone antes de adoptar cualquier cambio. Recursos `windows-runner-heavy` liberados; no se solicita una ejecución nativa que compita con la estabilización P0.
+
+---
+
+## Ensayo 3D estilizado con fuentes reales — 15/11/2026
+
+**Resultado: render de Blender real y fuente 3D editable reproducibles; calidad de producto todavía NO certificada.** El objetivo de 7,5/10 visual sigue pendiente. La beta y `main` no se alteran.
+
+- [Run 43728354765](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43728354765): primer kit geométrico original completo; demasiado esquemático y oscuro. Rechazado artísticamente, aunque su producción técnica pasó.
+- [Run 43729427408](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43729427408): reutilización real de `BastionII.glb` y `SawmillRefined104.glb`, terreno continuo y luz legible. Mejora macroscópica clara sobre el primer kit.
+- [Run 43730016249](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43730016249): render y archivo fuente de Blender + GLB reales, con Bastión II, Aserradero, Cuartel AP2, paisaje continuo, Brecha y un elemento patrimonial 3D. CI **SUCCESS**; artefacto **14168046558**, ~51 MB. Incluye PNG horizontal y vertical, `.blend` editable y GLB. El material del arco patrimonial sigue demasiado pálido respecto al conjunto; el terreno, río y vegetación necesitan mayor oficio artístico.
+
+**Decisión de dirección:** priorizar estilización adulta y coherencia con fuentes arquitectónicas existentes, no modelos de cajas, fotorealismo o filtros cromáticos. El tercer ensayo es una **prueba de dirección**, no un reemplazo aprobado del juego: escenas separadas, sin HUD/interacción en Unity, sin medición de memoria WebGL o dispositivo físico. La calidad visual real **todavía no justifica fusionarlo a producción**.
+
+**Aprendizaje reutilizable:** preservar el aspecto real de Bastión/Aserradero/Cuartel y concentrar el esfuerzo en un entorno authored 2.5D modular (terrazas, rutas, ribera, arbolado y ruinas) donde el terreno y los edificios compartan escala y material. Evitar nuevas iteraciones de solo color o la producción masiva de props aleatorios. Próxima validación obligatoria: importar el kit aprobado a una escena Unity aislada y probar A/B con cámara y dispositivos exactos. `ART_APPROVED=false`; `MOBILE_TESTED=false`; no publicar ni convertir en beta de testers.
+
+---
+
+
+Estado: **prueba técnica realizada; objetivo artístico NO alcanzado**. PR #196 debe permanecer en borrador, sin merge a main ni a la beta.
+
+## Evidencia real de Unity
+
+- [Run 43723401749](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43723401749): escena Unity Editor canónica Valoria_City_World_UI, 1600x900 y 390x844, 107 renderers / 118 materiales. El shader alternativo retiró visualmente edificios y vegetación, aunque proyectaban sombras. Hubo diferencia de píxeles significativa pero **calidad fallida**. No confundir screenshot distinto con resultado mejor.
+- [Run 43723908844](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43723908844): captura real Unity de A original, B atlas de color pintado usando shaders de origen y C tintado con materiales originales. 35 texturas horneadas en Editor; retención de detalle en el Bastión ~0,923; diferencias medias A→B de 5,22/255 (horizontal) y 5,04/255 (vertical); A→C de 8,23 y 10,51/255. Los modelos vuelven a renderizar, pero **la mejora artística es demasiado pequeña**. No aprobada.
+- Arte de referencia generado por IA: **concepto externo**, nunca evidencia de modelo/iluminación/rendimiento integrados.
+
+### Evaluación artística
+
+El techo azul intenso, el césped extenso y poco integrado y la escasa jerarquía entre Bastión, caminos, orillas y ruinas **no se resuelven de manera suficiente con una corrección de color**. Un shader global es además más frágil frente a los materiales PBR, transparentes, glTF y luces de la escena.
+
+El ensayo confirma la vía técnica útil: editar una copia de escena usando materiales URP originales y capturar la cámara real sin entrar en el runtime completo. No confirma mejora comercial ni rendimiento en iPhone.
+
+## Decisión de producción tras rechazar estas variantes
+
+Cambiar de técnica: **no repetir pequeñas variaciones de tinte, filtros ni shaders globales**. El siguiente piloto debe modificar directamente la composición física usando assets aprobados/reutilizables:
+
+1. Elaborar kit modular consistente de rocas, muros antiguos, vegetación, terrazas y caminos conectado al terreno; inspeccionar antes los prefabs existentes y sus licencias, no crear GLB nuevos sin justificar.
+2. Convertir el Bastión y el gran arco imperial en jerarquía evidente, con transición entre recinto habitado y ruina exterior; añadir detalle selectivo, no densidad indiscriminada ni elementos inmóviles para maquillar.
+3. Usar una cámara 3/4 y dos escalas reales; registrar A/B de la misma escena en Editor y luego PlayMode/iPhone cuando la estabilidad P0 esté resuelta.
+4. Certificar por separado calidad (meta ≥7,5/10 respecto a la referencia aprobada), legibilidad, jugabilidad y memoria. Sin arte aprobado en estos runs.
+
+## Lecciones técnicas documentadas
+
+- El primer ensayo procedimental 2.5D se veía como una maqueta infantil. Se descartó, sin tratarlo como asset de producción.
+- Una pasada 2D sobre screenshots no soluciona el escenario; se descartó.
+- En el capturador C#, cualificar `UnityEngine.Application` evita colisión con `Eldoria.Application`.
+- `-quit` con PlayMode diferido hace salir Unity antes de obtener capturas. La ruta Editor síncrona evita esa dependencia y la carga del mundo P0.
+- Las capturas y el manifiesto de artefactos auténticos están conservados en los runs anteriores. Un `CI success` y diferencias de píxeles **no equivalen a ART_APPROVED**.
+- **No modificar** P0/PR194, beta/testers, saves ni escena productiva por esta prueba. Ninguna build WebGL ni APK se produjo.
+
+
+## Ensayos adicionales de composición y acabado — 15/11/2026
+
+**No se autoriza la promoción de ninguna variante.** La primera prueba A/B se completó en Unity Editor (no móvil, sin ejecución real de juego), y las candidatas posteriores también se inspeccionaron visualmente.
+
+| Evidencia | Resultado técnico comprobado | Veredicto artístico |
+| --- | --- | --- |
+| [43725103057](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43725103057) | Editor capturó propuestas con 105 props existentes, aunque el gate final rechazó diferencia demasiado baja | Rechazada: piedras claras con escala errónea, vegetación diminuta o con siluetas incorrectas, composición no mejora |
+| [43725656960](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43725656960) | Native Unity SUCCESS, 46 renderers de decoración reutilizada y 4 PNG A/D | Rechazada: rocas blancas desproporcionadas y grupos de árboles con troncos claros incoherentes; peor que el original |
+| [43725782481](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43725782481) | Native Unity SUCCESS, capturas originales y dos tratamientos G1/G2 sobre cámara original, en ambas orientaciones | Rechazada: el filtro apenas afecta al problema de arquitectura, relieve y vacío del terreno |
+| [43726354590](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43726354590) | Unity compila y escribe A y F; el workflow termina FAIL porque comprueba nombres antiguos G1. El manifiesto declara 7 capas de terreno y 105 prefabs (solo validación de render Editor) | Rechazada: terreno más gris, pero piedras y límites artificiales; no apariencia comercial |
+
+**Conclusión causal:** la brecha entre el concepto deseado y la escena real no se cierra con postprocesos, tintes, color por texturas, rocas automáticas ni clonación masiva. El problema principal es la escasez y la poca coherencia de geometría/arte de producción, además de la composición del entorno. Aumentar polígonos sin dirección artística no sería una solución; tampoco añadir sprites como una imagen de fondo que oculte la falta de interactividad.
+
+**Siguiente enfoque coherente y de coste 0 por defecto:** crear primero una única **zona de referencia** realmente trabajada en Blender/Unity con un kit propio y reutilizable (bastión autorizado, ruina monumental, camino integrado, dos familias de rocas, dos especies de árboles y suelo orgánico). Validar una toma auténtica de Unity a 1600×900 y 390×844 a la **misma cámara**; el resultado debe ser claramente mejor de un vistazo antes de hacer más arte o ampliar el mapa. No hay autorización para meter modelos de terceros sin licencia acreditada ni usar el Bastión vetado. Las escenas, sprites e imágenes conceptuales no son prueba de integración, jugabilidad, rendimiento móvil o aprobación artística.
+
+**Límites al cierre:** PR en borrador; ninguna escena principal ni beta modificada; no build jugable nueva; artApproved=false, physicalMobileTested=false. Reservar Windows de nuevo solo cuando exista una fuente artística nueva que merezca prueba; no acumular más runs de mínimos retoques.
+
+## Segundo ensayo con fuente 3D propia: bosque y composición — 15/11/2026
+
+**La solución visual completa NO convence todavía: NO integrar.** Ambas versiones proceden de Blender real (no imágenes IA ni Unity), con modelos canónicos del proyecto. El experimento se conserva en la PR #196 como evidencia negativa útil.
+
+- [Run 43731853729](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43731853729), commit `2ab1c1d`: modelo propio `PineCanopy77.glb` importado y distribuido erróneamente como árbol individual. La geometría real es un **bosque completo** de aproximadamente 94×105 unidades; normalizarlo a 5,2 unidades redujo decenas de árboles a motas. También se probaron ribera curva, cubierta vegetal, caminos y luces. **Técnicamente SUCCESS, artísticamente rechazado**.
+- [Run 43732405355](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43732405355), commit `6fc2f17`: corregida la fuente como cuatro bosquetes completos en tamaño real, geometría compartida, cubierta de pizarra desaturada, caminos estrechados y material de suelo con variación. **Blender SUCCESS**; archivo fuente `.blend`, GLB exportable y render horizontal/vertical. **Rechazado** tras inspección: persisten explanadas vacías, puente recto con material demasiado claro, monumento periférico sin integración, Brecha como piezas flotantes y menor riqueza medioambiental que la captura auténtica Unity del run 43723908844.
+
+**Conclusión causal:** reemplazar el mundo por un diorama generativo nuevo degrada el producto mientras se pierden buenos elementos de la escena original (árboles, orillas rocosas, puerta de muralla y relación puente-río). No basta con bajar saturación o aumentar el número de objetos. La prueba confirma la viabilidad de un pipeline editable sin coste de modelo, **no** la calidad estética deseada.
+
+**Pivote recomendado para el siguiente trabajo:** conservar la ciudad actual de Unity como base, definir una sola zona artesanal de transición edificio/suelo/vegetación, reutilizar familias aprobadas de árboles y ribera, integrar **dentro de Unity** con cámara y dos zooms exactos y medir memoria/fps en iPhone cuando esté estable. No promover nada de PR196 a main o testers hasta que se observe mejora real y se certifique en dispositivo. `art_approved=false`; `mobile_tested=false`.

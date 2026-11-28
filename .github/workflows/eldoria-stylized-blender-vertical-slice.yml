@@ -1,0 +1,70 @@
+name: Eldoria stylized — NEW original Bastion V from zero (Blender)
+on:
+  push:
+    branches: [feature/eldoria-stylized-direction-proof-20261115]
+    paths:
+      - tools/stylized-direction-pilot/valoria_original_bastion_v.py
+      - tools/stylized-direction-pilot/valoria_commercial_stylization_v6.py
+      - tools/stylized-direction-pilot/valoria_characterful_city_v7.py
+      - tools/stylized-direction-pilot/valoria_citadel_massing_v8.py
+      - .github/workflows/eldoria-stylized-blender-vertical-slice.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-stylized-original-blender-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-3d:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/stylized-direction-pilot/valoria_original_bastion_v.py
+            /tools/stylized-direction-pilot/valoria_commercial_stylization_v6.py
+            /tools/stylized-direction-pilot/valoria_characterful_city_v7.py
+            /tools/stylized-direction-pilot/valoria_citadel_massing_v8.py
+      - name: Install standard free CPU Blender
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+          blender --version | head -2
+      - name: Produce new original three-dimensional scene and genuine 3D renders
+        run: |
+          mkdir -p output-stylized-source
+          blender -b -t 4 --python-exit-code 1 --python tools/stylized-direction-pilot/valoria_original_bastion_v.py -- --out "$PWD/output-stylized-source"
+      - name: Validate 3D deliverables separately from art quality
+        run: |
+          python3 - <<'PY'
+          import pathlib, json, struct, hashlib
+          p = pathlib.Path('output-stylized-source')
+          files = ['original-bastion-v-landscape.png', 'original-bastion-v-portrait.png', 'valoria-original-identity.blend', 'valoria-original-bastion-v.glb']
+          for name in files:
+              f = p/name
+              assert f.is_file() and f.stat().st_size>120000, (name, f.stat().st_size if f.exists() else 'MISSING')
+              print('FILE', name, f.stat().st_size, hashlib.sha256(f.read_bytes()).hexdigest())
+          for name in files[:2]:
+              b = (p/name).read_bytes()
+              assert b[:8] == b'\x89PNG\r\n\x1a\n'
+              width,height = struct.unpack('>II', b[16:24])
+              assert (width,height) in [(1440,900),(800,1400)], 'Unexpected capture size'
+              print('REAL_BLENDER_PNG', name, width, height)
+          b=(p/'valoria-original-bastion-v.glb').read_bytes()
+          assert b[:4] == b'glTF' and struct.unpack('<I',b[8:12])[0]==len(b), 'invalid GLB header'
+          manifest=json.loads((p/'visual-proof.json').read_text())
+          assert manifest['original_authored_geometry'] and not manifest['legacy_models_imported']
+          assert manifest['blender_render'] and not manifest['unity_render'] and not manifest['art_approved']
+          assert manifest['mesh_objects'] > 100 and manifest['pine_trees'] >= 20
+          print('VALORIA_ORIGINAL_SOURCE_TECH_PASS_NOT_ART_APPROVAL',manifest)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-original-from-zero-${{ github.sha }}
+          path: output-stylized-source/
+          if-no-files-found: warn
+          retention-days: 30
