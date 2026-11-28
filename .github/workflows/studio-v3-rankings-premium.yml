@@ -67,3 +67,51 @@ jobs:
       - name: No tracked game files modified
         if: always()
         run: git diff --exit-code
+
+  six-view-continuation:
+    if: github.event.head_commit.message == 'Launch bounded PR198 six-view refinement 20261128' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          sparse-checkout: |
+            tools/studio-v3/rankings-premium
+            tools/openai-development-studio
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compile pinned PR198 projection and recover real C art; no-spend replay
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          tool=tools/studio-v3/rankings-premium
+          python3 -m pip install --quiet pillow playwright==1.55.0
+          python3 -m playwright install chromium
+          python3 -m py_compile "$tool/continuation-20261128.py"
+          python3 "$tool/materialize.py" "$RUNNER_TEMP/pr198-cont-source"
+          cp "$tool/Projection.cs" "$tool/Projection.csproj" "$RUNNER_TEMP/pr198-cont-source/domain/"
+          dotnet build "$RUNNER_TEMP/pr198-cont-source/domain/Projection.csproj" --configuration Release --nologo
+          dotnet "$RUNNER_TEMP/pr198-cont-source/domain/bin/Release/net8.0/Projection.dll" > "$RUNNER_TEMP/pr198-cont-projection.json"
+          python3 "$tool/continuation-20261128.py" --prepare "$RUNNER_TEMP/pr198-cont-source" "$RUNNER_TEMP/pr198-cont-projection.json" "$RUNNER_TEMP/pr198-continuation"
+      - name: Actual director integrator and independent visual auditor within existing bounded reservation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python3 tools/studio-v3/rankings-premium/continuation-20261128.py --live "$RUNNER_TEMP/pr198-cont-source" "$RUNNER_TEMP/pr198-cont-projection.json" "$RUNNER_TEMP/pr198-continuation"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr198-six-view-refinement
+          path: ${{ runner.temp }}/pr198-continuation
+          if-no-files-found: warn
+          retention-days: 14
+      - name: No production files modified
+        if: always()
+        run: git diff --exit-code
