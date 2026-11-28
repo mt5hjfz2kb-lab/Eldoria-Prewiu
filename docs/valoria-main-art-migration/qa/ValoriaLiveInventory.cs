@@ -324,7 +324,7 @@ namespace Eldoria.MigrationQA
             if (!EditorApplication.isPlaying) throw new InvalidOperationException("Enter Play Mode before capturing.");
             if (string.IsNullOrEmpty(sourceCommit) || !System.Text.RegularExpressions.Regex.IsMatch(sourceCommit, "^[0-9a-f]{40}$"))
                 throw new ArgumentException("Provide ELDORIA_QA_SOURCE_SHA or pass the verified full SHA.");
-            var report = new Report { sourceCommit = sourceCommit, state = stateLabel, unity = Application.unityVersion,
+            var report = new Report { sourceCommit = sourceCommit, state = stateLabel, unity = UnityEngine.Application.unityVersion,
                 recordedUtc = DateTime.UtcNow.ToString("o"), scene = SceneManager.GetActiveScene().path,
                 width = Screen.width, height = Screen.height, frame = Time.frameCount };
             CaptureSpatial(report);

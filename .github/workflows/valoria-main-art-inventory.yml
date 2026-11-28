@@ -201,4 +201,5 @@ jobs:
           if (@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender,bee_backend -ErrorAction SilentlyContinue).Count) {
             throw 'Native process active; preserving scratch'
           }
-          Remove-Item -LiteralPath $resolved -Recurse -Force
+          & cmd.exe /d /c ('rd /s /q "' + $resolved + '"')
+          if (Test-Path -LiteralPath $resolved) { throw 'Owned scratch cleanup incomplete' }
